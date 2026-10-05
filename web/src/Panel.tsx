@@ -45,6 +45,7 @@ function Section({ title, rows, other, onOpen }: SectionProps) {
               <div className="row-meta">
                 기준일 {row.as_of_date ?? "-"} · 공개일 {row.disclosed_date}
                 {row.joint_parties ? ` · 상대 ${row.joint_parties}곳 공동` : ""}
+                {row.pct_after ? ` · 거래 뒤 지분 ${row.pct_after}%` : ""}
                 {row.disclosed_by === "both" ? " · 양쪽 공시에서 확인" : ""}
                 {row.stale ? <span className="warn"> · 그 뒤 보고서 없음</span> : null}
                 {row.evidence.map((e) => (
@@ -104,6 +105,14 @@ export function Panel({ detail, onOpen, onCenter, onClose }: Props) {
         <Section title="이 기업의 주주 (기업)" rows={of("equity", false)} other={subject} onOpen={onOpen} />
         <Section title="판 계약 (공급계약 공시)" rows={of("supply_contract", true)} other={object} onOpen={onOpen} />
         <Section title="산 계약 (상대가 공시)" rows={of("supply_contract", false)} other={subject} onOpen={onOpen} />
+        <Section title="지분 취득 결정" rows={of("stake_acquisition", true)} other={object} onOpen={onOpen} />
+        <Section title="지분 처분 결정" rows={of("stake_disposal", true)} other={object} onOpen={onOpen} />
+        <Section
+          title="이 기업의 지분을 사거나 판 결정 (상대가 공시)"
+          rows={[...of("stake_acquisition", false), ...of("stake_disposal", false)]}
+          other={subject}
+          onOpen={onOpen}
+        />
         {group.count > 0 && (
           <section>
             <h3>

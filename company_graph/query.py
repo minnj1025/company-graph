@@ -20,7 +20,10 @@ from sqlalchemy import and_, func, or_, select
 from .db import Company, CompanyAlias, Document, Relation, session
 from .names import clean_reported, normalize
 
-LABELS = {"equity": "지분", "affiliate": "계열", "supply_contract": "공급계약", "major_customer": "주요 고객"}
+LABELS = {"equity": "지분", "affiliate": "계열", "supply_contract": "공급계약", "major_customer": "주요 고객",
+          "stake_acquisition": "지분 취득 결정", "stake_disposal": "지분 처분 결정", "merger": "합병 결정",
+          "split": "분할 결정", "business_transfer": "영업양수도 결정"}
+EVENT_TYPES = ("stake_acquisition", "stake_disposal", "merger", "split", "business_transfer")
 DART_VIEWER = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo="
 # 사업보고서는 1년에 한 번 나온다. 기준일이 이보다 오래된 지분·계열은 "그 뒤 보고서가 없다"는 뜻이다
 STALE_AFTER = timedelta(days=548)
@@ -126,7 +129,9 @@ def coverage(db) -> dict:
     return {"notice": NOTICE, "relations": kinds,
             "sources": {"equity": "사업보고서의 타법인 출자현황과 최대주주 현황 (반기·분기보고서는 아직 없음, 개인 주주 제외)",
                         "affiliate": "사업보고서의 계열회사 현황 표",
-                        "supply_contract": "단일판매ㆍ공급계약 체결 공시 (건별로 공시한 계약만)"}}
+                        "supply_contract": "단일판매ㆍ공급계약 체결 공시 (건별로 공시한 계약만)",
+                        "stake_acquisition": "타법인 주식 및 출자증권 취득결정 공시 (수집 대상 기업이 낸 것만)",
+                        "stake_disposal": "타법인 주식 및 출자증권 처분결정 공시 (수집 대상 기업이 낸 것만)"}}
 
 
 def group_members(db, company_id: int, as_of: date) -> list[dict]:

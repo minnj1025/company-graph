@@ -8,8 +8,9 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
 from .config import DATA_DIR, DB_URL
 
-REL_TYPES = ("affiliate", "equity", "supply_contract", "major_customer")
-DOC_TYPES = ("annual", "half", "quarter", "supply_contract", "other")
+REL_TYPES = ("affiliate", "equity", "supply_contract", "major_customer",
+             "stake_acquisition", "stake_disposal", "merger", "split", "business_transfer")
+DOC_TYPES = ("annual", "half", "quarter", "supply_contract", "event", "other")
 QUALITY_CHECKS = ("correction", "duplicate", "unit", "range", "cross_check", "unlinked_name")
 
 

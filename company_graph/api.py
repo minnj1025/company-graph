@@ -34,7 +34,8 @@ def edge_json(db, e: dict) -> dict:
             "object_id": e["object_id"], "object": name(e["object_id"]) or e["object_name_raw"],
             "value": float(e["value"]) if e["value"] is not None else None, "unit": e["unit"],
             "as_of_date": e["as_of_date"], "disclosed_date": e["disclosed_date"],
-            "title": e["attrs"].get("title"), "joint_parties": e["attrs"].get("joint_parties"),
+            "title": e["attrs"].get("title") or e["attrs"].get("purpose"), "joint_parties": e["attrs"].get("joint_parties"),
+            "pct_after": e["attrs"].get("pct_after"),
             "trust_tier": e["trust_tier"], "disclosed_by": e["disclosed_by"], "stale": e["stale"],
             "evidence": [{"rcept_no": r, "url": query.DART_VIEWER + r} for r in e["evidence"]]}
 
@@ -122,7 +123,8 @@ def company(company_id: int, as_of: date, db=Depends(get_db)):
     found = db.get(Company, company_id)
     if found is None:
         raise HTTPException(404, "기업을 찾지 못했습니다")
-    edges = query.relations(db, as_of, company_ids=[company_id], rel_types=["equity", "supply_contract"])
+    edges = query.relations(db, as_of, company_ids=[company_id],
+                            rel_types=["equity", "supply_contract", *query.EVENT_TYPES])
     members = query.group_members(db, company_id, as_of)
     order = lambda e: (e["type"], e["subject_id"] != company_id, -(e["value"] or 0))
     return {"company": company_json(found), "as_of": as_of,

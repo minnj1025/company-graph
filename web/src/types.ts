@@ -1,4 +1,6 @@
 export type RelType = "equity" | "supply_contract" | "affiliate";
+/** 화면의 관계 목록에만 나오는 사건형 관계. 그래프의 선으로는 아직 그리지 않는다 */
+export type EventType = "stake_acquisition" | "stake_disposal" | "merger" | "split" | "business_transfer";
 
 export interface Company {
   id: number;
@@ -41,7 +43,7 @@ export interface Evidence {
 }
 
 export interface RelationRow {
-  type: RelType;
+  type: RelType | EventType;
   label: string;
   subject_id: number;
   subject: string;
@@ -53,6 +55,8 @@ export interface RelationRow {
   disclosed_date: string;
   title: string | null;
   joint_parties: number | null;
+  /** 지분 취득·처분 결정 뒤의 지분율(%) */
+  pct_after: string | null;
   trust_tier: number;
   /** 누가 공시했나: 주체, 상대, 양쪽 */
   disclosed_by: "subject" | "object" | "both";

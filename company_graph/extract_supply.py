@@ -158,8 +158,8 @@ def load_company(db, company: Company, filings: list[dict], resolver: PartyResol
         attrs = {"kind": contract.kind, "title": contract.title, "party_relation": contract.party_relation,
                  "region": contract.region, "period_start": contract.period_start and contract.period_start.isoformat(),
                  "period_end": contract.period_end and contract.period_end.isoformat(),
-                 "recent_sales": contract.recent_sales and str(contract.recent_sales),
-                 "ratio_pct": contract.ratio and str(contract.ratio), "subsidiary": contract.subsidiary,
+                 "recent_sales": None if contract.recent_sales is None else str(contract.recent_sales),
+                 "ratio_pct": None if contract.ratio is None else str(contract.ratio), "subsidiary": contract.subsidiary,
                  "party_hidden": contract.party_hidden, "joint_parties": len(party_ids) if len(party_ids) > 1 else None,
                  "correction_reason": contract.correction_reason,
                  "changes": [list(ch) for ch in contract.changes] or None}
