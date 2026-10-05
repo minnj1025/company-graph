@@ -3,15 +3,17 @@
 주체 = 공시를 낸 회사(파는 쪽), 상대 = 계약상대(사는 쪽), 수치 = 계약금액(원), 기준일 = 계약(수주)일자.
 정정 공시가 절반을 넘는다. 원래 줄은 지우지 않고 무효일(정정본 접수일)을 적는다.
 
-실행: python -m company_graph.extract_supply
-호출 수: 회사당 공시 목록 1건 + 공시 1건당 원문 1건. 지금 대상(약 176곳)은 수백 건.
-전체 상장사로 넓히면 회사별이 아니라 기간별 목록으로 받는 편이 싸다 — 2024-01~2026-10의
-공급계약 공시가 약 14,000건(2026-08~09 두 달 860건에서 어림)이라 하루 한도에 거의 찬다. 이틀에 나눠 받는다.
+실행: python -m company_graph.extract_supply          수집 대상 기업이 낸 공시만 (회사별 목록, 수백 건)
+      python -m company_graph.extract_supply --all    전 시장 (기간별 목록)
+전 시장은 2024-01~2026-10의 공급계약 공시가 약 14,000건(2026-08~09 두 달 860건에서 어림)이라
+목록 약 1,000건 + 원문 약 14,000건으로 DART 하루 한도(18,000건)에 거의 찬다.
+받은 원문은 캐시에 남으므로 한도나 시간에 걸려 끊기면 같은 명령으로 이어 받는다.
 """
 import hashlib
 import re
+import sys
 from collections import Counter, defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from sqlalchemy import delete, select
 
@@ -64,6 +66,22 @@ def supply_filings(corp_code: str) -> list[dict]:
     return sorted((r for r in rows if "단일판매" in r["report_nm"]), key=lambda r: r["rcept_no"])
 
 
+def market_supply_filings() -> dict[str, list[dict]]:
+    """전 시장의 공급계약 공시를 회사별로. 회사를 지정하지 않으면 목록을 석 달씩만 받을 수 있다."""
+    by_company: dict[str, list[dict]] = defaultdict(list)
+    start, today = datetime.strptime(SINCE, "%Y%m%d").date(), date.today()
+    while start <= today:
+        end = min(start + timedelta(days=89), today)
+        key = f"{start:%Y%m%d}_{end:%Y%m%d}"
+        rows = cached_json("dart_filings_I001_market", key, lambda: dart.filings(
+            bgn_de=f"{start:%Y%m%d}", end_de=f"{end:%Y%m%d}", pblntf_detail_ty="I001"))
+        for row in rows:
+            if "단일판매" in row["report_nm"]:
+                by_company[row["corp_code"]].append(row)
+        start = end + timedelta(days=1)
+    return {code: sorted(rows, key=lambda r: r["rcept_no"]) for code, rows in by_company.items()}
+
+
 def ratio_matches(c: SupplyContract) -> bool | None:
     """계약금액 ÷ 최근매출액이 공시에 적힌 비율과 맞는가. 정답지 없이 파싱 오류를 잡는 검사."""
     if not (c.amount and c.recent_sales and c.ratio is not None):
@@ -77,8 +95,7 @@ def contract_key(c: SupplyContract) -> tuple:
     return (normalize(c.title or ""), c.contract_date, normalize(clean_reported(c.party or "")))
 
 
-def load_company(db, company: Company, resolver: PartyResolver, stats: Counter):
-    filings = supply_filings(company.corp_code)
+def load_company(db, company: Company, filings: list[dict], resolver: PartyResolver, stats: Counter):
     if not filings:
         return
     stats["공급계약 공시를 낸 회사"] += 1
@@ -94,7 +111,13 @@ def load_company(db, company: Company, resolver: PartyResolver, stats: Counter):
     loaded: list[tuple[Document, list[Relation], SupplyContract]] = []
     for filing in filings:
         rcept_no, report_nm = filing["rcept_no"], " ".join(filing["report_nm"].split())
-        raw = dart.document(rcept_no)
+        try:
+            raw = dart.document(rcept_no)
+        except dart.DailyBudgetExceeded:
+            raise
+        except dart.DartError:
+            stats["원문을 받지 못함"] += 1
+            continue
         doc = Document(rcept_no=rcept_no, company_id=company.company_id, report_nm=report_nm,
                        rcept_dt=rcept_date(rcept_no), doc_type="supply_contract", is_correction="정정]" in report_nm,
                        is_latest=True,
@@ -173,19 +196,34 @@ def load_company(db, company: Company, resolver: PartyResolver, stats: Counter):
                               detail=f"{company.name}: 원래 공시({contract.original_date})를 찾지 못함"))
 
 
-def main():
+def main(whole_market: bool):
     engine = init_db()
     stats = Counter()
     with session(engine) as db:
         resolver = PartyResolver(db)
-        companies = db.scalars(select(Company).where(Company.in_scope, Company.corp_code.is_not(None))).all()
-        for company in companies:
-            load_company(db, company, resolver, stats)
-            db.commit()
+        if whole_market:
+            by_code = market_supply_filings()
+            companies = db.scalars(select(Company).where(Company.corp_code.in_(list(by_code)))).all()
+            stats["원장에 없는 회사의 공시 (건너뜀)"] = sum(
+                len(rows) for code, rows in by_code.items() if code not in {c.corp_code for c in companies})
+            jobs = [(c, by_code[c.corp_code]) for c in companies]
+        else:
+            companies = db.scalars(select(Company).where(Company.in_scope, Company.corp_code.is_not(None))).all()
+            jobs = [(c, supply_filings(c.corp_code)) for c in companies]
+        print(f"회사 {len(jobs)}곳, 공시 {sum(len(f) for _, f in jobs)}건", flush=True)
+        try:
+            for n, (company, filings) in enumerate(jobs, 1):
+                load_company(db, company, filings, resolver, stats)
+                db.commit()
+                if n % 100 == 0:
+                    print(f"  {n}/{len(jobs)}곳, 오늘 DART 호출 {dart.calls_today()}건", flush=True)
+        except dart.DailyBudgetExceeded as stop:
+            db.rollback()
+            print(f"중단: {stop}. 내일 같은 명령으로 이어 받는다")
     for key, value in sorted(stats.items()):
         print(f"{key}: {value}")
     print(f"오늘 DART 호출 {dart.calls_today()}건")
 
 
 if __name__ == "__main__":
-    main()
+    main(whole_market="--all" in sys.argv[1:])

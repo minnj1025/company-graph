@@ -2,9 +2,10 @@
 
 여기서 지키는 규칙 (DESIGN.md 6장):
 1. 시점: 날짜 D에 보이는 줄 = 공개일 ≤ D, 그리고 무효일이 없거나 무효일 > D
-2. 지분: (주체, 상대)마다 그 시점에 보이는 가장 최근 기준일의 값 하나. 같은 기준일이 두 표에서 왔으면
-   보유한 회사가 직접 낸 타법인 출자현황을 쓰고, 다른 쪽 공시는 근거에 함께 남긴다
-3. 계열: 보고서를 낸 회사마다 그 시점에 보이는 가장 최근 보고서의 표만 쓴다
+2. 지분: 보고서를 낸 회사마다 그 시점에 나와 있는 가장 최근 사업보고서의 표만 쓴다
+   (처분한 지분은 새 보고서에 없으므로 사라진다). 그렇게 남은 줄을 (주체, 상대)로 합친다. 두 표에 다 있으면 보유한 회사가 직접 낸 타법인 출자현황을 쓰고,
+   다른 쪽 공시는 근거에 함께 남긴다
+3. 계열: 지분과 같이 가장 최근 사업보고서의 표만 쓴다
 4. 공급계약: 그 시점에 유효한 계약을 전부 (정정 전 줄은 무효일로 걸러진다)
 
 실행 예: python -m company_graph.query 현대제철 --as-of 2026-02-01
@@ -15,7 +16,7 @@ from datetime import date
 
 from sqlalchemy import and_, or_, select
 
-from .db import Company, CompanyAlias, Relation, session
+from .db import Company, CompanyAlias, Document, Relation, session
 from .names import clean_reported, normalize
 
 LABELS = {"equity": "지분", "affiliate": "계열", "supply_contract": "공급계약", "major_customer": "주요 고객"}
@@ -59,12 +60,30 @@ def _edge(rel: Relation, evidence: list[str]) -> dict:
             "evidence": evidence, "trust_tier": rel.trust_tier, "attrs": rel.attrs or {}}
 
 
-def _reduce(rows: list[Relation]) -> list[dict]:
+def _filer(rel: Relation) -> int:
+    """이 줄이 실린 보고서를 낸 회사. 최대주주 현황에서는 상대가, 나머지 표에서는 주체가 보고서를 냈다."""
+    if rel.rel_type == "equity" and (rel.attrs or {}).get("source") == "largest_shareholders":
+        return rel.object_company_id
+    return rel.subject_company_id
+
+
+def _latest_reports(db, as_of: date, filer_ids) -> dict[int, str]:
+    """회사마다 그 시점에 나와 있는 가장 최근 사업보고서의 접수번호."""
+    latest: dict[int, tuple] = {}
+    for company_id, rcept_no, year in db.execute(
+            select(Document.company_id, Document.rcept_no, Document.bsns_year).where(
+                Document.doc_type == "annual", Document.rcept_dt <= as_of, Document.company_id.in_(list(filer_ids)))):
+        latest[company_id] = max(latest.get(company_id, (0, "")), (year or 0, rcept_no))
+    return {company_id: rcept_no for company_id, (_, rcept_no) in latest.items()}
+
+
+def _reduce(rows: list[Relation], latest_report: dict[int, str]) -> list[dict]:
     """위 규칙 2~4를 적용해 줄을 선으로 줄인다."""
     edges = []
+    current = [r for r in rows if r.rel_type not in ("equity", "affiliate") or latest_report.get(_filer(r)) == r.rcept_no]
 
     equity = defaultdict(list)
-    for r in rows:
+    for r in current:
         if r.rel_type == "equity":
             equity[(r.subject_company_id, r.object_company_id or r.object_name_raw)].append(r)
     for group in equity.values():
@@ -73,31 +92,15 @@ def _reduce(rows: list[Relation]) -> list[dict]:
                            key=lambda r: (r.attrs or {}).get("source") != "other_corp_investments")
         edges.append(_edge(same_date[0], sorted({r.rcept_no for r in same_date})))
 
-    by_filer = defaultdict(list)
-    for r in rows:
-        if r.rel_type == "affiliate":
-            by_filer[r.subject_company_id].append(r)
-    for group in by_filer.values():
-        latest = max((r.as_of_date or r.disclosed_date, r.rcept_no) for r in group)[1]
-        edges += [_edge(r, [r.rcept_no]) for r in group if r.rcept_no == latest]
-
-    edges += [_edge(r, [r.rcept_no]) for r in rows if r.rel_type not in ("equity", "affiliate")]
+    edges += [_edge(r, [r.rcept_no]) for r in current if r.rel_type != "equity"]
     return edges
 
 
 def relations(db, as_of: date, *, company_ids=None, rel_types=None, direction: str = "both") -> list[dict]:
     """그 시점에 보이는 관계. company_ids를 주면 그 기업이 주체이거나 상대인 것만."""
     rows = _rows(db, as_of, company_ids, rel_types, direction)
-    if company_ids is not None and (not rel_types or "affiliate" in rel_types) and direction != "out":
-        # 계열은 보고서 단위로 최신본을 골라야 하므로, 상대로 걸린 줄의 보고서 전체를 다시 본다
-        filers = {r.subject_company_id for r in rows if r.rel_type == "affiliate"} - set(company_ids)
-        if filers:
-            wanted = set(company_ids)
-            extra = _rows(db, as_of, filers, ["affiliate"], "out")
-            kept = [e for e in _reduce(extra) if e["object_id"] in wanted]
-            rows = [r for r in rows if not (r.rel_type == "affiliate" and r.subject_company_id in filers)]
-            return _reduce(rows) + kept
-    return _reduce(rows)
+    filers = {_filer(r) for r in rows if r.rel_type in ("equity", "affiliate")}
+    return _reduce(rows, _latest_reports(db, as_of, filers) if filers else {})
 
 
 def group_members(db, company_id: int, as_of: date) -> list[dict]:

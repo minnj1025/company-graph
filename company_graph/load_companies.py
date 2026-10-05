@@ -14,6 +14,7 @@ from . import dart, ftc
 from .cache import cached_json
 from .config import FTC_DESIGNATION_YM, SCOPE_GROUP, SCOPE_INDUTY_PREFIX
 from .db import Company, CompanyAlias, init_db, session
+from .manual_aliases import SINGLE
 from .names import normalize
 
 
@@ -85,6 +86,10 @@ def main():
         for row in not_in_dart:
             save(corp_code=None, jurir_no=row["jurirno"], names=[row["entrprsNm"]], biz_no=row.get("bizrno") or None,
                  name=row["entrprsNm"], induty_code=row.get("indutyCode"), ftc_group=SCOPE_GROUP, in_scope=True)
+        for alias, stock_code in SINGLE.items():
+            target = db.scalar(select(Company).where(Company.stock_code == stock_code, Company.corp_cls.in_(("Y", "K"))))
+            if target and (normalize(alias), target.company_id) not in aliases:
+                db.add(CompanyAlias(alias=normalize(alias), company_id=target.company_id, source="manual"))
         db.commit()
 
         count = lambda *where: db.scalar(select(func.count()).select_from(Company).where(*where))

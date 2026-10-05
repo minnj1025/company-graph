@@ -54,8 +54,16 @@ def alias_index(db) -> dict[str, set[int]]:
 
 
 def link(index: dict[str, set[int]], raw_name: str) -> int | None:
-    """공시에 적힌 이름을 대상 기업에 붙인다. 후보가 둘 이상이면 붙이지 않는다."""
-    candidates = index.get(normalize(clean_reported(raw_name)), set())
+    """공시에 적힌 이름을 원장의 기업에 붙인다. 애매하면 붙이지 않는다.
+
+    - 후보가 둘 이상이면 붙이지 않는다
+    - 영문 네 글자 이하는 붙이지 않는다. 회사들이 해외 법인을 약어로 적는데(현대자동차의 "HMM"은 멕시코 법인),
+      같은 약어를 종목명으로 쓰는 상장사(해운사 HMM)에 잘못 붙는다. 필요한 것은 manual_aliases 에 적는다
+    """
+    key = normalize(clean_reported(raw_name))
+    if key.isascii() and len(key) <= 4:
+        return None
+    candidates = index.get(key, set())
     return next(iter(candidates)) if len(candidates) == 1 else None
 
 

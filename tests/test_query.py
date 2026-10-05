@@ -26,7 +26,9 @@ def db():
 
         def add(subject, obj, rel_type, rcept_no, filer, *, value=None, unit=None, as_of=None, invalidated=None, source=None):
             if s.get(Document, rcept_no) is None:
-                s.add(Document(rcept_no=rcept_no, company_id=filer, report_nm="보고서", doc_type="other",
+                annual = rel_type in ("equity", "affiliate")
+                s.add(Document(rcept_no=rcept_no, company_id=filer, report_nm="보고서",
+                               doc_type="annual" if annual else "supply_contract", bsns_year=as_of.year if annual else None,
                                rcept_dt=datetime.strptime(rcept_no[:8], "%Y%m%d").date(), fetched_at=datetime.now()))
                 s.flush()
             s.add(Relation(subject_company_id=subject, object_company_id=obj, object_name_raw="-", rel_type=rel_type,
@@ -43,6 +45,9 @@ def db():
             source="largest_shareholders")
         add(HMC, KIA, "equity", "20260318000001", HMC, value=Decimal("35.17"), unit="pct", as_of=date(2025, 12, 31),
             source="other_corp_investments")
+        # 현대자동차가 2024년 말에는 부품사 지분을 갖고 있었지만 2025년 표에는 없다(처분)
+        add(HMC, SUPPLIER, "equity", "20250320000002", HMC, value=Decimal("4.60"), unit="pct", as_of=date(2024, 12, 31),
+            source="other_corp_investments")
         # 공급계약: 2026-07-24 공시가 2026-08-05에 정정됨
         add(SUPPLIER, HMC, "supply_contract", "20260724000001", SUPPLIER, value=Decimal(100), unit="krw",
             as_of=date(2026, 7, 24), invalidated=date(2026, 8, 5))
@@ -50,7 +55,7 @@ def db():
             as_of=date(2026, 7, 24))
         add(SHIPPER, KIA, "supply_contract", "20260901000001", SHIPPER, value=Decimal(50), unit="krw", as_of=date(2026, 8, 31))
         # 계열: 현대자동차의 2024년 표에는 기아만, 2025년 표에는 기아와 현대모비스
-        add(HMC, KIA, "affiliate", "20250320000001", HMC, as_of=date(2024, 12, 31))
+        add(HMC, KIA, "affiliate", "20250320000002", HMC, as_of=date(2024, 12, 31))
         add(HMC, KIA, "affiliate", "20260318000001", HMC, as_of=date(2025, 12, 31))
         add(HMC, MOBIS, "affiliate", "20260318000001", HMC, as_of=date(2025, 12, 31))
         s.commit()
@@ -77,6 +82,13 @@ def test_equity_from_two_tables_becomes_one_edge_with_both_evidence(db):
 def test_holder_side_is_enough_when_the_other_report_is_not_out_yet(db):
     (edge,) = only(query.relations(db, date(2026, 3, 10), company_ids=[MOBIS]), "equity")
     assert (edge["value"], edge["rcept_no"]) == (Decimal("18.1"), "20260309000001")
+
+
+def test_sold_stake_disappears_once_the_newer_table_is_out(db):
+    held = lambda day: sorted(e["object_id"] for e in only(
+        query.relations(db, day, company_ids=[HMC], direction="out"), "equity"))
+    assert held(date(2026, 1, 1)) == [SUPPLIER]
+    assert held(date(2026, 4, 1)) == [KIA]
 
 
 def test_corrected_contract_is_seen_as_of_each_date(db):
