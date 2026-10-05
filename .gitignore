@@ -1,0 +1,19 @@
+# 비밀 값
+.env
+.env.*
+!.env.example
+
+# 원본 데이터는 저장소에 넣지 않는다 (DESIGN.md 4장)
+data/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Node
+node_modules/
+
+# 화면 빌드 결과
+web/dist/
