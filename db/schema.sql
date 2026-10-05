@@ -1,5 +1,9 @@
 -- 기업 관계 그래프 스키마 (MySQL 8). 설계 근거는 DESIGN.md 6장.
--- 시점 규칙: 날짜 D에 보이는 관계 = disclosed_date <= D AND (invalidated_date IS NULL OR invalidated_date > D)
+-- 시간은 세 가지를 따로 적는다 (이중 시간 모델 + 공개일).
+--   세상 쪽: as_of_date(사실이 언제 기준인가), disclosed_date(언제 공시됐나), invalidated_date(정정으로 대체된 날)
+--   우리 쪽: ingested_at(우리가 이 줄을 넣은 시각), retired_at(다시 뽑았더니 달라져서 우리가 이 줄을 내린 시각)
+-- 날짜 D에 보이는 관계 = retired_at IS NULL AND disclosed_date <= D AND (invalidated_date IS NULL OR invalidated_date > D)
+-- 줄은 고치거나 지우지 않는다. 추출기를 고쳐 다시 넣으면 달라진 줄만 retired_at 을 적고 새 줄을 더한다.
 
 CREATE TABLE company (
   company_id   INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,6 +63,9 @@ CREATE TABLE relation (
   trust_tier         TINYINT        NOT NULL COMMENT '1 공시+API·규칙, 2 공시+LLM, 3 뉴스',
   evidence_text      TEXT           NULL COMMENT 'LLM 추출의 근거 문장. 원문에 그대로 있어야 한다',
   attrs              JSON           NULL COMMENT '관계 종류별 부가 정보. 예: 계약명, 계약기간, 출자 목적',
+  ingested_at        DATETIME       NULL DEFAULT CURRENT_TIMESTAMP COMMENT '우리가 이 줄을 넣은 시각',
+  retired_at         DATETIME       NULL COMMENT '다시 뽑은 결과와 달라 내린 시각. NULL이면 지금 믿는 줄',
+  extractor_version  VARCHAR(40)    NULL COMMENT '이 줄을 만든 추출기와 그 판. 예: equity-2',
   KEY ix_relation_subject (subject_company_id, rel_type, disclosed_date),
   KEY ix_relation_object (object_company_id, rel_type, disclosed_date),
   FOREIGN KEY (subject_company_id) REFERENCES company (company_id),

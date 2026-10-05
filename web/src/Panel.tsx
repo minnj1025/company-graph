@@ -45,6 +45,8 @@ function Section({ title, rows, other, onOpen }: SectionProps) {
               <div className="row-meta">
                 기준일 {row.as_of_date ?? "-"} · 공개일 {row.disclosed_date}
                 {row.joint_parties ? ` · 상대 ${row.joint_parties}곳 공동` : ""}
+                {row.disclosed_by === "both" ? " · 양쪽 공시에서 확인" : ""}
+                {row.stale ? <span className="warn"> · 그 뒤 보고서 없음</span> : null}
                 {row.evidence.map((e) => (
                   <a key={e.rcept_no} href={e.url} target="_blank" rel="noreferrer" title={`DART 접수번호 ${e.rcept_no}`}>
                     공시 원문

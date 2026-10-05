@@ -15,10 +15,13 @@ from datetime import datetime
 
 from sqlalchemy import delete, select
 
-from . import dart
+from . import dart, loader
 from .affiliate_parser import parse
 from .db import Company, CompanyAlias, Document, QualityLog, Relation, init_db, session
 from .names import normalize
+
+
+VERSION = "affiliate-2"  # 2: 줄을 지우지 않음
 
 
 def company_by_jurir(db, cache: dict[str, Company], jurir_no: str, name: str) -> Company:
@@ -52,11 +55,13 @@ def main(years: list[int]):
                 stats["원문을 받지 못함"] += 1
                 print(f"  {filer.name}: {error}")
                 continue
-            db.execute(delete(Relation).where(Relation.rcept_no == doc.rcept_no, Relation.rel_type == "affiliate"))
             db.execute(delete(QualityLog).where(QualityLog.rcept_no == doc.rcept_no,
                                                 QualityLog.detail.like("계열회사 표%")))
+            scope = [Relation.rcept_no == doc.rcept_no, Relation.rel_type == "affiliate"]
             if table is None:
                 stats["계열회사 표 없음"] += 1
+                loader.sync(db, scope, [], VERSION)
+                db.commit()
                 continue
             stats["계열회사 표를 읽음"] += 1
             if table.count_matches is False:
@@ -66,18 +71,20 @@ def main(years: list[int]):
                                          f"읽은 줄 {len(table.affiliates)}"))
             elif table.count_matches:
                 stats["읽은 줄 수가 표의 회사수와 같음"] += 1
+            new_rows = []
             for affiliate in table.affiliates:
                 if affiliate.jurir_no and affiliate.jurir_no == filer.jurir_no:
                     continue  # 자기 자신
                 target = company_by_jurir(db, by_jurir, affiliate.jurir_no, affiliate.name) if affiliate.jurir_no else None
                 stats["계열 관계"] += 1
                 stats["상대를 법인등록번호로 연결" if target else "상대에 법인등록번호 없음(해외 등)"] += 1
-                db.add(Relation(
+                new_rows.append(Relation(
                     subject_company_id=filer.company_id, object_company_id=target and target.company_id,
                     object_name_raw=affiliate.name[:300], rel_type="affiliate",
                     as_of_date=table.as_of, disclosed_date=doc.rcept_dt, rcept_no=doc.rcept_no,
                     extract_method="rule", trust_tier=1,
                     attrs={"listed": affiliate.listed, "jurir_no": affiliate.jurir_no}))
+            stats.update({f"줄: {k}": v for k, v in loader.sync(db, scope, new_rows, VERSION).items()})
             db.commit()
     for key, value in sorted(stats.items()):
         print(f"{key}: {value}")

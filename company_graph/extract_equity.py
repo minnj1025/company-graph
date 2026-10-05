@@ -14,13 +14,14 @@ from collections import Counter
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 
-from sqlalchemy import delete, select
+from sqlalchemy import select
 
-from . import dart
+from . import dart, loader
 from .db import Company, CompanyAlias, Document, QualityLog, Relation, init_db, session
 from .names import clean_reported, normalize
 
 YEARS = (2023, 2024, 2025)
+VERSION = "equity-2"  # 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
 
 
 def to_decimal(text: str | None) -> Decimal | None:
@@ -107,16 +108,34 @@ def as_of(row: dict, year: int) -> date:
     return datetime.strptime(row.get("stlm_dt") or f"{year}-12-31", "%Y-%m-%d").date()
 
 
-def load_investments(db, company: Company, year: int, index, names: ReportNames, stats: Counter):
+def own_affiliates(db, company: Company) -> dict[str, int]:
+    """이 회사가 사업보고서의 계열회사 표에 직접 적은 이름 → 기업. 그 표에는 법인등록번호가 있어 이름이 겹칠 걱정이 없다."""
+    found: dict[str, set[int]] = {}
+    for name, company_id in db.execute(select(Relation.object_name_raw, Relation.object_company_id).where(
+            Relation.rel_type == "affiliate", Relation.subject_company_id == company.company_id,
+            Relation.object_company_id.is_not(None), Relation.retired_at.is_(None)).distinct()):
+        found.setdefault(normalize(clean_reported(name)), set()).add(company_id)
+    return {key: next(iter(ids)) for key, ids in found.items() if len(ids) == 1}
+
+
+def link_in_context(index: dict[str, set[int]], affiliates: dict[str, int], raw_name: str) -> tuple[int | None, str | None]:
+    """식별자가 있는 근거를 먼저 쓴다: ① 그 회사 자신의 계열회사 표 ② 별칭이 정확히 하나에 맞을 때.
+    돌려주는 두 번째 값은 왜 붙였는지다."""
+    key = normalize(clean_reported(raw_name))
+    if key in affiliates:
+        return affiliates[key], "own_affiliate_table"
+    company_id = link(index, raw_name)
+    return company_id, "alias_exact" if company_id else None
+
+
+def load_investments(db, company: Company, year: int, index, affiliates, names: ReportNames, stats: Counter):
     rows = dart.other_corp_investments(company.corp_code, year)
     if not rows:
         return
     stats["출자현황이 있는 사업보고서"] += 1
     rcept_no = rows[0]["rcept_no"]
     doc = upsert_document(db, company, rcept_no, year, names)
-    # 다시 돌려도 중복되지 않게 이 공시에서 나온 줄을 지우고 새로 넣는다
-    db.execute(delete(Relation).where(Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
-                                      Relation.subject_company_id == company.company_id))
+    new_rows = []
     for row in rows:
         name = " ".join((row.get("inv_prm") or "").split())
         pct = to_decimal(row.get("trmend_blce_qota_rt"))
@@ -127,45 +146,53 @@ def load_investments(db, company: Company, year: int, index, names: ReportNames,
             continue
         if not in_range(db, pct, rcept_no, f"{company.name} → {name}"):
             continue
-        object_id = link(index, name)
-        stats["출자현황: 상대를 원장에 연결" if object_id else "출자현황: 상대가 원장에 없음"] += 1
-        db.add(Relation(
+        object_id, reason = link_in_context(index, affiliates, name)
+        stats[f"출자현황: 상대를 연결 ({reason})" if object_id else "출자현황: 상대가 원장에 없음"] += 1
+        new_rows.append(Relation(
             subject_company_id=company.company_id, object_company_id=object_id, object_name_raw=name,
             rel_type="equity", value_num=pct, value_unit="pct", as_of_date=as_of(row, year),
             disclosed_date=doc.rcept_dt, rcept_no=rcept_no, extract_method="api", trust_tier=1,
-            attrs={"source": "other_corp_investments", "purpose": row.get("invstmnt_purps"),
+            attrs={"source": "other_corp_investments", "link_reason": reason,
+                   "raw_pct": (row.get("trmend_blce_qota_rt") or "").strip(), "purpose": row.get("invstmnt_purps"),
                    "first_acquired": row.get("frst_acqs_de"), "shares": row.get("trmend_blce_qy"),
                    "book_value": row.get("trmend_blce_acntbk_amount")}))
+    counts = loader.sync(db, [Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
+                              Relation.subject_company_id == company.company_id], new_rows, VERSION)
+    stats.update({f"출자현황 줄: {k}": v for k, v in counts.items()})
 
 
-def load_shareholders(db, company: Company, year: int, index, names: ReportNames, stats: Counter):
+def load_shareholders(db, company: Company, year: int, index, affiliates, names: ReportNames, stats: Counter):
     rows = dart.largest_shareholders(company.corp_code, year)
     if not rows:
         return
     stats["최대주주 현황이 있는 사업보고서"] += 1
     rcept_no = rows[0]["rcept_no"]
     doc = upsert_document(db, company, rcept_no, year, names)
-    db.execute(delete(Relation).where(Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
-                                      Relation.object_company_id == company.company_id))
+    new_rows = []
     for row in rows:
         name = " ".join((row.get("nm") or "").split())
         pct = to_decimal(row.get("trmend_posesn_stock_qota_rt"))
         # 보통주만 넣는다. 우선주 줄까지 넣으면 한 주주가 두 줄이 된다
         if not name or name in ("합계", "계") or not pct or "우선" in (row.get("stock_knd") or ""):
             continue
-        holder_id = link(index, name)
+        holder_id, reason = link_in_context(index, affiliates, name)
         if holder_id is None:
             stats["최대주주 현황: 주주가 원장에 없음(개인, 비상장 등)"] += 1
             continue
         if holder_id == company.company_id or not in_range(db, pct, rcept_no, f"{name} → {company.name}"):
             continue
-        stats["최대주주 현황: 주주를 원장에 연결"] += 1
-        db.add(Relation(
+        stats[f"최대주주 현황: 주주를 연결 ({reason})"] += 1
+        new_rows.append(Relation(
             subject_company_id=holder_id, object_company_id=company.company_id, object_name_raw=company.name,
             rel_type="equity", value_num=pct, value_unit="pct", as_of_date=as_of(row, year),
             disclosed_date=doc.rcept_dt, rcept_no=rcept_no, extract_method="api", trust_tier=1,
-            attrs={"source": "largest_shareholders", "holder_name_raw": name, "relation_to_filer": row.get("relate"),
-                   "shares": row.get("trmend_posesn_stock_co")}))
+            attrs={"source": "largest_shareholders", "link_reason": reason, "holder_name_raw": name,
+                   "raw_pct": (row.get("trmend_posesn_stock_qota_rt") or "").strip(),
+                   "relation_to_filer": row.get("relate"), "shares": row.get("trmend_posesn_stock_co")}))
+    counts = loader.sync(db, [Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
+                              Relation.object_company_id == company.company_id,
+                              Relation.subject_company_id != company.company_id], new_rows, VERSION)
+    stats.update({f"최대주주 현황 줄: {k}": v for k, v in counts.items()})
 
 
 def main():
@@ -175,9 +202,10 @@ def main():
         index = alias_index(db)
         companies = db.scalars(select(Company).where(Company.in_scope, Company.corp_code.is_not(None))).all()
         for company in companies:
+            affiliates = own_affiliates(db, company)
             for year in YEARS:
-                load_investments(db, company, year, index, names, stats)
-                load_shareholders(db, company, year, index, names, stats)
+                load_investments(db, company, year, index, affiliates, names, stats)
+                load_shareholders(db, company, year, index, affiliates, names, stats)
             db.commit()
     for key, value in sorted(stats.items()):
         print(f"{key}: {value}")

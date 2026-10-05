@@ -78,6 +78,9 @@ class Relation(Base):
     trust_tier: Mapped[int] = mapped_column(SmallInteger)
     evidence_text: Mapped[str | None] = mapped_column(Text)
     attrs: Mapped[dict | None] = mapped_column(JSON)
+    ingested_at: Mapped[datetime | None] = mapped_column(DateTime, default=datetime.now)
+    retired_at: Mapped[datetime | None] = mapped_column(DateTime)
+    extractor_version: Mapped[str | None] = mapped_column(String(40))
 
 
 class PriceDaily(Base):

@@ -54,6 +54,10 @@ export interface RelationRow {
   title: string | null;
   joint_parties: number | null;
   trust_tier: number;
+  /** 누가 공시했나: 주체, 상대, 양쪽 */
+  disclosed_by: "subject" | "object" | "both";
+  /** 기준일이 오래됐고 그 뒤 보고서가 없다 */
+  stale: boolean;
   evidence: Evidence[];
 }
 
@@ -72,4 +76,5 @@ export interface Meta {
   in_scope: number;
   documents: number;
   relations: Record<string, number>;
+  coverage: { notice: string; sources: Record<string, string> };
 }

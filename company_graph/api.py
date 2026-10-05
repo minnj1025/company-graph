@@ -35,7 +35,7 @@ def edge_json(db, e: dict) -> dict:
             "value": float(e["value"]) if e["value"] is not None else None, "unit": e["unit"],
             "as_of_date": e["as_of_date"], "disclosed_date": e["disclosed_date"],
             "title": e["attrs"].get("title"), "joint_parties": e["attrs"].get("joint_parties"),
-            "trust_tier": e["trust_tier"],
+            "trust_tier": e["trust_tier"], "disclosed_by": e["disclosed_by"], "stale": e["stale"],
             "evidence": [{"rcept_no": r, "url": query.DART_VIEWER + r} for r in e["evidence"]]}
 
 
@@ -76,12 +76,13 @@ def parse_types(types: str | None) -> list[str]:
 @app.get("/api/meta")
 def meta(db=Depends(get_db)):
     first, last = db.execute(select(func.min(Relation.disclosed_date), func.max(Relation.disclosed_date))).one()
-    counts = dict(db.execute(select(Relation.rel_type, func.count()).group_by(Relation.rel_type)).all())
+    counts = {k: v for k, v in db.execute(select(Relation.rel_type, func.count())
+                                         .where(Relation.retired_at.is_(None)).group_by(Relation.rel_type)).all()}
     return {"first_date": first, "last_date": last, "today": date.today(),
             "companies": db.scalar(select(func.count()).select_from(Company)),
             "in_scope": db.scalar(select(func.count()).select_from(Company).where(Company.in_scope)),
             "documents": db.scalar(select(func.count()).select_from(Document)),
-            "relations": {query.LABELS[k]: v for k, v in counts.items()}}
+            "relations": {query.LABELS[k]: v for k, v in counts.items()}, "coverage": query.coverage(db)}
 
 
 @app.get("/api/companies")

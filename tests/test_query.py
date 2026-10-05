@@ -1,12 +1,12 @@
 """조회 계층의 규칙: 시점, 지분 합치기, 계열 최신본, 경로."""
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 
-from company_graph import query
+from company_graph import loader, query
 from company_graph.db import Base, Company, CompanyAlias, Document, Relation
 from company_graph.names import normalize
 
@@ -123,3 +123,49 @@ def test_neighborhood_merges_parallel_edges(db):
 def test_find_company_by_name_or_stock_code(db):
     assert [c.company_id for c in query.find_companies(db, "현대모비스")] == [MOBIS]
     assert [c.company_id for c in query.find_companies(db, "모비스")] == [MOBIS]
+
+
+def test_nothing_disclosed_after_the_query_date_leaks(db):
+    """어떤 시점으로 조회하든 그 뒤에 공개된 줄이 한 건이라도 나오면 미래 정보가 샌 것이다."""
+    day = date(2024, 12, 1)
+    while day <= date(2026, 10, 1):
+        for edge in query.relations(db, day):
+            assert edge["disclosed_date"] <= day, (day, edge)
+        day += timedelta(days=31)
+
+
+def test_edge_says_who_disclosed_it(db):
+    (both,) = only(query.relations(db, date(2026, 4, 1), company_ids=[MOBIS]), "equity")
+    assert both["disclosed_by"] == "both"  # 기아의 출자현황과 현대모비스의 최대주주 현황 양쪽에 있다
+    (holder_report_not_out,) = only(query.relations(db, date(2026, 3, 10), company_ids=[MOBIS]), "equity")
+    assert holder_report_not_out["disclosed_by"] == "object"  # 아직 현대모비스 쪽 공시뿐이다
+    (supply,) = only(query.relations(db, date(2026, 8, 10), company_ids=[SUPPLIER]), "supply_contract")
+    assert supply["disclosed_by"] == "subject"  # 파는 쪽만 밝혔지만 사는 쪽에서 조회해도 보인다
+    assert only(query.relations(db, date(2026, 8, 10), company_ids=[HMC], direction="in"), "supply_contract")
+
+
+def test_old_table_is_marked_stale_when_no_newer_report_exists(db):
+    stale = lambda day: [e["stale"] for e in only(query.relations(db, day, company_ids=[HMC], direction="out"), "equity")]
+    assert stale(date(2026, 4, 1)) == [False]
+    assert stale(date(2028, 1, 1)) == [True]  # 2025년 말 기준 표가 여전히 최신이면 "그 뒤 보고서가 없다"는 뜻이다
+
+
+def test_retired_rows_are_not_shown(db):
+    row = db.scalars(select(Relation).where(Relation.rel_type == "supply_contract", Relation.rcept_no == "20260901000001")).one()
+    row.retired_at = datetime(2026, 10, 5)
+    db.flush()
+    assert only(query.relations(db, date(2026, 9, 30), company_ids=[SHIPPER]), "supply_contract") == []
+
+
+def test_reextraction_keeps_identical_rows_and_retires_changed_ones(db):
+    scope = [Relation.rel_type == "supply_contract", Relation.subject_company_id == SHIPPER]
+    same = lambda value: Relation(
+        subject_company_id=SHIPPER, object_company_id=KIA, object_name_raw="-", rel_type="supply_contract",
+        value_num=Decimal(value), value_unit="krw", as_of_date=date(2026, 8, 31), disclosed_date=date(2026, 9, 1),
+        rcept_no="20260901000001", extract_method="api", trust_tier=1, attrs={"source": None})
+    assert loader.sync(db, scope, [same(50)], "v2") == {"added": 0, "retired": 0, "kept": 1}
+    assert loader.sync(db, scope, [same(55)], "v3") == {"added": 1, "retired": 1, "kept": 0}
+    db.flush()
+    rows = db.scalars(select(Relation).where(*scope).order_by(Relation.relation_id)).all()
+    assert [(r.value_num, r.retired_at is None, r.extractor_version) for r in rows] == [
+        (Decimal(50), False, None), (Decimal(55), True, "v3")]

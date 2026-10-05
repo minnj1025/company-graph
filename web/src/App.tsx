@@ -134,6 +134,7 @@ export function App() {
         <div className="stat">
           기업 {data.nodes.length}곳 · 선 {data.links.length}개 · 점을 끌어 옮기면 그 자리에 고정됩니다
         </div>
+        <div className="stat">{meta.coverage?.notice}</div>
       </div>
 
       {error && <div className="toast">{error}</div>}

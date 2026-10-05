@@ -423,3 +423,7 @@ h1 span {
 .empty {
   color: var(--muted);
 }
+
+.warn {
+  color: #e0a458;
+}

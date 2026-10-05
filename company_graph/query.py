@@ -1,30 +1,34 @@
 """조회 계층. Agent와 화면은 relation 표를 직접 읽지 않고 여기를 거친다.
 
 여기서 지키는 규칙 (DESIGN.md 6장):
-1. 시점: 날짜 D에 보이는 줄 = 공개일 ≤ D, 그리고 무효일이 없거나 무효일 > D
+1. 시점: 날짜 D에 보이는 줄 = 공개일 ≤ D, 그리고 무효일이 없거나 무효일 > D. 우리가 내린 줄(retired_at)은 보지 않는다
 2. 지분: 보고서를 낸 회사마다 그 시점에 나와 있는 가장 최근 사업보고서의 표만 쓴다
    (처분한 지분은 새 보고서에 없으므로 사라진다). 그렇게 남은 줄을 (주체, 상대)로 합친다. 두 표에 다 있으면 보유한 회사가 직접 낸 타법인 출자현황을 쓰고,
    다른 쪽 공시는 근거에 함께 남긴다
 3. 계열: 지분과 같이 가장 최근 사업보고서의 표만 쓴다
 4. 공급계약: 그 시점에 유효한 계약을 전부 (정정 전 줄은 무효일로 걸러진다)
+5. 선마다 누가 밝혔는지(disclosed_by)와 오래됐는지(stale)를 붙인다. "없음"과 "모름"을 구분하려면 coverage()를 함께 본다
 
 실행 예: python -m company_graph.query 현대제철 --as-of 2026-02-01
 """
 import argparse
 from collections import defaultdict, deque
-from datetime import date
+from datetime import date, timedelta
 
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, func, or_, select
 
 from .db import Company, CompanyAlias, Document, Relation, session
 from .names import clean_reported, normalize
 
 LABELS = {"equity": "지분", "affiliate": "계열", "supply_contract": "공급계약", "major_customer": "주요 고객"}
 DART_VIEWER = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo="
+# 사업보고서는 1년에 한 번 나온다. 기준일이 이보다 오래된 지분·계열은 "그 뒤 보고서가 없다"는 뜻이다
+STALE_AFTER = timedelta(days=548)
+NOTICE = "공시된 관계만 보여 줍니다. 여기에 없다고 해서 관계가 없다는 뜻은 아닙니다."
 
 
 def visible(as_of: date):
-    return and_(Relation.disclosed_date <= as_of,
+    return and_(Relation.retired_at.is_(None), Relation.disclosed_date <= as_of,
                 or_(Relation.invalidated_date.is_(None), Relation.invalidated_date > as_of))
 
 
@@ -53,8 +57,10 @@ def _rows(db, as_of: date, company_ids, rel_types, direction: str) -> list[Relat
     return list(db.scalars(select(Relation).where(*conditions)))
 
 
-def _edge(rel: Relation, evidence: list[str]) -> dict:
+def _edge(rel: Relation, evidence: list[str], disclosed_by: str, as_of: date) -> dict:
+    stale = rel.rel_type in ("equity", "affiliate") and rel.as_of_date is not None and as_of - rel.as_of_date > STALE_AFTER
     return {"type": rel.rel_type, "subject_id": rel.subject_company_id, "object_id": rel.object_company_id,
+            "disclosed_by": disclosed_by, "stale": stale,
             "object_name_raw": rel.object_name_raw, "value": rel.value_num, "unit": rel.value_unit,
             "as_of_date": rel.as_of_date, "disclosed_date": rel.disclosed_date, "rcept_no": rel.rcept_no,
             "evidence": evidence, "trust_tier": rel.trust_tier, "attrs": rel.attrs or {}}
@@ -77,7 +83,12 @@ def _latest_reports(db, as_of: date, filer_ids) -> dict[int, str]:
     return {company_id: rcept_no for company_id, (_, rcept_no) in latest.items()}
 
 
-def _reduce(rows: list[Relation], latest_report: dict[int, str]) -> list[dict]:
+def _side(rel: Relation) -> str:
+    """이 줄을 밝힌 쪽. 주체가 낸 공시면 subject, 상대가 낸 공시면 object."""
+    return "object" if _filer(rel) == rel.object_company_id and rel.object_company_id != rel.subject_company_id else "subject"
+
+
+def _reduce(rows: list[Relation], latest_report: dict[int, str], as_of: date) -> list[dict]:
     """위 규칙 2~4를 적용해 줄을 선으로 줄인다."""
     edges = []
     current = [r for r in rows if r.rel_type not in ("equity", "affiliate") or latest_report.get(_filer(r)) == r.rcept_no]
@@ -90,9 +101,11 @@ def _reduce(rows: list[Relation], latest_report: dict[int, str]) -> list[dict]:
         latest = max(r.as_of_date for r in group)
         same_date = sorted((r for r in group if r.as_of_date == latest),
                            key=lambda r: (r.attrs or {}).get("source") != "other_corp_investments")
-        edges.append(_edge(same_date[0], sorted({r.rcept_no for r in same_date})))
+        sides = {_side(r) for r in same_date}
+        edges.append(_edge(same_date[0], sorted({r.rcept_no for r in same_date}),
+                           "both" if len(sides) == 2 else sides.pop(), as_of))
 
-    edges += [_edge(r, [r.rcept_no]) for r in current if r.rel_type != "equity"]
+    edges += [_edge(r, [r.rcept_no], "subject", as_of) for r in current if r.rel_type != "equity"]
     return edges
 
 
@@ -100,7 +113,20 @@ def relations(db, as_of: date, *, company_ids=None, rel_types=None, direction: s
     """그 시점에 보이는 관계. company_ids를 주면 그 기업이 주체이거나 상대인 것만."""
     rows = _rows(db, as_of, company_ids, rel_types, direction)
     filers = {_filer(r) for r in rows if r.rel_type in ("equity", "affiliate")}
-    return _reduce(rows, _latest_reports(db, as_of, filers) if filers else {})
+    return _reduce(rows, _latest_reports(db, as_of, filers) if filers else {}, as_of)
+
+
+def coverage(db) -> dict:
+    """무엇을 얼마나 모았는지. 빈 결과가 "관계 없음"인지 "모으지 않음"인지 구분하는 데 쓴다."""
+    kinds = {}
+    for rel_type, first, last, count in db.execute(
+            select(Relation.rel_type, func.min(Relation.disclosed_date), func.max(Relation.disclosed_date), func.count())
+            .where(Relation.retired_at.is_(None)).group_by(Relation.rel_type)):
+        kinds[rel_type] = {"label": LABELS[rel_type], "first_disclosed": first, "last_disclosed": last, "rows": count}
+    return {"notice": NOTICE, "relations": kinds,
+            "sources": {"equity": "사업보고서의 타법인 출자현황과 최대주주 현황 (반기·분기보고서는 아직 없음, 개인 주주 제외)",
+                        "affiliate": "사업보고서의 계열회사 현황 표",
+                        "supply_contract": "단일판매ㆍ공급계약 체결 공시 (건별로 공시한 계약만)"}}
 
 
 def group_members(db, company_id: int, as_of: date) -> list[dict]:
