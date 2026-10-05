@@ -10,17 +10,19 @@
 전체 상장사로 넓히면 회사 × 연도 × 표 2개 = 약 2,650 × 3 × 2 ≈ 16,000건으로 하루 한도(20,000건)에 가깝다.
 받은 것은 캐시에 남으므로 한도에 걸리면 다음 날 같은 명령으로 이어 받는다.
 """
+import sys
 from collections import Counter
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 
 from . import dart, loader
 from .db import Company, CompanyAlias, Document, QualityLog, Relation, init_db, session
 from .names import clean_reported, normalize
 
 YEARS = (2023, 2024, 2025)
+LISTED = ("Y", "K", "N")
 VERSION = "equity-2"  # 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
 
 
@@ -195,22 +197,40 @@ def load_shareholders(db, company: Company, year: int, index, affiliates, names:
     stats.update({f"최대주주 현황 줄: {k}": v for k, v in counts.items()})
 
 
-def main():
+def main(everyone: bool):
     engine = init_db()
     stats, names = Counter(), ReportNames()
     with session(engine) as db:
         index = alias_index(db)
-        companies = db.scalars(select(Company).where(Company.in_scope, Company.corp_code.is_not(None))).all()
-        for company in companies:
-            affiliates = own_affiliates(db, company)
-            for year in YEARS:
-                load_investments(db, company, year, index, affiliates, names, stats)
-                load_shareholders(db, company, year, index, affiliates, names, stats)
-            db.commit()
+        # --all 이면 지금 상장된 회사 전부(유가증권 Y, 코스닥 K, 코넥스 N). 수집 대상 기업을 먼저 돈다
+        wanted = or_(Company.in_scope, Company.corp_cls.in_(LISTED)) if everyone else Company.in_scope
+        companies = db.scalars(select(Company).where(wanted, Company.corp_code.is_not(None))
+                               .order_by(Company.in_scope.desc(), Company.company_id)).all()
+        print(f"회사 {len(companies)}곳", flush=True)
+        try:
+            for n, company in enumerate(companies, 1):
+                affiliates = own_affiliates(db, company)
+                try:
+                    for year in YEARS:
+                        load_investments(db, company, year, index, affiliates, names, stats)
+                        load_shareholders(db, company, year, index, affiliates, names, stats)
+                except dart.DailyBudgetExceeded:
+                    raise
+                except dart.DartError as error:
+                    db.rollback()
+                    stats["API 오류로 건너뛴 회사"] += 1
+                    print(f"  건너뜀 {company.name}: {error}", flush=True)
+                    continue
+                db.commit()
+                if n % 200 == 0:
+                    print(f"  {n}/{len(companies)}곳, 오늘 DART 호출 {dart.calls_today()}건", flush=True)
+        except dart.DailyBudgetExceeded as stop:
+            db.rollback()
+            print(f"중단: {stop}. 받은 것은 캐시에 있으니 내일 같은 명령으로 이어 받는다")
     for key, value in sorted(stats.items()):
         print(f"{key}: {value}")
     print(f"오늘 DART 호출 {dart.calls_today()}건")
 
 
 if __name__ == "__main__":
-    main()
+    main(everyone="--all" in sys.argv[1:])
