@@ -12,7 +12,7 @@ import json
 import re
 import sys
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlalchemy import delete, select
 
@@ -21,9 +21,9 @@ from .config import CACHE_DIR
 from .db import Company, Document, QualityLog, Relation, init_db, session
 from .extract_equity import alias_index, link_in_context, own_affiliates, rcept_date
 from .names import clean_reported, normalize
-from .stake_parser import StakeDecision, parse
+from .stake_parser import StakeDecision, original_filing_date, parse
 
-VERSION = "stake-1"
+VERSION = "stake-2"  # 2: 주석이 "1. 발행회사..."로 시작하는 공시를 읽음, 비율이 맞지 않는 줄에 표시, 철회 처리
 REPORTS = {"타법인주식및출자증권취득결정": "acquisition", "타법인주식및출자증권처분결정": "disposal"}
 REL_TYPE = {"acquisition": "stake_acquisition", "disposal": "stake_disposal"}
 
@@ -54,6 +54,7 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
     db.execute(delete(QualityLog).where(QualityLog.rcept_no.in_([f["rcept_no"] for f, _ in filings])))
     failed_before = stats["원문을 받지 못함"]
     loaded: list[tuple[Document, Relation, StakeDecision]] = []
+    withdrawals: list[tuple[Document, str, str | None, date | None]] = []
     for filing, action in filings:
         rcept_no, report_nm = filing["rcept_no"], " ".join(filing["report_nm"].split())
         try:
@@ -72,6 +73,11 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
         doc.content_sha256 = hashlib.sha256(raw).hexdigest()
         stats["공시"] += 1
         decision = parse(raw, action)
+        if "철회" in report_nm:
+            # 결정을 거둬들인 공시. 새 줄을 만들지 않고 아래에서 앞선 결정을 무효로 돌린다. 본문을 비워 내는 회사가 많다
+            stats["철회 공시"] += 1
+            withdrawals.append((doc, action, decision.target if decision else None, original_filing_date(raw)))
+            continue
         if decision is None or not decision.target:
             stats["양식을 읽지 못함"] += 1
             db.add(QualityLog(check_name="range", rcept_no=rcept_no, created_at=datetime.now(),
@@ -93,6 +99,8 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
                  "method": decision.method, "purpose": decision.purpose, "subsidiary": decision.subsidiary,
                  "expected_date": decision.expected_date and decision.expected_date.isoformat(),
                  "correction_reason": decision.correction_reason,
+                 # 공시에 적힌 금액·자기자본·비율이 서로 맞지 않는다. 적힌 대로 넣되 쓰는 쪽이 알 수 있게 표시한다
+                 "ratio_check": "mismatch" if check is False else None,
                  "changes": [list(ch) for ch in decision.changes] or None}
         relation = Relation(
             subject_company_id=company.company_id, object_company_id=target_id, object_name_raw=decision.target[:300],
@@ -122,6 +130,31 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
             db.add(QualityLog(check_name="correction", rcept_no=doc.rcept_no, created_at=datetime.now(),
                               detail=f"{company.name}: 원래 공시({decision.original_date})를 찾지 못함"))
         chains[key].append(item)
+
+    docs = {x[0].rcept_no: x[0] for x in loaded}
+
+    def first_filed(doc: Document) -> date:
+        """정정을 거슬러 올라가 맨 처음 공시한 날."""
+        while doc.corrects_rcept_no in docs:
+            doc = docs[doc.corrects_rcept_no]
+        return doc.rcept_dt
+
+    for doc, action, target, original_date in withdrawals:
+        earlier = [x for x in loaded if x[2].action == action and x[0].rcept_no < doc.rcept_no and x[0].is_latest]
+        if target and len(earlier) > 1:
+            key = normalize(clean_reported(target))
+            earlier = [x for x in earlier if normalize(clean_reported(x[2].target)) == key] or earlier
+        if original_date and len(earlier) > 1:
+            earlier = [x for x in earlier if original_date in (x[0].rcept_dt, first_filed(x[0]))] or earlier
+        if len(earlier) == 1:
+            doc.corrects_rcept_no = earlier[0][0].rcept_no
+            earlier[0][0].is_latest = False
+            earlier[0][1].invalidated_date = doc.rcept_dt
+            stats["철회로 무효가 된 줄"] += 1
+        else:
+            stats["철회인데 거둬들인 결정을 못 찾음"] += 1
+            db.add(QualityLog(check_name="correction", rcept_no=doc.rcept_no, created_at=datetime.now(),
+                              detail=f"{company.name}: 철회한 결정을 찾지 못함 (후보 {len(earlier)}건)"))
 
     if stats["원문을 받지 못함"] > failed_before:
         stats["원문 실패로 줄 맞추기를 건너뛴 회사"] += 1

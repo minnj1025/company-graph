@@ -2,7 +2,7 @@
 from datetime import date
 from decimal import Decimal
 
-from company_graph.stake_parser import parse
+from company_graph.stake_parser import original_filing_date, parse
 
 
 def table(*cells: str) -> bytes:
@@ -59,3 +59,21 @@ def test_kosdaq_form_has_name_and_country_in_one_cell_split_across_lines():
     assert (d.target, d.nationality, d.relation) == ("북경세동릉운과기 유한공사", "중국", "관계기업")
     assert (d.amount, d.equity_ratio, d.pct_after, d.decision_date) == (
         Decimal("4989299407"), Decimal("13.33"), Decimal("0"), date(2024, 5, 17))
+
+
+def test_footnote_starting_like_the_first_heading_is_not_the_body():
+    d = parse(table(*ACQUISITION, "1. 발행회사의 자본금은 2022년말 연결재무제표 기준입니다.",
+                    "2. 취득내역의 취득금액은 종가 기준입니다."), "acquisition")
+    assert (d.target, d.amount) == ("Nexplus SK s.r.o.", Decimal("27465026262"))
+
+
+def test_name_written_inside_the_label_cell():
+    d = parse(table("타법인 주식 및 출자증권 취득결정", "1. 발행회사", "회사명(국적):(주)위니아(대한민국)", "대표이사:김혁표",
+                    "2. 취득내역", "취득금액(원)", "1,000,000,000"), "acquisition")
+    assert (d.target, d.nationality, d.amount) == ("(주)위니아", "대한민국", Decimal("1000000000"))
+
+
+def test_withdrawal_with_an_empty_body_still_gives_the_original_filing_date():
+    raw = table("정정신고(보고)", "정정일자", "2026-08-20", "1. 정정관련 공시서류", "타법인주식및출자증권취득결정",
+                "2. 정정관련 공시서류제출일", "2026-01-27", "3. 정정사유", "취득결정 철회")
+    assert parse(raw, "acquisition") is None and original_filing_date(raw) == date(2026, 1, 27)

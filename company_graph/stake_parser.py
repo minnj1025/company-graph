@@ -5,6 +5,8 @@
             3. 취득후 소유주식수 및 지분비율 / 4. 취득방법 / 5. 취득목적 / 6. 취득예정일자 / 10. 이사회결의일(결정일)
   코스닥:   회사명과 국적이 "회사명(국적)" 한 칸에 "북경○○유한공사(중국)"처럼 적히고, 대표자가 "대표이사"다.
             이름이 길면 줄이 바뀌어 여러 칸으로 쪼개진다
+표 아래 주석이 "1. 발행회사의 자본금은 ..."처럼 같은 말로 시작하는 일이 많다. 본문의 시작은 "1. 발행회사"만 적힌 칸으로 잡는다.
+칸 이름과 값을 한 칸에 "회사명(국적):(주)위니아"로 적는 회사도 있다.
 처분결정은 "취득"이 "처분"으로 바뀐 같은 구조다. 정정 공시와 자회사 공시의 머리말은 공급계약 공시와 같다.
 """
 import re
@@ -14,7 +16,9 @@ from decimal import Decimal
 
 from .supply_parser import cells, to_date, to_decimal
 
-_BODY_START = re.compile(r"^1\.\s*발행회사")
+_BODY_START = re.compile(r"^1\.\s*발행회사$")
+_BODY_START_LOOSE = re.compile(r"^1\.\s*발행회사")
+_NAME_IN_LABEL = re.compile(r"^회사명(\(국적\))?\s*[:：]\s*(\S.*)$")
 _LABEL = re.compile(r"^(\d+\.\s?[^\d\s]|-\s*\S|회사명(\(국적\))?$|국적$|대표(자|이사)$|자본금|회사와\s*관계|발행주식총수|"
                     r"주요사업$|(취득|처분)(주식수|금액)|자기자본|대(규모법인|기업)여부|소유주식수|지분비율|※)")
 _TRAILING_COUNTRY = re.compile(r"\s*\(([^()]{1,20})\)\s*$")
@@ -54,6 +58,10 @@ def _value(cs: list[str], pattern: str, start: int, stop: int | None = None, fre
 def _target(cs: list[str], body: int) -> tuple[str | None, str | None]:
     """발행회사의 이름과 국적. 이름은 다음 칸 이름(대표자)이 나올 때까지 이어 붙인다."""
     for i in range(body, len(cs) - 1):
+        inline = _NAME_IN_LABEL.match(cs[i])
+        if inline:
+            name, country = inline.group(2).strip(), _TRAILING_COUNTRY.search(inline.group(2)) if inline.group(1) else None
+            return (_TRAILING_COUNTRY.sub("", name).strip(), country.group(1)) if country else (name, None)
         if re.match(r"^회사명(\(국적\))?$", cs[i]):
             parts = []
             for cell in cs[i + 1:i + 5]:
@@ -71,10 +79,17 @@ def _target(cs: list[str], body: int) -> tuple[str | None, str | None]:
     return None, None
 
 
+def original_filing_date(raw: bytes) -> date | None:
+    """정정 공시 머리말의 "정정관련 공시서류제출일". 철회 공시는 본문을 비워 내는 일이 많아 이것만 따로 읽는다."""
+    cs = cells(raw)
+    return to_date(_value(cs, r"^2\.\s*정정관련 공시서류제출일", 0, free_text=True))
+
+
 def parse(raw: bytes, action: str) -> StakeDecision | None:
     """양식을 찾지 못하면 None."""
     cs = cells(raw)
-    starts = [i for i, c in enumerate(cs) if _BODY_START.search(c)]
+    starts = ([i for i, c in enumerate(cs) if _BODY_START.search(c)]
+              or [i for i, c in enumerate(cs) if _BODY_START_LOOSE.search(c)])
     if not starts:
         return None
     body = starts[-1]
