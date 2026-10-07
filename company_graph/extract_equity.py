@@ -158,8 +158,10 @@ def load_investments(db, company: Company, year: int, index, affiliates, names: 
                    "raw_pct": (row.get("trmend_blce_qota_rt") or "").strip(), "purpose": row.get("invstmnt_purps"),
                    "first_acquired": row.get("frst_acqs_de"), "shares": row.get("trmend_blce_qy"),
                    "book_value": row.get("trmend_blce_acntbk_amount")}))
+    # 같은 보고서에서 extract_invest_detail 이 넣은 줄(표준 표 밖의 출자)은 건드리지 않는다
     counts = loader.sync(db, [Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
-                              Relation.subject_company_id == company.company_id], new_rows, VERSION)
+                              Relation.subject_company_id == company.company_id,
+                              Relation.attrs["source"].as_string() == "other_corp_investments"], new_rows, VERSION)
     stats.update({f"출자현황 줄: {k}": v for k, v in counts.items()})
 
 
