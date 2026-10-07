@@ -32,14 +32,19 @@ TOOLS = [
                     "supply_contract(단일판매·공급계약 공시), stake_acquisition / stake_disposal(타법인 주식 취득·처분 결정). "
                     "direction: out 은 이 기업이 주체(지분을 가진 쪽, 판 쪽, 결정한 쪽), in 은 이 기업이 상대(지분을 내준 쪽, 산 쪽, 대상). "
                     "지분과 계열은 그 시점에 나와 있는 가장 최근 사업보고서의 값이다. 공급계약과 취득·처분 결정은 그 시점에 유효한 공시이고 "
-                    "정정 전 값이나 철회된 결정은 빠진다. 공시일 범위를 좁히려면 disclosed_from, disclosed_to 를 쓴다.",
+                    "정정 전 값이나 철회된 결정은 빠진다. 공시일 범위를 좁히려면 disclosed_from, disclosed_to 를 쓴다. "
+                    "\"그 기간에 나온 공시를 모두\"처럼 공시 건수를 세는 질문에는 include_superseded=true 로, 나중에 정정된 공시까지 받는다. "
+                    "결과가 잘리면(truncated) counterparty_id 나 공시일 범위로 좁혀 다시 부른다.",
      "input_schema": {"type": "object", "properties": {
          "company_id": _COMPANY, "as_of": _AS_OF,
          "rel_type": {"type": "string", "enum": ["equity", "affiliate", "supply_contract", "stake_acquisition", "stake_disposal"]},
          "direction": {"type": "string", "enum": ["out", "in", "both"]},
          "disclosed_from": {"type": "string", "description": "이 날짜부터 공시된 것만 (YYYY-MM-DD)"},
          "disclosed_to": {"type": "string", "description": "이 날짜까지 공시된 것만 (YYYY-MM-DD)"},
-         "listed_only": {"type": "boolean", "description": "상대가 상장사인 줄만"}},
+         "listed_only": {"type": "boolean", "description": "상대가 상장사인 줄만"},
+         "counterparty_id": {"type": "integer", "description": "관계의 반대쪽이 이 기업인 줄만 (find_company 의 company_id)"},
+         "include_superseded": {"type": "boolean", "description": "나중에 정정·해지·철회로 무효가 된 공시도 포함 "
+                                                                  "(공급계약, 취득·처분 결정에만 뜻이 있다)"}},
          "required": ["company_id", "as_of", "rel_type", "direction"]}},
     {"name": "get_filings",
      "description": "한 기업이 낸 공시 목록(공급계약, 취득·처분 결정, 사업보고서)을 접수 순으로 준다. 정정·해지·철회 공시가 포함되고, "
@@ -107,12 +112,13 @@ def _edge(db, edge: dict) -> dict:
             "disclosed_date": edge["disclosed_date"].isoformat(),
             "disclosed_by": {"subject": "주체가 공시", "object": "상대가 공시", "both": "양쪽 공시에서 확인"}[edge["disclosed_by"]],
             "stale": edge["stale"] or None,
+            "superseded_on": edge["invalidated_date"] and edge["invalidated_date"].isoformat(),
             "detail": {k: edge["attrs"][k] for k in ATTRS if edge["attrs"].get(k) not in (None, "", False)},
             "rcept_no": edge["evidence"]}
 
 
 def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclosed_from=None, disclosed_to=None,
-                  listed_only: bool = False) -> dict:
+                  listed_only: bool = False, counterparty_id=None, include_superseded: bool = False) -> dict:
     company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
     if rel_type not in query.LABELS:
         raise ToolError(f"rel_type={rel_type!r} 은 없습니다")
@@ -122,7 +128,11 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
     if rel_type == "affiliate" and direction == "out":
         edges = query.group_members(db, company.company_id, when)
     else:
-        edges = query.relations(db, when, company_ids=[company.company_id], rel_types=[rel_type], direction=direction)
+        edges = query.relations(db, when, company_ids=[company.company_id], rel_types=[rel_type], direction=direction,
+                                include_superseded=bool(include_superseded) and rel_type not in ("equity", "affiliate"))
+    if counterparty_id is not None:
+        other = _company(db, counterparty_id).company_id
+        edges = [e for e in edges if other in (e["subject_id"], e["object_id"])]
     edges = [e for e in edges if (start is None or e["disclosed_date"] >= start) and (end is None or e["disclosed_date"] <= end)]
     rows = [_edge(db, e) for e in edges]
     if listed_only:
@@ -134,7 +144,9 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
             "relations": rows[:LIMIT],
             "coverage": {"source": sources["sources"].get(rel_type), **{k: str(v) for k, v in
                          sources["relations"].get(rel_type, {}).items() if k in ("first_disclosed", "last_disclosed")}},
-            "note": query.NOTICE if not rows else None}
+            "note": query.NOTICE if not rows else (
+                "이 목록에 조회한 기업 자신은 들어 있지 않습니다. 같은 집단의 회사를 세거나 나열할 때는 자신을 더하세요"
+                if rel_type == "affiliate" and direction == "out" else None)}
 
 
 def get_filings(db, company_id, as_of, doc_type: str, filed_from=None, filed_to=None) -> dict:

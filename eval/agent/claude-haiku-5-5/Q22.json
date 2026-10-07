@@ -1,0 +1,57 @@
+{
+ "question": "2025년 말 기준 현대제철이 지분을 보유한 국내 상장사 중 현대자동차그룹 소속이 아닌 회사는?",
+ "as_of": "2026-10-05",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 아이파크현대산업개발(주)(종목코드 294870)이 해당합니다.** 2025년 말 기준 현대제철이 지분을 보유한 국내 상장사는 3곳이고, 그중 현대자동차그룹 소속이 아닌 곳은 이 한 곳입니다.\n\n| 상장사 | 그룹(DB 기준) | 지분율 | 목적 |\n|---|---|---|---|\n| 현대모비스(주) | 현대자동차 | 6.1% | 단순투자 |\n| 현대비앤지스틸(주) | 현대자동차 | 30.9% | 경영참여 |\n| **아이파크현대산업개발(주)** | **에이치디씨** | **0.4%** | **단순투자** |\n\n- 세 건 모두 기준일(as_of_date)이 2025-12-31이고, 근거는 2026-03-18 공시(접수번호 20260318001506)입니다. 현대모비스와 현대비앤지스틸 지분은 같은 접수번호 외에 20260309001878, 20260316001374도 근거로 나옵니다.\n- 아이파크현대산업개발은 DB에서 그룹이 '에이치디씨'로 분류되어 있습니다.\n- 조회 대상은 상장사로 한정했습니다. 비상장 자회사 등 지분 보유 대상은 포함하지 않았습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대제철"
+   },
+   "error": null,
+   "total": null,
+   "chars": 130
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 170,
+    "as_of": "2026-10-05",
+    "rel_type": "equity",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1679
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 170,
+    "as_of": "2026-10-05",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 73,
+   "chars": 21084
+  }
+ ],
+ "cited": [
+  "20260309001878",
+  "20260318001506"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1318,
+  "cache_read_input_tokens": 6237,
+  "cache_creation_input_tokens": 15210
+ },
+ "seconds": 7.9,
+ "number": "Q22",
+ "gold": "HDC(주) 0.3%, HDC현대산업개발(지금 이름 아이파크현대산업개발) 0.4% — 2곳 (API 확인)"
+}

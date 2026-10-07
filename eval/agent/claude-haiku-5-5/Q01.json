@@ -1,0 +1,66 @@
+{
+ "question": "2025년 말 기준 현대자동차가 보유한 현대제철 지분율은?",
+ "as_of": "2026-10-05",
+ "model": "claude-haiku-5-5",
+ "answer": "**답: 6.87%**입니다. 현대자동차가 2025-12-31 기준으로 보유한 현대제철(004020) 지분율로, 조회된 `as_of_date`도 2025-12-31로 질문의 기준일과 일치합니다.\n\n- 근거 공시: 접수번호 20260318001394(현대자동차 사업보고서)와 20260318001506(현대제철 측 공시). 두 공시에서 모두 확인됩니다.\n- 이 값은 사업보고서의 타법인 출자현황 기준입니다. 이 DB는 개인 주주를 수집하지 않으므로, 특수관계인 등 다른 주주의 보유분은 포함되지 않습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대자동차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 130
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대제철"
+   },
+   "error": null,
+   "total": null,
+   "chars": 130
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-05",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 211,
+   "chars": 20850
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-05",
+    "rel_type": "equity",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 14,
+   "chars": 6558
+  }
+ ],
+ "cited": [
+  "20260318001394",
+  "20260318001506"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 945,
+  "cache_read_input_tokens": 20975,
+  "cache_creation_input_tokens": 18330
+ },
+ "seconds": 7.3,
+ "number": "Q01",
+ "gold": "6.87% (확인)"
+}

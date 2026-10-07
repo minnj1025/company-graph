@@ -1,0 +1,68 @@
+{
+ "question": "현대자동차의 현대오토에버 지분율은 2023년 말과 2025년 말 사이에 어떻게 달라졌나?",
+ "as_of": "2026-10-05",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 두 시점 모두 31.59%로 같다. 2023년 말과 2025년 말 사이에 변동은 없었다.**\n\n- **2023년 12월 31일 기준:** 현대자동차의 현대오토에버 지분율 31.59% (사업보고서 기준일 2023-12-31, 접수번호 20240313001451, 20240329000426)\n- **2025년 12월 31일 기준:** 현대자동차의 현대오토에버 지분율 31.59% (사업보고서 기준일 2025-12-31, 접수번호 20260318001324, 20260318001394)\n\n두 값 모두 사업보고서의 타법인 출자현황에서 확인했다. 지분은 사업보고서 기준으로만 집계되므로, 두 기준일 사이의 중간 변동이 있었는지는 이 DB로 확인할 수 없다. 반기·분기보고서는 수집 대상이 아니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대자동차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 130
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대오토에버"
+   },
+   "error": null,
+   "total": null,
+   "chars": 132
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-05",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 211,
+   "chars": 20850
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2024-12-31",
+    "rel_type": "equity",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 16,
+   "chars": 7389
+  }
+ ],
+ "cited": [
+  "20240313001451",
+  "20240329000426",
+  "20260318001324",
+  "20260318001394"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1553,
+  "cache_read_input_tokens": 21209,
+  "cache_creation_input_tokens": 19257
+ },
+ "seconds": 9.8,
+ "number": "Q17",
+ "gold": "변화 없음. 2023년 말 31.59%, 2025년 말 31.59% (확인)"
+}

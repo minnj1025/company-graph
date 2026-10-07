@@ -39,3 +39,12 @@ def test_unknown_company_and_tool_are_errors_not_exceptions(db):
                                                                     "rel_type": "equity", "direction": "out"})["error"]
     assert "error" in agent_tools.call(db, "run_sql", {"sql": "select 1"})
     assert agent_tools.call(db, "find_paths", {"from_company_id": HMC, "to_company_id": MOBIS, "as_of": "2026-06-30"})["total"] >= 1
+
+
+def test_superseded_filings_and_counterparty_filter(db):
+    ask = lambda **more: agent_tools.call(db, "get_relations", {"company_id": SUPPLIER, "as_of": "2026-09-30",
+                                                               "rel_type": "supply_contract", "direction": "out", **more})
+    assert [r["value"] for r in ask()["relations"]] == [120]
+    both = ask(include_superseded=True)["relations"]
+    assert [(r["value"], r["superseded_on"]) for r in both] == [(100, "2026-08-05"), (120, None)]
+    assert ask(counterparty_id=HMC)["total"] == 1 and ask(counterparty_id=KIA)["total"] == 0

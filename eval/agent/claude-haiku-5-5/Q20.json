@@ -1,0 +1,65 @@
+{
+ "question": "2026년 9월에 현대글로비스를 계약상대로 공급계약을 공시한 상장사는 어디이고, 그 회사는 어느 기업집단 소속인가?",
+ "as_of": "2026-10-05",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** 2026년 9월에 현대글로비스를 계약상대로 공급계약을 공시한 상장사는 **대한해운(주)(005880, 유가증권)** 한 곳입니다. DB상 대한해운의 기업집단은 **SM**입니다.\n\n**근거**\n- 공시: \"자동차선 장기대선계약\", 계약금액 72,931,099,500원, 계약기간 2026-11-25 ~ 2032-03-10, 공시일 2026-09-01. 접수번호 **20260901800667**\n- 같은 기간 대한해운이 낸 다른 공급계약 2건(ZHEJIANG SHIPPING 상대 벌크선 계약, 포스코플로우 상대 화물운송계약)은 현대글로비스가 상대가 아니므로 제외했습니다.\n- 이 계약에 대한 정정·해지 공시는 조회되지 않았습니다(대한해운 공급계약 공시 2026-09-01~10-05 기준).\n\n**참고**\n- 기업집단 \"SM\"은 이 DB의 분류를 그대로 옮긴 것입니다.\n- 이 DB는 2024-01 이후 건별로 공시된 공급계약만 수집합니다. 따라서 이 결과는 수집 범위 안에서 확인된 것입니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대글로비스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 132
+  },
+  {
+   "tool": "get_coverage",
+   "input": {},
+   "error": null,
+   "total": null,
+   "chars": 915
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 150,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-09-01",
+    "disclosed_to": "2026-09-30"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 863
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 4257,
+    "as_of": "2026-10-05",
+    "doc_type": "supply_contract",
+    "filed_from": "2026-09-01",
+    "filed_to": "2026-10-05"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1372
+  }
+ ],
+ "cited": [
+  "20260901800667"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1290,
+  "cache_read_input_tokens": 11807,
+  "cache_creation_input_tokens": 5699
+ },
+ "seconds": 7.7,
+ "number": "Q20",
+ "gold": ""
+}

@@ -48,8 +48,8 @@ def find_companies(db, text: str, limit: int = 10) -> list[Company]:
                            .distinct().limit(limit)))
 
 
-def _rows(db, as_of: date, company_ids, rel_types, direction: str) -> list[Relation]:
-    conditions = [visible(as_of)]
+def _rows(db, as_of: date, company_ids, rel_types, direction: str, superseded: bool = False) -> list[Relation]:
+    conditions = [and_(Relation.retired_at.is_(None), Relation.disclosed_date <= as_of) if superseded else visible(as_of)]
     if rel_types:
         conditions.append(Relation.rel_type.in_(rel_types))
     if company_ids is not None:
@@ -66,6 +66,7 @@ def _edge(rel: Relation, evidence: list[str], disclosed_by: str, as_of: date) ->
             "disclosed_by": disclosed_by, "stale": stale,
             "object_name_raw": rel.object_name_raw, "value": rel.value_num, "unit": rel.value_unit,
             "as_of_date": rel.as_of_date, "disclosed_date": rel.disclosed_date, "rcept_no": rel.rcept_no,
+            "invalidated_date": rel.invalidated_date,
             "evidence": evidence, "trust_tier": rel.trust_tier, "attrs": rel.attrs or {}}
 
 
@@ -112,9 +113,11 @@ def _reduce(rows: list[Relation], latest_report: dict[int, str], as_of: date) ->
     return edges
 
 
-def relations(db, as_of: date, *, company_ids=None, rel_types=None, direction: str = "both") -> list[dict]:
-    """그 시점에 보이는 관계. company_ids를 주면 그 기업이 주체이거나 상대인 것만."""
-    rows = _rows(db, as_of, company_ids, rel_types, direction)
+def relations(db, as_of: date, *, company_ids=None, rel_types=None, direction: str = "both",
+              include_superseded: bool = False) -> list[dict]:
+    """그 시점에 보이는 관계. company_ids를 주면 그 기업이 주체이거나 상대인 것만.
+    include_superseded 면 그 뒤 정정·해지·철회로 무효가 된 공시도 넣는다 ("그 달에 나온 공시를 모두"에 답할 때)."""
+    rows = _rows(db, as_of, company_ids, rel_types, direction, include_superseded)
     filers = {_filer(r) for r in rows if r.rel_type in ("equity", "affiliate")}
     return _reduce(rows, _latest_reports(db, as_of, filers) if filers else {}, as_of)
 

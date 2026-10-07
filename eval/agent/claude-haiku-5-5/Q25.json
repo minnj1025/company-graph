@@ -1,0 +1,245 @@
+{
+ "question": "2026년 8월 한 달 동안 현대자동차그룹 상장사가 계약상대로 나온 공급계약 공시를 모두 들어라.",
+ "as_of": "2026-10-05",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 2026년 8월 공시 기준으로 현대자동차그룹 상장사가 계약상대로 나온 공급계약 공시는 15건입니다.** 이 중 11건은 지금도 유효하고, 4건은 나중에 정정되어 무효가 됐습니다(표에 표시). 조회 시점은 2026-10-05입니다.\n\n**조회 범위:** 사업보고서 계열회사 표(2025-12-31 기준)에서 상장사 12곳(현대자동차, 기아, 현대모비스, 현대글로비스, 현대위아, 현대오토에버, 현대건설, 현대로템, 현대제철, 현대비앤지스틸, 현대차증권, 이노션)을 골랐습니다. 각 회사가 상대인 공급계약을 공시일 2026-08-01~08-31 기준으로 정정 이력 포함해 조회했습니다. 결과는 모두 잘리지 않았습니다(truncated=false). 비상장 계열사(현대캐피탈, 현대카드, 현대트랜시스 등)는 제외했습니다.\n\n| 공시일 | 접수번호 | 현대차그룹 상장사(상대) | 주체 | 계약명 | 금액(원) | 상태 |\n|---|---|---|---|---|---|---|\n| 08-03 | 20260803900386 | 이노션 | 이노시뮬레이션 | 시뮬레이터 글로벌 롤아웃 | 1,375,000,000 | 유효 |\n| 08-05 | 20260805800315 | 현대자동차 | 현대오토에버 | 2026년 GPU 서버 통합 구매 및 공급 계약 | 199,619,617,000 | 유효(계약금액 정정본) |\n| 08-05 | 20260805800316 | 기아 | 현대오토에버 | 2026년 GPU 서버 통합 구매 및 공급 계약 | 165,315,697,000 | 유효(계약금액 정정본) |\n| 08-05 | 20260805900317 | 현대모비스 | 알체라 | 딥러닝 학습용 DB구축 | 2,166,000,000 | 유효(계약금액 변경) |\n| 08-12 | 20260812800601 | 현대모비스 | 인지컨트롤스 | HOLDER ASSY(Cell Connection System) 4종 | 148,519,231,339 | 유효 |\n| 08-21 | 20260821800662 | 현대모비스 | 인지컨트롤스 | SENSING ASSY 6종(Cell Connection System) | 475,742,538,388 | 유효 |\n| 08-06 | 20260806800001 | 현대건설 | 동아지질 | 광양항 광역 준설토투기장 조성공사(DCM) | 14,375,790,000 | 유효(계약금액 변경) |\n| 08-06 | 20260806900183 | 현대건설 | 금양그린파워 | 샤힌 에틸렌시설 건설공사 PKG1(전기 설치 공사_1공구) | 31,690,700,000 | 정정됨(08-31 무효, 대체 20260831900829) |\n| 08-07 | 20260807900158 | 현대건설 | 금화피에스시 | 기계배관설치공사(subcon-8) | 67,276,000,000 | 정정됨(09-04 무효) |\n| 08-18 | 20260818800616 | 현대건설 | 삼호개발 | 월곶~판교 복선전철 제6공구 건설공사 1구간 본선터널 | 140,793,400,000 | 유효(계약금액 변경) |\n| 08-20 | 20260820900258 | 현대건설 | 시공테크 | 하나드림타운 그룹헤드쿼터 신축공사 업무층 인테리어공사(3공구) | 12,671,000,000 | 정정됨(09-22 무효) |\n| 08-31 | 20260831800537 | 현대건설 | 삼호개발 | 동부간선 지하화 민간투자사업 수직구 및 본선터널 토목공사 | 79,305,600,000 | 유효(계약금액 변경) |\n| 08-31 | 20260831800557 | 현대건설 | 동아지질 | 광양항 DCM 바지선 장비 임대 계약 | 32,938,510,000 | 유효(계약금액 및 기간 변경) |\n| 08-31 | 20260831800786 | 현대건설 | 동아지질 | 부산항 진해신항 남방파제(1단계) DCM 지방개량공 | 33,254,100,000 | 정정됨(09-01 무효) |\n| 08-31 | 20260831900829 | 현대건설 | 금양그린파워 | 샤힌 에틸렌시설 건설공사 PKG1(전기 설치 공사_1공구) | 31,690,700,000 | 유효(20260806900183의 정정본) |\n\n**참고**\n- 공시일 기준으로 셌습니다. 계약일(as_of_date)이 2023~2025년인 건도 8월에 공시되면 포함됩니다. 현대건설 건 다수가 이에 해당합니다.\n- 현대건설 건은 공사수주, 장비임대 등이 섞여 있고 공시 원문의 계약 종류 표기를 그대로 옮겼습니다.\n- 8월 공시가 없었던 상장사는 글로비스, 위아, 오토에버(계약상대 기준), 로템, 제철, 비앤지스틸, 차증권입니다.\n- 이 DB의 공급계약은 2024-01 이후 건별로 공시된 것만 수집합니다. 주요 고객 서술 등 다른 경로의 거래는 포함되지 않습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대자동차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 130
+  },
+  {
+   "tool": "get_coverage",
+   "input": {},
+   "error": null,
+   "total": null,
+   "chars": 915
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-05",
+    "rel_type": "affiliate",
+    "direction": "both",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 30,
+   "chars": 13806
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 953
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 107,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 949
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 41,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 3,
+   "chars": 2082
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 150,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 362
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 53,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 359
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 169,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 362
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 149,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 9,
+   "chars": 5823
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 152,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 360
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 170,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 360
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 155,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 363
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 172,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 361
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 112,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "in",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 861
+  }
+ ],
+ "cited": [
+  "20260803900386",
+  "20260805800315",
+  "20260805800316",
+  "20260805900317",
+  "20260806800001",
+  "20260806900183",
+  "20260807900158",
+  "20260812800601",
+  "20260818800616",
+  "20260820900258",
+  "20260821800662",
+  "20260831800537",
+  "20260831800557",
+  "20260831800786",
+  "20260831900829"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 8904,
+  "cache_read_input_tokens": 19685,
+  "cache_creation_input_tokens": 22031
+ },
+ "seconds": 36.3,
+ "number": "Q25",
+ "gold": "15건(최초 3, 정정 12). 최초: 이노시뮬레이션→이노션(08-03), 인지컨트롤스→현대모비스(08-12, 08-21). 정정: 현대오토에버→현대자동차·기아(08-05), 알체라→현대모비스(08-05), 현대건설 상대 9건 — 동아지질 3, 금양그린파워 2, 삼호개발 2, 금화피에스시 1, 시공테크 1 (DB 조회값. 원문 대조 전)"
+}
