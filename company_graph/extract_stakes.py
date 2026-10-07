@@ -62,7 +62,11 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
         except dart.DailyBudgetExceeded:
             raise
         except dart.DartError:
-            stats["원문을 받지 못함"] += 1
+            if "첨부정정" in filing["report_nm"]:
+                # 첨부 서류만 바꾼 정정은 본문 파일이 없다(DART가 014를 돌려준다). 양식 내용은 그대로라 건너뛴다
+                stats["첨부만 정정한 공시(본문 없음)"] += 1
+            else:
+                stats["원문을 받지 못함"] += 1
             continue
         doc = db.get(Document, rcept_no)
         if doc is None:

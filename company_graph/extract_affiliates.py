@@ -47,10 +47,13 @@ def main(years: list[int]):
         for doc in docs:
             filer = db.get(Company, doc.company_id)
             stats["사업보고서"] += 1
+            if stats["사업보고서"] % 500 == 0:
+                print(f"  {stats['사업보고서']}/{len(docs)}건, 오늘 DART 호출 {dart.calls_today()}건", flush=True)
             try:
                 table = parse(dart.document(doc.rcept_no))
-            except dart.DailyBudgetExceeded:
-                raise
+            except dart.DailyBudgetExceeded as stop:
+                print(f"중단: {stop}. 받은 것은 캐시에 있으니 내일 같은 명령으로 이어 받는다")
+                break
             except dart.DartError as error:
                 stats["원문을 받지 못함"] += 1
                 print(f"  {filer.name}: {error}")
