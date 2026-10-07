@@ -7,10 +7,10 @@ import sys
 from collections import Counter
 from datetime import date, datetime
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from . import dart, loader
-from .db import Company, Document, Relation, init_db, session
+from .db import Company, Document, QualityLog, Relation, init_db, session
 from .extract_equity import alias_index, link_in_context, own_affiliates, to_decimal
 from .invest_detail_parser import parse
 from .names import clean_reported, normalize
@@ -44,6 +44,11 @@ def main(years: list[int]):
                 stats["상세 장 없음"] += 1
                 continue
             stats["칸 수가 달라 읽지 않은 줄"] += detail.odd_rows
+            db.execute(delete(QualityLog).where(QualityLog.rcept_no == doc.rcept_no, QualityLog.detail.like("출자 상세표%")))
+            if detail.odd_rows:
+                stats["읽지 않은 줄이 있는 사업보고서"] += 1
+                db.add(QualityLog(check_name="range", rcept_no=doc.rcept_no, created_at=datetime.now(),
+                                  detail=f"출자 상세표: 칸 수가 표준(16칸)과 달라 읽지 않은 줄 {detail.odd_rows}개"))
             if detail.holdings:
                 stats["따로 붙인 표가 있는 사업보고서"] += 1
             filer = db.get(Company, doc.company_id)
