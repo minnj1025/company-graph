@@ -6,9 +6,9 @@ Claude API를 부른다(유료). 실행: python -m company_graph.agent "질문" 
 - 답에 적힌 접수번호가 실제로 도구 결과에 있었는지 끝에서 확인한다 (지어낸 근거 막기)
 - 한 질문에 쓴 토큰과 도구 호출을 같이 돌려준다 (평가와 비용 계산에 쓴다)
 """
+import argparse
 import json
 import re
-import sys
 import time
 from datetime import date
 
@@ -25,7 +25,8 @@ SYSTEM = """당신은 한국 상장사의 공시(DART)에서 뽑은 기업 관�
 답하는 법
 - 사실은 반드시 도구로 조회해서 답합니다. 기억으로 답하지 않습니다. 도구 결과에 없는 내용은 쓰지 않습니다.
 - 기업은 먼저 find_company 로 찾고, 그 company_id 로 조회합니다.
-- 질문에 시점이 있으면 그 시점을 as_of 로 씁니다. 없으면 사용자 메시지에 적힌 조회 시점을 씁니다.
+- as_of 는 "언제까지 공시된 것을 볼 것인가"입니다. 질문이 "그때 알려져 있던 것"을 물을 때만 과거 날짜로 바꾸고, 그 밖에는 사용자 메시지의 조회 시점을 씁니다.
+- "2025년 말 기준 지분"처럼 기준일을 말하는 질문은 조회 시점을 과거로 돌리지 않습니다. 2025년 말의 지분은 2026년 3월쯤 나오는 사업보고서에 실리기 때문입니다. 결과의 as_of_date 가 질문의 기준일과 같은지 확인하고, 다르면 어느 기준일의 값인지 밝힙니다.
 - 숫자(금액, 지분율, 날짜)는 도구 결과에 적힌 그대로 옮깁니다. 어림하거나 반올림하지 않습니다.
 - 사실마다 근거 공시의 접수번호(rcept_no, 14자리)를 붙입니다.
 - "모두 들어라" 같은 질문에는 결과의 total 과 truncated 를 확인하고, 건수를 밝히고 빠짐없이 적습니다.
@@ -81,15 +82,18 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
 
 
 def main():
-    args = sys.argv[1:]
-    take = lambda flag, default: args.pop(args.index(flag) + 1) if flag in args and not args.remove(flag) else default
-    model, as_of = take("--model", MODEL), take("--as-of", None)
-    out = answer(" ".join(args), model=model, as_of=date.fromisoformat(as_of) if as_of else None)
+    parser = argparse.ArgumentParser(description="공시 관계 DB에 질문한다 (Claude API 사용, 유료)")
+    parser.add_argument("question")
+    parser.add_argument("--model", default=MODEL)
+    parser.add_argument("--as-of", type=date.fromisoformat, default=None)
+    parser.add_argument("--effort", default="medium")
+    args = parser.parse_args()
+    out = answer(args.question, model=args.model, as_of=args.as_of, effort=args.effort)
     print(out["answer"])
     print("\n---")
     for call in out["tool_calls"]:
         print(f"도구 {call['tool']} {json.dumps(call['input'], ensure_ascii=False)} → "
-              f"{call['error'] or str(call['total']) + '건'} ({call['chars']}자)")
+              f"{call['error'] or ('' if call['total'] is None else str(call['total']) + '건 ')}({call['chars']}자)")
     if out["cited_not_in_results"]:
         print("경고: 도구 결과에 없는 접수번호를 인용함:", ", ".join(out["cited_not_in_results"]))
     print(f"모델 {out['model']} | {out['seconds']}초 | 토큰 {out['usage']} | 종료 {out['stop_reason']}")
