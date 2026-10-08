@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { fetchCompany, fetchGraph, fetchMeta, fetchOverview } from "./api";
+import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, type Scope } from "./api";
 import { groupColors, legend, LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { Controls } from "./Controls";
 import { Graph, shortName } from "./Graph";
@@ -15,6 +15,7 @@ export function App() {
   const [colorBy, setColorBy] = useState<ColorBy>("group");
   const [center, setCenter] = useState<Company | null>(null);
   const [hops, setHops] = useState(1);
+  const [scope, setScope] = useState<Scope>("listed");
   const [data, setData] = useState<GraphData>(EMPTY);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<CompanyDetail | null>(null);
@@ -33,7 +34,7 @@ export function App() {
   useEffect(() => {
     if (!asOf) return;
     let cancelled = false;
-    const request = center ? fetchGraph(center.id, asOf, types, hops) : fetchOverview(asOf, types);
+    const request = center ? fetchGraph(center.id, asOf, types, hops) : fetchOverview(asOf, types, scope);
     request
       .then((next) => {
         if (cancelled) return;
@@ -49,7 +50,7 @@ export function App() {
     return () => {
       cancelled = true;
     };
-  }, [asOf, types, center, hops]);
+  }, [asOf, types, center, hops, scope]);
 
   // 그려진 점의 위치를 기억해 둔다 (라이브러리가 점 객체에 x, y, z를 직접 적는다)
   useEffect(() => {
@@ -87,12 +88,12 @@ export function App() {
         groups={groups}
         selectedId={selectedId}
         onSelect={onSelect}
-        fitKey={`${center?.id ?? "all"}-${hops}`}
+        fitKey={`${center?.id ?? scope}-${hops}`}
       />
 
       <div className="left">
         <h1>
-          기업 관계 그래프 <span>공시 기반 · 자동차 가치사슬</span>
+          기업 관계 그래프 <span>공시 기반 · 상장사 전체</span>
         </h1>
         <Controls
           firstDate={meta.first_date}
@@ -107,6 +108,8 @@ export function App() {
           hops={hops}
           onHops={setHops}
           onOverview={() => setCenter(null)}
+          scope={scope}
+          onScope={setScope}
           onPick={(company) => {
             setCenter(company);
             setSelectedId(company.id);

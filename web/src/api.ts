@@ -9,8 +9,9 @@ async function get<T>(path: string, params: Record<string, string | number> = {}
 
 export const fetchMeta = () => get<Meta>("/meta");
 export const searchCompanies = (q: string) => get<Company[]>("/companies", { q });
-export const fetchOverview = (asOf: string, types: RelType[]) =>
-  get<GraphData>("/overview", { as_of: asOf, types: types.join(",") });
+export type Scope = "listed" | "focus";
+export const fetchOverview = (asOf: string, types: RelType[], scope: Scope) =>
+  get<GraphData>("/overview", { as_of: asOf, types: types.join(","), scope });
 export const fetchGraph = (center: number, asOf: string, types: RelType[], hops: number) =>
   get<GraphData>("/graph", { center, as_of: asOf, types: types.join(","), hops });
 export const fetchCompany = (id: number, asOf: string) => get<CompanyDetail>(`/company/${id}`, { as_of: asOf });

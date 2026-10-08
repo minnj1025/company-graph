@@ -54,9 +54,12 @@ def _rows(db, as_of: date, company_ids, rel_types, direction: str, superseded: b
         conditions.append(Relation.rel_type.in_(rel_types))
     if company_ids is not None:
         ids = list(company_ids)
-        sides = {"out": [Relation.subject_company_id.in_(ids)], "in": [Relation.object_company_id.in_(ids)],
-                 "both": [Relation.subject_company_id.in_(ids), Relation.object_company_id.in_(ids)]}[direction]
-        conditions.append(or_(*sides))
+        if direction == "within":   # 양쪽이 다 이 기업들 안에 있는 관계만
+            conditions += [Relation.subject_company_id.in_(ids), Relation.object_company_id.in_(ids)]
+        else:
+            sides = {"out": [Relation.subject_company_id.in_(ids)], "in": [Relation.object_company_id.in_(ids)],
+                     "both": [Relation.subject_company_id.in_(ids), Relation.object_company_id.in_(ids)]}[direction]
+            conditions.append(or_(*sides))
     return list(db.scalars(select(Relation).where(*conditions)))
 
 

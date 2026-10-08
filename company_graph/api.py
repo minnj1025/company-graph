@@ -92,12 +92,19 @@ def companies(q: str = Query(min_length=1), db=Depends(get_db)):
 
 
 @app.get("/api/overview")
-def overview(as_of: date, types: str | None = None, db=Depends(get_db)):
-    """수집 대상 기업 전체의 그래프. 계열은 선이 너무 많아 그리지 않고 점의 색(집단)으로 보여 준다."""
+def overview(as_of: date, types: str | None = None, scope: str = "listed", db=Depends(get_db)):
+    """첫 화면의 그래프. 계열은 선이 너무 많아 그리지 않고 점의 색(집단)으로 보여 준다.
+
+    scope=listed 는 지금 상장된 회사끼리의 관계(점 약 1,900개), scope=focus 는 수집을 시작한 자동차 가치사슬 기업과 그 상대.
+    """
     chosen = [t for t in parse_types(types) if t != "affiliate"]
-    scope = list(db.scalars(select(Company.company_id).where(Company.in_scope)))
-    edges = query.relations(db, as_of, company_ids=scope, rel_types=chosen) if chosen else []
-    return build_graph(db, edges)
+    if not chosen:
+        return build_graph(db, [])
+    if scope == "focus":
+        ids = list(db.scalars(select(Company.company_id).where(Company.in_scope)))
+        return build_graph(db, query.relations(db, as_of, company_ids=ids, rel_types=chosen))
+    ids = list(db.scalars(select(Company.company_id).where(Company.corp_cls.in_(("Y", "K", "N")))))
+    return build_graph(db, query.relations(db, as_of, company_ids=ids, rel_types=chosen, direction="within"))
 
 
 @app.get("/api/graph")

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { searchCompanies } from "./api";
+import { searchCompanies, type Scope } from "./api";
 import { LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { shortName } from "./Graph";
 import type { Company, RelType } from "./types";
@@ -28,6 +28,8 @@ interface Props {
   onTypes: (types: RelType[]) => void;
   colorBy: ColorBy;
   onColorBy: (value: ColorBy) => void;
+  scope: Scope;
+  onScope: (value: Scope) => void;
   centerName: string | null;
   hops: number;
   onHops: (hops: number) => void;
@@ -168,7 +170,21 @@ export function Controls(props: Props) {
           <span>보는 범위</span>
         </div>
         {props.centerName === null ? (
-          <p className="hint">수집 대상 전체. 기업을 검색하거나 점을 눌러 한 기업 중심으로 볼 수 있습니다.</p>
+          <>
+            <div className="chips">
+              <button className={props.scope === "listed" ? "chip on" : "chip"} onClick={() => props.onScope("listed")}>
+                상장사 전체
+              </button>
+              <button className={props.scope === "focus" ? "chip on" : "chip"} onClick={() => props.onScope("focus")}>
+                자동차 가치사슬
+              </button>
+            </div>
+            <p className="hint">
+              {props.scope === "listed"
+                ? "상장사끼리의 관계만 그립니다. 비상장사와의 관계는 기업을 검색하거나 점을 눌러 한 기업 중심으로 보면 나옵니다."
+                : "자동차 업종 상장사와 현대자동차그룹, 그 상대 기업입니다."}
+            </p>
+          </>
         ) : (
           <>
             <p className="scope">
