@@ -10,6 +10,7 @@
 전체 상장사로 넓히면 회사 × 연도 × 표 2개 = 약 2,650 × 3 × 2 ≈ 16,000건으로 하루 한도(20,000건)에 가깝다.
 받은 것은 캐시에 남으므로 한도에 걸리면 다음 날 같은 명령으로 이어 받는다.
 """
+import re
 import sys
 from collections import Counter
 from datetime import date, datetime
@@ -19,11 +20,12 @@ from sqlalchemy import or_, select
 
 from . import dart, loader
 from .db import Company, CompanyAlias, Document, QualityLog, Relation, init_db, session
+from .manual_aliases import SHORT_OK
 from .names import clean_reported, normalize
 
 YEARS = (2023, 2024, 2025)
 LISTED = ("Y", "K", "N")
-VERSION = "equity-3"  # 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
+VERSION = "equity-3"  # 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
 
 
 def to_decimal(text: str | None) -> Decimal | None:
@@ -39,6 +41,10 @@ def to_decimal(text: str | None) -> Decimal | None:
 def rcept_date(rcept_no: str) -> date:
     """접수번호 앞 8자리가 접수일이다."""
     return datetime.strptime(rcept_no[:8], "%Y%m%d").date()
+
+
+_CORPORATE_MARK = re.compile(r"㈜|\(주\)|주식회사|\(유\)|유한회사")
+_SHORT_OK = {normalize(name) for name in SHORT_OK}
 
 
 def alias_index(db) -> dict[str, set[int]]:
@@ -61,10 +67,12 @@ def link(index: dict[str, set[int]], raw_name: str) -> int | None:
 
     - 후보가 둘 이상이면 붙이지 않는다
     - 영문 네 글자 이하는 붙이지 않는다. 회사들이 해외 법인을 약어로 적는데(현대자동차의 "HMM"은 멕시코 법인),
-      같은 약어를 종목명으로 쓰는 상장사(해운사 HMM)에 잘못 붙는다. 필요한 것은 manual_aliases 에 적는다
+      같은 약어를 종목명으로 쓰는 상장사(해운사 HMM)에 잘못 붙는다.
+      다만 "HDC㈜", "(주)KNN"처럼 국내 법인 표시가 같이 적혀 있으면 약어가 아니라 회사 이름이므로 붙인다.
+      표시 없이 쓰이는 것 중 확인한 것은 manual_aliases.SHORT_OK 에 적는다
     """
     key = normalize(clean_reported(raw_name))
-    if key.isascii() and len(key) <= 4:
+    if key.isascii() and len(key) <= 4 and not _CORPORATE_MARK.search(raw_name) and key not in _SHORT_OK:
         return None
     candidates = index.get(key, set())
     return next(iter(candidates)) if len(candidates) == 1 else None

@@ -7,14 +7,17 @@
   - 결과가 비었을 때 "공시된 것이 없음"인지 "모으지 않음"인지 가릴 수 있게 수집 범위를 같이 준다
   - 모든 줄에 근거 공시의 접수번호가 있다
 """
+import re
 from datetime import date
 
 from sqlalchemy import select
+from sqlalchemy.orm import aliased
 
 from . import query
 from .db import Company, Document, Relation
 
 LIMIT = 50
+LISTED = ("Y", "K", "N")
 DART_LINK = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo="
 MARKETS = {"Y": "유가증권", "K": "코스닥", "N": "코넥스", "E": "비상장 등"}
 ATTRS = ("title", "kind", "period_start", "period_end", "party_hidden", "party_relation", "subsidiary", "ratio_pct",
@@ -58,6 +61,27 @@ TOOLS = [
          "doc_type": {"type": "string", "enum": ["supply_contract", "event", "annual"]},
          "filed_from": {"type": "string"}, "filed_to": {"type": "string"}},
          "required": ["company_id", "as_of", "doc_type"]}},
+    {"name": "list_companies",
+     "description": "조건에 맞는 기업 목록. industry 는 한국표준산업분류(KSIC) 코드의 앞자리다 (예: 30 자동차 및 트레일러, 303 자동차 부품, "
+                    "26 전자부품·컴퓨터·통신장비, 21 의약품, 64 금융). group 은 공정위 대규모기업집단 이름(find_company 결과의 group 값 그대로). "
+                    "업종 코드는 DART에 등록된 회사에만 있다.",
+     "input_schema": {"type": "object", "properties": {
+         "industry": {"type": "string"}, "group": {"type": "string"},
+         "listed_only": {"type": "boolean", "description": "지금 상장된 회사만 (기본 true)"}}}},
+    {"name": "find_disclosers",
+     "description": "기간 안에 어떤 종류의 공시를 낸 기업을 한 번에 찾는다 (기업마다 get_relations 를 부르지 않아도 된다). "
+                    "공시를 낸 쪽을 업종(industry)이나 기업집단(group)으로, 상대 쪽을 counterparty_id 나 counterparty_group 으로 좁힐 수 있다. "
+                    "기업마다 새로 낸 공시 수(new)와 정정 공시 수(corrections), 접수번호를 준다. 나중에 정정된 공시도 센다.",
+     "input_schema": {"type": "object", "properties": {
+         "as_of": _AS_OF,
+         "rel_type": {"type": "string", "enum": ["supply_contract", "stake_acquisition", "stake_disposal"]},
+         "disclosed_from": {"type": "string"}, "disclosed_to": {"type": "string"},
+         "industry": {"type": "string", "description": "공시를 낸 기업의 KSIC 코드 앞자리"},
+         "group": {"type": "string", "description": "공시를 낸 기업의 기업집단"},
+         "counterparty_id": {"type": "integer", "description": "상대 기업의 company_id"},
+         "counterparty_group": {"type": "string", "description": "상대 기업의 기업집단"},
+         "listed_only": {"type": "boolean", "description": "공시를 낸 기업이 지금 상장된 회사인 것만 (기본 true)"}},
+         "required": ["as_of", "rel_type", "disclosed_from", "disclosed_to"]}},
     {"name": "find_paths",
      "description": "두 기업을 잇는 가장 짧은 관계 경로를 찾는다 (최대 3단계, 방향 무시).",
      "input_schema": {"type": "object", "properties": {"from_company_id": _COMPANY, "to_company_id": _COMPANY, "as_of": _AS_OF},
@@ -189,6 +213,58 @@ def find_paths(db, from_company_id, to_company_id, as_of) -> dict:
             "note": None if found else "3단계 안에서 잇는 공시된 관계가 없습니다"}
 
 
+def _in_industry(company: Company, prefix: str | None) -> bool:
+    # 공정위 자료의 업종코드는 "C30121"처럼 대분류 글자가 앞에 붙는다
+    return not prefix or re.sub(r"^[A-Z]", "", company.induty_code or "").startswith(prefix.strip())
+
+
+def list_companies(db, industry: str | None = None, group: str | None = None, listed_only: bool = True) -> dict:
+    if not industry and not group:
+        raise ToolError("industry 나 group 중 하나는 주어야 합니다")
+    conditions = [Company.corp_cls.in_(LISTED)] if listed_only else []
+    if group:
+        conditions.append(Company.ftc_group == group)
+    found = sorted((c for c in db.scalars(select(Company).where(*conditions)) if _in_industry(c, industry)),
+                   key=lambda c: (c.name, c.company_id))
+    return {"total": len(found), "truncated": len(found) > 300,
+            "companies": [{**_brief(c), "industry_code": c.induty_code} for c in found[:300]],
+            "note": None if found else "조건에 맞는 기업이 없습니다. group 은 find_company 결과의 group 값 그대로 써야 합니다"}
+
+
+def find_disclosers(db, as_of, rel_type: str, disclosed_from, disclosed_to, industry: str | None = None,
+                    group: str | None = None, counterparty_id=None, counterparty_group: str | None = None,
+                    listed_only: bool = True) -> dict:
+    when = _date(as_of, "as_of", required=True)
+    start, end = _date(disclosed_from, "disclosed_from", required=True), _date(disclosed_to, "disclosed_to", required=True)
+    if rel_type not in ("supply_contract", "stake_acquisition", "stake_disposal"):
+        raise ToolError("rel_type 은 supply_contract, stake_acquisition, stake_disposal 중 하나입니다")
+    target = aliased(Company)
+    conditions = [Relation.rel_type == rel_type, Relation.retired_at.is_(None), Relation.disclosed_date >= start,
+                  Relation.disclosed_date <= min(end, when)]
+    if counterparty_id is not None:
+        conditions.append(Relation.object_company_id == _company(db, counterparty_id).company_id)
+    statement = select(Relation, Document.is_correction).join(Document, Document.rcept_no == Relation.rcept_no)
+    if counterparty_group:
+        statement = statement.join(target, target.company_id == Relation.object_company_id)
+        conditions.append(target.ftc_group == counterparty_group)
+    by_company: dict[int, dict] = {}
+    for relation, is_correction in db.execute(statement.where(*conditions)):
+        filer = db.get(Company, relation.subject_company_id)
+        if (listed_only and filer.corp_cls not in LISTED) or (group and filer.ftc_group != group) or not _in_industry(filer, industry):
+            continue
+        entry = by_company.setdefault(filer.company_id, {**_brief(filer), "new": set(), "corrections": set(), "counterparties": set()})
+        entry["corrections" if is_correction else "new"].add(relation.rcept_no)
+        entry["counterparties"].add(relation.object_name_raw)
+    rows = sorted(by_company.values(), key=lambda e: (e["name"], e["company_id"]))
+    for entry in rows:
+        new, corrections = sorted(entry["new"]), sorted(entry["corrections"])
+        entry.update(new=len(new), corrections=len(corrections), rcept_no=(new + corrections)[:12],
+                     counterparties=sorted(entry["counterparties"])[:8])
+    return {"as_of": when.isoformat(), "period": [start.isoformat(), end.isoformat()], "total": len(rows),
+            "with_new_filing": sum(1 for e in rows if e["new"]), "truncated": len(rows) > 200, "companies": rows[:200],
+            "note": "new 는 정정이 아닌 공시, corrections 는 정정 공시의 건수입니다. 상대를 가린 공시는 counterparty 조건에 잡히지 않습니다"}
+
+
 def get_coverage(db) -> dict:
     covered = query.coverage(db)
     return {"notice": covered["notice"], "sources": covered["sources"],
@@ -199,6 +275,7 @@ def get_coverage(db) -> dict:
 
 
 FUNCTIONS = {"find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
+             "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}
 
 

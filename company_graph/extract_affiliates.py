@@ -21,13 +21,52 @@ from .db import Company, CompanyAlias, Document, QualityLog, Relation, init_db, 
 from .names import normalize
 
 
-VERSION = "affiliate-2"  # 2: 줄을 지우지 않음
+VERSION = "affiliate-3"  # 3: 법인등록번호 오타로 갈라진 회사를 하나로. 2: 줄을 지우지 않음
 
 
-def company_by_jurir(db, cache: dict[str, Company], jurir_no: str, name: str) -> Company:
-    """법인등록번호로 원장에서 찾고, 없으면 새로 넣는다."""
+def jurir_checks(jurir_no: str | None) -> bool:
+    """법인등록번호 13자리의 마지막 검증 숫자가 맞는가. DART에 등록된 번호도 2%쯤은 맞지 않으니 참고로만 쓴다."""
+    if not (jurir_no and len(jurir_no) == 13 and jurir_no.isdigit()):
+        return False
+    total = sum(int(d) * (1 if i % 2 == 0 else 2) for i, d in enumerate(jurir_no[:12]))
+    return (10 - total % 10) % 10 == int(jurir_no[12])
+
+
+def typo_duplicates(db) -> dict[int, int]:
+    """계열회사 표에 법인등록번호를 한두 자리 틀리게 적은 탓에 따로 만들어진 회사 → 원래 회사.
+
+    이름(정규화)이 같고 번호가 두 자리 이하로 다르면 같은 회사로 본다. 남길 쪽은 DART에 등록된 회사, 검증 숫자가 맞는 번호,
+    먼저 만든 회사 순으로 고른다. 내려진 쪽의 별칭은 지워 이름 연결에 끼어들지 않게 한다 (회사 줄은 옛 관계가 가리키므로 둔다).
+    """
+    by_name: dict[str, list[Company]] = {}
+    for company in db.scalars(select(Company).where(Company.jurir_no.is_not(None))):
+        if len(company.jurir_no) == 13:
+            by_name.setdefault(normalize(company.name), []).append(company)
+    merged: dict[int, int] = {}
+    for group in by_name.values():
+        group.sort(key=lambda c: (c.corp_code is None, not jurir_checks(c.jurir_no), c.company_id))
+        for keep_at, keep in enumerate(group):
+            if keep.company_id in merged:
+                continue
+            for other in group[keep_at + 1:]:
+                if other.company_id not in merged and other.corp_code is None \
+                        and sum(a != b for a, b in zip(keep.jurir_no, other.jurir_no)) <= 2:
+                    merged[other.company_id] = keep.company_id
+    if merged:
+        db.execute(delete(CompanyAlias).where(CompanyAlias.company_id.in_(list(merged))))
+    return merged
+
+
+def company_by_jurir(db, cache: dict[str, Company], jurir_no: str, name: str, merged: dict[int, int]) -> Company:
+    """법인등록번호로 원장에서 찾고, 없으면 새로 넣는다. 번호를 틀리게 적은 것으로 보이면 원래 회사를 돌려준다."""
     if jurir_no not in cache:
         company = db.scalar(select(Company).where(Company.jurir_no == jurir_no))
+        if company is not None and company.company_id in merged:
+            company = db.get(Company, merged[company.company_id])
+        if company is None:
+            twin = [c for c in db.scalars(select(Company).join(CompanyAlias).where(CompanyAlias.alias == normalize(name)).distinct())
+                    if c.jurir_no and len(c.jurir_no) == 13 and sum(a != b for a, b in zip(c.jurir_no, jurir_no)) <= 2]
+            company = twin[0] if len(twin) == 1 else None
         if company is None:
             company = Company(jurir_no=jurir_no, name=name, in_scope=False)
             db.add(company)
@@ -42,6 +81,8 @@ def main(years: list[int]):
     stats = Counter()
     with session(engine) as db:
         by_jurir: dict[str, Company] = {}
+        merged = typo_duplicates(db)
+        stats["법인등록번호 오타로 따로 만들어졌던 회사"] = len(merged)
         docs = db.scalars(select(Document).where(Document.doc_type == "annual", Document.bsns_year.in_(years))
                           .order_by(Document.rcept_no)).all()
         for doc in docs:
@@ -78,7 +119,7 @@ def main(years: list[int]):
             for affiliate in table.affiliates:
                 if affiliate.jurir_no and affiliate.jurir_no == filer.jurir_no:
                     continue  # 자기 자신
-                target = company_by_jurir(db, by_jurir, affiliate.jurir_no, affiliate.name) if affiliate.jurir_no else None
+                target = company_by_jurir(db, by_jurir, affiliate.jurir_no, affiliate.name, merged) if affiliate.jurir_no else None
                 stats["계열 관계"] += 1
                 stats["상대를 법인등록번호로 연결" if target else "상대에 법인등록번호 없음(해외 등)"] += 1
                 new_rows.append(Relation(

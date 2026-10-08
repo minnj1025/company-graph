@@ -64,3 +64,14 @@ def test_holder_not_in_master_is_listed_by_name(db):
     assert (top["subject"]["name"], top["subject"]["company_id"], top["value"]) == ("홍길동", None, 20.0)
     assert top["detail"]["relation_to_filer"] == "본인" and out["total"] == 2
     assert agent_tools.call(db, "find_paths", {"from_company_id": KIA, "to_company_id": MOBIS, "as_of": "2026-06-30"})["total"] >= 1
+
+
+def test_find_disclosers_counts_new_and_corrected_filings(db):
+    out = agent_tools.call(db, "find_disclosers", {"as_of": "2026-09-30", "rel_type": "supply_contract",
+                                                   "disclosed_from": "2026-07-01", "disclosed_to": "2026-09-30"})
+    assert [(c["company_id"], c["new"] + c["corrections"]) for c in out["companies"]] == [(SUPPLIER, 2), (5, 1)]
+    only_kia = agent_tools.call(db, "find_disclosers", {"as_of": "2026-09-30", "rel_type": "supply_contract",
+                                                        "disclosed_from": "2026-07-01", "disclosed_to": "2026-09-30",
+                                                        "counterparty_id": KIA})
+    assert [c["company_id"] for c in only_kia["companies"]] == [5]
+    assert "industry" in agent_tools.call(db, "list_companies", {})["error"]
