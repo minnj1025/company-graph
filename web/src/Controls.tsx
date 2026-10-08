@@ -148,6 +148,64 @@ export function Controls(props: Props) {
 
       <div className="block">
         <div className="block-head">
+          <span>보는 범위</span>
+        </div>
+        {props.centerName === null ? (
+          <>
+            <select className="scope-select" value={props.scope} onChange={(e) => props.onScope(e.target.value)}>
+              <option value="listed">상장사 전체</option>
+              <optgroup label="시장">
+                {props.categories.market.map((c) => (
+                  <option key={c.name} value={`market:${c.name}`}>
+                    {c.name} ({c.count})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="업종">
+                {props.categories.sector.map((c) => (
+                  <option key={c.name} value={`sector:${c.name}`}>
+                    {c.name} ({c.count})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="기업집단">
+                {props.categories.group.map((c) => (
+                  <option key={c.name} value={`group:${c.name}`}>
+                    {c.name} ({c.count})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="기타">
+                <option value="focus">자동차 가치사슬 (처음 수집한 범위)</option>
+              </optgroup>
+            </select>
+            <p className="hint">
+              {props.scope === "listed" || props.scope.startsWith("market:")
+                ? "상장사끼리의 관계만 그립니다. 비상장사와의 관계는 기업을 검색하거나 점을 눌러 한 기업 중심으로 보면 나옵니다."
+                : "고른 분류의 기업과, 그 기업들이 관계를 맺은 상대까지 그립니다. 괄호 안은 상장사 수입니다."}
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="scope">
+              <strong>{props.centerName}</strong> 중심
+            </p>
+            <div className="chips">
+              {[1, 2].map((n) => (
+                <button key={n} className={props.hops === n ? "chip on" : "chip"} onClick={() => props.onHops(n)}>
+                  {n}단계
+                </button>
+              ))}
+              <button className="chip" onClick={props.onOverview}>
+                전체로 돌아가기
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="block">
+        <div className="block-head">
           <span>조회 시점</span>
           <strong>{asOf}</strong>
         </div>
@@ -268,63 +326,6 @@ export function Controls(props: Props) {
         </div>
       </div>
 
-      <div className="block">
-        <div className="block-head">
-          <span>보는 범위</span>
-        </div>
-        {props.centerName === null ? (
-          <>
-            <select className="scope-select" value={props.scope} onChange={(e) => props.onScope(e.target.value)}>
-              <option value="listed">상장사 전체</option>
-              <optgroup label="시장">
-                {props.categories.market.map((c) => (
-                  <option key={c.name} value={`market:${c.name}`}>
-                    {c.name} ({c.count})
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="업종">
-                {props.categories.sector.map((c) => (
-                  <option key={c.name} value={`sector:${c.name}`}>
-                    {c.name} ({c.count})
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="기업집단">
-                {props.categories.group.map((c) => (
-                  <option key={c.name} value={`group:${c.name}`}>
-                    {c.name} ({c.count})
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="기타">
-                <option value="focus">자동차 가치사슬 (처음 수집한 범위)</option>
-              </optgroup>
-            </select>
-            <p className="hint">
-              {props.scope === "listed" || props.scope.startsWith("market:")
-                ? "상장사끼리의 관계만 그립니다. 비상장사와의 관계는 기업을 검색하거나 점을 눌러 한 기업 중심으로 보면 나옵니다."
-                : "고른 분류의 기업과, 그 기업들이 관계를 맺은 상대까지 그립니다. 괄호 안은 상장사 수입니다."}
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="scope">
-              <strong>{props.centerName}</strong> 중심
-            </p>
-            <div className="chips">
-              {[1, 2].map((n) => (
-                <button key={n} className={props.hops === n ? "chip on" : "chip"} onClick={() => props.onHops(n)}>
-                  {n}단계
-                </button>
-              ))}
-              <button className="chip" onClick={props.onOverview}>
-                전체로 돌아가기
-              </button>
-            </div>
-          </>
-        )}
-      </div>
     </div>
   );
 }

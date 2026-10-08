@@ -1,11 +1,11 @@
 :root {
-  --bg: #182031;
-  --panel: #212b40;
-  --surface: rgba(33, 43, 64, 0.92);
-  --border: rgba(255, 255, 255, 0.16);
-  --text: #f1f4f9;
-  --muted: #a9b5c8;
-  --accent: #8fb2ff;
+  --bg: #eef1f6;
+  --panel: #ffffff;
+  --surface: rgb(255 255 255 / 0.96);
+  --border: rgba(24, 36, 62, 0.14);
+  --text: #1b2433;
+  --muted: #627089;
+  --accent: #2f5fd0;
   font-family: Pretendard, "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   color: var(--text);
   font-size: 14px;
@@ -102,7 +102,7 @@ h1 span {
 .search input {
   width: 100%;
   padding: 9px 12px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(24, 36, 62, 0.06);
   border: 1px solid var(--border);
   border-radius: 9px;
   outline: none;
@@ -121,7 +121,7 @@ h1 span {
   margin: 0;
   padding: 4px;
   list-style: none;
-  background: #151c28;
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 9px;
 }
@@ -139,7 +139,7 @@ h1 span {
 }
 
 .results button:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(24, 36, 62, 0.07);
 }
 
 .block {
@@ -176,7 +176,7 @@ h1 span {
   width: 30px;
   height: 30px;
   flex: none;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(24, 36, 62, 0.07);
   border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 11px;
@@ -202,8 +202,8 @@ h1 span {
 
 .chip.on {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(24, 36, 62, 0.09);
+  border-color: rgba(24, 36, 62, 0.22);
 }
 
 .chip:disabled {
@@ -314,7 +314,7 @@ h1 span {
 .panel-actions button {
   flex: none;
   padding: 6px 11px;
-  background: rgba(122, 162, 255, 0.16);
+  background: rgba(47, 95, 208, 0.12);
   border: 1px solid rgba(122, 162, 255, 0.4);
   border-radius: 8px;
   font-size: 12px;
@@ -426,23 +426,23 @@ h1 span {
 }
 
 .warn {
-  color: #e0a458;
+  color: #94570a;
 }
 
 .scope-select {
   width: 100%;
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(24, 36, 62, 0.12);
+  background: rgba(24, 36, 62, 0.05);
   color: inherit;
   font: inherit;
 }
 
 .scope-select option,
 .scope-select optgroup {
-  background: #161b26;
-  color: #e6ebf5;
+  background: var(--panel);
+  color: var(--text);
 }
 
 /* 위쪽 탭과, 그래프 위에 덮는 글 화면 */
@@ -470,7 +470,7 @@ h1 span {
 }
 
 .tabs button.on {
-  background: rgba(122, 162, 255, 0.18);
+  background: rgba(47, 95, 208, 0.14);
   color: var(--text);
 }
 
@@ -499,7 +499,7 @@ h1 span {
 }
 
 .page .lead {
-  color: #d3dbe8;
+  color: #3c4759;
   margin: 0 0 18px;
 }
 
@@ -513,7 +513,7 @@ h1 span {
 .tile {
   padding: 16px 18px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--panel);
   border: 1px solid var(--border);
 }
 
@@ -586,7 +586,7 @@ h1 span {
 .notes {
   margin: 0 0 18px;
   padding-left: 20px;
-  color: #d3dbe8;
+  color: #3c4759;
 }
 
 .notes li {
@@ -624,7 +624,7 @@ h1 span {
 
 .example.on {
   border-color: rgba(122, 162, 255, 0.6);
-  background: rgba(122, 162, 255, 0.1);
+  background: rgba(47, 95, 208, 0.08);
 }
 
 .example-body {
@@ -662,7 +662,7 @@ h1 span {
   font-size: 12px;
   padding: 6px 10px;
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.22);
+  background: rgba(24, 36, 62, 0.06);
 }
 
 .tool code {
@@ -676,7 +676,7 @@ h1 span {
 
 .tool em {
   font-style: normal;
-  color: #6fd08c;
+  color: #1b7f45;
   white-space: nowrap;
 }
 
@@ -845,7 +845,7 @@ h1 span {
   padding: 6px 12px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(24, 36, 62, 0.08);
 }
 
 .stage .legend {
@@ -993,7 +993,7 @@ h1 span {
 .meter {
   height: 6px;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(24, 36, 62, 0.06);
 }
 
 .meter div {
@@ -1070,7 +1070,7 @@ h1 span {
 
 .chat-intro p {
   margin: 0 0 12px;
-  color: #d3dbe8;
+  color: #3c4759;
   line-height: 1.6;
 }
 
@@ -1105,7 +1105,7 @@ h1 span {
   max-width: 90%;
   padding: 8px 12px;
   border-radius: 12px 12px 2px 12px;
-  background: rgba(122, 162, 255, 0.18);
+  background: rgba(47, 95, 208, 0.14);
 }
 
 .turn .a {
@@ -1125,7 +1125,7 @@ h1 span {
 
 .turn .a.error,
 .warn {
-  color: #ffb454;
+  color: #94570a;
 }
 
 .warn {
@@ -1176,7 +1176,7 @@ h1 span {
   flex: 1;
   min-width: 0;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(24, 36, 62, 0.06);
   border: 1px solid var(--border);
   border-radius: 10px;
   outline: none;
@@ -1274,13 +1274,13 @@ h1 span {
   font-size: 11px;
   line-height: 18px;
   background: rgba(255, 180, 84, 0.16);
-  color: #ffb454;
+  color: #94570a;
 }
 
 .feed .kind-해지,
 .feed .kind-철회 {
   background: rgba(255, 107, 107, 0.16);
-  color: #ff8a8a;
+  color: #c0392b;
 }
 
 .cards {
@@ -1483,7 +1483,7 @@ h1 span {
 }
 
 .strip line {
-  stroke: rgba(255, 255, 255, 0.1);
+  stroke: rgba(24, 36, 62, 0.1);
 }
 
 .strip text {
@@ -1492,7 +1492,7 @@ h1 span {
 }
 
 .strip .strip-label {
-  fill: var(--text, #e8edf5);
+  fill: var(--text, var(--text));
   font-size: 13px;
 }
 
@@ -1504,7 +1504,7 @@ h1 span {
   padding: 10px 18px;
   border-radius: 10px;
   border: 1px solid rgba(122, 162, 255, 0.6);
-  background: rgba(122, 162, 255, 0.12);
+  background: rgba(47, 95, 208, 0.10);
   font-weight: 600;
   margin-bottom: 14px;
 }
@@ -1523,7 +1523,7 @@ h1 span {
   padding: 6px 8px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: #2a3550;
+  background: #ffffff;
   color: inherit;
 }
 
@@ -1624,7 +1624,7 @@ h1 span {
 
 .q-body .reason {
   margin: 0 0 10px;
-  color: #d3dbe8;
+  color: #3c4759;
   font-size: 13px;
 }
 
@@ -1727,7 +1727,7 @@ body.resizing {
 .credit b {
   font-weight: 600;
   margin-right: 6px;
-  color: #d3dbe8;
+  color: #3c4759;
 }
 
 .page .credit {
@@ -1789,7 +1789,7 @@ body.resizing {
   padding: 5px 8px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: #2a3550;
+  background: #ffffff;
   color: inherit;
 }
 
@@ -1798,7 +1798,7 @@ body.resizing {
   margin: 0 0 6px;
   font-size: 12.5px;
   line-height: 1.6;
-  color: #e1e7f0;
+  color: #2a3445;
 }
 
 .biz h4 {
@@ -1936,7 +1936,7 @@ body.resizing {
 
 .strip:hover {
   color: var(--text);
-  background: rgba(122, 162, 255, 0.1);
+  background: rgba(47, 95, 208, 0.08);
 }
 
 .side.folded .side-pane,
@@ -2149,4 +2149,61 @@ select:focus-visible {
 .fold-cards:hover {
   border-color: rgba(143, 178, 255, 0.7);
   color: var(--text);
+}
+
+/* ---------- 밝은 바탕. 그래프가 그려지는 칸만 어둡게 둔다 ---------- */
+.stage {
+  --panel: #212b40;
+  --surface: rgba(24, 32, 50, 0.9);
+  --border: rgba(255, 255, 255, 0.18);
+  --text: #f1f4f9;
+  --muted: #a9b5c8;
+  --accent: #8fb2ff;
+  color: var(--text);
+  background: #131a29;
+  border-color: rgba(24, 36, 62, 0.25);
+}
+
+.leftcol,
+.side,
+.card,
+.tile,
+.check,
+.versus,
+.q,
+.strip.wide {
+  box-shadow: 0 1px 2px rgba(24, 36, 62, 0.06), 0 4px 14px rgba(24, 36, 62, 0.04);
+}
+
+.top {
+  background: var(--panel);
+}
+
+.chat-input input,
+.search input,
+.steps select,
+.scope-select,
+.q-filter select {
+  background: #ffffff;
+  border: 1px solid rgba(24, 36, 62, 0.22);
+  color: var(--text);
+}
+
+.controls .date {
+  color-scheme: light;
+}
+
+.chip.on {
+  background: rgba(47, 95, 208, 0.14);
+  border-color: rgba(47, 95, 208, 0.55);
+  color: var(--text);
+}
+
+.bar div,
+.bar.slim div {
+  color: #10151f;
+}
+
+.stage-bar button.primary {
+  color: #fff;
 }

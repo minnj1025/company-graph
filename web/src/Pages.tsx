@@ -82,7 +82,7 @@ export function DataPage({ meta }: { meta: Meta }) {
       <div className="checks">
         {CHECKS.map(([name, hit, total, meaning]) => (
           <div key={name} className="check">
-            <div className="ring" style={{ background: `conic-gradient(#6fd08c ${(hit / total) * 360}deg, rgba(255,255,255,0.08) 0)` }}>
+            <div className="ring" style={{ background: `conic-gradient(#6fd08c ${(hit / total) * 360}deg, rgba(24,36,62,0.1) 0)` }}>
               <b>{((hit / total) * 100).toFixed(hit === total ? 0 : 1)}%</b>
             </div>
             <div>
@@ -94,7 +94,7 @@ export function DataPage({ meta }: { meta: Meta }) {
           </div>
         ))}
         <div className="check">
-          <div className="ring" style={{ background: "conic-gradient(#7aa2ff 341deg, rgba(255,255,255,0.08) 0)" }}>
+          <div className="ring" style={{ background: "conic-gradient(#7aa2ff 341deg, rgba(24,36,62,0.1) 0)" }}>
             <b>94.9%</b>
           </div>
           <div>
