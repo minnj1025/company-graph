@@ -1,0 +1,45 @@
+{
+ "question": "2025년 말 기준 현대모비스의 최대주주와 그 지분율은?",
+ "as_of": "2026-10-05",
+ "model": "claude-sonnet-5-5",
+ "answer": "2025년 12월 31일 기준 현대모비스의 최대주주는 **기아(주)** 이고 지분율은 **18.1%** 입니다.\n\n- 기아의 지분 보유 목적은 \"경영참여\"로 공시됐습니다.\n- 이 값은 2026-03-12에 공시됐고, 결과의 as_of_date는 2025-12-31로 질문의 기준일과 같습니다.\n- 근거 접수번호는 20260309001878(현대모비스 사업보고서)과 20260312001224(기아 공시)입니다.\n\n참고로 같은 기준일의 다른 주요 주주는 다음과 같습니다. 이 DB는 최대주주와 그 특수관계인, 그리고 자기 보고서에 지분 보유를 적은 회사만 담고 있어서 5% 이상 주주 전체는 아닙니다.\n- 정몽구: 7.47% (20260309001878)\n- 현대제철: 6.1% (20260318001506)",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대모비스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 130
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 41,
+    "as_of": "2026-10-05",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 9,
+   "chars": 4621
+  }
+ ],
+ "cited": [
+  "20260309001878",
+  "20260312001224",
+  "20260318001506"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 514,
+  "cache_read_input_tokens": 8913,
+  "cache_creation_input_tokens": 7109
+ },
+ "seconds": 8.0,
+ "number": "Q02",
+ "gold": "기아, 18.10% (확인)"
+}

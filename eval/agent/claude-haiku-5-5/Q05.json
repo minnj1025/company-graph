@@ -2,7 +2,7 @@
  "question": "인지컨트롤스가 2026-08-21에 공시한 공급계약의 계약상대와 계약금액은?",
  "as_of": "2026-10-05",
  "model": "claude-haiku-5-5",
- "answer": "인지컨트롤스(023800)가 2026-08-21에 공시한 공급계약은 1건이며, 계약상대는 **현대모비스**, 계약금액은 **475,742,538,388원**입니다.\n\n- 계약명: SENSING ASSY 6종(Cell Connection System)\n- 계약기간 종료일: 2035-12-31\n- 근거 공시: 접수번호 20260821800662 (정정 공시 아님, 이후 공시로 대체되지 않음)",
+ "answer": "인지컨트롤스가 2026-08-21에 공시한 공급계약은 1건이며, 계약상대는 **현대모비스**, 계약금액은 **475,742,538,388원**입니다.\n\n- 계약명: SENSING ASSY 6종(Cell Connection System)\n- 계약기간 종료일: 2035-12-31\n- 근거: 단일판매·공급계약체결 공시, 접수번호 **20260821800662**\n- 이 공시는 정정·해지 이력이 없고, 조회 시점(2026-10-05) 기준 유효합니다.",
  "stop_reason": "end_turn",
  "tool_calls": [
   {
@@ -34,11 +34,11 @@
  "cited_not_in_results": [],
  "usage": {
   "input_tokens": 8,
-  "output_tokens": 505,
-  "cache_read_input_tokens": 6079,
-  "cache_creation_input_tokens": 3608
+  "output_tokens": 523,
+  "cache_read_input_tokens": 8935,
+  "cache_creation_input_tokens": 5036
  },
- "seconds": 3.7,
+ "seconds": 3.9,
  "number": "Q05",
  "gold": "현대모비스, 475,742,538,388원 (확인)"
 }

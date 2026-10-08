@@ -1,0 +1,59 @@
+{
+ "question": "인지컨트롤스가 2026-08-21에 공시한 공급계약의 계약상대와 계약금액은?",
+ "as_of": "2026-10-05",
+ "model": "claude-sonnet-5-5",
+ "answer": "2026-08-21에 공시된 인지컨트롤스의 공급계약은 1건입니다. 계약상대는 현대모비스(주)이고, 계약금액은 475,742,538,388원입니다. (접수번호 20260821800662)\n\n- **계약 내용:** SENSING ASSY 6종(Cell Connection System), 기타 판매ㆍ공급계약\n- **계약 기간:** 2028-09-01부터 2035-12-31까지\n- **비율:** 66.27%\n- **기준일:** 2026-08-20\n- **정정·해지 여부:** 정정이나 해지 공시는 없으며, 이후 다시 정정되지도 않았습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "인지컨트롤스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 128
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 79,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "disclosed_from": "2026-08-21",
+    "disclosed_to": "2026-08-21",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 910
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 79,
+    "as_of": "2026-10-05",
+    "doc_type": "supply_contract",
+    "filed_from": "2026-08-01",
+    "filed_to": "2026-10-05"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1027
+  }
+ ],
+ "cited": [
+  "20260821800662"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 664,
+  "cache_read_input_tokens": 8935,
+  "cache_creation_input_tokens": 5972
+ },
+ "seconds": 6.1,
+ "number": "Q05",
+ "gold": "현대모비스, 475,742,538,388원 (확인)"
+}

@@ -1,0 +1,58 @@
+{
+ "question": "2026-08-21에 인지컨트롤스와 관련해 나온 공시는 무엇이고, 그 공시로 이어지는 기업은 어디인가?",
+ "as_of": "2026-10-05",
+ "model": "claude-sonnet-5-5",
+ "answer": "2026-08-21에 인지컨트롤스(주)(company_id 79)가 낸 공시는 2건입니다. 두 건 모두 정정 공시가 아니고, 이후 정정·철회도 없습니다.\n\n1. **단일판매ㆍ공급계약체결** (접수번호 20260821800662)\n   - 계약상대는 **현대모비스**입니다.\n   - 계약명은 \"SENSING ASSY 6종(Cell Connection System)\"입니다.\n   - 계약금액은 475,742,538,388원이고, 계약 종료일은 2035-12-31입니다.\n\n2. **타법인주식및출자증권취득결정** (접수번호 20260821800478)\n   - 대상 기업은 **Nexplus SK s.r.o.**입니다.\n   - 취득금액은 27,465,026,262원입니다.\n   - 목적은 \"유럽 친환경차 사업 확대를 위한 유럽 현지 생산거점 즉시 확보\"입니다.\n\n따라서 이 공시들로 이어지는 기업은 현대모비스(공급계약 상대)와 Nexplus SK s.r.o.(지분 취득 대상)입니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "인지컨트롤스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 128
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 79,
+    "as_of": "2026-10-05",
+    "doc_type": "supply_contract",
+    "filed_from": "2026-08-21",
+    "filed_to": "2026-08-21"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 638
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 79,
+    "as_of": "2026-10-05",
+    "doc_type": "event",
+    "filed_from": "2026-08-21",
+    "filed_to": "2026-08-21"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 621
+  }
+ ],
+ "cited": [
+  "20260821800478",
+  "20260821800662"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 779,
+  "cache_read_input_tokens": 8967,
+  "cache_creation_input_tokens": 5613
+ },
+ "seconds": 6.6,
+ "number": "Q23",
+ "gold": "두 건. ① 단일판매·공급계약 체결: 현대모비스, SENSING ASSY 6종, 475,742,538,388원 ② 타법인 주식 및 출자증권 취득결정: Nexplus SK s.r.o.(슬로바키아), 27,465,026,262원 (DB 조회값. 원문 대조 전)"
+}

@@ -24,19 +24,33 @@ def questions() -> list[tuple[str, str, str]]:
     return rows
 
 
+def sealed_questions() -> list[tuple[str, str, str, date]]:
+    """봉인 시험 문항. 문항마다 조회 시점이 있고, "위와 같은 질문"은 앞 문항의 질문을 쓴다."""
+    rows, previous = [], ""
+    for line in (ROOT / "sealed" / "questions.md").read_text(encoding="utf-8").splitlines():
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) >= 5 and re.fullmatch(r"S\d\d", cells[0]) and re.search(r"\d{4}-\d{2}-\d{2}", cells[3]):
+            question = previous if cells[2].startswith("위와 같은 질문") else cells[2]
+            previous = question
+            rows.append((cells[0], question, cells[4], date.fromisoformat(re.search(r"\d{4}-\d{2}-\d{2}", cells[3]).group())))
+    return rows
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default=agent.MODEL)
     parser.add_argument("--only", default="")
+    parser.add_argument("--set", default="practice", choices=["practice", "sealed"])
     args = parser.parse_args()
     only = set(filter(None, args.only.split(",")))
-    out_dir = ROOT / "agent" / args.model
+    out_dir = ROOT / ("agent" if args.set == "practice" else "sealed/agent") / args.model
     out_dir.mkdir(parents=True, exist_ok=True)
     total = {"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}
-    for number, question, gold in questions():
+    items = sealed_questions() if args.set == "sealed" else [(n, q, g, AS_OF) for n, q, g in questions()]
+    for number, question, gold, as_of in items:
         if only and number not in only:
             continue
-        result = agent.answer(question, model=args.model, as_of=AS_OF)
+        result = agent.answer(question, model=args.model, as_of=as_of)
         result["number"], result["gold"] = number, gold
         (out_dir / f"{number}.json").write_text(json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8")
         for key in total:

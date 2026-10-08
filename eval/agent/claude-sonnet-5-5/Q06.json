@@ -1,0 +1,44 @@
+{
+ "question": "2025년 말 기준 현대글로비스의 최대주주와 그 지분율은?",
+ "as_of": "2026-10-05",
+ "model": "claude-sonnet-5-5",
+ "answer": "2025년 말(2025-12-31) 기준 현대글로비스의 최대주주는 **정의선**이고, 지분율은 **20.0%**입니다.\n\n- 이 값은 2026-03-18에 공시된 사업보고서(접수번호 20260318001205)에 나온 것입니다. 질문의 기준일과 같은 날짜의 값입니다.\n- 참고로 현대자동차(주)는 계열회사로서 4.88%를 보유합니다(접수번호 20260318001205, 20260318001394).",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대글로비스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 132
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 150,
+    "as_of": "2026-10-05",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 3239
+  }
+ ],
+ "cited": [
+  "20260318001205",
+  "20260318001394"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 358,
+  "cache_read_input_tokens": 8917,
+  "cache_creation_input_tokens": 6458
+ },
+ "seconds": 5.8,
+ "number": "Q06",
+ "gold": "정의선, 20.00% (확인)"
+}
