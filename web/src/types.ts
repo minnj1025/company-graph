@@ -69,9 +69,21 @@ export interface RelationRow {
   evidence: Evidence[];
 }
 
+/** 정기보고서의 "사업의 내용"에서 가져온 글. 표는 한 줄이 표의 한 줄이고 칸은 " | " 로 나뉜다 */
+export interface Business {
+  rcept_no: string;
+  url: string;
+  report: string | null;
+  disclosed_date: string;
+  overview: string | null;
+  products: string | null;
+  cut: boolean;
+}
+
 export interface CompanyDetail {
   company: Company;
   as_of: string;
+  business: Business | null;
   relations: RelationRow[];
   group: { count: number; source: Evidence[]; members: string[] };
 }

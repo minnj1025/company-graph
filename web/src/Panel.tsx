@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { shortName } from "./Graph";
-import type { CompanyDetail, RelationRow } from "./types";
+import type { Business, CompanyDetail, RelationRow } from "./types";
 
 const formatValue = (row: RelationRow) => {
   if (row.value === null) return "금액 비공개";
@@ -67,6 +67,68 @@ function Section({ title, rows, other, onOpen }: SectionProps) {
   );
 }
 
+/** 보고서 글을 문단과 표로 나눠 그린다. " | " 가 있는 줄이 이어지면 표다. */
+function ReportText({ text }: { text: string }) {
+  const blocks: (string | string[][])[] = [];
+  for (const line of text.split("\n")) {
+    const last = blocks[blocks.length - 1];
+    if (line.includes(" | ")) {
+      if (Array.isArray(last)) last.push(line.split(" | "));
+      else blocks.push([line.split(" | ")]);
+    } else blocks.push(line);
+  }
+  return (
+    <>
+      {blocks.map((block, i) =>
+        Array.isArray(block) ? (
+          <div key={i} className="biz-table">
+            <table>
+              <tbody>
+                {block.map((cells, r) => (
+                  <tr key={r}>
+                    {cells.map((cell, c) => (
+                      <td key={c}>{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p key={i}>{block}</p>
+        ),
+      )}
+    </>
+  );
+}
+
+function BusinessSection({ business }: { business: Business }) {
+  const [expanded, setExpanded] = useState(false);
+  const overview = business.overview ?? "";
+  const short = overview.length > 260 && !expanded;
+  return (
+    <section className="biz">
+      <h3>
+        사업 내용
+        <a href={business.url} target="_blank" rel="noreferrer" className="h3-link" title={`DART 접수번호 ${business.rcept_no}`}>
+          {business.report ?? "보고서"} 원문
+        </a>
+      </h3>
+      {overview && <ReportText text={short ? overview.slice(0, 260) + "…" : overview} />}
+      {expanded && business.products && (
+        <>
+          <h4>주요 제품 및 서비스</h4>
+          <ReportText text={business.products} />
+        </>
+      )}
+      {expanded && business.cut && <p className="row-meta">길어서 앞부분만 실었습니다. 전체는 원문에서 볼 수 있습니다.</p>}
+      <button className="more" onClick={() => setExpanded(!expanded)}>
+        {expanded ? "접기" : "제품과 매출 비중까지 보기"}
+      </button>
+    </section>
+  );
+}
+
 interface Props {
   detail: CompanyDetail;
   onOpen: (id: number) => void;
@@ -101,6 +163,7 @@ export function Panel({ detail, onOpen, onCenter, onClose }: Props) {
         <span className="sub">{detail.as_of} 시점에 공시로 알려진 내용</span>
       </div>
       <div className="panel-body">
+        {detail.business && <BusinessSection key={detail.business.rcept_no} business={detail.business} />}
         <Section title="보유한 지분" rows={of("equity", true)} other={object} onOpen={onOpen} />
         <Section title="이 기업의 주주 (기업)" rows={of("equity", false)} other={subject} onOpen={onOpen} />
         <Section title="판 계약 (공급계약 공시)" rows={of("supply_contract", true)} other={object} onOpen={onOpen} />
@@ -127,7 +190,7 @@ export function Panel({ detail, onOpen, onCenter, onClose }: Props) {
             <p className="members">{group.members.map(shortName).join(", ")}</p>
           </section>
         )}
-        {relations.length === 0 && group.count === 0 && <p className="empty">이 시점에 알려진 관계가 없습니다.</p>}
+        {relations.length === 0 && group.count === 0 && !detail.business && <p className="empty">이 시점에 알려진 관계가 없습니다.</p>}
       </div>
     </aside>
   );

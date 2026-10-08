@@ -11,6 +11,17 @@ import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType,
 
 const EMPTY: GraphData = { nodes: [], links: [] };
 
+interface Layout {
+  left: number;
+  side: number;
+  cards: number;
+  leftOpen: boolean;
+  sideOpen: boolean;
+  cardsOpen: boolean;
+}
+const DEFAULT_LAYOUT: Layout = { left: 290, side: 400, cards: 216, leftOpen: true, sideOpen: true, cardsOpen: true };
+const STRIP = 34; // 접은 칸이 차지하는 너비(높이)
+
 export function App() {
   const [meta, setMeta] = useState<Meta | null>(null);
   const [asOf, setAsOf] = useState<string | null>(null);
@@ -22,26 +33,41 @@ export function App() {
   const [tab, setTab] = useState<"graph" | "data" | "agent">("graph");
   /** Agent가 찾은 결과. 있으면 그래프에 그 기업과 관계만 남긴다 */
   const [found, setFound] = useState<AskResult | null>(null);
-  const [showControls, setShowControls] = useState(true);
   const [filters, setFilters] = useState<Filters>(NO_FILTER);
-  /** 오른쪽 칸의 너비. 왼쪽 가장자리를 끌어 바꾸고, 다음에 와도 그대로 둔다 */
-  const [sideWidth, setSideWidth] = useState(() => Number(localStorage.getItem("side-width")) || 400);
-  const resizeSide = useCallback((event: React.PointerEvent) => {
-    event.preventDefault();
-    const move = (e: PointerEvent) => {
-      const width = Math.round(Math.min(Math.max(window.innerWidth - e.clientX - 10, 320), window.innerWidth * 0.6));
-      setSideWidth(width);
-      localStorage.setItem("side-width", String(width));
-    };
-    const stop = () => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", stop);
-      document.body.classList.remove("resizing");
-    };
-    document.body.classList.add("resizing");
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", stop);
+  /** 칸의 크기와 접힘. 가장자리를 끌어 바꾸고, 다음에 와도 그대로 둔다 */
+  const [layout, setLayout] = useState<Layout>(() => {
+    try {
+      return { ...DEFAULT_LAYOUT, ...JSON.parse(localStorage.getItem("layout") ?? "{}") };
+    } catch {
+      return DEFAULT_LAYOUT;
+    }
+  });
+  const change = useCallback((patch: Partial<Layout>) => {
+    setLayout((now) => {
+      const next = { ...now, ...patch };
+      localStorage.setItem("layout", JSON.stringify(next));
+      return next;
+    });
   }, []);
+  /** 가장자리를 끄는 동안 마우스 위치로 크기를 다시 정한다 */
+  const drag = useCallback(
+    (measure: (e: PointerEvent) => Partial<Layout>, vertical = false) =>
+      (event: React.PointerEvent) => {
+        event.preventDefault();
+        const kind = vertical ? "resizing-row" : "resizing";
+        const move = (e: PointerEvent) => change(measure(e));
+        const stop = () => {
+          window.removeEventListener("pointermove", move);
+          window.removeEventListener("pointerup", stop);
+          document.body.classList.remove(kind);
+        };
+        document.body.classList.add(kind);
+        window.addEventListener("pointermove", move);
+        window.addEventListener("pointerup", stop);
+      },
+    [change],
+  );
+  const clamp = (value: number, low: number, high: number) => Math.round(Math.min(Math.max(value, low), high));
   const [data, setData] = useState<GraphData>(EMPTY);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<CompanyDetail | null>(null);
@@ -116,7 +142,13 @@ export function App() {
   }, [data, filters]);
   const shownData = found ? found.graph : filtered;
   const groups = useMemo(() => categoryColors(shownData.nodes, colorBy), [shownData, colorBy]);
-  const onSelect = useCallback((node: GraphNode | null) => setSelectedId(node ? node.id : null), []);
+  const onSelect = useCallback(
+    (node: GraphNode | null) => {
+      setSelectedId(node ? node.id : null);
+      if (node) change({ sideOpen: true });
+    },
+    [change],
+  );
   const drawnTypes = useMemo(() => {
     const present = new Set<LinkType>(shownData.links.map((link) => link.type));
     return (Object.keys(LINK_LABELS) as LinkType[]).filter((type) => present.has(type));
@@ -155,7 +187,66 @@ export function App() {
         </div>
       </header>
 
-      <main className="work" style={{ "--side": `${sideWidth}px` } as React.CSSProperties}>
+      <main
+        className="work"
+        style={{
+          gridTemplateColumns: `${layout.leftOpen ? layout.left : STRIP}px minmax(0, 1fr) ${layout.sideOpen ? layout.side : STRIP}px`,
+          gridTemplateRows: `minmax(0, 1fr) ${layout.cardsOpen ? layout.cards : STRIP}px`,
+        }}
+      >
+        <aside className={layout.leftOpen ? "leftcol" : "leftcol folded"}>
+          {layout.leftOpen ? (
+            <>
+              <div className="col-head">
+                <b>조건</b>
+                <span>
+                  {scopeLabel} · {asOf}
+                </span>
+                <button onClick={() => change({ leftOpen: false })} title="이 칸 접기">
+                  접기
+                </button>
+              </div>
+              <div className="col-body">
+                <Controls
+                  firstDate={meta.first_date}
+                  lastDate={meta.last_date}
+                  asOf={asOf}
+                  onAsOf={setAsOf}
+                  types={types}
+                  onTypes={setTypes}
+                  colorBy={colorBy}
+                  onColorBy={setColorBy}
+                  centerName={center ? shortName(center.name) : null}
+                  hops={hops}
+                  onHops={setHops}
+                  onOverview={() => setCenter(null)}
+                  scope={scope}
+                  categories={meta.categories}
+                  onScope={setScope}
+                  filters={filters}
+                  onFilters={setFilters}
+                  shown={{ nodes: filtered.nodes.length, links: filtered.links.length }}
+                  onPick={(company) => {
+                    setFound(null);
+                    setCenter(company);
+                    setSelectedId(company.id);
+                  }}
+                />
+              </div>
+              <div
+                className="grip grip-right"
+                onPointerDown={drag((e) => ({ left: clamp(e.clientX - 10, 230, 460) }))}
+                onDoubleClick={() => change({ left: DEFAULT_LAYOUT.left })}
+                title="끌어서 너비 바꾸기 (두 번 누르면 처음 크기)"
+              />
+            </>
+          ) : (
+            <button className="strip" onClick={() => change({ leftOpen: true })} title="조건 칸 펼치기">
+              조건
+            </button>
+          )}
+        </aside>
+
         <section className="stage">
           <Graph
             data={shownData}
@@ -166,7 +257,7 @@ export function App() {
             fitKey={found ? `ask-${found.question}` : `${center?.id ?? scope}-${hops}`}
           />
 
-          {found ? (
+          {found && (
             <div className="found">
               <div>
                 <b>질문으로 찾은 것만 보는 중</b>
@@ -174,40 +265,6 @@ export function App() {
               </div>
               <button onClick={() => setFound(null)}>전체 그래프로</button>
             </div>
-          ) : showControls ? (
-            <div className="left">
-              <button className="fold" onClick={() => setShowControls(false)}>
-                접기
-              </button>
-              <Controls
-                firstDate={meta.first_date}
-                lastDate={meta.last_date}
-                asOf={asOf}
-                onAsOf={setAsOf}
-                types={types}
-                onTypes={setTypes}
-                colorBy={colorBy}
-                onColorBy={setColorBy}
-                centerName={center ? shortName(center.name) : null}
-                hops={hops}
-                onHops={setHops}
-                onOverview={() => setCenter(null)}
-                scope={scope}
-                categories={meta.categories}
-                onScope={setScope}
-                filters={filters}
-                onFilters={setFilters}
-                shown={{ nodes: filtered.nodes.length, links: filtered.links.length }}
-                onPick={(company) => {
-                  setCenter(company);
-                  setSelectedId(company.id);
-                }}
-              />
-            </div>
-          ) : (
-            <button className="unfold" onClick={() => setShowControls(true)}>
-              조건 · {scopeLabel} · {asOf}
-            </button>
           )}
 
           <div className="legend">
@@ -234,14 +291,46 @@ export function App() {
           {error && <div className="toast">{error}</div>}
         </section>
 
-        <Cards asOf={asOf} data={shownData} scopeLabel={scopeLabel} onOpen={setSelectedId} />
+        <div className={layout.cardsOpen ? "cards-wrap" : "cards-wrap folded"}>
+          {layout.cardsOpen ? (
+            <>
+              <div
+                className="grip grip-top"
+                onPointerDown={drag((e) => ({ cards: clamp(window.innerHeight - e.clientY - 34, 120, window.innerHeight * 0.55) }), true)}
+                onDoubleClick={() => change({ cards: DEFAULT_LAYOUT.cards })}
+                title="끌어서 높이 바꾸기 (두 번 누르면 처음 크기)"
+              />
+              <button className="fold-cards" onClick={() => change({ cardsOpen: false })} title="아래 칸 접기">
+                접기
+              </button>
+              <Cards asOf={asOf} data={shownData} scopeLabel={scopeLabel} onOpen={setSelectedId} />
+            </>
+          ) : (
+            <button className="strip wide" onClick={() => change({ cardsOpen: true })} title="아래 칸 펼치기">
+              최근 공시 · 최근에 바뀐 것 · 연결이 많은 기업
+            </button>
+          )}
+        </div>
 
-        <aside className="side">
-          <div className="side-grip" onPointerDown={resizeSide} onDoubleClick={() => setSideWidth(400)} title="끌어서 너비 바꾸기 (두 번 누르면 처음 크기)" />
+        <aside className={layout.sideOpen ? "side" : "side folded"}>
+          {!layout.sideOpen && (
+            <button className="strip" onClick={() => change({ sideOpen: true })} title="질문 칸 펼치기">
+              {detail ? "기업 상세" : "질문하기"}
+            </button>
+          )}
+          <div
+            className="grip grip-left"
+            onPointerDown={drag((e) => ({ side: clamp(window.innerWidth - e.clientX - 10, 320, window.innerWidth * 0.6) }))}
+            onDoubleClick={() => change({ side: DEFAULT_LAYOUT.side })}
+            title="끌어서 너비 바꾸기 (두 번 누르면 처음 크기)"
+          />
           <div className={detail ? "side-pane hidden" : "side-pane"}>
             <div className="side-head">
               <b>질문하기</b>
               <span>Agent가 공시 DB를 조회해 답합니다</span>
+              <button onClick={() => change({ sideOpen: false })} title="이 칸 접기">
+                접기
+              </button>
             </div>
             <Chat shown={found} onShow={setFound} />
           </div>

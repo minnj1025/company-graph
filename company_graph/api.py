@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
 from . import query
-from .db import AskLog, Base, Company, Document, Relation, get_engine, session
+from .db import AskLog, Base, BusinessSection, Company, Document, Relation, get_engine, session
 from .stages import sector, stage
 
 app = FastAPI(title="기업 관계 그래프")
@@ -179,6 +179,23 @@ def graph(center: int, as_of: date, types: str | None = None, hops: int = Query(
     return build_graph(db, edges, focus={center})
 
 
+def business_json(db, company_id: int, as_of: date) -> dict | None:
+    """그 시점까지 나온 가장 나중 정기보고서의 사업 개요와 주요 제품. 보고서에 적힌 글 그대로다."""
+    latest = db.scalar(select(func.max(BusinessSection.rcept_no)).where(BusinessSection.company_id == company_id,
+                                                                        BusinessSection.disclosed_date <= as_of))
+    if latest is None:
+        return None
+    rows = {r.section_no: r for r in db.scalars(select(BusinessSection).where(
+        BusinessSection.rcept_no == latest, BusinessSection.section_no.in_((0, 1, 2))))}
+    doc = db.get(Document, latest)
+    overview, products = rows.get(1) or rows.get(0), rows.get(2)
+    return {"rcept_no": latest, "url": query.DART_VIEWER + latest, "report": doc.report_nm.strip() if doc else None,
+            "disclosed_date": doc.rcept_dt if doc else None,
+            "overview": overview.text[:1500] if overview else None,
+            "products": products.text[:2500] if products else None,
+            "cut": bool((overview and len(overview.text) > 1500) or (products and len(products.text) > 2500))}
+
+
 @app.get("/api/company/{company_id}")
 def company(company_id: int, as_of: date, db=Depends(get_db)):
     found = db.get(Company, company_id)
@@ -188,7 +205,7 @@ def company(company_id: int, as_of: date, db=Depends(get_db)):
                             rel_types=["equity", "supply_contract", *query.EVENT_TYPES])
     members = query.group_members(db, company_id, as_of)
     order = lambda e: (e["type"], e["subject_id"] != company_id, -(e["value"] or 0))
-    return {"company": company_json(found), "as_of": as_of,
+    return {"company": company_json(found), "as_of": as_of, "business": business_json(db, company_id, as_of),
             "relations": [edge_json(db, e) for e in sorted(edges, key=order)],
             "group": {"count": len(members),
                       "source": edge_json(db, members[0])["evidence"] if members else [],
