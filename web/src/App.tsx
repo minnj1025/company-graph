@@ -3,6 +3,7 @@ import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, type Scope } from "
 import { categoryColors, legend, LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { Controls } from "./Controls";
 import { Graph, shortName } from "./Graph";
+import { AgentPage, DataPage } from "./Pages";
 import { Panel } from "./Panel";
 import type { Company, CompanyDetail, GraphData, GraphNode, Meta, RelType } from "./types";
 
@@ -16,6 +17,7 @@ export function App() {
   const [center, setCenter] = useState<Company | null>(null);
   const [hops, setHops] = useState(1);
   const [scope, setScope] = useState<Scope>("listed");
+  const [tab, setTab] = useState<"graph" | "data" | "agent">("graph");
   const [data, setData] = useState<GraphData>(EMPTY);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<CompanyDetail | null>(null);
@@ -142,6 +144,19 @@ export function App() {
       </div>
 
       {error && <div className="toast">{error}</div>}
+
+      <nav className="tabs">
+        <button className={tab === "graph" ? "on" : ""} onClick={() => setTab("graph")}>
+          그래프
+        </button>
+        <button className={tab === "data" ? "on" : ""} onClick={() => setTab("data")}>
+          데이터와 검증
+        </button>
+        <button className={tab === "agent" ? "on" : ""} onClick={() => setTab("agent")}>
+          Agent 예시
+        </button>
+      </nav>
+      {tab !== "graph" && <div className="overlay">{tab === "data" ? <DataPage meta={meta} /> : <AgentPage />}</div>}
 
       {detail && (
         <Panel

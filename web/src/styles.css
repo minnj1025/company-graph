@@ -443,3 +443,276 @@ h1 span {
   background: #161b26;
   color: #e6ebf5;
 }
+
+/* 위쪽 탭과, 그래프 위에 덮는 글 화면 */
+.tabs {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+}
+
+.tabs button {
+  padding: 7px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.tabs button.on {
+  background: rgba(122, 162, 255, 0.18);
+  color: var(--text);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+.page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 84px 24px 80px;
+  line-height: 1.65;
+}
+
+.page h2 {
+  margin: 44px 0 10px;
+  font-size: 20px;
+}
+
+.page h2:first-child {
+  margin-top: 0;
+}
+
+.page .lead {
+  color: #b9c3d3;
+  margin: 0 0 18px;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.tile {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+}
+
+.tile b {
+  display: block;
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tile span,
+.page .muted {
+  color: var(--muted);
+}
+
+.grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grid th,
+.grid td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.grid th {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.grid .num {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  display: flex;
+  height: 34px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.bar div {
+  display: grid;
+  place-items: center;
+  color: #0b0f16;
+  font-weight: 600;
+}
+
+.bar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.bar-legend .dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.notes {
+  margin: 0 0 18px;
+  padding-left: 20px;
+  color: #b9c3d3;
+}
+
+.notes li {
+  margin-bottom: 6px;
+}
+
+.examples {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.example-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.example {
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  line-height: 1.45;
+}
+
+.example span {
+  display: block;
+  color: var(--accent);
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.example.on {
+  border-color: rgba(122, 162, 255, 0.6);
+  background: rgba(122, 162, 255, 0.1);
+}
+
+.example-body {
+  min-width: 0;
+  padding: 18px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.question {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.question span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.tools {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.tool {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.tool code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+.tool em {
+  font-style: normal;
+  color: #6fd08c;
+  white-space: nowrap;
+}
+
+.answer {
+  overflow-x: auto;
+}
+
+.answer table {
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 13px;
+}
+
+.answer th,
+.answer td {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.answer p,
+.answer ul {
+  margin: 8px 0;
+}
+
+.example-body .meta {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .examples {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs button {
+    padding: 7px 11px;
+  }
+}

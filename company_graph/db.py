@@ -1,4 +1,5 @@
 """표 정의. db/schema.sql(MySQL)과 같은 구조이며, 설계 근거는 DESIGN.md 6장."""
+from functools import lru_cache
 from datetime import date, datetime
 from decimal import Decimal
 
@@ -103,9 +104,17 @@ class QualityLog(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime)
 
 
+@lru_cache(maxsize=1)
 def get_engine():
-    DATA_DIR.mkdir(exist_ok=True)
-    return create_engine(DB_URL)
+    """프로세스에 엔진은 하나. 요청마다 새로 만들면 연결이 쌓인다."""
+    if DB_URL.startswith("sqlite"):
+        DATA_DIR.mkdir(exist_ok=True)
+        return create_engine(DB_URL)
+    options = {"pool_pre_ping": True, "pool_recycle": 300}
+    if DB_URL.startswith("postgresql"):
+        # 배포 환경(서버리스 함수 + 연결 풀러): 함수 하나가 연결을 조금만 쥐고, 풀러가 싫어하는 준비된 구문을 쓰지 않는다
+        options.update(pool_size=1, max_overflow=2, connect_args={"prepare_threshold": None})
+    return create_engine(DB_URL, **options)
 
 
 def init_db(engine=None):

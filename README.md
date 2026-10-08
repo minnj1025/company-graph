@@ -101,7 +101,7 @@ tests/                           pytest 43개
 ```bash
 cp .env.example .env            # 비밀번호를 채운다. 키는 사용자 환경 변수 DART_API_KEY, DATA_GO_KR_API_KEY 에 둔다
 docker compose up -d            # MySQL
-python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
+python -m venv .venv && .venv/Scripts/pip install -r requirements-dev.txt
 ```
 
 수집과 추출 (OpenDART는 하루 2만 건 제한이 있어 며칠에 나눠 돈다. 한도에 닿으면 멈추고, 같은 명령으로 이어 받는다):

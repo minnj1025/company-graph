@@ -2,6 +2,7 @@
 
 실행: uvicorn company_graph.api:app --port 8000
 """
+import time
 from collections import Counter, defaultdict
 from datetime import date
 
@@ -103,8 +104,25 @@ def parse_types(types: str | None) -> list[str]:
     return chosen or list(GRAPH_TYPES)
 
 
+_meta_cache: dict = {}
+META_TTL = 600   # 초. 수집은 하루에 한 번이라 건수를 요청마다 다시 셀 필요가 없다
+
+
+@app.get("/api/health")
+def health(db=Depends(get_db)):
+    """배포 환경의 예약 작업이 하루 한 번 부른다. 무료 DB는 일주일 동안 접속이 없으면 멈추기 때문이다."""
+    return {"ok": db.scalar(select(func.count()).select_from(Company)) > 0}
+
+
 @app.get("/api/meta")
 def meta(db=Depends(get_db)):
+    if _meta_cache and time.time() - _meta_cache["at"] < META_TTL:
+        return _meta_cache["value"]
+    _meta_cache.update(at=time.time(), value=_meta(db))
+    return _meta_cache["value"]
+
+
+def _meta(db) -> dict:
     first, last = db.execute(select(func.min(Relation.disclosed_date), func.max(Relation.disclosed_date))).one()
     counts = {k: v for k, v in db.execute(select(Relation.rel_type, func.count())
                                          .where(Relation.retired_at.is_(None)).group_by(Relation.rel_type)).all()}

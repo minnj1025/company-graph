@@ -1,0 +1,18 @@
+# 배포에 필요 없는 것과 올리면 안 되는 것
+.env
+.env.*
+data
+.venv
+.claude
+node_modules
+web/node_modules
+web/dist
+eval
+tests
+docs
+db
+초기 메모
+DESIGN.md
+requirements-dev.txt
+docker-compose.yml
+__pycache__
