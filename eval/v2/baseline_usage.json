@@ -348,5 +348,155 @@
   "tokens": 109369,
   "tool_uses": 29,
   "seconds": 230.9
+ },
+ "T10-03": {
+  "tokens": 62669,
+  "tool_uses": 6,
+  "seconds": 49.6
+ },
+ "T11-05": {
+  "tokens": 67986,
+  "tool_uses": 8,
+  "seconds": 68.5
+ },
+ "T12-04": {
+  "tokens": 70629,
+  "tool_uses": 11,
+  "seconds": 103.1
+ },
+ "T13-03": {
+  "tokens": 76394,
+  "tool_uses": 14,
+  "seconds": 120.9
+ },
+ "T09-06": {
+  "tokens": 67359,
+  "tool_uses": 8,
+  "seconds": 83.0
+ },
+ "T10-05": {
+  "tokens": 61769,
+  "tool_uses": 6,
+  "seconds": 47.1
+ },
+ "T11-04": {
+  "tokens": 74640,
+  "tool_uses": 11,
+  "seconds": 96.2
+ },
+ "T12-03": {
+  "tokens": 73056,
+  "tool_uses": 15,
+  "seconds": 108.0
+ },
+ "T12-06": {
+  "tokens": 72971,
+  "tool_uses": 14,
+  "seconds": 116.3
+ },
+ "T13-05": {
+  "tokens": 79904,
+  "tool_uses": 19,
+  "seconds": 172.6
+ },
+ "T14-04": {
+  "tokens": 70042,
+  "tool_uses": 10,
+  "seconds": 83.9
+ },
+ "T15-03": {
+  "tokens": 74378,
+  "tool_uses": 11,
+  "seconds": 89.1
+ },
+ "T15-06": {
+  "tokens": 85571,
+  "tool_uses": 19,
+  "seconds": 173.1
+ },
+ "T16-05": {
+  "tokens": 70706,
+  "tool_uses": 7,
+  "seconds": 83.5
+ },
+ "T09-05": {
+  "tokens": 74294,
+  "tool_uses": 14,
+  "seconds": 128.6
+ },
+ "T10-04": {
+  "tokens": 66262,
+  "tool_uses": 9,
+  "seconds": 90.7
+ },
+ "T11-03": {
+  "tokens": 70046,
+  "tool_uses": 10,
+  "seconds": 116.7
+ },
+ "T11-06": {
+  "tokens": 105110,
+  "tool_uses": 35,
+  "seconds": 275.4
+ },
+ "T12-05": {
+  "tokens": 78354,
+  "tool_uses": 17,
+  "seconds": 147.8
+ },
+ "T13-04": {
+  "tokens": 77358,
+  "tool_uses": 19,
+  "seconds": 161.8
+ },
+ "T14-03": {
+  "tokens": 76965,
+  "tool_uses": 17,
+  "seconds": 151.1
+ },
+ "T14-06": {
+  "tokens": 78763,
+  "tool_uses": 20,
+  "seconds": 129.7
+ },
+ "T15-05": {
+  "tokens": 88458,
+  "tool_uses": 22,
+  "seconds": 170.3
+ },
+ "T16-04": {
+  "tokens": 65162,
+  "tool_uses": 5,
+  "seconds": 43.0
+ },
+ "T10-06": {
+  "tokens": 72192,
+  "tool_uses": 17,
+  "seconds": 137.4
+ },
+ "T16-03": {
+  "tokens": 63687,
+  "tool_uses": 5,
+  "seconds": 38.4
+ },
+ "T14-05": {
+  "tokens": 65865,
+  "tool_uses": 9,
+  "seconds": 62.5
+ },
+ "T16-06": {
+  "tokens": 69561,
+  "tool_uses": 6,
+  "seconds": 68.2
+ },
+ "T13-06": {
+  "tokens": 82830,
+  "tool_uses": 21,
+  "seconds": 192.4
+ },
+ "T15-04": {
+  "tokens": 86520,
+  "tool_uses": 21,
+  "seconds": 196.8
  }
 }
