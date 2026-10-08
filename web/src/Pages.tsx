@@ -117,7 +117,10 @@ function EvalSection() {
   if (!data) return null;
   const sides = data.items.map((item) => item.agent);
   const correct = sides.filter((s) => s.verdict === "correct").length;
-  const [low, high] = wilson(correct, sides.length);
+  const partial = sides.filter((s) => s.verdict === "partial").length;
+  const [low, high] = wilson(correct + partial, sides.length);
+  const pct = (n: number, of: number) => Math.round((n / of) * 100);
+  const hit = (list: { verdict: string }[]) => list.filter((s) => s.verdict === "correct" || s.verdict === "partial").length;
   const shared = data.items.filter((item) => item.baseline);
   const invented = data.items.filter((item) => item.agent.unverified.length > 0).length;
   return (
@@ -132,7 +135,8 @@ function EvalSection() {
       <VerdictLegend sides={sides} />
       <ul className="notes">
         <li>
-          정답률 {Math.round((correct / sides.length) * 100)}% (95% 구간 {low}~{high}%). 조회 결과에 없는 접수번호를 답에 적은 문항은 {invented}개입니다.
+          정답이거나 부분 정답인 문항이 {pct(correct + partial, sides.length)}%입니다(95% 구간 {low}~{high}%). 이 가운데 물은 값을 모두 맞힌 정답이{" "}
+          {pct(correct, sides.length)}%, 일부만 맞힌 부분 정답이 {pct(partial, sides.length)}%입니다. 조회 결과에 없는 접수번호를 답에 적은 문항은 {invented}개입니다.
         </li>
         <li>
           부분 정답 55개의 대부분은 값이 틀린 것이 아니라 물은 값 가운데 하나를 답하지 못한 것입니다. 자기자본 대비 비율(10문항)과 취득 예정일자(7문항)처럼
@@ -148,7 +152,8 @@ function EvalSection() {
       <h2>웹 검색만 쓰는 Claude와 견주면</h2>
       <p className="lead">
         같은 문항 {shared.length}개(종류마다 앞의 두 문항)를 이 DB 없이 웹 검색과 페이지 읽기만 쓸 수 있는 Claude({data.baseline_model})에게 풀게 했습니다.
-        Agent는 가장 작은 모델({data.agent_model})이고, 견준 쪽은 그보다 훨씬 큰 모델입니다. {shared.length}문항이라 정답률의 구간이 서로 겹치므로 정답률이 더 높다고 단정할 수 없고, 시간과 토큰의 차이는 분명합니다.
+        Agent는 가장 작은 모델({data.agent_model})이고, 견준 쪽은 그보다 훨씬 큰 모델입니다. 정답이거나 부분 정답인 문항은 Agent {pct(hit(shared.map((i) => i.agent)), shared.length)}%, 웹 검색{" "}
+        {pct(hit(shared.map((i) => i.baseline!)), shared.length)}%입니다. {shared.length}문항이라 이 차이는 크게만 읽어야 하고, 시간과 토큰의 차이는 분명합니다.
       </p>
       <Compare data={data} />
       <ul className="notes">
