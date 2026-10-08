@@ -9,6 +9,9 @@ export interface Company {
   listed: boolean;
   group: string | null;
   stage: string;
+  /** 업종 (KSIC 중분류를 묶은 것) */
+  sector: string;
+  market: string | null;
   in_scope: boolean;
 }
 
@@ -81,4 +84,6 @@ export interface Meta {
   documents: number;
   relations: Record<string, number>;
   coverage: { notice: string; sources: Record<string, string> };
+  /** 첫 화면을 나눠 볼 분류와 분류마다의 상장사 수 */
+  categories: Record<"market" | "sector" | "group", { name: string; count: number }[]>;
 }

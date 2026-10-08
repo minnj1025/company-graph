@@ -104,7 +104,7 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
         backgroundColor="#0b0f16"
         showNavInfo={false}
         nodeId="id"
-        nodeLabel={(node) => `${node.name}${node.group ? ` · ${node.group}` : ""} · ${node.stage}`}
+        nodeLabel={(node) => `${node.name}${node.group ? ` · ${node.group}` : ""} · ${node.sector}`}
         nodeVal={(node) => (node.focus ? 12 : 1.2 + node.degree * 0.45)}
         nodeRelSize={4}
         nodeOpacity={0.92}

@@ -9,7 +9,8 @@ async function get<T>(path: string, params: Record<string, string | number> = {}
 
 export const fetchMeta = () => get<Meta>("/meta");
 export const searchCompanies = (q: string) => get<Company[]>("/companies", { q });
-export type Scope = "listed" | "focus";
+/** "listed", "focus", 또는 "market:코스닥", "sector:자동차", "group:삼성" */
+export type Scope = string;
 export const fetchOverview = (asOf: string, types: RelType[], scope: Scope) =>
   get<GraphData>("/overview", { as_of: asOf, types: types.join(","), scope });
 export const fetchGraph = (center: number, asOf: string, types: RelType[], hops: number) =>

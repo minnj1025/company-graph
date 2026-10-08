@@ -2,7 +2,7 @@
 
 실행: uvicorn company_graph.api:app --port 8000
 """
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import date
 
 from fastapi import Depends, FastAPI, HTTPException, Query
@@ -10,7 +10,7 @@ from sqlalchemy import func, select
 
 from . import query
 from .db import Company, Document, Relation, get_engine, session
-from .stages import stage
+from .stages import sector, stage
 
 app = FastAPI(title="기업 관계 그래프")
 _engine = get_engine()
@@ -22,9 +22,38 @@ def get_db():
         yield db
 
 
+LISTED = ("Y", "K", "N")
+MARKETS = {"Y": "유가증권", "K": "코스닥", "N": "코넥스"}
+
+
+def categories(db) -> dict:
+    """첫 화면을 나눠 볼 분류와 분류마다의 상장사 수."""
+    listed = db.scalars(select(Company).where(Company.corp_cls.in_(LISTED))).all()
+    count = lambda key: sorted(Counter(filter(None, map(key, listed))).items(), key=lambda x: (-x[1], x[0]))
+    return {"market": [{"name": MARKETS[k], "count": n} for k, n in count(lambda c: c.corp_cls)],
+            "sector": [{"name": k, "count": n} for k, n in count(lambda c: sector(c.induty_code))],
+            "group": [{"name": k, "count": n} for k, n in count(lambda c: c.ftc_group)]}
+
+
+def scope_members(db, scope: str) -> tuple[list[int], str]:
+    """scope → (기업 번호, 관계를 고르는 방식). within 은 이 기업들끼리만, both 는 이 기업들과 그 상대까지."""
+    kind, _, name = scope.partition(":")
+    if kind == "focus":
+        return list(db.scalars(select(Company.company_id).where(Company.in_scope))), "both"
+    listed = db.scalars(select(Company).where(Company.corp_cls.in_(LISTED))).all()
+    if kind == "market":
+        return [c.company_id for c in listed if MARKETS[c.corp_cls] == name], "within"
+    if kind == "sector":
+        return [c.company_id for c in listed if sector(c.induty_code) == name], "both"
+    if kind == "group":   # 집단은 비상장 계열사까지
+        return list(db.scalars(select(Company.company_id).where(Company.ftc_group == name))), "both"
+    return [c.company_id for c in listed], "within"
+
+
 def company_json(c: Company) -> dict:
     return {"id": c.company_id, "name": c.name, "stock_code": c.stock_code, "listed": c.corp_cls in ("Y", "K"),
-            "group": c.ftc_group, "stage": stage(c.induty_code), "in_scope": c.in_scope, "corp_code": c.corp_code}
+            "group": c.ftc_group, "stage": stage(c.induty_code), "sector": sector(c.induty_code),
+            "market": MARKETS.get(c.corp_cls), "in_scope": c.in_scope, "corp_code": c.corp_code}
 
 
 def edge_json(db, e: dict) -> dict:
@@ -83,7 +112,8 @@ def meta(db=Depends(get_db)):
             "companies": db.scalar(select(func.count()).select_from(Company)),
             "in_scope": db.scalar(select(func.count()).select_from(Company).where(Company.in_scope)),
             "documents": db.scalar(select(func.count()).select_from(Document)),
-            "relations": {query.LABELS[k]: v for k, v in counts.items()}, "coverage": query.coverage(db)}
+            "relations": {query.LABELS[k]: v for k, v in counts.items()}, "coverage": query.coverage(db),
+            "categories": categories(db)}
 
 
 @app.get("/api/companies")
@@ -95,16 +125,15 @@ def companies(q: str = Query(min_length=1), db=Depends(get_db)):
 def overview(as_of: date, types: str | None = None, scope: str = "listed", db=Depends(get_db)):
     """첫 화면의 그래프. 계열은 선이 너무 많아 그리지 않고 점의 색(집단)으로 보여 준다.
 
-    scope=listed 는 지금 상장된 회사끼리의 관계(점 약 1,900개), scope=focus 는 수집을 시작한 자동차 가치사슬 기업과 그 상대.
+    scope: listed(상장사끼리), market:유가증권, sector:자동차, group:삼성 처럼 분류를 고르거나, focus(수집을 시작한 자동차 가치사슬).
     """
     chosen = [t for t in parse_types(types) if t != "affiliate"]
     if not chosen:
         return build_graph(db, [])
-    if scope == "focus":
-        ids = list(db.scalars(select(Company.company_id).where(Company.in_scope)))
-        return build_graph(db, query.relations(db, as_of, company_ids=ids, rel_types=chosen))
-    ids = list(db.scalars(select(Company.company_id).where(Company.corp_cls.in_(("Y", "K", "N")))))
-    return build_graph(db, query.relations(db, as_of, company_ids=ids, rel_types=chosen, direction="within"))
+    ids, direction = scope_members(db, scope)
+    if not ids:
+        return build_graph(db, [])
+    return build_graph(db, query.relations(db, as_of, company_ids=ids, rel_types=chosen, direction=direction))
 
 
 @app.get("/api/graph")

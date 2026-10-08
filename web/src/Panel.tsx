@@ -88,7 +88,7 @@ export function Panel({ detail, onOpen, onCenter, onClose }: Props) {
           <h2>{shortName(company.name)}</h2>
           <p className="sub">
             {company.stock_code ? `${company.stock_code} · ` : "비상장 · "}
-            {company.stage}
+            {company.sector}
             {company.group ? ` · ${company.group}그룹` : ""}
           </p>
         </div>

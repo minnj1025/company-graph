@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, type Scope } from "./api";
-import { groupColors, legend, LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
+import { categoryColors, legend, LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { Controls } from "./Controls";
 import { Graph, shortName } from "./Graph";
 import { Panel } from "./Panel";
@@ -74,7 +74,7 @@ export function App() {
     };
   }, [selectedId, asOf]);
 
-  const groups = useMemo(() => groupColors(data.nodes), [data]);
+  const groups = useMemo(() => categoryColors(data.nodes, colorBy), [data, colorBy]);
   const onSelect = useCallback((node: GraphNode | null) => setSelectedId(node ? node.id : null), []);
   const drawnTypes = center ? types : types.filter((t) => t !== "affiliate");
 
@@ -93,7 +93,7 @@ export function App() {
 
       <div className="left">
         <h1>
-          기업 관계 그래프 <span>공시 기반 · 상장사 전체</span>
+          기업 관계 그래프 <span>공시 기반 · {scope === "listed" ? "상장사 전체" : scope === "focus" ? "자동차 가치사슬" : scope.split(":")[1]}</span>
         </h1>
         <Controls
           firstDate={meta.first_date}
@@ -109,6 +109,7 @@ export function App() {
           onHops={setHops}
           onOverview={() => setCenter(null)}
           scope={scope}
+          categories={meta.categories}
           onScope={setScope}
           onPick={(company) => {
             setCenter(company);
@@ -127,7 +128,7 @@ export function App() {
           ))}
         </div>
         <div>
-          {legend(data.nodes, colorBy, groups).map(([name, color]) => (
+          {legend(colorBy, groups).map(([name, color]) => (
             <span key={name}>
               <i className="dot" style={{ background: color }} />
               {name}

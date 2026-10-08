@@ -427,3 +427,19 @@ h1 span {
 .warn {
   color: #e0a458;
 }
+
+.scope-select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  font: inherit;
+}
+
+.scope-select option,
+.scope-select optgroup {
+  background: #161b26;
+  color: #e6ebf5;
+}

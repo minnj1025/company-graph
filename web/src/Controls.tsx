@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { searchCompanies, type Scope } from "./api";
 import { LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { shortName } from "./Graph";
-import type { Company, RelType } from "./types";
+import type { Company, Meta, RelType } from "./types";
 
 const ALL_TYPES: RelType[] = ["equity", "supply_contract", "affiliate"];
 
@@ -29,6 +29,7 @@ interface Props {
   colorBy: ColorBy;
   onColorBy: (value: ColorBy) => void;
   scope: Scope;
+  categories: Meta["categories"];
   onScope: (value: Scope) => void;
   centerName: string | null;
   hops: number;
@@ -159,8 +160,8 @@ export function Controls(props: Props) {
           <button className={props.colorBy === "group" ? "chip on" : "chip"} onClick={() => props.onColorBy("group")}>
             기업집단
           </button>
-          <button className={props.colorBy === "stage" ? "chip on" : "chip"} onClick={() => props.onColorBy("stage")}>
-            가치사슬 단계
+          <button className={props.colorBy === "sector" ? "chip on" : "chip"} onClick={() => props.onColorBy("sector")}>
+            업종
           </button>
         </div>
       </div>
@@ -171,18 +172,37 @@ export function Controls(props: Props) {
         </div>
         {props.centerName === null ? (
           <>
-            <div className="chips">
-              <button className={props.scope === "listed" ? "chip on" : "chip"} onClick={() => props.onScope("listed")}>
-                상장사 전체
-              </button>
-              <button className={props.scope === "focus" ? "chip on" : "chip"} onClick={() => props.onScope("focus")}>
-                자동차 가치사슬
-              </button>
-            </div>
+            <select className="scope-select" value={props.scope} onChange={(e) => props.onScope(e.target.value)}>
+              <option value="listed">상장사 전체</option>
+              <optgroup label="시장">
+                {props.categories.market.map((c) => (
+                  <option key={c.name} value={`market:${c.name}`}>
+                    {c.name} ({c.count})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="업종">
+                {props.categories.sector.map((c) => (
+                  <option key={c.name} value={`sector:${c.name}`}>
+                    {c.name} ({c.count})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="기업집단">
+                {props.categories.group.map((c) => (
+                  <option key={c.name} value={`group:${c.name}`}>
+                    {c.name} ({c.count})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="기타">
+                <option value="focus">자동차 가치사슬 (처음 수집한 범위)</option>
+              </optgroup>
+            </select>
             <p className="hint">
-              {props.scope === "listed"
+              {props.scope === "listed" || props.scope.startsWith("market:")
                 ? "상장사끼리의 관계만 그립니다. 비상장사와의 관계는 기업을 검색하거나 점을 눌러 한 기업 중심으로 보면 나옵니다."
-                : "자동차 업종 상장사와 현대자동차그룹, 그 상대 기업입니다."}
+                : "고른 분류의 기업과, 그 기업들이 관계를 맺은 상대까지 그립니다. 괄호 안은 상장사 수입니다."}
             </p>
           </>
         ) : (
