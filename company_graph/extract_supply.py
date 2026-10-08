@@ -220,6 +220,20 @@ def load_company(db, company: Company, filings: list[dict], resolver: PartyResol
                 and normalize(x[2].title or "") == normalize(ended.title or "")
                 and normalize(clean_reported(x[2].party or "")) == normalize(clean_reported(raw_party))]
         original = same[-1] if same else None
+        if original is None and ended.related_dates:
+            # 계약명이나 상대의 표기가 달라졌으면, 해지 공시의 "관련공시"에 적힌 날짜에 처음 공시된 계약 중에서 찾는다
+            by_no = {x[0].rcept_no: x[0] for x in loaded}
+
+            def first_filed(d: Document):
+                while d.corrects_rcept_no in by_no:
+                    d = by_no[d.corrects_rcept_no]
+                return d.rcept_dt
+
+            dated = [x for x in loaded if x[0].rcept_no < doc.rcept_no and x[0].is_latest
+                     and (first_filed(x[0]) in ended.related_dates or x[0].rcept_dt in ended.related_dates)]
+            if len(dated) > 1:
+                dated = [x for x in dated if normalize(clean_reported(x[2].party or "")) == normalize(clean_reported(raw_party))]
+            original = dated[0] if len(dated) == 1 else None
         if original:
             doc.corrects_rcept_no = original[0].rcept_no
             original[0].is_latest = False

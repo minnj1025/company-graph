@@ -137,6 +137,7 @@ class Termination:
     termination_date: date | None = None
     reason: str | None = None
     subsidiary: str | None = None
+    related_dates: list[date] = field(default_factory=list)   # "관련공시" 칸에 적힌 원래 공시·정정 공시의 날짜
 
 
 def parse_termination(raw: bytes) -> Termination | None:
@@ -156,4 +157,11 @@ def parse_termination(raw: bytes) -> Termination | None:
     for i in range(min(body, len(cs) - 1)):
         if cs[i] in ("자회사인", "종속회사인"):
             t.subsidiary = cs[i + 1]
+    related = next((i for i in range(body, len(cs)) if "관련공시" in cs[i]), None)
+    if related is not None:
+        for found in re.finditer(r"(20\d{2})\s*[-./년]\s*(\d{1,2})\s*[-./월]\s*(\d{1,2})", " ".join(cs[related:related + 8])):
+            try:
+                t.related_dates.append(date(*map(int, found.groups())))
+            except ValueError:
+                pass
     return t
