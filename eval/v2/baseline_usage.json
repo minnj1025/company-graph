@@ -158,5 +158,45 @@
   "tokens": 77624,
   "tool_uses": 18,
   "seconds": 222.3
+ },
+ "T08-03": {
+  "tokens": 67307,
+  "tool_uses": 8,
+  "seconds": 57.5
+ },
+ "T04-03": {
+  "tokens": 75367,
+  "tool_uses": 11,
+  "seconds": 90.9
+ },
+ "T01-03": {
+  "tokens": 75883,
+  "tool_uses": 13,
+  "seconds": 116.8
+ },
+ "T05-03": {
+  "tokens": 73297,
+  "tool_uses": 14,
+  "seconds": 119.1
+ },
+ "T03-03": {
+  "tokens": 84759,
+  "tool_uses": 13,
+  "seconds": 154.6
+ },
+ "T07-06": {
+  "tokens": 91049,
+  "tool_uses": 18,
+  "seconds": 171.4
+ },
+ "T02-03": {
+  "tokens": 86351,
+  "tool_uses": 27,
+  "seconds": 194.1
+ },
+ "T06-03": {
+  "tokens": 94602,
+  "tool_uses": 26,
+  "seconds": 200.3
  }
 }

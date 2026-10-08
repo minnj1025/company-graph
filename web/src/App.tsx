@@ -34,6 +34,9 @@ export function App() {
   /** Agent가 찾은 결과. 있으면 그래프에 그 기업과 관계만 남긴다 */
   const [found, setFound] = useState<AskResult | null>(null);
   const [filters, setFilters] = useState<Filters>(NO_FILTER);
+  const [loading, setLoading] = useState(false);
+  /** "화면 맞추기"를 누를 때마다 올린다. 그래프가 전체가 보이게 다시 맞춘다 */
+  const [refit, setRefit] = useState(0);
   /** 칸의 크기와 접힘. 가장자리를 끌어 바꾸고, 다음에 와도 그대로 둔다 */
   const [layout, setLayout] = useState<Layout>(() => {
     try {
@@ -87,9 +90,11 @@ export function App() {
     if (!asOf) return;
     let cancelled = false;
     const request = center ? fetchGraph(center.id, asOf, types, hops) : fetchOverview(asOf, types, scope);
+    setLoading(true);
     request
       .then((next) => {
         if (cancelled) return;
+        setLoading(false);
         // 날짜나 조건을 바꿔도 점이 제자리에 있게, 앞선 화면의 위치를 이어 준다
         for (const node of next.nodes) {
           const at = positions.current.get(node.id);
@@ -98,7 +103,11 @@ export function App() {
         setData(next);
         setError(null);
       })
-      .catch(() => !cancelled && setError("그래프를 불러오지 못했습니다."));
+      .catch(() => {
+        if (cancelled) return;
+        setLoading(false);
+        setError("그래프를 불러오지 못했습니다.");
+      });
     return () => {
       cancelled = true;
     };
@@ -142,6 +151,27 @@ export function App() {
   }, [data, filters]);
   const shownData = found ? found.graph : filtered;
   const groups = useMemo(() => categoryColors(shownData.nodes, colorBy), [shownData, colorBy]);
+  const filtering = filters !== NO_FILTER && (filters.minPct > 0 || filters.minAmount > 0 || filters.minDegree > 1);
+  /** 전체 그래프가 아니라 좁혀서 보고 있는가 */
+  const narrowed = Boolean(found || center || filtering);
+  const backToAll = useCallback(() => {
+    setFound(null);
+    setCenter(null);
+    setFilters(NO_FILTER);
+    setSelectedId(null);
+  }, []);
+  // Esc: 열려 있는 기업 상세를 먼저 닫고, 없으면 전체 그래프로 돌아간다
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || tab !== "graph") return;
+      const target = event.target as HTMLElement | null;
+      if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
+      if (selectedId !== null) setSelectedId(null);
+      else if (narrowed) backToAll();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selectedId, narrowed, backToAll, tab]);
   const onSelect = useCallback(
     (node: GraphNode | null) => {
       setSelectedId(node ? node.id : null);
@@ -254,16 +284,35 @@ export function App() {
             groups={groups}
             selectedId={selectedId}
             onSelect={onSelect}
-            fitKey={found ? `ask-${found.question}` : `${center?.id ?? scope}-${hops}`}
+            fitKey={`${found ? `ask-${found.question}` : `${center?.id ?? scope}-${hops}`}-${refit}`}
           />
 
-          {found && (
-            <div className="found">
+          <div className="stage-bar">
+            <div className={narrowed ? "crumb narrowed" : "crumb"}>
+              <em>{found ? "질문으로 찾은 것" : center ? "한 기업 중심" : filtering ? "솎아 보는 중" : "보는 범위"}</em>
+              <b>{found ? found.question : scopeLabel}</b>
+              {!found && filtering && center && <em>· 솎아 보는 중</em>}
+            </div>
+            {narrowed && (
+              <button className="primary" onClick={backToAll} title="질문 결과, 한 기업 중심 보기, 솎아 보기를 모두 풀고 전체 그래프로 돌아갑니다 (Esc)">
+                ← 전체 그래프로
+              </button>
+            )}
+            <span className="spacer" />
+            <button onClick={() => setRefit((n) => n + 1)} title="그래프 전체가 보이게 화면을 다시 맞춥니다">
+              화면 맞추기
+            </button>
+          </div>
+          {loading && !found && <div className="busy">그래프를 불러오는 중…</div>}
+          {!loading && shownData.nodes.length === 0 && (
+            <div className="stage-note">
               <div>
-                <b>질문으로 찾은 것만 보는 중</b>
-                <span>{found.question}</span>
+                이 조건에 맞는 관계가 없습니다.
+                <br />
+                조회 시점을 뒤로 옮기거나 솎아 보기 조건을 풀어 보세요.
+                <br />
+                {narrowed && <button onClick={backToAll}>전체 그래프로</button>}
               </div>
-              <button onClick={() => setFound(null)}>전체 그래프로</button>
             </div>
           )}
 

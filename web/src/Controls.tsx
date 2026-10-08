@@ -247,6 +247,11 @@ export function Controls(props: Props) {
           onChange={(minDegree) => props.onFilters({ ...props.filters, minDegree })}
         />
         <p className="hint">지분율은 지분 선에, 금액은 공급계약과 취득·처분 결정 선에 적용됩니다. 조건에 맞는 선이 없는 기업은 사라집니다.</p>
+        {(props.filters.minPct > 0 || props.filters.minAmount > 0 || props.filters.minDegree > 1) && (
+          <button className="reset-filters" onClick={() => props.onFilters(NO_FILTER)}>
+            조건 풀기
+          </button>
+        )}
       </div>
 
       <div className="block">
