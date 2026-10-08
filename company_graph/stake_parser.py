@@ -35,6 +35,8 @@ class StakeDecision:
     equity: Decimal | None = None             # 자기자본(원)
     equity_ratio: Decimal | None = None       # 자기자본대비(%)
     pct_after: Decimal | None = None          # 거래 후 지분비율(%)
+    shares: Decimal | None = None             # 취득·처분 주식수(주)
+    shares_after: Decimal | None = None       # 거래 후 소유주식수(주)
     method: str | None = None
     purpose: str | None = None
     expected_date: date | None = None
@@ -120,6 +122,8 @@ def parse(raw: bytes, action: str) -> StakeDecision | None:
         equity=to_decimal(_value(cs, r"^자기자본\s*\(원\)", body)),
         equity_ratio=to_decimal(_value(cs, r"^자기자본\s*대비", body)),
         pct_after=to_decimal(_value(cs, r"^지분비율\s*\(%\)", body)),
+        shares=to_decimal(_value(cs, rf"^{verb}주식수\s*\(주\)", body)),
+        shares_after=to_decimal(_value(cs, r"^소유주식수\s*\(주\)", body)),
         method=_value(cs, rf"^\d+\.\s*{verb}방법", body, free_text=True),
         purpose=_value(cs, rf"^\d+\.\s*{verb}목적", body, free_text=True),
         expected_date=to_date(_value(cs, rf"^\d+\.\s*{verb}예정일자", body)),

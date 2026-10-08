@@ -382,9 +382,18 @@ def ask(body: Ask, request: Request, db=Depends(get_db)):
         raise HTTPException(503, "지금은 Agent가 답할 수 없습니다. 잠시 뒤에 다시 시도해 주세요.") from error
     entry.ok, entry.tokens, entry.seconds = True, sum(result["usage"].values()), result["seconds"]
     db.commit()
+    # 출처: 답에 적힌 접수번호 가운데 조회 결과에 실제로 있었던 공시. 답의 글과 따로, 원장에서 다시 찾아 붙인다
+    cited = [no for no in result["cited"] if no not in result["cited_not_in_results"]]
+    documents = {d.rcept_no: d for d in db.scalars(select(Document).where(Document.rcept_no.in_(cited))).all()} if cited else {}
+    sources = [{"rcept_no": no, "url": query.DART_VIEWER + no,
+                "company": documents[no].company_id and db.get(Company, documents[no].company_id).name,
+                "report": documents[no].report_nm.strip(), "filed": documents[no].rcept_dt.isoformat()}
+               if no in documents else {"rcept_no": no, "url": query.DART_VIEWER + no, "company": None, "report": None, "filed": None}
+               for no in cited]
     return {"question": question, "answer": result["answer"], "as_of": result["as_of"], "model": result["model"],
             "seconds": result["seconds"], "tokens": entry.tokens,
             "tools": [{"name": c["tool"], "input": c["input"], "total": c["total"], "error": c["error"]} for c in result["tool_calls"]],
             "unverified_citations": result["cited_not_in_results"],
+            "sources": sources,
             "graph": found.graph(db),
             "left_for_you": max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}

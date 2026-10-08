@@ -1,0 +1,54 @@
+{
+ "question": "2026년 1월 말 기준으로, SK가스 측의 사우디 Advanced Polyolefins Industry Co. 지분 취득 결정에서 실제 취득 주체는 어느 회사이고, 그 시점에 공시되어 있던 취득금액과 취득예정일자는 무엇이었나요?",
+ "as_of": "2026-01-31",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** 실제 취득 주체는 **SK Gas Petrochemical Pte. Ltd.**(SK가스의 종속회사, 사우디 지분 취득 당사자)입니다. 2026-01-31 기준 공시된 취득금액은 **143574862264원**, 취득예정일자는 **2026-11-10**입니다.\n\n- **공시 주체와 실제 당사자:** SK가스(주)가 \"종속회사의 주요경영사항\" 형태로 공시했고, 상세 정보에 종속회사로 SK Gas Petrochemical Pte. Ltd.가 적혀 있습니다. 이 회사의 상위 지배회사는 SK Gas International Pte. Ltd.입니다 (접수번호 20251202800418).\n- **취득 대상:** Advanced Polyolefins Industry Co.(사우디아라비아), 취득 후 지분 15.00%, 소유주식수 38469375주.\n- **취득금액:** 143574862264원. 이 값은 2025-12-02 정정공시에서 정정된 것으로, 정정 전 값은 153897300000원이었습니다. 정정 사유는 \"출자금액 감소 및 출자예정시기 확정 등\"입니다. 이 정정은 2026-01-31 시점에 유효했고, 해당 결정의 후속 정정·철회는 확인되지 않았습니다.\n- **취득예정일자:** 2026-11-10 (정정 공시에서 확정된 값).\n\n근거 접수번호: 20251202800418 (정정 공시, 2025-12-02 접수).",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK가스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 197
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1460,
+    "as_of": "2026-01-31",
+    "rel_type": "stake_acquisition",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 4722
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1460,
+    "as_of": "2026-01-31",
+    "doc_type": "event"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 5728
+  }
+ ],
+ "cited": [
+  "20251202800418"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1948,
+  "cache_read_input_tokens": 17992,
+  "cache_creation_input_tokens": 12048
+ },
+ "seconds": 11.5,
+ "number": "T04-05",
+ "gold": "취득 주체는 SK가스의 종속회사 SK Gas Petrochemical Pte. Ltd.이다. 2025-12-02 정정 공시 기준으로 취득금액은 143,574,862,264원(자산총액 대비 3.82%), 취득예정일자는 2026-11-10이며, 취득 후 지분율은 15.00%(38,469,375주)이다."
+}

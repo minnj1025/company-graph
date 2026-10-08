@@ -13,6 +13,27 @@ const CHECKS: [string, number, number, string][] = [
   ["지분: 가진 쪽 공시와 내준 쪽 공시의 지분율이 서로 맞는가", 1939, 2307, "두 공시가 서로 맞는 정도 (추출 정확도가 아니다)"],
 ];
 
+/** 데이터 출처. 모든 화면의 맨 아래에 둔다. */
+export function Credit() {
+  return (
+    <footer className="credit">
+      <b>데이터 출처</b> 금융감독원 전자공시시스템(
+      <a href="https://dart.fss.or.kr" target="_blank" rel="noreferrer">
+        DART
+      </a>
+      )과{" "}
+      <a href="https://opendart.fss.or.kr" target="_blank" rel="noreferrer">
+        OpenDART
+      </a>{" "}
+      API의 공시 원문 · 공정거래위원회의 대규모기업집단 소속회사 현황(
+      <a href="https://www.data.go.kr" target="_blank" rel="noreferrer">
+        공공데이터포털
+      </a>
+      ). 공시에 적힌 사실을 정리한 것이며 투자 권유가 아닙니다.
+    </footer>
+  );
+}
+
 export function DataPage({ meta }: { meta: Meta }) {
   const relations = Object.entries(meta.relations).sort((a, b) => b[1] - a[1]);
   return (
@@ -94,6 +115,7 @@ export function DataPage({ meta }: { meta: Meta }) {
       <p className="lead">
         설계 기록과 코드는 <a href={REPO}>GitHub</a>에 있습니다.
       </p>
+      <Credit />
     </div>
   );
 }
@@ -115,36 +137,56 @@ function EvalSection() {
   const data = useEval();
   const [open, setOpen] = useState(false);
   if (!data) return null;
-  const sides = data.items.map((item) => item.agent);
-  const correct = sides.filter((s) => s.verdict === "correct").length;
-  const partial = sides.filter((s) => s.verdict === "partial").length;
-  const [low, high] = wilson(correct + partial, sides.length);
+  const before = data.items.map((item) => item.agent);
+  const sides = data.items.map((item) => item.after);
   const pct = (n: number, of: number) => Math.round((n / of) * 100);
-  const hit = (list: { verdict: string }[]) => list.filter((s) => s.verdict === "correct" || s.verdict === "partial").length;
+  const tally = (list: { verdict: string }[], ...verdicts: string[]) => list.filter((s) => verdicts.includes(s.verdict)).length;
+  const correct = tally(sides, "correct");
+  const hit = tally(sides, "correct", "partial");
+  const [low, high] = wilson(correct, sides.length);
   const shared = data.items.filter((item) => item.baseline);
-  const invented = data.items.filter((item) => item.agent.unverified.length > 0).length;
+  const invented = data.items.filter((item) => item.agent.unverified.length + item.after.unverified.length > 0).length;
   return (
     <>
       <h2>Agent는 얼마나 맞게 답하나</h2>
       <p className="lead">
-        공시 원문에서 직접 만든 {sides.length}문항을, 도구를 다 만든 뒤 한 번 돌렸습니다({data.agent_model}). 한 칸을 읽으면 끝나는 질문은 빼고,
-        정정 사이의 시점을 가리거나 여러 공시를 견주어야 답할 수 있는 질문만 썼습니다. 문항과 정답은 추출기를 거치지 않은 원자료만 보고 썼고,
-        쓴 쪽과 다른 검토자가 다시 확인했고, 채점은 어느 쪽 답인지 모르는 채점자가 했습니다. 문항 작성, 검토, 채점은 모두 Claude가 했고 사람이 원문을 직접 본 것은 아닙니다.
+        공시 원문에서 직접 만든 {sides.length}문항으로 쟀습니다({data.agent_model}). 한 칸을 읽으면 끝나는 질문은 빼고, 정정 사이의 시점을 가리거나
+        여러 공시를 견주어야 답할 수 있는 질문만 썼습니다. 문항과 정답은 추출기를 거치지 않은 원자료만 보고 썼고, 쓴 쪽과 다른 검토자가 다시 확인했고,
+        채점은 어느 쪽 답인지 모르는 채점자가 했습니다. 문항 작성, 검토, 채점은 모두 Claude가 했고 사람이 원문을 직접 본 것은 아닙니다.
       </p>
-      <VerdictBar sides={sides} />
-      <VerdictLegend sides={sides} />
+      <div className="stages">
+        <div>
+          <h4>
+            처음 돌렸을 때{" "}
+            <span>
+              정답 {pct(tally(before, "correct"), before.length)}% · 부분 정답까지 {pct(tally(before, "correct", "partial"), before.length)}%
+            </span>
+          </h4>
+          <VerdictBar sides={before} />
+        </div>
+        <div>
+          <h4>
+            시험이 찾은 결함을 고친 뒤{" "}
+            <span>
+              정답 {pct(correct, sides.length)}% · 부분 정답까지 {pct(hit, sides.length)}%
+            </span>
+          </h4>
+          <VerdictBar sides={sides} />
+        </div>
+      </div>
+      <VerdictLegend />
       <ul className="notes">
         <li>
-          정답이거나 부분 정답인 문항이 {pct(correct + partial, sides.length)}%입니다(95% 구간 {low}~{high}%). 이 가운데 물은 값을 모두 맞힌 정답이{" "}
-          {pct(correct, sides.length)}%, 일부만 맞힌 부분 정답이 {pct(partial, sides.length)}%입니다. 조회 결과에 없는 접수번호를 답에 적은 문항은 {invented}개입니다.
+          고친 뒤 정답 {pct(correct, sides.length)}% (95% 구간 {low}~{high}%), 부분 정답까지 넣으면 {pct(hit, sides.length)}%입니다. 조회 결과에 없는
+          접수번호를 답에 적은 문항은 두 번 모두 {invented}개입니다.
         </li>
         <li>
-          부분 정답 55개의 대부분은 값이 틀린 것이 아니라 물은 값 가운데 하나를 답하지 못한 것입니다. 자기자본 대비 비율(10문항)과 취득 예정일자(7문항)처럼
-          DB에는 있는데 조회 도구가 내주지 않은 값이 가장 많았습니다.
+          처음에는 부분 정답이 55개였습니다. 대부분 DB에는 있는데 조회 도구가 내주지 않은 값(자기자본 대비 비율, 취득 예정일자, 해지 사유) 때문이었고,
+          도구가 그 값을 내주게 고치자 37개가 정답이 됐습니다.
         </li>
         <li>
-          틀린 사실을 답한 10문항은 정정 공시의 머리 표와 본문 값이 다른 경우, 해지 공시를 다른 계약에 이은 경우 등 DB 쪽 결함이 원인이었습니다.
-          점수는 고치기 전 것으로 두었습니다. 문항마다 판정 사유를 아래에서 볼 수 있습니다.
+          고친 뒤의 점수는 문항을 알고 고친 것이라 새 문항에서도 같으리라는 보장이 없습니다. 그래서 처음 점수를 지우지 않고 나란히 둡니다. 틀린 사실을 답한
+          문항은 고친 뒤에도 {tally(sides, "wrong")}개입니다(처음 틀린 10개 중 6개는 고쳐졌고, 숫자 자릿수를 잘못 옮기는 등 다른 6개가 새로 틀렸습니다).
         </li>
       </ul>
       <ByType data={data} />
@@ -152,8 +194,10 @@ function EvalSection() {
       <h2>웹 검색만 쓰는 Claude와 견주면</h2>
       <p className="lead">
         같은 문항 {shared.length}개(종류마다 앞의 두 문항)를 이 DB 없이 웹 검색과 페이지 읽기만 쓸 수 있는 Claude({data.baseline_model})에게 풀게 했습니다.
-        Agent는 가장 작은 모델({data.agent_model})이고, 견준 쪽은 그보다 훨씬 큰 모델입니다. 정답이거나 부분 정답인 문항은 Agent {pct(hit(shared.map((i) => i.agent)), shared.length)}%, 웹 검색{" "}
-        {pct(hit(shared.map((i) => i.baseline!)), shared.length)}%입니다. {shared.length}문항이라 이 차이는 크게만 읽어야 하고, 시간과 토큰의 차이는 분명합니다.
+        Agent는 가장 작은 모델({data.agent_model})이고, 견준 쪽은 그보다 훨씬 큰 모델입니다. 아래는 Agent를 처음 돌렸을 때의 답으로 견준 것입니다. 정답이거나 부분 정답인 문항은 Agent{" "}
+        {pct(tally(shared.map((i) => i.agent), "correct", "partial"), shared.length)}%, 웹 검색{" "}
+        {pct(tally(shared.map((i) => i.baseline!), "correct", "partial"), shared.length)}%입니다. 결함을 고친 뒤의 Agent는 같은 {shared.length}문항에서 정답이{" "}
+        {tally(shared.map((i) => i.after), "correct")}개입니다. {shared.length}문항이라 이 차이는 크게만 읽어야 하고, 시간과 토큰의 차이는 분명합니다.
       </p>
       <Compare data={data} />
       <ul className="notes">
@@ -184,6 +228,7 @@ export function QuestionsPage() {
         Claude의 답도 있습니다.
       </p>
       {data ? <Questions data={data} /> : <p className="muted">불러오는 중…</p>}
+      <Credit />
     </div>
   );
 }

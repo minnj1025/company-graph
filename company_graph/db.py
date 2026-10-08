@@ -5,6 +5,7 @@ from decimal import Decimal
 
 from sqlalchemy import (JSON, BigInteger, Boolean, Date, DateTime, Enum, ForeignKey, Index, Integer, Numeric,
                         SmallInteger, String, Text, UniqueConstraint, create_engine)
+from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
 from .config import DATA_DIR, DB_URL
@@ -102,6 +103,22 @@ class QualityLog(Base):
     rcept_no: Mapped[str | None] = mapped_column(String(14))
     detail: Mapped[str] = mapped_column(String(500))
     created_at: Mapped[datetime] = mapped_column(DateTime)
+
+
+class BusinessSection(Base):
+    """사업보고서 "II. 사업의 내용"의 소제목 하나. 회사가 무엇을 하는지를 보고서에 적힌 글 그대로 담는다."""
+    __tablename__ = "business_section"
+    __table_args__ = (UniqueConstraint("rcept_no", "section_no", name="uq_business_section"),
+                      Index("ix_business_section_company", "company_id", "disclosed_date"))
+    section_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    company_id: Mapped[int] = mapped_column(ForeignKey("company.company_id"))
+    rcept_no: Mapped[str] = mapped_column(String(14))
+    bsns_year: Mapped[int | None] = mapped_column(SmallInteger)
+    disclosed_date: Mapped[date] = mapped_column(Date)
+    section_no: Mapped[int] = mapped_column(SmallInteger)       # 소제목 번호 (1 사업의 개요, 2 주요 제품 및 서비스 …)
+    title: Mapped[str] = mapped_column(String(100))
+    text: Mapped[str] = mapped_column(Text().with_variant(LONGTEXT, "mysql"))
+    truncated: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
 class AskLog(Base):

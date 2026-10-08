@@ -92,6 +92,16 @@ export function Chat({ shown, onShow }: Props) {
                     {linkReceipts(turn.result.answer)}
                   </Markdown>
                 </div>
+                <div className="sources">
+                  <b>출처</b>
+                  {turn.result.sources.length === 0 && <span>이 답은 근거로 든 공시가 없습니다 (조회 결과가 없거나, 답하지 않는 질문입니다)</span>}
+                  {turn.result.sources.map((source) => (
+                    <a key={source.rcept_no} href={source.url} target="_blank" rel="noreferrer" title="DART 공시 원문">
+                      <em>{source.filed ?? source.rcept_no}</em>
+                      {source.company ? `${source.company} · ${source.report}` : `접수번호 ${source.rcept_no}`}
+                    </a>
+                  ))}
+                </div>
                 <div className="a-foot">
                   <span>
                     {turn.result.seconds}초 · {turn.result.tokens.toLocaleString()}토큰 · 조회 시점 {turn.result.as_of}
@@ -130,9 +140,9 @@ export function Chat({ shown, onShow }: Props) {
         {status === null
           ? "Agent 상태를 확인하지 못했습니다"
           : !status.enabled
-            ? "Agent가 아직 연결되지 않았습니다. '평가' 탭에서 미리 돌려 둔 답을 볼 수 있습니다."
+            ? "Agent가 아직 연결되지 않았습니다. '평가 문항' 탭에서 미리 돌려 둔 답을 볼 수 있습니다."
             : left === 0
-              ? "오늘 물을 수 있는 횟수를 다 썼습니다. '평가' 탭에서 미리 돌려 둔 답을 볼 수 있습니다."
+              ? "오늘 물을 수 있는 횟수를 다 썼습니다. '평가 문항' 탭에서 미리 돌려 둔 답을 볼 수 있습니다."
               : `오늘 ${left}번 더 물을 수 있습니다 · ${status.model}`}
       </div>
     </div>

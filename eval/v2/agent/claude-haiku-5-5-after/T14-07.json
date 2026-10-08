@@ -1,0 +1,79 @@
+{
+ "question": "KT의 최대주주인 회사는 자기 사업보고서의 타법인출자 현황에서 KT 지분을 어떤 목적으로 보유한다고 적었나요? 거기에 적힌 지분율이 KT 사업보고서의 최대주주 현황과 일치하는지도 2025 사업연도 말 기준으로 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** KT(030200)의 최대주주인 현대자동차(주)는 자기 사업보고서 타법인출자 현황에서 KT 지분을 **\"단순투자\"** 목적으로 적었습니다. 지분율 4.86%도 KT 사업보고서의 최대주주 현황과 일치합니다(2025-12-31 기준).\n\n- **목적:** 단순투자\n- **지분율:** 4.86% (12,251,234주)\n- **KT 최대주주 현황:** 현대자동차 본인, 4.86%\n- **근거 접수번호:** 20260318001394(현대자동차 측), 20260323001553(KT 측). 두 공시 모두에서 확인됩니다.\n- **기준일:** 2025-12-31(2025 사업연도 말)\n\n참고로 KT 사업보고서의 최대주주 특수관계인인 현대모비스(주)는 3.21%(8,094,466주)로 적혀 있습니다. 이 DB에는 현대모비스의 타법인출자 기록이 없어서, 현대모비스 쪽의 목적이나 지분율은 확인할 수 없습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "KT"
+   },
+   "error": null,
+   "total": null,
+   "chars": 948
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "주식회사 케이티"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3404,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 2791
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 3404
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1379
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3404,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "in",
+    "counterparty_id": 54
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1377
+  }
+ ],
+ "cited": [
+  "20260318001394",
+  "20260323001553"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1795,
+  "cache_read_input_tokens": 23389,
+  "cache_creation_input_tokens": 9666
+ },
+ "seconds": 11.2,
+ "number": "T14-07",
+ "gold": "KT의 최대주주는 현대자동차로, KT 사업보고서에는 보통주 12,251,234주, 4.86%로 적혀 있다. 현대자동차의 2025 사업보고서 타법인출자 현황은 케이티 지분을 출자 목적 '단순투자'로, 기말 12,251,234주, 4.86%로 적어 두 보고서의 지분율과 주식 수가 일치한다."
+}

@@ -5,7 +5,7 @@ import { Cards } from "./Cards";
 import { Chat } from "./Chat";
 import { Controls } from "./Controls";
 import { Graph, shortName } from "./Graph";
-import { DataPage, QuestionsPage } from "./Pages";
+import { Credit, DataPage, QuestionsPage } from "./Pages";
 import { Panel } from "./Panel";
 import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType } from "./types";
 
@@ -23,6 +23,24 @@ export function App() {
   /** Agent가 찾은 결과. 있으면 그래프에 그 기업과 관계만 남긴다 */
   const [found, setFound] = useState<AskResult | null>(null);
   const [showControls, setShowControls] = useState(true);
+  /** 오른쪽 칸의 너비. 왼쪽 가장자리를 끌어 바꾸고, 다음에 와도 그대로 둔다 */
+  const [sideWidth, setSideWidth] = useState(() => Number(localStorage.getItem("side-width")) || 400);
+  const resizeSide = useCallback((event: React.PointerEvent) => {
+    event.preventDefault();
+    const move = (e: PointerEvent) => {
+      const width = Math.round(Math.min(Math.max(window.innerWidth - e.clientX - 10, 320), window.innerWidth * 0.6));
+      setSideWidth(width);
+      localStorage.setItem("side-width", String(width));
+    };
+    const stop = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", stop);
+      document.body.classList.remove("resizing");
+    };
+    document.body.classList.add("resizing");
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", stop);
+  }, []);
   const [data, setData] = useState<GraphData>(EMPTY);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<CompanyDetail | null>(null);
@@ -122,7 +140,7 @@ export function App() {
         </div>
       </header>
 
-      <main className="work">
+      <main className="work" style={{ "--side": `${sideWidth}px` } as React.CSSProperties}>
         <section className="stage">
           <Graph
             data={shownData}
@@ -201,6 +219,7 @@ export function App() {
         <Cards asOf={asOf} data={shownData} scopeLabel={scopeLabel} onOpen={setSelectedId} />
 
         <aside className="side">
+          <div className="side-grip" onPointerDown={resizeSide} onDoubleClick={() => setSideWidth(400)} title="끌어서 너비 바꾸기 (두 번 누르면 처음 크기)" />
           <div className={detail ? "side-pane hidden" : "side-pane"}>
             <div className="side-head">
               <b>질문하기</b>
@@ -222,6 +241,7 @@ export function App() {
           )}
         </aside>
       </main>
+      <Credit />
 
       {tab !== "graph" && <div className="overlay">{tab === "data" ? <DataPage meta={meta} /> : <QuestionsPage />}</div>}
     </div>

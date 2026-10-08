@@ -1,0 +1,81 @@
+{
+ "question": "APS이노베이션의 2025 사업연도 사업보고서 타법인 출자현황에서 출자 목적이 단순투자로 적힌 회사를 기말 지분율과 함께 모두 알려 주세요. 그중 2025년에 새로 취득한 곳이 있으면 함께 짚어 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** 2025 사업연도 사업보고서(접수번호 20260319000618) 타법인 출자현황에서 출자 목적이 **단순투자**로 적힌 곳은 3곳입니다. 2025년에 새로 취득했는지는 이 DB로 확인되지 않습니다.\n\n| 회사 | 기말 지분율(2025-12-31) | 보유 주식수 |\n|---|---|---|\n| 티이씨씨 | 9.98% | 96,078 |\n| (주)블루타일랩 | 5.88% | 24,316 |\n| (주)화인카보텍 | 5.0% | 7,158 |\n\n근거: 접수번호 20260319000618\n\n**2025년 신규 취득 여부**\n- 2025-12-31 기준 전년도 사업보고서(접수 2025-08-13, 접수번호 20250813000089)의 출자현황에는 이 3곳이 없었습니다. 이 표에 처음 나타난 것은 2025 사업연도 보고서입니다.\n- 같은 기간 타법인 주식 취득결정 공시는 DB에 없습니다(수집 기간 2024-01 이후). 그래서 취득 시점을 확인할 수 없습니다.\n- 따라서 \"2025년에 새로 취득했다\"고 확정할 근거는 없습니다. 표에 처음 올라왔다는 사실만 확인됩니다. 취득 시기는 사업보고서 본문이나 개별 공시를 직접 확인해야 합니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "APS이노베이션"
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3250,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 9,
+   "chars": 4896
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3250,
+    "as_of": "2026-06-30",
+    "rel_type": "stake_acquisition",
+    "direction": "out",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 743
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3250,
+    "as_of": "2025-04-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 2659
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3250,
+    "as_of": "2025-12-31",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 3561
+  }
+ ],
+ "cited": [
+  "20250813000089",
+  "20260319000618"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 14,
+  "output_tokens": 2501,
+  "cache_read_input_tokens": 37445,
+  "cache_creation_input_tokens": 13260
+ },
+ "seconds": 14.3,
+ "number": "T12-09",
+ "gold": "세 곳이다. 티이씨씨 9.98%, (주)블루타일랩 5.88%, (주)화인카보텍 5.00%. 이 가운데 (주)화인카보텍은 최초 취득일이 2025.09.01인 신규 취득(7,158주, 장부가액 500,036,000원)이다. 나머지 여섯 곳(소주디이티설비유한공사, VINA DE&T, DE&T US INC, PT. DENT ENERGY INDONESIA, DE&T MICHIGAN INC, DE&T CANADA LTD)은 모두 경영참여 목적이다."
+}

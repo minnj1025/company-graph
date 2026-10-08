@@ -27,7 +27,7 @@ from .names import clean_reported, normalize
 from .supply_parser import SupplyContract, Termination, parse, parse_termination
 
 SINCE = "20240101"
-VERSION = "supply-3"  # 3: 해지 공시를 줄로 넣고 해지된 계약을 무효로. 2: 자기 계열회사 표를 먼저 보고 연결, 비율 검산을 반올림 구간으로, 줄을 지우지 않음
+VERSION = "supply-4"  # 4: 본문이 정정 전 값이면 머리 표의 정정 후 금액을 씀, 해지 공시의 비율·계약기간을 담고 관련공시 날짜로 계약을 가림. 3: 해지 공시를 줄로 넣고 해지된 계약을 무효로. 2: 자기 계열회사 표를 먼저 보고 연결, 비율 검산을 반올림 구간으로, 줄을 지우지 않음
 _AND_OTHERS = re.compile(r"\s*외\s*(\d+\s*(개사|개|사|인|곳))?\s*$")
 _SPLIT = re.compile(r"\s*[,，、/]\s*|\s+및\s+")
 
@@ -174,6 +174,7 @@ def load_company(db, company: Company, filings: list[dict], resolver: PartyResol
                  "ratio_pct": None if contract.ratio is None else str(contract.ratio), "subsidiary": contract.subsidiary,
                  "party_hidden": contract.party_hidden, "joint_parties": len(party_ids) if len(party_ids) > 1 else None,
                  "correction_reason": contract.correction_reason,
+                 "amount_from": "정정 머리 표 (본문은 정정 전 값 그대로)" if contract.body_stale else None,
                  "changes": [list(ch) for ch in contract.changes] or None}
         relations = [Relation(
             subject_company_id=company.company_id, object_company_id=party_id, object_name_raw=raw_party[:300],
@@ -219,16 +220,20 @@ def load_company(db, company: Company, filings: list[dict], resolver: PartyResol
         same = [x for x in loaded if x[0].rcept_no < doc.rcept_no and x[0].is_latest
                 and normalize(x[2].title or "") == normalize(ended.title or "")
                 and normalize(clean_reported(x[2].party or "")) == normalize(clean_reported(raw_party))]
+        by_no = {x[0].rcept_no: x[0] for x in loaded}
+
+        def first_filed(d: Document):
+            while d.corrects_rcept_no in by_no:
+                d = by_no[d.corrects_rcept_no]
+            return d.rcept_dt
+
+        if len(same) > 1:
+            # 같은 상대와 같은 이름으로 맺은 계약이 여럿이면, 해지 공시가 가리키는 것(관련공시 날짜, 계약 시작일)을 고른다
+            named = [x for x in same if first_filed(x[0]) in ended.related_dates or x[0].rcept_dt in ended.related_dates]                 or [x for x in same if ended.period_start and x[2].period_start == ended.period_start]
+            same = named or same
         original = same[-1] if same else None
         if original is None and ended.related_dates:
             # 계약명이나 상대의 표기가 달라졌으면, 해지 공시의 "관련공시"에 적힌 날짜에 처음 공시된 계약 중에서 찾는다
-            by_no = {x[0].rcept_no: x[0] for x in loaded}
-
-            def first_filed(d: Document):
-                while d.corrects_rcept_no in by_no:
-                    d = by_no[d.corrects_rcept_no]
-                return d.rcept_dt
-
             dated = [x for x in loaded if x[0].rcept_no < doc.rcept_no and x[0].is_latest
                      and (first_filed(x[0]) in ended.related_dates or x[0].rcept_dt in ended.related_dates)]
             if len(dated) > 1:
@@ -243,6 +248,11 @@ def load_company(db, company: Company, filings: list[dict], resolver: PartyResol
         else:
             stats["해지인데 원래 계약이 수집 기간 밖이거나 찾지 못함"] += 1
         attrs = {"title": ended.title, "reason": ended.reason, "subsidiary": ended.subsidiary,
+                 "party_relation": ended.party_relation,
+                 "recent_sales": None if ended.recent_sales is None else str(ended.recent_sales),
+                 "ratio_pct": None if ended.ratio is None else str(ended.ratio),
+                 "period_start": ended.period_start and ended.period_start.isoformat(),
+                 "period_end": ended.period_end and ended.period_end.isoformat(),
                  "terminated_filing": original[0].rcept_no if original else None}
         ended_rows += [Relation(
             subject_company_id=company.company_id, object_company_id=party_id, object_name_raw=raw_party[:300],

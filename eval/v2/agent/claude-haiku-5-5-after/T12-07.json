@@ -1,0 +1,43 @@
+{
+ "question": "세경하이테크가 2025 사업연도 말 기준으로 지분 50% 이상을 가진 출자 법인을 타법인 출자현황에서 모두 찾아 지분율과 함께 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "2025 사업연도 말(2025-12-31) 기준으로 세경하이테크가 지분 50% 이상을 가진 출자 법인은 **5곳**입니다. 모두 2026-03-23 제출된 사업보고서(접수번호 20260323001499)의 타법인 출자현황에 실린 값입니다.\n\n| 출자 법인 | 지분율 |\n|---|---|\n| Dongguan SG Design Center Co., Ltd. | 100.0% |\n| SEGYUNG VINA CO.,LTD | 100.0% |\n| SGJ CO.LTD | 94.0% |\n| 주식회사 세스맷 | 73.0% |\n| 지디에스 | 55.0% |\n\n50% 미만으로 제외한 곳은 SEED GLOBAL PTE. LIMITED(47.0%)와 RAISONTECH INC(15.0%)입니다.\n\n참고로, 이 지분율은 사업보고서 표에 적힌 값이고 우선주를 포함한 발행주식총수 기준일 수 있습니다. 보통주 기준 비율과는 다를 수 있습니다. 또한 DB에 기업 정보가 없는 법인이라 이름만 확인했습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "세경하이테크"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1838,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 7,
+   "chars": 4049
+  }
+ ],
+ "cited": [
+  "20260323001499"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 970,
+  "cache_read_input_tokens": 9814,
+  "cache_creation_input_tokens": 7590
+ },
+ "seconds": 6.1,
+ "number": "T12-07",
+ "gold": "다섯 곳이다. SEGYUNG VINA CO.,LTD 100%, Dongguan SG Design Center Co., Ltd. 100%, SGJ CO.LTD 94%, 주식회사 세스맷 73%, 지디에스 55%. 2025.12.31에 새로 취득한 SEED GLOBAL PTE. LIMITED는 47%, RAISONTECH INC는 15%로 50%에 못 미친다."
+}

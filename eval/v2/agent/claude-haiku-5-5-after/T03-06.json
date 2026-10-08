@@ -1,0 +1,54 @@
+{
+ "question": "녹십자엠에스가 2019년 6월 중국 Horron(Shenzhen Xilaiheng Medical Electronics Co.,Ltd.)과 체결한 GREENCARE Lipid 공급계약은 2025년 말 현재 유효한가요? 유효하지 않다면 해지 금액과 해지일, 해지 사유를 알려 주세요.",
+ "as_of": "2025-12-31",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 2025년 12월 31일 기준으로 유효하지 않습니다.** 상대방의 해지 통지로 2025년 9월 19일 해지됐습니다.\n\n- **해지일(as_of_date):** 2025-09-19\n- **해지 금액:** 11557026000 (원)\n- **해지 사유:** \"계약 상대방의 해지 통지\"\n- **계약 정보:** 계약기간 2019-06-12 ~ 2027-06-11, 최근 매출액 대비 13.39%\n- **근거 공시:** 접수번호 20250919900523 (단일판매·공급계약해지)\n\n2025년 9월 19일 같은 날 Horron과의 RT-100 HbA1c 계약을 정정한 공시(20250919900469)도 있지만, 이는 GREENCARE Lipid 계약과는 별개 건입니다. 해지 이후 이 계약을 되살리거나 철회한 공시는 조회되지 않았습니다.\n\n참고로 2019년 원 계약 체결 공시는 이 DB의 수집 기간(2024년 1월 이후) 밖이라 직접 확인하지 못했습니다. 위 내용은 해지 공시에 적힌 계약 정보를 근거로 한 것입니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "녹십자엠에스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3734,
+    "as_of": "2025-12-31",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 3776
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3734,
+    "as_of": "2025-12-31",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 3776
+  }
+ ],
+ "cited": [
+  "20250919900469",
+  "20250919900523"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1009,
+  "cache_read_input_tokens": 9909,
+  "cache_creation_input_tokens": 9594
+ },
+ "seconds": 6.1,
+ "number": "T03-06",
+ "gold": "유효하지 않다. 2025-09-19 해지 공시에 따르면 이 계약은 2025-09-19(상대방의 해지 통지 공문이 온 날)에 해지되었고, 해지금액은 11,557,026,000원(USD 9,780,000, 매출액 대비 13.39%)이다. 사유는 계약 상대방의 해지 통지(중국 보험수가 인하 등 외부 요인에 따른 상대방의 사업철회)이며, 계약 체결 이후 해지 때까지 이행 실적은 없다."
+}

@@ -138,6 +138,8 @@ export interface AskResult {
   tokens: number;
   tools: ToolCall[];
   unverified_citations: string[];
+  /** 답이 근거로 든 공시. 조회 결과에 실제로 있었던 것만 */
+  sources: { rcept_no: string; url: string; company: string | null; report: string | null; filed: string | null }[];
   graph: GraphData;
   left_for_you: number;
 }

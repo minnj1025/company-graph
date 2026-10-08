@@ -32,6 +32,7 @@ TYPES = {
 
 def main():
     grades = read(ROOT / "grades.json")
+    after_grades = read(ROOT / "grades_after.json")   # 이 시험으로 찾은 결함을 고친 뒤 다시 돌린 결과
     usage = read(ROOT / "baseline_usage.json")
     items = []
     for path in sorted((ROOT / "gold").glob("*.json")):
@@ -44,6 +45,12 @@ def main():
             **grades[gold["id"]]["agent"], "answer": ran["answer"], "seconds": ran["seconds"], "tokens": sum(ran["usage"].values()),
             "tools": [{"name": call["tool"], "input": call["input"], "total": call["total"], "error": call["error"]} for call in ran["tool_calls"]],
             "unverified": ran["cited_not_in_results"],
+        }
+        again = read(ROOT / "agent" / (AGENT_MODEL + "-after") / path.name)
+        item["after"] = {
+            **after_grades[gold["id"]]["after"], "answer": again["answer"], "seconds": again["seconds"], "tokens": sum(again["usage"].values()),
+            "tools": [{"name": call["tool"], "input": call["input"], "total": call["total"], "error": call["error"]} for call in again["tool_calls"]],
+            "unverified": again["cited_not_in_results"],
         }
         base = ROOT / "baseline" / path.name
         if base.exists():

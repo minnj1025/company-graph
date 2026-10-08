@@ -1,0 +1,43 @@
+{
+ "question": "수산아이앤티의 2025 사업연도 사업보고서 계열회사 현황에서 상장으로 분류된 계열회사는 어디이고, 상장·비상장 회사 수는 각각 몇 곳입니까? 수산아이앤티 자신이 그 표에 들어 있는지도 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** 2025 사업연도 사업보고서(접수번호 20260323001694)의 계열회사 표에서 상장으로 분류된 곳은 **(주)수산인더스트리(126720, 유가증권)**와 **(주)수산세보틱스(017550, 유가증권)** 두 곳입니다. 상장 2곳, 비상장 16곳이고, 수산아이앤티 자신은 표에 행으로 들어 있지 않습니다.\n\n**상장 (2곳)**\n- (주)수산인더스트리 (126720, 유가증권)\n- (주)수산세보틱스 (017550, 유가증권)\n\n**비상장 (16곳)**\n- 국내: (주)그란크루세, (주)수산뉴텍, (주)수산이앤에스, (주)수산홈텍, (주)에스에이치파워, 오미산풍력발전(주)\n- 해외: New Line Soosan Middle East Energy Equipment LLC., PT SOOSAN TECHNOLOGY INDONESIA, PT.Famindo Global Energi, SH SOLAR FARM VINA, SOOSAN America LLC, SOOSAN ENERGY MIDDLE EAST LLC., SOOSAN INDUSTRIES VINA., SOOSAN JAPAN. LTD., SOOSAN USA, INC., SOOSAN VINA MOTOR CO., LTD.\n\n해외 법인 중 일부는 원장에 없는 이름만 확인되는 상대입니다. 기준일은 2025-12-31이고, 공시일은 2026-03-23입니다.\n\n**수산아이앤티 자신:** 표의 계열회사 목록에는 들어 있지 않습니다. 수산아이앤티는 이 표를 낸 기준 회사이고, 목록은 그 밖의 계열회사만 담습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "수산아이앤티"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2548,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 20,
+   "chars": 9562
+  }
+ ],
+ "cited": [
+  "20260323001694"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 2215,
+  "cache_read_input_tokens": 9875,
+  "cache_creation_input_tokens": 10049
+ },
+ "seconds": 11.2,
+ "number": "T13-09",
+ "gold": "상장은 2개사로 (주)수산세보틱스와 (주)수산인더스트리이고, 비상장은 16개사다(기준일 2025년 12월 31일). 수산아이앤티 자신은 이 표에 올라 있지 않으므로 상장 2개사는 모두 자신을 제외한 계열회사다. 표에서 (주)수산세보틱스에는 각주 표시 (*)가 붙어 있다."
+}

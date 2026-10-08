@@ -1,0 +1,79 @@
+{
+ "question": "(주)코오롱이 2026년 4월 공시한 부산 만덕3구역 재건축사업 도급계약 해지 건에서 실제 계약 당사자는 어느 회사이고, 2026년 6월 말 현재 이 계약은 유효한가요? 해지 금액과 사유도 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** 실제 계약 당사자는 자회사 **코오롱글로벌(주)**이고, 상대방은 **부산 만덕3구역 재건축정비사업조합**입니다. 2026년 6월 30일 현재 이 계약은 **해지된 상태로 유효하지 않습니다.** 해지 공시 이후 철회나 정정은 확인되지 않았습니다.\n\n- **공시 주체와 당사자:** (주)코오롱 명의로 공시됐지만, 계약 당사자는 코오롱글로벌(주)입니다. (접수번호 20260403801387)\n- **해지 금액:** 90,462,380,376원\n- **사유:** 발주처의 계약 해지 통보\n- **기타 공시 항목:** 계약기간 시작일 2020-12-29, 최근 매출액 대비 2.60%\n- **유효성:** 해지 공시(2026-04-03)는 정정·철회된 기록이 없고, 이 계약에 대한 후속 공급계약 정정도 없습니다. 따라서 6월 30일 기준 해지 상태로 봅니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "코오롱"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2406,
+    "as_of": "2026-06-30",
+    "doc_type": "supply_termination"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 554
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2406,
+    "as_of": "2026-06-30",
+    "rel_type": "supply_termination",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 3031
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2406,
+    "as_of": "2026-06-30",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 99,
+   "chars": 41769
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2406,
+    "as_of": "2026-06-30",
+    "doc_type": "supply_contract",
+    "filed_from": "2020-01-01"
+   },
+   "error": null,
+   "total": 103,
+   "chars": 39538
+  }
+ ],
+ "cited": [
+  "20260403801387"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2065,
+  "cache_read_input_tokens": 17296,
+  "cache_creation_input_tokens": 58207
+ },
+ "seconds": 11.8,
+ "number": "T03-07",
+ "gold": "실제 계약 당사자는 (주)코오롱이 아니라 자회사인 코오롱글로벌(주)이다. 코오롱글로벌이 2020년 12월 29일 부산 만덕3구역 재건축정비사업조합과 맺은 이 도급계약은 2026-04-03(해지 공문 수신일)에 해지되어 유효하지 않으며, 해지금액은 90,462,380,376원(부가세 미포함, 매출액 대비 2.60%)이다. 사유는 발주처의 계약 해지 통보이다."
+}

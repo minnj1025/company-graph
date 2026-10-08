@@ -23,7 +23,7 @@ from .extract_equity import alias_index, link_in_context, own_affiliates, rcept_
 from .names import clean_reported, normalize
 from .stake_parser import StakeDecision, original_filing_date, parse, withdrawal_notes
 
-VERSION = "stake-3"  # 3: 철회 내용을 줄로 남김, 대상 이름을 고친 정정을 이음.
+VERSION = "stake-4"  # 4: 주식 수를 담음. 3: 철회 내용을 줄로 남김, 대상 이름을 고친 정정을 이음.
 # stake-2  # 2: 주석이 "1. 발행회사..."로 시작하는 공시를 읽음, 비율이 맞지 않는 줄에 표시, 철회 처리
 REPORTS = {"타법인주식및출자증권취득결정": "acquisition", "타법인주식및출자증권처분결정": "disposal"}
 REL_TYPE = {"acquisition": "stake_acquisition", "disposal": "stake_disposal"}
@@ -102,6 +102,8 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
         attrs = {"link_reason": reason, "nationality": decision.nationality, "relation": decision.relation,
                  "business": decision.business, "pct_after": None if decision.pct_after is None else str(decision.pct_after),
                  "equity_ratio_pct": None if decision.equity_ratio is None else str(decision.equity_ratio),
+                 "shares": None if decision.shares is None else str(int(decision.shares)),
+                 "shares_after": None if decision.shares_after is None else str(int(decision.shares_after)),
                  "method": decision.method, "purpose": decision.purpose, "subsidiary": decision.subsidiary,
                  "expected_date": decision.expected_date and decision.expected_date.isoformat(),
                  "correction_reason": decision.correction_reason,

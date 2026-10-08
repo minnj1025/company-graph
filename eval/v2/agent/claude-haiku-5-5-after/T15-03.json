@@ -1,0 +1,57 @@
+{
+ "question": "에스지씨이앤씨(SGC E&C)가 2024년 한 해 동안 낸 공급계약 공시(정정 포함) 가운데 계열회사를 상대로 한 계약은 무엇인가요? 그중 2024년에 새로 체결된 계약이 있는지도 알려 주세요.",
+ "as_of": "2024-12-31",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** 2024년 공급계약 공시 중 계열회사를 상대로 한 계약은 **2건**이며, 둘 다 **정정 공시**입니다. 계약일은 **2023-12-26**이라 2024년에 새로 체결된 계열사 계약은 **없습니다.**\n\n| 상대 계열회사 | 계약명 | 계약일 | 계약기간 (정정 후 종료일) | 금액(원) | 최근 매출 대비 | 정정 공시 접수번호 |\n|---|---|---|---|---|---|---|\n| OCIM Sdn. Bhd. | MP7 Project EPC Package | 2023-12-26 | 2023-12-26 ~ 2025-09-30 | 82700000000 | 5.4% | 20240716900576 (2024-07-16) |\n| OCIKumho Sdn. Bhd. | ME1 Project EPC Package | 2023-12-26 | 2023-12-26 ~ 2025-10-31 | 122000000000 | 8.0% | 20240726900213 (2024-07-26) |\n\n- **정정 내용:** 두 건 모두 계약종료일이 2025-04-30에서 각각 2025-09-30, 2025-10-31로 바뀌었고, 종속회사 계약사항이 추가됐습니다. 정정 사유는 \"계약종료일 변경 및 종속회사 계약사항 추가\"입니다.\n- **종속회사 계약:** 정정문에 따르면 설계·조달(EP)은 에스지씨이앤씨가, 시공(C)은 종속회사인 SGC E&C (M) Sdn. Bhd.가 수행합니다. 이 종속회사는 MP7 건을 2024년 7월 9일, ME1 건을 2024년 7월 25일 본 프로젝트와 관련해 계약했다고 적혀 있습니다. 다만 정정문 해당 부분이 잘려 있어 계약 세부 내용은 확인하지 못했습니다.\n- **유효성:** 두 건 모두 이후 해지나 추가 정정이 없어 2024-12-31 기준 유효합니다.\n- **범위:** 이 DB는 2024-01 이후 공시만 수집하므로, 2023년 12월에 나온 원래 공시(정정 전 공시)는 여기에 없습니다.\n\n2024년에 낸 공급계약 공시는 전체 8건이고, 나머지 6건은 계열회사가 상대가 아닙니다. 그 6건의 상대는 Saudi Ethylene & Polyethylene Company, APOC, 대한토지신탁, SIPCHEM, AL-WAHA Petrochemical, 용두동 지역주택조합입니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에스지씨이앤씨"
+   },
+   "error": null,
+   "total": null,
+   "chars": 199
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2191,
+    "as_of": "2024-12-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2024-01-01",
+    "filed_to": "2024-12-31"
+   },
+   "error": null,
+   "total": 8,
+   "chars": 5527
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2191,
+    "as_of": "2024-12-31",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 27,
+   "chars": 12916
+  }
+ ],
+ "cited": [
+  "20240716900576",
+  "20240726900213"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 2195,
+  "cache_read_input_tokens": 9901,
+  "cache_creation_input_tokens": 15278
+ },
+ "seconds": 11.0,
+ "number": "T15-03",
+ "gold": "계열회사 상대 계약은 2건이며 모두 2023-12-26에 체결된 계약의 2024년 정정 공시다. ① OCIM Sdn. Bhd.와의 MP7 Project EPC Package 82,700,000,000원(2024-07-16 정정, 종료일 2025-04-30→2025-09-30), ② OCIKumho Sdn. Bhd.와의 ME1 Project EPC Package 122,000,000,000원(2024-07-26 정정, 종료일 2025-04-30→2025-10-31). 2024년에 새로 체결해 공시한 6건(Saudi Ethylene & Polyethylene Company, APOC, 대한토지신탁, SIPCHEM, AL-WAHA Petrochemical Company, 용두동 지역주택조합)은 모두 회사와의 관계가 '-'여서 신규 계열회사 계약은 없다."
+}

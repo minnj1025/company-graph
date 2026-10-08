@@ -5,6 +5,7 @@
 
 실행: python -m eval.v2.grading bundle   → eval/v2/grading/*.json
       python -m eval.v2.grading collect  → eval/v2/grades.json
+      결함을 고친 뒤 다시 돌린 답은 끝에 after 를 붙인다 (grading_after/, grades_after/, grades_after.json)
 """
 import hashlib
 import json
@@ -22,24 +23,26 @@ def read(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def answers() -> list[dict]:
-    """채점할 답 전부: Agent의 149개와 웹 검색 기준선의 32개."""
+def answers(after: bool) -> list[dict]:
+    """채점할 답 전부: Agent의 149개와 웹 검색 기준선의 32개. after 이면 고친 뒤에 다시 돌린 Agent의 149개."""
     rows = []
     for path in sorted((ROOT / "gold").glob("*.json")):
         gold = read(path)
         if gold.get("skip"):
             continue
-        for side, file in (("agent", ROOT / "agent" / AGENT_MODEL / path.name), ("baseline", ROOT / "baseline" / path.name)):
+        sides = ((("after", ROOT / "agent" / (AGENT_MODEL + "-after") / path.name),) if after else
+                 (("agent", ROOT / "agent" / AGENT_MODEL / path.name), ("baseline", ROOT / "baseline" / path.name)))
+        for side, file in sides:
             if file.exists():
                 key = hashlib.sha256(f"{SEED}/{side}/{gold['id']}".encode()).hexdigest()[:10]
                 rows.append({"key": key, "id": gold["id"], "side": side, "answer": read(file)["answer"], "gold": gold})
     return rows
 
 
-def bundle():
-    rows = answers()
+def bundle(after: bool):
+    rows = answers(after)
     random.Random(SEED).shuffle(rows)
-    out = ROOT / "grading"
+    out = ROOT / ("grading_after" if after else "grading")
     out.mkdir(exist_ok=True)
     for old in out.glob("*.json"):
         old.unlink()
@@ -52,17 +55,18 @@ def bundle():
     print(f"답 {len(rows)}개, 묶음 {-(-len(rows) // BUNDLE_SIZE)}개")
 
 
-def collect():
-    keys = read(ROOT / "grading" / "keys.json")
+def collect(after: bool):
+    suffix = "_after" if after else ""
+    keys = read(ROOT / f"grading{suffix}" / "keys.json")
     grades: dict[str, dict] = {}
-    for path in sorted((ROOT / "grades").glob("b*.json")):
+    for path in sorted((ROOT / f"grades{suffix}").glob("b*.json")):
         for row in read(path):
             item, side = keys[row["key"]]
             grades.setdefault(item, {})[side] = {"verdict": row["verdict"], "reason": row["reason"]}
     missing = [key for key, (item, side) in keys.items() if side not in grades.get(item, {})]
-    (ROOT / "grades.json").write_text(json.dumps(dict(sorted(grades.items())), ensure_ascii=False, indent=1), encoding="utf-8")
+    (ROOT / f"grades{suffix}.json").write_text(json.dumps(dict(sorted(grades.items())), ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"문항 {len(grades)}개, 판정이 빠진 답 {len(missing)}개")
 
 
 if __name__ == "__main__":
-    {"bundle": bundle, "collect": collect}[sys.argv[1]]()
+    {"bundle": bundle, "collect": collect}[sys.argv[1]](after=sys.argv[2:] == ["after"])

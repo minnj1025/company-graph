@@ -1,0 +1,104 @@
+{
+ "question": "GC메디아이의 최대주주 현황을 2023 사업연도 말과 2025 사업연도 말로 견주면, 최대주주와 그 지분율이 바뀌었나요? 특수관계인을 합친 지분율이 달라졌다면 누구 때문인지도 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 최대주주와 지분율은 그대로이고, 특수관계인 합계는 0.12%p 늘었습니다. 늘어난 부분은 임원 김진태 씨 때문입니다.**\n\n| 항목 | 2023 사업연도 말 | 2025 사업연도 말 |\n|---|---|---|\n| 최대주주 | (주)GC케어 | (주)GC케어 (동일) |\n| 최대주주 지분율 | 52.65% (27,482,155주) | 52.65% (27,482,155주, 동일) |\n| 김동철 (계열회사 임원) | 0.01% (4,565주) | 0.01% (4,565주, 동일) |\n| 김진태 (임원) | 없음 | 0.12% (64,909주) |\n| 특수관계인 합계 | 52.66% | 52.78% |\n\n- 2023 사업연도 말: 접수번호 20240723000175 (사업보고서 기재정정, 2024-07-23 공시)\n- 2025 사업연도 말: 접수번호 20260316001124 (사업보고서, 2026-03-16 공시)\n\n**참고 사항**\n- 2023 사업연도 값은 원래 사업보고서가 아니라 2024-07-23 기재정정본에서 가져왔습니다. 2024-06-30 시점 조회에서는 이 값이 나오지 않았습니다.\n- 이 DB의 주주 정보는 최대주주와 그 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만 담습니다. 5% 이상 주주 전체가 아니므로, 위 표 밖의 주주는 알 수 없습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "GC메디아이"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3285,
+    "as_of": "2023-12-31",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 897
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3285,
+    "as_of": "2025-12-31",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1806
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3285,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 2273
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3285,
+    "as_of": "2024-06-30",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 897
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3285,
+    "as_of": "2026-06-30",
+    "doc_type": "annual"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1305
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3285,
+    "as_of": "2024-07-31",
+    "rel_type": "equity",
+    "direction": "in",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1806
+  }
+ ],
+ "cited": [
+  "20240723000175",
+  "20260316001124"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 14,
+  "output_tokens": 2512,
+  "cache_read_input_tokens": 37327,
+  "cache_creation_input_tokens": 12134
+ },
+ "seconds": 15.8,
+ "number": "T11-01",
+ "gold": "최대주주는 두 시점 모두 (주)GC케어이고 지분율도 52.65%(27,482,155주)로 같다. 다만 특수관계인을 합친 합계는 52.66%(27,486,720주)에서 52.78%(27,551,629주)로 늘었는데, 2025 사업연도에 임원 김진태가 64,909주(0.12%)로 새로 올랐기 때문이다. 계열회사 임원 김동철(4,565주, 0.01%)은 그대로다."
+}

@@ -38,6 +38,8 @@ export interface EvalItem {
   evidence: string[];
   why_hard: string;
   agent: AgentSide;
+  /** 이 시험으로 찾은 결함을 고친 뒤 다시 돌린 답 */
+  after: AgentSide;
   baseline?: BaselineSide;
 }
 
@@ -121,7 +123,7 @@ export function ByType({ data }: { data: EvalData }) {
     <div className="bytype">
       <div className="bytype-head">
         <span>문항 종류</span>
-        <span>Agent</span>
+        <span>Agent (고친 뒤)</span>
         <span>웹 검색</span>
       </div>
       {Object.entries(data.types).map(([type, label]) => {
@@ -131,7 +133,7 @@ export function ByType({ data }: { data: EvalData }) {
             <span>
               <em>{type}</em> {label}
             </span>
-            <VerdictBar sides={items.map((item) => item.agent)} slim />
+            <VerdictBar sides={items.map((item) => item.after)} slim />
             <span className="squares">
               {items
                 .filter((item) => item.baseline)
@@ -271,7 +273,8 @@ function Question({ item, data }: { item: EvalItem; data: EvalData }) {
       <summary>
         <span className="q-id">{item.id}</span>
         <span className="q-text">{item.question}</span>
-        <Chip verdict={item.agent.verdict} />
+        <Chip verdict={item.agent.verdict} who="전" />
+        <Chip verdict={item.after.verdict} who="뒤" />
         {item.baseline && <Chip verdict={item.baseline.verdict} who="웹" />}
       </summary>
       {open && (
@@ -296,24 +299,33 @@ function Question({ item, data }: { item: EvalItem; data: EvalData }) {
               </>
             )}
           </dl>
-          <h5>
-            Agent의 답 <Chip verdict={item.agent.verdict} />
-            <span>
-              {data.agent_model} · {item.agent.seconds}초 · {item.agent.tokens.toLocaleString()}토큰
-            </span>
-          </h5>
-          <p className="reason">{item.agent.reason}</p>
-          <div className="tools">
-            {item.agent.tools.map((tool, i) => (
-              <div key={i} className="tool">
-                <b>{tool.name}</b>
-                <code>{JSON.stringify(tool.input)}</code>
-                {tool.error ? <em>{tool.error}</em> : tool.total !== null && <em>{tool.total}건</em>}
+          {(
+            [
+              ["Agent의 답 (처음)", item.agent],
+              ["Agent의 답 (고친 뒤)", item.after],
+            ] as const
+          ).map(([label, side]) => (
+            <div key={label}>
+              <h5>
+                {label} <Chip verdict={side.verdict} />
+                <span>
+                  {data.agent_model} · {side.seconds}초 · {side.tokens.toLocaleString()}토큰
+                </span>
+              </h5>
+              <p className="reason">{side.reason}</p>
+              <div className="tools">
+                {side.tools.map((tool, i) => (
+                  <div key={i} className="tool">
+                    <b>{tool.name}</b>
+                    <code>{JSON.stringify(tool.input)}</code>
+                    {tool.error ? <em>{tool.error}</em> : tool.total !== null && <em>{tool.total}건</em>}
+                  </div>
+                ))}
+                {side.tools.length === 0 && <div className="tool muted">도구를 부르지 않고 답했습니다</div>}
               </div>
-            ))}
-            {item.agent.tools.length === 0 && <div className="tool muted">도구를 부르지 않고 답했습니다</div>}
-          </div>
-          <Answer text={item.agent.answer} />
+              <Answer text={side.answer} />
+            </div>
+          ))}
           {item.baseline && (
             <>
               <h5>
@@ -339,7 +351,7 @@ export function Questions({ data }: { data: EvalData }) {
   const [verdict, setVerdict] = useState<Verdict | "">("");
   const [sharedOnly, setSharedOnly] = useState(false);
   const items = useMemo(
-    () => data.items.filter((item) => (!type || item.type === type) && (!verdict || item.agent.verdict === verdict) && (!sharedOnly || item.baseline)),
+    () => data.items.filter((item) => (!type || item.type === type) && (!verdict || item.after.verdict === verdict) && (!sharedOnly || item.baseline)),
     [data, type, verdict, sharedOnly],
   );
   return (
@@ -354,7 +366,7 @@ export function Questions({ data }: { data: EvalData }) {
           ))}
         </select>
         <select value={verdict} onChange={(event) => setVerdict(event.target.value as Verdict | "")}>
-          <option value="">모든 판정 (Agent)</option>
+          <option value="">모든 판정 (고친 뒤)</option>
           {VERDICTS.map(([key, label]) => (
             <option key={key} value={key}>
               {label}

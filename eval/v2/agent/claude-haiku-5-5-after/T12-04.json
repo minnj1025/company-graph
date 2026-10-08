@@ -1,0 +1,86 @@
+{
+ "question": "덕산넵코어스가 2025년 중에 새로 지분을 취득한 타법인이 2025 사업연도 사업보고서 타법인 출자현황에 올라 있습니까?",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 확인되지 않습니다.** 이 DB에서 덕산넵코어스(주)(company_id 4138)의 2025년 타법인 출자 취득은 찾지 못했고, 2025 사업보고서의 타법인 출자현황에 올라 있는 회사도 조회되지 않았습니다.\n\n- **2025년 중 취득 결정 공시:** 2025-01-01~2025-12-31 기간에 덕산넵코어스가 낸 타법인 주식 취득 결정은 0건입니다. 정정·철회 건을 포함해 조회했습니다.\n- **타법인 출자현황:** 조회 시점(2026-06-30) 기준 최신 사업보고서는 사업보고서(2025.12), 접수번호 20260327000781입니다. 이 회사를 출자자로 한 타법인 출자 관계는 0건입니다.\n- **참고:** 같은 보고서의 계열회사 표에는 (주)덕산테코피아, 덕산네오룩스(주), 덕산하이메탈(주) 등 22곳이 있습니다. 다만 이는 계열회사 현황 표이고 출자현황 표가 아니므로, 이 목록이 2025년 신규 취득 여부를 말해 주지는 않습니다.\n\n**한계:** 이 DB는 사업보고서 출자현황 표의 행 단위 내용을 직접 보여 주지 않고, 관계가 있는 행만 보여 줍니다. 따라서 결과가 0건이라는 것은 공시된 관계가 없다는 뜻이지, 보고서 표 자체를 확인했다는 뜻은 아닙니다. 표를 직접 확인하려면 위 접수번호의 DART 원문을 보셔야 합니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "덕산넵코어스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4138,
+    "as_of": "2026-06-30",
+    "rel_type": "stake_acquisition",
+    "direction": "out",
+    "disclosed_from": "2025-01-01",
+    "disclosed_to": "2025-12-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 739
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4138,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 897
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4138,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 22,
+   "chars": 10802
+  },
+  {
+   "tool": "get_coverage",
+   "input": {},
+   "error": null,
+   "total": null,
+   "chars": 1610
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 4138,
+    "as_of": "2026-06-30",
+    "doc_type": "annual"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1300
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2123,
+  "cache_read_input_tokens": 23583,
+  "cache_creation_input_tokens": 15026
+ },
+ "seconds": 11.9,
+ "number": "T12-04",
+ "gold": "올라 있지 않다. 덕산넵코어스의 2025 사업연도 사업보고서 타법인 출자현황은 법인명·최초취득일·지분율·장부가액이 모두 \"-\"이고 합계도 \"-\"로, 신규 취득을 포함해 보고된 타법인 출자가 없다."
+}

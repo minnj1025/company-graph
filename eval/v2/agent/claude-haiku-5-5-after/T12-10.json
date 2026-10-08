@@ -1,0 +1,63 @@
+{
+ "question": "에프에스티의 2025 사업연도 사업보고서 타법인 출자현황에서, 출자 목적은 단순투자인데 기말 지분율이 20% 이상인 회사를 지분율과 함께 모두 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "에프에스티의 2025 사업연도 사업보고서(접수번호 20260318001663) 타법인 출자현황에서 출자 목적이 단순투자이고 기말 지분율이 20% 이상인 회사는 3곳입니다.\n\n| 회사 | 기말 지분율 | 주식수 | 출자 목적 |\n|---|---|---|---|\n| Advanced Semiconductor Products | 40.0% | - | 단순투자 |\n| (주)오로스테크놀로지 | 33.54% | 3,141,250 | 단순투자 |\n| (주)이솔 | 28.26% | 225,567 | 단순투자 |\n\n- 기준일은 2025-12-31이며, 공시일은 2026-03-18입니다.\n- 오로스테크놀로지 건은 같은 내용이 20260323001066 공시에도 확인됩니다.\n- 지분율은 보고서 표에 적힌 값이며, 우선주를 포함한 발행주식총수 기준일 수 있습니다.\n- 단순투자 중 19.5%인 (주)엘트린은 20% 미만이라 제외했습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에프에스티"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1366,
+    "as_of": "2026-06-30",
+    "rel_type": "stake_acquisition",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1410
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1366,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 20,
+   "chars": 10050
+  },
+  {
+   "tool": "get_coverage",
+   "input": {},
+   "error": null,
+   "total": null,
+   "chars": 1610
+  }
+ ],
+ "cited": [
+  "20260318001663",
+  "20260323001066"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1328,
+  "cache_read_input_tokens": 9910,
+  "cache_creation_input_tokens": 12838
+ },
+ "seconds": 6.9,
+ "number": "T12-10",
+ "gold": "세 곳이다. Advanced Semiconductor Products 40.00%(2025.08.21 최초 취득), ㈜오로스테크놀로지 33.54%, ㈜이솔 28.26%(기초 38.14%에서 하락). 시옷플랫폼은 기초에 39.00%였지만 11,321주가 전량 감소해 기말 잔액이 없으므로 해당하지 않고, ㈜엘트린은 19.50%로 20%에 못 미친다."
+}

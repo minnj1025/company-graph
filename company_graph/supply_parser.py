@@ -42,6 +42,7 @@ class SupplyContract:
     original_date: date | None = None        # 정정 대상인 원래 공시의 제출일
     correction_reason: str | None = None
     changes: list[tuple[str, str, str]] = field(default_factory=list)   # (정정항목, 정정전, 정정후)
+    body_stale: bool = False                 # 본문이 정정 전 값 그대로라 머리 표의 정정 후 금액을 썼다
 
     @property
     def party_hidden(self) -> bool:
@@ -125,6 +126,15 @@ def parse(raw: bytes) -> SupplyContract | None:
             while len(rows) >= 3 and not rows[0].startswith("-") and not rows[0].startswith("※"):
                 c.changes.append((rows[0], rows[1], rows[2]))
                 rows = rows[3:]
+        # 정정 공시가 머리 표(정정 전·후)만 고치고 본문은 예전 값 그대로 두는 일이 있다. 본문 금액이 "정정 전" 값이면 "정정 후" 값을 쓴다
+        for label, before, after in c.changes:
+            if "계약금액" in label and c.amount is not None and to_decimal(before) == c.amount and to_decimal(after) not in (None, c.amount):
+                c.amount = to_decimal(after)
+                c.body_stale = True
+                ratio = next((to_decimal(a) for l, b, a in c.changes if "매출액" in l and "대비" in l and to_decimal(b) == c.ratio), None)
+                if ratio is not None:
+                    c.ratio = ratio
+                break
     return c
 
 
@@ -136,6 +146,11 @@ class Termination:
     party: str | None = None
     termination_date: date | None = None
     reason: str | None = None
+    recent_sales: Decimal | None = None
+    ratio: Decimal | None = None           # 매출액대비(%)
+    party_relation: str | None = None
+    period_start: date | None = None       # 해지된 계약의 계약기간
+    period_end: date | None = None
     subsidiary: str | None = None
     related_dates: list[date] = field(default_factory=list)   # "관련공시" 칸에 적힌 원래 공시·정정 공시의 날짜
 
@@ -152,7 +167,12 @@ def parse_termination(raw: bytes) -> Termination | None:
         amount=to_decimal(_value(cs, r"^해지금액", body)),
         party=_value(cs, r"^3\.\s*계약상대", body, free_text=True),
         termination_date=to_date(_value(cs, r"^\d+\.\s*해지일자", body)),
-        reason=_value(cs, r"^\d+\.\s*해지\s*주요사유", body, free_text=True),
+        reason=_value(cs, r"^\d+\.\s*(해지\s*주요사유|주요\s*해지사유)", body, free_text=True),
+        recent_sales=to_decimal(_value(cs, r"^최근\s*매출액", body)),
+        ratio=to_decimal(_value(cs, r"^매출액\s*대비", body)),
+        party_relation=_value(cs, r"^-\s*회사와의 관계", body),
+        period_start=to_date(_value(cs, r"^시작일$", body)),
+        period_end=to_date(_value(cs, r"^종료일$", body)),
     )
     for i in range(min(body, len(cs) - 1)):
         if cs[i] in ("자회사인", "종속회사인"):

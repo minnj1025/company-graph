@@ -52,9 +52,10 @@ def main():
     parser.add_argument("--only", default="")
     parser.add_argument("--resume", action="store_true", help="이미 답이 있는 문항은 건너뛴다")
     parser.add_argument("--set", default="practice", choices=["practice", "sealed", "v2"])
+    parser.add_argument("--tag", default="", help="결과 폴더 이름 뒤에 붙일 말. 고친 뒤에 다시 돌린 결과를 따로 둘 때 쓴다")
     args = parser.parse_args()
     only = set(filter(None, args.only.split(",")))
-    out_dir = ROOT / {"practice": "agent", "sealed": "sealed/agent", "v2": "v2/agent"}[args.set] / args.model
+    out_dir = ROOT / {"practice": "agent", "sealed": "sealed/agent", "v2": "v2/agent"}[args.set] / (args.model + args.tag)
     out_dir.mkdir(parents=True, exist_ok=True)
     total = {"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}
     items = (sealed_questions() if args.set == "sealed" else v2_questions() if args.set == "v2"

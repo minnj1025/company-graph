@@ -21,8 +21,14 @@ LISTED = ("Y", "K", "N")
 DART_LINK = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo="
 MARKETS = {"Y": "유가증권", "K": "코스닥", "N": "코넥스", "E": "비상장 등"}
 ATTRS = ("title", "kind", "period_start", "period_end", "party_hidden", "party_relation", "subsidiary", "ratio_pct",
-         "purpose", "method", "pct_after", "nationality", "relation", "ratio_check", "correction_reason", "listed",
-         "relation_to_filer")
+         "recent_sales", "region", "purpose", "method", "pct_after", "shares", "shares_after", "equity_ratio_pct",
+         "expected_date", "business", "nationality", "relation", "ratio_check", "correction_reason", "changes",
+         "amount_from", "reason", "listed", "relation_to_filer")
+# detail 에 나오는 이름의 뜻. 도구 결과에 같이 실어 Agent가 값을 헷갈리지 않게 한다
+FIELDS = ("as_of_date: 계약일·결의일·해지일·보고서 기준일. period_start~period_end: 계약기간(시작일~종료일). "
+          "ratio_pct: 최근 매출액 대비(%). equity_ratio_pct: 자기자본 대비(%). expected_date: 취득·처분 예정일자. "
+          "shares: 취득·처분 주식수, shares_after·pct_after: 거래 뒤 소유주식수·지분율. "
+          "changes: 정정 공시의 [항목, 정정 전, 정정 후]. reason: 해지·철회 사유. correction_reason: 정정 사유")
 
 _AS_OF = {"type": "string", "description": "조회 시점 (YYYY-MM-DD). 이 날짜까지 공시된 것만 본다. 질문에 시점이 없으면 오늘 날짜"}
 _COMPANY = {"type": "integer", "description": "find_company 가 돌려준 company_id"}
@@ -96,6 +102,16 @@ TOOLS = [
 ]
 
 
+def _detail(attrs: dict | None, keys=ATTRS) -> dict:
+    """공시에서 읽은 값 가운데 Agent에게 내줄 것. 정정 내역은 길어질 수 있어 앞의 여덟 줄, 칸마다 120자까지만 싣는다."""
+    out = {k: (attrs or {})[k] for k in keys if (attrs or {}).get(k) not in (None, "", False)}
+    if isinstance((attrs or {}).get("listed"), bool):   # 계열회사 표의 상장·비상장 구분
+        out["listed"] = "상장" if attrs["listed"] else "비상장"
+    if "changes" in out:
+        out["changes"] = [[str(cell)[:120] for cell in row] for row in out["changes"][:8]]
+    return out
+
+
 class ToolError(ValueError):
     """Agent에게 그대로 돌려줄 오류. 무엇을 고쳐 다시 부르면 되는지 적는다."""
 
@@ -147,7 +163,7 @@ def _edge(db, edge: dict) -> dict:
             "disclosed_by": {"subject": "주체가 공시", "object": "상대가 공시", "both": "양쪽 공시에서 확인"}[edge["disclosed_by"]],
             "stale": edge["stale"] or None,
             "superseded_on": edge["invalidated_date"] and edge["invalidated_date"].isoformat(),
-            "detail": {k: edge["attrs"][k] for k in ATTRS if edge["attrs"].get(k) not in (None, "", False)},
+            "detail": _detail(edge["attrs"]),
             "rcept_no": edge["evidence"]}
 
 
@@ -181,8 +197,25 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
     else:
         rows.sort(key=lambda r: (r["disclosed_date"], r["rcept_no"][0], r["object"]["name"]))
     sources = query.coverage(db)
+    summary = None
+    if rel_type == "affiliate" and direction == "out":
+        listed = sum(1 for r in rows if r["detail"].get("listed") == "상장")
+        report = db.scalars(select(Document).where(Document.company_id == company.company_id, Document.doc_type == "annual",
+                                                   Document.rcept_dt <= when).order_by(Document.rcept_no.desc()).limit(1)).first()
+        self_listed = MARKETS.get(company.corp_cls) in ("유가증권", "코스닥", "코넥스")
+        summary = ({"self": f"{company.name} 자신은 {'상장사' if self_listed else '비상장사'}이고 아래 relations 목록에는 들어 있지 않습니다",
+                    "excluding_self": {"listed": listed, "unlisted": len(rows) - listed},
+                    "including_self": {"listed": listed + self_listed, "unlisted": len(rows) - listed + (not self_listed)},
+                    "note": "보고서의 계열회사 표는 보통 자신을 넣어 셉니다. 상장·비상장 수를 물으면 including_self 를 답하고, "
+                            "자신을 뺀 수(excluding_self)도 함께 밝히세요. 상장으로 분류된 회사를 물으면 자신도 듭니다"}
+                   if rows else
+                   {"listed": 0, "unlisted": 0,
+                    "note": f"사업보고서({report.rcept_no})를 읽었고 계열회사 표에 올라온 회사가 없습니다. 보고서 기준으로 계열회사가 없다고 답할 수 있습니다"}
+                   if report else None)
     return {"company": _brief(company), "as_of": when.isoformat(), "total": len(rows), "truncated": len(rows) > LIMIT,
+            "affiliate_summary": summary,
             "relations": rows[:LIMIT],
+            "fields": FIELDS,
             "unknown_listing": unknown_listing and f"원장에 없는 상대 {unknown_listing}곳은 상장 여부를 알 수 없어 뺐습니다. "
                                                    "해외 상장사일 수 있으니 listed_only 없이 다시 조회해 이름을 확인하세요",
             "coverage": {"source": sources["sources"].get(rel_type), **{k: str(v) for k, v in
@@ -208,14 +241,14 @@ def get_filings(db, company_id, as_of, doc_type: str, filed_from=None, filed_to=
                      "superseded_by_later_filing": doc.rcept_no in superseded,
                      "contents": [{"counterparty": r.object_name_raw, "value": None if r.value_num is None else float(r.value_num),
                                    "unit": r.value_unit, "kind": query.LABELS[r.rel_type],
-                                   **{k: (r.attrs or {})[k] for k in ("title", "period_end", "purpose", "reason", "subsidiary",
-                                                                      "withdrawn", "before_withdrawal", "original_filed",
-                                                                      "terminated_filing", "withdrawn_filing")
-                                      if (r.attrs or {}).get(k)}}
+                                   "as_of_date": r.as_of_date and r.as_of_date.isoformat(),
+                                   **_detail(r.attrs, ATTRS + ("withdrawn", "before_withdrawal", "original_filed",
+                                                               "terminated_filing", "withdrawn_filing"))}
                                   for r in relations if r.rel_type not in ("equity", "affiliate")][:5],
                      "url": DART_LINK + doc.rcept_no})
     return {"company": _brief(company), "as_of": when.isoformat(), "total": len(rows), "truncated": len(rows) > LIMIT,
             "filings": rows[-LIMIT:],
+            "fields": FIELDS,
             "note": "공급계약과 취득·처분 결정은 2024-01 이후 공시만, 사업보고서는 2023~2025 사업연도만 있습니다"}
 
 

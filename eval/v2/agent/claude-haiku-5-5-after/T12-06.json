@@ -1,0 +1,61 @@
+{
+ "question": "명신산업의 2025 사업연도 사업보고서 타법인 출자현황에서 최초 취득일이 2025년인 출자 법인을 모두 들고, 각각의 최초 취득일·출자 목적·기말 지분율·기말 장부가액을 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "명신산업의 2025 사업보고서(접수번호 20260323000909, 기준일 2025-12-31)에는 타법인 출자 법인이 5곳 있습니다. 다만 이 DB에는 **최초 취득일과 기말 장부가액 항목이 없어서**, 질문하신 두 값은 확인할 수 없습니다. 질문하신 나머지 항목은 아래와 같습니다.\n\n| 출자 법인 | 출자 목적 | 기말 지분율 | 출자 주식수 |\n|---|---|---|---|\n| (주)심원테크 | 경영효율성 제고 | 100.0% | 300,000 |\n| MYOUNGSHIN NA, CORP. | 신규 부품 생산 | 100.0% | 400,000 |\n| Myoung Shin Fabricante De Carroceria Automotiva. Ltda. | 경영효율성 제고 | 100.0% | 285,783,129 |\n| 심원기차부건과기 (상숙)유한공사 | 중국시장 진출 | 49.0% | - |\n| 한국경제신문 | 단순투자 | 0.1% | 17,500 |\n\n- 취득일과 장부가액은 이 표에 없어서 모든 법인에 대해 \"확인 불가\"입니다.\n- 지분율과 목적은 사업보고서 표의 값 그대로이며, 기준일은 2025-12-31입니다.\n- 근거: 접수번호 20260323000909.\n\n2025년에 새로 취득한 법인을 찾으려면, 2025년 중 공시된 타법인 주식 취득 결정을 따로 조회할 수 있습니다. 다만 그 공시는 사업보고서의 \"최초 취득일\"과 같은 개념이 아니므로, 그 점을 감안해야 합니다. 원하시면 조회해 드리겠습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "명신산업"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_coverage",
+   "input": {},
+   "error": null,
+   "total": null,
+   "chars": 1610
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 35,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 3174
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 35,
+    "as_of": "2026-06-30",
+    "doc_type": "annual"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1302
+  }
+ ],
+ "cited": [
+  "20260323000909"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1834,
+  "cache_read_input_tokens": 19641,
+  "cache_creation_input_tokens": 9457
+ },
+ "seconds": 11.6,
+ "number": "T12-06",
+ "gold": "두 곳이다. MYOUNGSHIN NA, CORP.는 2025.07.11 최초 취득, 목적 \"신규 부품 생산\", 기말 지분율 100%(400,000주), 장부가액 5,598,000,000원이다. Myoung Shin Fabricante De Carroceria Automotiva. Ltda.는 2025.07.31 최초 취득, 목적 \"경영효율성 제고\", 기말 지분율 100%(285,783,129주), 장부가액 54,536,000,000원이다. 두 곳 모두 기초 잔액이 없다."
+}
