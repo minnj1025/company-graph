@@ -1,0 +1,45 @@
+{
+ "question": "(주)LG가 2024년 2월 공시한 General Motors 상대 EV용 양극재 중장기 공급계약에서 실제 계약 당사자는 어느 회사인가요? 계약금액과 매출액 대비 비율, 계약기간을 알려 주세요.",
+ "as_of": "2024-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** 실제 계약 당사자는 (주)LG의 자회사인 **(주)LG화학**입니다. 공시는 (주)LG가 냈습니다.\n\n- **계약 상대:** General Motors (DB에 이름만 있고 기업 ID는 없음)\n- **계약금액:** 24,749,237,818,187원\n- **매출액 대비 비율:** 47.72% (공시에 적힌 값)\n- **계약기간:** 2024-02-07 ~ 2035-12-31\n- **계약명:** EV용 양극재 중장기 공급계약 체결 (상품공급)\n- **공시일:** 2024-02-07\n- **접수번호:** 20240207800618\n\n조회 시점(2024-06-30) 기준으로 이 계약을 정정하거나 해지한 공시는 확인되지 않았습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "(주)LG"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1604,
+    "as_of": "2024-06-30",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "disclosed_from": "2024-02-01",
+    "disclosed_to": "2024-02-29"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 910
+  }
+ ],
+ "cited": [
+  "20240207800618"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 734,
+  "cache_read_input_tokens": 9522,
+  "cache_creation_input_tokens": 5545
+ },
+ "seconds": 4.8,
+ "number": "T05-09",
+ "gold": "실제 계약 당사자는 (주)LG가 아니라 자회사인 (주)LG화학이다. LG화학이 General Motors와 2024-02-07 체결한 EV용 양극재 중장기 공급계약으로, 계약금액은 24,749,237,818,187원, 매출액 대비 47.72%, 계약기간은 2024-02-07~2035-12-31이다."
+}

@@ -1,0 +1,68 @@
+{
+ "question": "녹십자엠에스가 2019년 6월 중국 Horron(Shenzhen Xilaiheng Medical Electronics Co.,Ltd.)과 체결한 GREENCARE Lipid 공급계약은 2025년 말 현재 유효한가요? 유효하지 않다면 해지 금액과 해지일, 해지 사유를 알려 주세요.",
+ "as_of": "2025-12-31",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 2025년 말 기준 유효하지 않습니다. 2025년 9월 19일 해지 공시가 나와 있습니다.**\n\n- **해지 대상:** GREENCARE Lipid 공급계약 (상대: Horron(Shenzhen Xilaiheng Medical Electronics Co.,Ltd.))\n- **해지 금액:** 11,557,026,000원 (접수번호 20250919900523)\n- **해지일:** DB에 기록된 공시일은 2025-09-19입니다. 실제 계약 해지 효력일은 DB에 별도 필드가 없어 확인되지 않습니다.\n- **해지 사유:** 해지 공시에 사유 항목이 기록되어 있지 않아 DB로는 확인할 수 없습니다. 원문은 위 접수번호에서 DART로 직접 확인해 주세요.\n\n**확인 사항**\n- 2025년 9월 19일 공시 이후 GREENCARE Lipid 계약은 공급계약 목록에 없고, 해지 목록에만 남아 있습니다. 정정이나 철회 공시는 없었습니다.\n- 같은 상대와의 다른 계약인 RT-100 HbA1c 자동화장비 및 시약 공급계약(접수번호 20250919900469)은 2025년 9월 21일 종료에 따라 계약금액이 정정되었습니다(291,633,159원). 이것은 GREENCARE Lipid 계약과 별개입니다.\n- 2019년 6월 원계약 체결 공시는 이 DB의 수집 범위(2024년 1월 이후) 밖이라 원래 계약 조건은 확인되지 않습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "녹십자엠에스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3734,
+    "as_of": "2025-12-31",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 2281
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3734,
+    "as_of": "2025-12-31",
+    "rel_type": "supply_termination",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1294
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3734,
+    "as_of": "2025-12-31",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 3,
+   "chars": 2099
+  }
+ ],
+ "cited": [
+  "20250919900469",
+  "20250919900523"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1578,
+  "cache_read_input_tokens": 9562,
+  "cache_creation_input_tokens": 8399
+ },
+ "seconds": 9.2,
+ "number": "T03-06",
+ "gold": "유효하지 않다. 2025-09-19 해지 공시에 따르면 이 계약은 2025-09-19(상대방의 해지 통지 공문이 온 날)에 해지되었고, 해지금액은 11,557,026,000원(USD 9,780,000, 매출액 대비 13.39%)이다. 사유는 계약 상대방의 해지 통지(중국 보험수가 인하 등 외부 요인에 따른 상대방의 사업철회)이며, 계약 체결 이후 해지 때까지 이행 실적은 없다."
+}

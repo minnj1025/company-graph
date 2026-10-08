@@ -1,0 +1,92 @@
+{
+ "question": "지에이치신소재(GH신소재)의 최대주주가 출자한 회사 가운데 2025 사업연도 동안 지분율이 달라진 곳이 있나요? 있다면 어느 회사이고 기초와 기말 지분율이 각각 얼마인지 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 2025 사업연도 중 지분율이 바뀐 곳은 NVH USA INC 하나입니다. 기초 51.0%에서 기말 10.0%로 줄었습니다.** 피엠그로우도 표기 값이 바뀌었지만(0.65% → 0.7%), 실질 변동인지 반올림 차이인지는 DB만으로 판단할 수 없습니다.\n\n**확인 경위**\n- 지에이치신소재(주, company_id 3815)의 최대주주는 엔브이에이치코리아(주, company_id 80)입니다. 2025-12-31 기준 지분율은 50.7%이고, 근거는 접수번호 20260323001278입니다.\n- 엔브이에이치코리아가 출자한 회사는 21곳입니다. 기초(2024-12-31, 접수번호 20250318001375)와 기말(2025-12-31, 접수번호 20260323001278) 값을 비교했습니다.\n\n**지분율 변동**\n- **NVH USA INC**: 51.0% → 10.0%\n\n**표기만 바뀐 곳**\n- **피엠그로우**: 0.65% → 0.7%\n\n**변동 없음**: 나머지 19곳은 두 시점의 값이 같습니다. 예를 들어 NVH GERMANY GMBH·NVH RUS·NVH CZECH S.R.O.·GH AMERICA INCORPORATION 등은 그대로입니다.\n\n**참고**\n- 엔비티엔스(주)(구 엔브이에이치프론티어)는 2024년 표에서 이 이름으로, 2025년 표에서는 NBTS로 나옵니다. 지분율은 100%로 같아 변동으로 보지 않았습니다. 같은 회사인지는 DB의 연결 정보가 없어 확정하지 못했습니다.\n- 지분율은 사업보고서의 타법인 출자현황 표에 적힌 값입니다. 우선주를 포함한 발행주식총수 기준일 수 있습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "지에이치신소재"
+   },
+   "error": null,
+   "total": null,
+   "chars": 197
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3815,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1027
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3815,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1833
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 80,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 21,
+   "chars": 9754
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 80,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 53,
+   "chars": 21970
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 80,
+    "as_of": "2025-12-31",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 21,
+   "chars": 9774
+  }
+ ],
+ "cited": [
+  "20250318001375",
+  "20260323001278"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 3285,
+  "cache_read_input_tokens": 40080,
+  "cache_creation_input_tokens": 29722
+ },
+ "seconds": 17.7,
+ "number": "T14-03",
+ "gold": "지에이치신소재의 최대주주는 엔브이에이치코리아(보통주 50.73%)다. 엔브이에이치코리아의 2025 사업보고서 타법인출자 현황에서 기초와 기말 지분율이 다른 곳은 NVH USA INC 하나뿐이며, 기초 51.0%에서 기말 10.0%로 줄었다(출자 목적 경영참여). 나머지 출자 회사는 지분율이 그대로다."
+}

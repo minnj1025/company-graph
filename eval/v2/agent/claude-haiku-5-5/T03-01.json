@@ -1,0 +1,75 @@
+{
+ "question": "효성중공업이 2022년 6월 주식회사 온천동디에이와 체결한 부산 온천동 주상복합 공사도급계약은 2025년 6월 말 현재도 유효한가요? 유효하지 않다면 해지 금액과 해지일, 해지 사유를 알려 주세요.",
+ "as_of": "2025-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 2025년 6월 30일 기준 유효하지 않습니다.** 이 계약은 2025년 4월 29일 공시된 해지 공시로 종료된 것으로 나옵니다.\n\n- **해지 금액:** 112,461,800,000원\n- **해지일:** 해지 공시의 기준일(as_of_date)은 2025-04-28이고, 공시일은 2025-04-29입니다. DB에는 효력 발생일이 따로 적혀 있지 않아, 위 두 날짜를 해지일로 보시면 됩니다.\n- **해지 사유:** \"계약 효력 소멸에 따른 해지\"\n- **근거:** 접수번호 20250429800893 (단일판매·공급계약해지, 제목 \"부산 온천동 주상복합 공사도급계약\")\n\n확인 사항:\n- 2022년 6월 체결 공시 자체는 이 DB의 수집 범위(2024년 1월 이후 공시) 밖이라 원 계약 내용과 원 공시의 금액·기간은 확인할 수 없습니다. 해지 공시의 금액이 원 계약 금액과 같은지도 이 DB만으로는 단정할 수 없습니다.\n- 2025년 6월 30일 기준 효성중공업의 공급계약 목록에 이 계약은 없고, 정정이나 철회 공시도 확인되지 않았습니다.\n- 상대방인 주식회사 온천동디에이는 DB에 기업으로 등록되어 있지 않아, 이름으로만 대조했습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "효성중공업"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "온천동디에이"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2243,
+    "as_of": "2025-06-30",
+    "rel_type": "supply_contract",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 12,
+   "chars": 6789
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2243,
+    "as_of": "2025-06-30",
+    "rel_type": "supply_termination",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1746
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2243,
+    "as_of": "2025-06-30",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 17,
+   "chars": 6950
+  }
+ ],
+ "cited": [
+  "20250429800893"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1752,
+  "cache_read_input_tokens": 9663,
+  "cache_creation_input_tokens": 13987
+ },
+ "seconds": 10.6,
+ "number": "T03-01",
+ "gold": "유효하지 않다. 2025-04-29 해지 공시에 따르면 이 계약은 2025-04-28(신탁회사와의 정산 합의서 체결일)에 해지되었고, 해지금액은 112,461,800,000원(부가가치세 포함, 매출액 대비 3.63%)이다. 사유는 '계약 효력 소멸에 따른 해지'로, 2024년 12월 20일 채무인수 이후 효성중공업이 도급인의 지위를 얻으면서 기존 도급계약의 효력이 소멸했다."
+}

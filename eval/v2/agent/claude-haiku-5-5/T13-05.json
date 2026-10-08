@@ -1,0 +1,43 @@
+{
+ "question": "일진전기의 2025 사업연도 사업보고서 계열회사 현황을 기준으로, 일진전기 자신을 제외한 상장 계열회사는 어디어디입니까? 표에 적힌 상장·비상장 회사 수도 함께 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 상장 계열회사는 4곳입니다. 표 기준 전체는 33곳(상장 4, 비상장 29)입니다.**\n\n조회 기준은 일진전기의 2025 사업연도 사업보고서(접수번호 20260311004216, 기준일 2025-12-31)입니다.\n\n**상장 계열회사 (4곳)**\n1. 일진다이아몬드(주), 081000 (유가증권)\n2. 일진디스플레이(주), 020760 (유가증권)\n3. 일진하이솔루스(주), 271940 (유가증권)\n4. 일진홀딩스(주), 015860 (유가증권)\n\n**비상장 계열회사 (29곳, 표에 상장 표시가 없는 곳)**\n- 국내: (주)세마오일, (주)아트테크, (주)일진에스앤티, (주)전주방송, 알피니언메디칼시스템(주), 마그마툴(주), 셀리게인(주), 유한회사 아이텍, 일진디앤코(주), 일진반도체(주), 일진씨앤에스(주), 일진자동차(주), 일진제강(주), 일진지엘에스(주), 일진파트너스 유한책임회사, 컴퍼니에이치앤 유한책임회사\n- 해외: Alpinion Guangzhou Medical Systems Co., Ltd., Alpinion Medical Deutschland GmbH, Alpinion US, Inc., ILJIN DISPLAY VINA CO.,LTD, ILJIN Diamond VINA, ILJIN EUROPE GMBH, ILJIN Electric USA. INC., ILJIN Hysolus Property Management Germany GmbH, ILJIN JAPAN, ILJIN STEEL AMERICA INC., ILJIN USA, Life Science Enterprises, SHANGHAI ILJIN Diamond CO., LTD\n\n**참고**\n- 위 29곳은 DB에 \"원장에 이름만 있음\"으로 되어 있어 증권코드가 없습니다. 상장 여부 표시가 없다는 뜻이지, 비상장이라고 확인된 것은 아닙니다.\n- 일진전기를 계열로 적은 다른 회사의 보고서(일진홀딩스, 일진하이솔루스, 일진다이아몬드, 일진디스플레이)는 위 표에 넣지 않았습니다. 이들은 일진전기 자신의 표가 아닙니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "일진전기"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3037,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 37,
+   "chars": 16388
+  }
+ ],
+ "cited": [
+  "20260311004216"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 3023,
+  "cache_read_input_tokens": 9487,
+  "cache_creation_input_tokens": 13042
+ },
+ "seconds": 13.6,
+ "number": "T13-05",
+ "gold": "일진전기 자신을 제외한 상장 계열회사는 일진홀딩스(주), 일진다이아몬드(주), 일진디스플레이(주), 일진하이솔루스(주)의 네 곳이다. 표에는 상장 5개사(일진전기(주) 포함), 비상장 29개사로 적혀 있다(기준일 2025년 12월 31일)."
+}

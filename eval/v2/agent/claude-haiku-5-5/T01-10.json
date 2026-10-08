@@ -1,0 +1,65 @@
+{
+ "question": "2026년 4월 말 기준으로, 케일럼이 현대엔지니어링과 맺은 SHAHEEN Project DRUM-1 제작공급 계약의 공시상 종료일과 계약금액은 어떻게 되어 있었나요?",
+ "as_of": "2026-04-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** 2026년 4월 30일 기준 공시상 계약종료일은 **2026-05-30**, 계약금액은 **13,868,700,000원**입니다.\n\n- **근거 공시:** 접수번호 **20260316900422** (2026-03-16, [기재정정] 단일판매·공급계약체결, \"SHAHEEN Project DRUM-1 제작공급의 건\"). 정정 사유는 \"계약종료일 변경합의\"입니다.\n- **직전 정정 (참고):** 접수번호 20251201900837(2025-12-01)에서는 종료일이 2026-03-16이었습니다. 2026-03-16 정정으로 2026-05-30이 되었습니다.\n- **계약 정보:** 계약 체결일은 2023-12-26이고, 공시 기준 매출 대비 비율은 16.13%입니다.\n- **참고:** 이 정정 공시는 2026-05-27에 다른 공시로 대체된 것으로 나옵니다. 4월 30일 시점에는 유효한 값이었습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "케일럼"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대엔지니어링"
+   },
+   "error": null,
+   "total": null,
+   "chars": 197
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3983,
+    "as_of": "2026-04-30",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "counterparty_id": 165
+   },
+   "error": null,
+   "total": 1,
+   "chars": 942
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3983,
+    "as_of": "2026-04-30",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 2320
+  }
+ ],
+ "cited": [
+  "20251201900837",
+  "20260316900422"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 971,
+  "cache_read_input_tokens": 9723,
+  "cache_creation_input_tokens": 7145
+ },
+ "seconds": 5.6,
+ "number": "T01-10",
+ "gold": "2026-04-30 시점의 최신 공시는 2026-03-16 정정공시로, 종료일을 2026-03-16에서 2026-05-30으로 바꾼 것이다. 계약금액은 13,868,700,000원(매출액 대비 16.13%)으로 그때까지 변동이 없었다. 종료일 2026-06-28과 금액 13,885,275,220원(16.15%)은 2026-05-27 정정의 값이다."
+}

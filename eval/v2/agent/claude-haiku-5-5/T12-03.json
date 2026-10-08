@@ -1,0 +1,73 @@
+{
+ "question": "나이벡의 2025 사업연도 사업보고서 타법인 출자현황 기준으로, 경영참여 목적으로 지분을 보유한 회사는 어디어디입니까?",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 이 DB에서는 나이벡의 타법인 출자 관계를 찾지 못했습니다. 따라서 경영참여 목적으로 지분을 보유한 회사도 확인되지 않습니다.**\n\n- **조회 내용:** 나이벡(company_id 2314, 코스닥 138610)의 지분 관계(out)를 조회했고, 결과는 0건입니다. 계열회사 표도 0건입니다.\n- **근거 보고서:** 2025 사업연도 사업보고서(접수번호 20260320001388, 2026-03-20 공시)는 DB에 있습니다. 그러나 이 보고서의 타법인 출자현황에서 올라온 행이 없습니다.\n- **DB의 한계:** 이 DB는 사업보고서의 타법인 출자현황 표에서 지분 관계를 가져옵니다. 하지만 \"경영참여 목적\"이라는 보유 목적 항목은 수집하지 않습니다. 따라서 목적별 구분은 DB로 확인할 수 없습니다.\n- **참고:** 나이벡의 지분 취득·처분 결정 공시도 DB에 있을 수 있습니다. 필요하면 이 결정 공시를 따로 조회할 수 있습니다. 다만 그 결정 공시는 사업보고서 출자현황과 같은 기준이 아니므로 위 결론을 바꾸지는 않습니다.\n\n경영참여 목적 여부는 위 사업보고서 원문(접수번호 20260320001388)의 타법인 출자현황 표에서 직접 확인하시기 바랍니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "나이벡"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2314,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 563
+  },
+  {
+   "tool": "get_coverage",
+   "input": {},
+   "error": null,
+   "total": null,
+   "chars": 1610
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2314,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 368
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2314,
+    "as_of": "2026-06-30",
+    "doc_type": "annual"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 993
+  }
+ ],
+ "cited": [
+  "20260320001388"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1374,
+  "cache_read_input_tokens": 16206,
+  "cache_creation_input_tokens": 7842
+ },
+ "seconds": 9.0,
+ "number": "T12-03",
+ "gold": "없다. 나이벡의 2025 사업연도 사업보고서 타법인 출자현황에는 출자 법인이 기재되어 있지 않고(법인명·목적·지분율이 모두 \"-\", 합계도 \"-\"), 따라서 경영참여 목적 출자처도 없다."
+}

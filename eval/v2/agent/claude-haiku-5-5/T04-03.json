@@ -1,0 +1,66 @@
+{
+ "question": "2025년 8월 말 기준으로, 폰드그룹의 주식회사 올그레이스 주식 취득 결정에서 취득예정일자는 언제로 공시되어 있었나요? 취득금액과 취득 후 지분율도 함께 알려 주세요.",
+ "as_of": "2025-08-31",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 취득예정일자는 이 DB에 없어 확인할 수 없습니다.** 취득금액과 취득 후 지분율은 확인했습니다.\n\n- **취득 주체·상대**: 폰드그룹(주)(company_id 2879)이 ㈜올그레이스(company_id 14665) 주식을 취득하기로 결정했습니다.\n- **취득금액**: 19,000,000,500원 (접수번호 20250729900110)\n- **취득 후 지분율**: 100% (`pct_after` 100)\n- **취득 방법**: 현금취득(구주 인수)\n- **공시일**: 2025-07-29 (타법인주식및출자증권취득결정)\n- **목적**: 사업 포트폴리오 다각화를 통한 경쟁력 및 성장동력 확보\n\n2025-08-31 시점에 이 결정은 유효했습니다. 다만 공시 기록에는 2025-09-30에 무효가 됐다는 표시(superseded_on)가 있습니다. 이 DB에서는 그 이유를 확인할 수 없었습니다. 정정인지 철회인지는 원문(위 접수번호)에서 확인하시기 바랍니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "올그레이스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 197
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "폰드그룹"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2879,
+    "as_of": "2025-08-31",
+    "rel_type": "stake_acquisition",
+    "direction": "out",
+    "counterparty_id": 14665
+   },
+   "error": null,
+   "total": 1,
+   "chars": 931
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2879,
+    "as_of": "2025-08-31",
+    "doc_type": "event",
+    "filed_from": "2025-07-29",
+    "filed_to": "2025-07-29"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 631
+  }
+ ],
+ "cited": [
+  "20250729900110"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1164,
+  "cache_read_input_tokens": 15465,
+  "cache_creation_input_tokens": 6333
+ },
+ "seconds": 7.2,
+ "number": "T04-03",
+ "gold": "2025-07-29 최초 공시 기준으로 취득예정일자는 2025-10-31이었다. 폰드그룹은 올그레이스 주식 10,000주를 19,000,000,500원(자기자본 대비 7.99%)에 현금취득(구주 인수)하며 취득 후 지분율은 100%다."
+}

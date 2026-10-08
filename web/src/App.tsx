@@ -5,7 +5,7 @@ import { Cards } from "./Cards";
 import { Chat } from "./Chat";
 import { Controls } from "./Controls";
 import { Graph, shortName } from "./Graph";
-import { AgentPage, DataPage } from "./Pages";
+import { DataPage, QuestionsPage } from "./Pages";
 import { Panel } from "./Panel";
 import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType } from "./types";
 
@@ -114,7 +114,7 @@ export function App() {
             데이터와 검증
           </button>
           <button className={tab === "agent" ? "on" : ""} onClick={() => setTab("agent")}>
-            평가
+            평가 문항
           </button>
         </nav>
         <div className="top-stat">
@@ -223,7 +223,7 @@ export function App() {
         </aside>
       </main>
 
-      {tab !== "graph" && <div className="overlay">{tab === "data" ? <DataPage meta={meta} /> : <AgentPage />}</div>}
+      {tab !== "graph" && <div className="overlay">{tab === "data" ? <DataPage meta={meta} /> : <QuestionsPage />}</div>}
     </div>
   );
 }

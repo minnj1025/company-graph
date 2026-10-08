@@ -1,0 +1,54 @@
+{
+ "question": "피제이전자의 2025 사업연도 사업보고서 계열회사 현황에 올라 있는 상장 계열회사와 비상장 계열회사를 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 이 DB에서는 피제이전자의 2025 사업연도 사업보고서 계열회사 현황에서 올라온 계열회사를 찾지 못했습니다. 상장·비상장 어느 쪽도 확인되지 않습니다.**\n\n- **대상 보고서:** 사업보고서 (2025.12), 접수번호 20260316001412, 2026-03-16 공시. 이 보고서는 DB에 있습니다.\n- **조회 결과:** 계열회사 현황 표에서 추출된 관계가 0건입니다. 상장 계열회사 0건, 비상장 계열회사 0건입니다.\n- **해석:** 이 DB에 계열 관계가 기록되지 않았다는 뜻입니다. 실제로 계열회사가 없다는 뜻은 아닙니다. 보고서 원문의 계열회사 표를 직접 확인해야 정확합니다: https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260316001412\n\n참고로 피제이전자(006140, 코스닥)는 공정위 지정 대규모기업집단에 속하지 않는 것으로 조회됩니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "피제이전자"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1875,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 370
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1875,
+    "as_of": "2026-06-30",
+    "doc_type": "annual"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1000
+  }
+ ],
+ "cited": [
+  "20260316001412"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 958,
+  "cache_read_input_tokens": 14544,
+  "cache_creation_input_tokens": 5902
+ },
+ "seconds": 6.3,
+ "number": "T13-02",
+ "gold": "없다. 피제이전자의 2025 사업연도 사업보고서 계열회사 현황 표는 상장·비상장 구분 모두 회사수와 기업명이 \"-\"로 비어 있어, 보고된 계열회사가 상장·비상장 통틀어 한 곳도 없다."
+}

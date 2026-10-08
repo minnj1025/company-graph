@@ -1,0 +1,92 @@
+{
+ "question": "에프알텍의 2025 사업연도 사업보고서 타법인 출자현황에서 기초와 기말의 지분율이 서로 다른 출자처를 모두 찾아, 각각 지분율이 어떻게 바뀌었는지 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 기초와 기말의 지분율이 달라진 출자처는 (주)하우앳 하나뿐입니다. 10%에서 9%로 줄었습니다.**\n\nDB에는 \"기초\" 열이 따로 없어서, 2024 사업보고서(기준일 2024-12-31, 접수번호 20250321001679)를 기초로, 2025 사업보고서(기준일 2025-12-31, 접수번호 20260323001548)를 기말로 놓고 비교했습니다. 두 표의 출자처를 이름으로 맞춘 결과입니다.\n\n| 출자처 | 기초 (2024-12-31) | 기말 (2025-12-31) | 비고 |\n|---|---|---|---|\n| (주)하우앳 | 10% | 9% | **변동** |\n| FRTEK US LLC | 100% | 100% | 동일 |\n| (주)다온텍 | 70% | 70% | 동일 |\n| 제이엑스파트너스 | 21% | 21% | 동일 |\n| (주)썬웨이브 | 20% | 20% | 동일 |\n| (주)YTN DMB | 2% | 2% | 동일 |\n\n지분율이 같지 않은 것은 아니지만 비교가 안 되는 출자처가 두 건 있습니다.\n\n- **FRTEK JAPAN INC**: 2024 사업보고서에는 100%로 있었지만 2025 사업보고서 표에는 없습니다. DB에서 이 회사의 처분 결정 공시는 찾지 못했습니다(2024-01 이후 타법인 처분 결정 0건). 그래서 처분 여부나 사유는 이 DB로 확인할 수 없고, 지분율이 0%가 됐다고 단정할 수 없습니다.\n- **천안-그래비티 투자조합 제1호**: 2025 사업보고서에 14%로 새로 나타났고, 2024 사업보고서에는 없습니다. 기초 지분율이 DB에 없어서 변동률은 계산할 수 없습니다. 취득 결정 공시도 DB에서 찾지 못했습니다.\n\n출처: 2025 사업보고서 20260323001548, 2024 사업보고서 20250321001679.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에프알텍"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3749,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 7,
+   "chars": 3509
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3749,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1225
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3749,
+    "as_of": "2025-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 7,
+   "chars": 3504
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3749,
+    "as_of": "2026-06-30",
+    "rel_type": "stake_disposal",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 406
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3749,
+    "as_of": "2026-06-30",
+    "rel_type": "stake_acquisition",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 406
+  }
+ ],
+ "cited": [
+  "20250321001679",
+  "20260323001548"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2714,
+  "cache_read_input_tokens": 27349,
+  "cache_creation_input_tokens": 11531
+ },
+ "seconds": 14.8,
+ "number": "T12-05",
+ "gold": "세 곳이다. (주)하우앳은 10%에서 9%로 낮아졌고(주식 수는 14,000주 그대로), 천안-그래비티 투자조합 제1호는 2025.01.02 최초 취득으로 기초 잔액 없이 기말 14%(수량 350, 장부가액 350,000,000원)가 되었으며, FRTEK JAPAN INC는 기초 100%(16,600주)에서 전량이 감소해 기말 잔액이 없다(\"-\"). 나머지 출자처는 기초와 기말 지분율이 같다."
+}
