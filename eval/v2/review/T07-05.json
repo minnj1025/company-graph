@@ -1,0 +1,6 @@
+{
+ "id": "T07-05",
+ "verdict": "dropped",
+ "checked": "filings=0, filings_found=0임을 확인했다. T07-03과 같은 이유로 건너뜀 사유가 타당하다.",
+ "changes": "건너뜀 유지(작성자가 이미 skip). 고친 것 없음."
+}

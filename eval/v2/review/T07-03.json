@@ -1,0 +1,6 @@
+{
+ "id": "T07-03",
+ "verdict": "dropped",
+ "checked": "filings=0, filings_found=0임을 확인했다. 들 회사가 없고 글자 일치 검색이라 '없다'를 정답으로 확정할 수 없다는 건너뜀 사유가 타당하다.",
+ "changes": "건너뜀 유지(작성자가 이미 skip). 고친 것 없음."
+}

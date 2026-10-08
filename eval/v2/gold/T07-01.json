@@ -1,0 +1,13 @@
+{
+  "id": "T07-01",
+  "type": "T07",
+  "question": "",
+  "as_of": "",
+  "gold": "",
+  "must_include": [],
+  "must_not": [],
+  "accept": [],
+  "evidence": [],
+  "why_hard": "",
+  "skip": "묶음에 실린 공시가 25건인데 찾은 공시는 29건(filings_found=29)이다. 4건이 잘려 있어 '빠짐없이' 드는 정답을 묶음만으로 확정할 수 없다."
+}

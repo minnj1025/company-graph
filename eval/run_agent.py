@@ -36,19 +36,33 @@ def sealed_questions() -> list[tuple[str, str, str, date]]:
     return rows
 
 
+def v2_questions() -> list[tuple[str, str, str, date]]:
+    """평가 2판. 문항과 정답은 eval/v2/gold/*.json 에 있고, 만들 수 없다고 표시된 묶음(skip)은 뺀다."""
+    rows = []
+    for path in sorted((ROOT / "v2" / "gold").glob("*.json")):
+        item = json.loads(path.read_text(encoding="utf-8"))
+        if not item.get("skip"):
+            rows.append((item["id"], item["question"], item["gold"], date.fromisoformat(item["as_of"])))
+    return rows
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default=agent.MODEL)
     parser.add_argument("--only", default="")
-    parser.add_argument("--set", default="practice", choices=["practice", "sealed"])
+    parser.add_argument("--resume", action="store_true", help="이미 답이 있는 문항은 건너뛴다")
+    parser.add_argument("--set", default="practice", choices=["practice", "sealed", "v2"])
     args = parser.parse_args()
     only = set(filter(None, args.only.split(",")))
-    out_dir = ROOT / ("agent" if args.set == "practice" else "sealed/agent") / args.model
+    out_dir = ROOT / {"practice": "agent", "sealed": "sealed/agent", "v2": "v2/agent"}[args.set] / args.model
     out_dir.mkdir(parents=True, exist_ok=True)
     total = {"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}
-    items = sealed_questions() if args.set == "sealed" else [(n, q, g, AS_OF) for n, q, g in questions()]
+    items = (sealed_questions() if args.set == "sealed" else v2_questions() if args.set == "v2"
+             else [(n, q, g, AS_OF) for n, q, g in questions()])
     for number, question, gold, as_of in items:
         if only and number not in only:
+            continue
+        if args.resume and (out_dir / f"{number}.json").exists():
             continue
         result = agent.answer(question, model=args.model, as_of=as_of)
         result["number"], result["gold"] = number, gold
