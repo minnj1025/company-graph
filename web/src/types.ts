@@ -1,6 +1,7 @@
 export type RelType = "equity" | "supply_contract" | "affiliate";
-/** 화면의 관계 목록에만 나오는 사건형 관계. 그래프의 선으로는 아직 그리지 않는다 */
+/** 사건형 관계. 첫 화면의 그래프에는 그리지 않고, 기업 상세와 Agent가 찾은 결과에 나온다 */
 export type EventType = "supply_termination" | "stake_acquisition" | "stake_disposal" | "merger" | "split" | "business_transfer";
+export type LinkType = RelType | EventType;
 
 export interface Company {
   id: number;
@@ -29,7 +30,7 @@ export interface GraphNode extends Company {
 export interface GraphLink {
   source: number | GraphNode;
   target: number | GraphNode;
-  type: RelType;
+  type: LinkType;
   count: number;
   value?: number;
   label: string;
@@ -86,4 +87,53 @@ export interface Meta {
   coverage: { notice: string; sources: Record<string, string> };
   /** 첫 화면을 나눠 볼 분류와 분류마다의 상장사 수 */
   categories: Record<"market" | "sector" | "group", { name: string; count: number }[]>;
+}
+
+export type FeedType = "supply_contract" | "supply_termination" | "stake_acquisition" | "stake_disposal";
+
+export interface FeedItem {
+  rcept_no: string;
+  url: string;
+  date: string;
+  type: FeedType;
+  label: string;
+  subject_id: number;
+  subject: string;
+  object_id: number | null;
+  object: string;
+  value: number | null;
+  title: string | null;
+}
+
+export interface Insights {
+  recent: FeedItem[];
+  monthly: ({ month: string } & Record<FeedType, number>)[];
+  labels: Record<FeedType, string>;
+}
+
+export interface ToolCall {
+  name: string;
+  input: Record<string, unknown>;
+  total: number | null;
+  error: string | null;
+}
+
+export interface AskResult {
+  question: string;
+  answer: string;
+  as_of: string;
+  model: string;
+  seconds: number;
+  tokens: number;
+  tools: ToolCall[];
+  unverified_citations: string[];
+  graph: GraphData;
+  left_for_you: number;
+}
+
+export interface AskStatus {
+  enabled: boolean;
+  model: string;
+  left_today: number;
+  left_for_you: number;
 }

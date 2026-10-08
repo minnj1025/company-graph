@@ -45,7 +45,9 @@ SYSTEM = """당신은 한국 상장사의 공시(DART)에서 뽑은 기업 관�
 답은 한국어로, 결론부터 짧게 씁니다."""
 
 
-def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effort: str = "medium", client=None) -> dict:
+def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effort: str = "medium", client=None,
+           max_turns: int = MAX_TURNS, on_result=None) -> dict:
+    """on_result(도구 이름, 입력, 결과): 도구를 부를 때마다 불린다. 화면이 조회된 기업과 관계를 그래프로 그리는 데 쓴다."""
     client = client or anthropic.Anthropic(api_key=secret("ANTHROPIC_API_KEY"))
     when = as_of or date.today()
     messages = [{"role": "user", "content": f"조회 시점: {when.isoformat()}\n\n질문: {question}"}]
@@ -53,7 +55,7 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
     calls, seen, started = [], set(), time.time()
     text, stop = "", None
     with session() as db:
-        for _ in range(MAX_TURNS):
+        for _ in range(max_turns):
             response = client.messages.create(
                 model=model, max_tokens=16000, system=SYSTEM, tools=agent_tools.TOOLS, messages=messages,
                 cache_control={"type": "ephemeral"}, output_config={"effort": effort})
@@ -69,6 +71,8 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
                 if block.type != "tool_use":
                     continue
                 result = agent_tools.call(db, block.name, dict(block.input))
+                if on_result:
+                    on_result(block.name, dict(block.input), result)
                 body = json.dumps(result, ensure_ascii=False, default=str)
                 seen.update(re.findall(r"\b\d{14}\b", body))
                 calls.append({"tool": block.name, "input": dict(block.input), "error": result.get("error"),

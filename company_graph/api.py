@@ -2,15 +2,18 @@
 
 실행: uvicorn company_graph.api:app --port 8000
 """
+import hashlib
+import os
 import time
 from collections import Counter, defaultdict
-from datetime import date
+from datetime import date, datetime, timedelta
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query, Request
+from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 
 from . import query
-from .db import Company, Document, Relation, get_engine, session
+from .db import AskLog, Base, Company, Document, Relation, get_engine, session
 from .stages import sector, stage
 
 app = FastAPI(title="기업 관계 그래프")
@@ -186,3 +189,192 @@ def company(company_id: int, as_of: date, db=Depends(get_db)):
             "group": {"count": len(members),
                       "source": edge_json(db, members[0])["evidence"] if members else [],
                       "members": sorted({m["object_name_raw"] for m in members})[:200]}}
+
+
+# ---------- 한눈에 보는 칸: 최근 공시, 월별 공시 건수 ----------
+
+_insight_cache: dict = {}
+FEED_TYPES = ("supply_contract", "supply_termination", "stake_acquisition", "stake_disposal")
+
+
+@app.get("/api/insights")
+def insights(as_of: date, db=Depends(get_db)):
+    """그 날짜까지의 최근 공시와, 그 전 18개월의 월별 공시 건수."""
+    hit = _insight_cache.get(as_of)
+    if hit and time.time() - hit[0] < META_TTL:
+        return hit[1]
+    recent = []
+    rows = db.scalars(select(Relation).where(Relation.rel_type.in_(FEED_TYPES), Relation.retired_at.is_(None),
+                                             Relation.disclosed_date <= as_of, Relation.subject_company_id.is_not(None))
+                      .order_by(Relation.disclosed_date.desc(), Relation.rcept_no.desc()).limit(60)).all()
+    seen = set()
+    for r in rows:
+        if r.rcept_no in seen:
+            continue
+        seen.add(r.rcept_no)
+        subject, obj = db.get(Company, r.subject_company_id), db.get(Company, r.object_company_id) if r.object_company_id else None
+        recent.append({"rcept_no": r.rcept_no, "url": query.DART_VIEWER + r.rcept_no, "date": r.disclosed_date,
+                       "type": r.rel_type, "label": query.LABELS[r.rel_type],
+                       "subject_id": subject.company_id, "subject": subject.name,
+                       "object_id": obj and obj.company_id, "object": obj.name if obj else r.object_name_raw,
+                       "value": float(r.value_num) if r.value_num is not None else None,
+                       "title": (r.attrs or {}).get("title") or (r.attrs or {}).get("purpose")})
+        if len(recent) == 14:
+            break
+    start = (as_of.replace(day=1) - timedelta(days=31 * 17)).replace(day=1)
+    counts: dict[str, Counter] = defaultdict(Counter)
+    for rel_type, day, n in db.execute(
+            select(Relation.rel_type, Relation.disclosed_date, func.count(func.distinct(Relation.rcept_no)))
+            .where(Relation.rel_type.in_(FEED_TYPES), Relation.retired_at.is_(None),
+                   Relation.disclosed_date >= start, Relation.disclosed_date <= as_of)
+            .group_by(Relation.rel_type, Relation.disclosed_date)):
+        counts[day.strftime("%Y-%m")][rel_type] += n
+    monthly = [{"month": month, **{t: counts[month].get(t, 0) for t in FEED_TYPES}} for month in sorted(counts)]
+    value = {"recent": recent, "monthly": monthly, "labels": {t: query.LABELS[t] for t in FEED_TYPES}}
+    _insight_cache[as_of] = (time.time(), value)
+    return value
+
+
+# ---------- Agent에게 묻기 (유료 API를 부른다) ----------
+
+ASK_MODEL = os.environ.get("ASK_MODEL", "claude-haiku-5-5")
+ASK_DAILY_LIMIT = int(os.environ.get("ASK_DAILY_LIMIT", "200"))        # 하루 전체 질문 수
+ASK_VISITOR_LIMIT = int(os.environ.get("ASK_VISITOR_LIMIT", "10"))     # 방문자 한 명의 하루 질문 수
+ASK_TYPES = {label: key for key, label in query.LABELS.items()}
+_ask_ready = False
+
+
+class Ask(BaseModel):
+    question: str = Field(min_length=2, max_length=300)
+
+
+def _visitor(request: Request) -> str:
+    address = (request.headers.get("x-forwarded-for") or (request.client.host if request.client else "")).split(",")[0].strip()
+    return hashlib.sha256((address + os.environ.get("ASK_SALT", "company-graph")).encode()).hexdigest()[:16]
+
+
+def _asked_today(db, visitor: str | None = None) -> int:
+    since = datetime.now() - timedelta(hours=24)
+    conditions = [AskLog.asked_at >= since] + ([AskLog.visitor == visitor] if visitor else [])
+    return db.scalar(select(func.count()).select_from(AskLog).where(*conditions)) or 0
+
+
+@app.get("/api/ask/status")
+def ask_status(request: Request, db=Depends(get_db)):
+    """질문을 받을 수 있는 상태인지와 남은 횟수."""
+    _prepare_ask()
+    enabled = bool(os.environ.get("ANTHROPIC_API_KEY")) or os.name == "nt"
+    return {"enabled": enabled, "model": ASK_MODEL,
+            "left_today": max(0, ASK_DAILY_LIMIT - _asked_today(db)),
+            "left_for_you": max(0, ASK_VISITOR_LIMIT - _asked_today(db, _visitor(request)))}
+
+
+def _prepare_ask():
+    global _ask_ready
+    if not _ask_ready:
+        Base.metadata.create_all(_engine, tables=[AskLog.__table__])
+        _ask_ready = True
+
+
+class _Found:
+    """Agent가 도구로 조회한 기업과 관계를 모아, 화면이 그릴 그래프로 만든다."""
+
+    def __init__(self):
+        self.companies: set[int] = set()
+        self.focus: set[int] = set()
+        self.links: dict[tuple, dict] = {}
+
+    def relation(self, item: dict):
+        subject, obj = item["subject"].get("company_id"), item["object"].get("company_id")
+        self.companies.update(i for i in (subject, obj) if i)
+        if subject and obj and subject != obj:
+            link = self.links.setdefault((subject, obj, ASK_TYPES.get(item["type"], "supply_contract")),
+                                         {"count": 0, "value": None, "unit": item.get("unit"), "seen": set()})
+            receipt = tuple(item.get("rcept_no") or ())
+            if receipt in link["seen"]:
+                return   # 같은 공시가 여러 도구 결과에 나왔다
+            if not link["seen"]:
+                link["count"], link["value"] = 0, None   # 건수만 알던 선을 실제 공시로 다시 센다
+            link["seen"].add(receipt)
+            link["count"] += 1
+            if item.get("value") is not None:
+                link["value"] = item["value"] if item.get("unit") == "%" else (link["value"] or 0) + item["value"]
+
+    def take(self, name: str, arguments: dict, result: dict):
+        if "error" in result:
+            return
+        if name == "find_company" and len(result["candidates"]) == 1:
+            self.focus.add(result["candidates"][0]["company_id"])
+        elif name == "get_relations":
+            self.focus.add(result["company"]["company_id"])
+            for item in result["relations"]:
+                self.relation(item)
+        elif name == "find_paths":
+            self.focus.update((result["from"]["company_id"], result["to"]["company_id"]))
+            for path in result["paths"]:
+                for item in path:
+                    self.relation(item)
+        elif name == "find_disclosers":
+            target = arguments.get("counterparty_id")
+            for company in result["companies"][:80]:
+                self.companies.add(company["company_id"])
+                if target:
+                    self.focus.add(target)
+                    self.links.setdefault((company["company_id"], target, arguments["rel_type"]),
+                                          {"count": company["new"] + company["corrections"], "value": None, "unit": None, "seen": set()})
+        elif name == "list_companies":
+            self.companies.update(c["company_id"] for c in result["companies"][:80])
+        elif name == "get_filings":
+            self.focus.add(result["company"]["company_id"])
+
+    def graph(self, db) -> dict:
+        ids = (self.companies | self.focus)
+        ids = set(sorted(ids)[:200]) | self.focus
+        links, degree = [], Counter()
+        for (source, target, rel_type), link in self.links.items():
+            if source not in ids or target not in ids:
+                continue
+            label = query.LABELS[rel_type]
+            if rel_type == "equity" and link["value"] is not None:
+                label = f"지분 {link['value']:.2f}%"
+            elif link["value"]:
+                label = f"{label} {link['count']}건 · {link['value'] / 1e8:,.0f}억 원"
+            elif link["count"] > 1:
+                label = f"{label} {link['count']}건"
+            links.append({"source": source, "target": target, "type": rel_type, "count": link["count"],
+                          "value": link["value"] if rel_type == "equity" else None, "label": label})
+            degree[source] += 1
+            degree[target] += 1
+        nodes = [{**company_json(c), "degree": degree[c.company_id], "focus": c.company_id in self.focus}
+                 for c in db.scalars(select(Company).where(Company.company_id.in_(ids)))] if ids else []
+        return {"nodes": nodes, "links": links}
+
+
+@app.post("/api/ask")
+def ask(body: Ask, request: Request, db=Depends(get_db)):
+    """질문 하나를 Agent에게 넘기고, 답과 함께 조회된 기업·관계를 그래프로 돌려준다."""
+    from . import agent   # anthropic 패키지는 여기서만 필요하다
+
+    _prepare_ask()
+    visitor = _visitor(request)
+    if _asked_today(db, visitor) >= ASK_VISITOR_LIMIT:
+        raise HTTPException(429, f"한 사람이 하루에 물을 수 있는 횟수({ASK_VISITOR_LIMIT}번)를 다 썼습니다. 내일 다시 물어 주세요.")
+    if _asked_today(db) >= ASK_DAILY_LIMIT:
+        raise HTTPException(429, "오늘 받을 수 있는 질문을 다 받았습니다. 미리 돌려 둔 예시는 '평가' 탭에서 볼 수 있습니다.")
+    question = " ".join(body.question.split())
+    entry = AskLog(asked_at=datetime.now(), visitor=visitor, question=question[:300], ok=False)
+    db.add(entry)
+    db.commit()   # 답이 오기 전에 먼저 센다. 동시에 여러 번 눌러도 상한을 넘지 않게
+    found = _Found()
+    try:
+        result = agent.answer(question, model=ASK_MODEL, as_of=date.today(), max_turns=8, on_result=found.take)
+    except Exception as error:   # 키가 없거나 API가 실패한 경우. 방문자에게는 사정만 알린다
+        raise HTTPException(503, "지금은 Agent가 답할 수 없습니다. 잠시 뒤에 다시 시도해 주세요.") from error
+    entry.ok, entry.tokens, entry.seconds = True, sum(result["usage"].values()), result["seconds"]
+    db.commit()
+    return {"question": question, "answer": result["answer"], "as_of": result["as_of"], "model": result["model"],
+            "seconds": result["seconds"], "tokens": entry.tokens,
+            "tools": [{"name": c["tool"], "input": c["input"], "total": c["total"], "error": c["error"]} for c in result["tool_calls"]],
+            "unverified_citations": result["cited_not_in_results"],
+            "graph": found.graph(db),
+            "left_for_you": max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}

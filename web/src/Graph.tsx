@@ -29,6 +29,7 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
   const graph = useRef<ForceGraphMethods<GraphNode, GraphLink> | undefined>(undefined);
   const [size, setSize] = useState({ width: 800, height: 600 });
   const needsFit = useRef(true);
+  const fitted = useRef(fitKey);
 
   useEffect(() => {
     const element = container.current;
@@ -51,6 +52,11 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
     graph.current?.d3Force("y", forceY(0).strength(0.09) as never);
     graph.current?.d3Force("z", forceZ(0).strength(0.09) as never);
     graph.current?.d3ReheatSimulation();
+    // 보는 범위와 자료가 한 번에 바뀌는 경우(질문 결과로 바꿀 때)에도 맞추도록 여기서도 확인한다
+    if (fitted.current !== fitKey) {
+      fitted.current = fitKey;
+      needsFit.current = true;
+    }
     if (!needsFit.current) return;
     // 보는 범위를 바꿨을 때만 전체가 보이게 맞춘다. 날짜만 바꿀 때는 시점을 그대로 둔다
     needsFit.current = false;
@@ -61,7 +67,7 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
       const [cx, cy, cz] = [mean((n) => n.x!), mean((n) => n.y!), mean((n) => n.z!)];
       // 가장 먼 점 몇 개 때문에 전체가 작아지지 않게, 거리 순으로 92% 지점까지를 화면에 담는다
       const distances = placed.map((n) => Math.hypot(n.x! - cx, n.y! - cy, n.z! - cz)).sort((a, b) => a - b);
-      const radius = Math.max(170, distances[Math.floor((distances.length - 1) * 0.92)]);
+      const radius = Math.max(placed.length < 30 ? 70 : 170, distances[Math.floor((distances.length - 1) * 0.92)]);
       graph.current?.cameraPosition({ x: cx, y: cy, z: cz + radius * 2.5 }, { x: cx, y: cy, z: cz }, 900);
     };
     const timers = [1500, 5000].map((ms) => setTimeout(fit, ms));
@@ -69,6 +75,9 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
   }, [data]);
 
   useEffect(() => {
+    // 범위만 먼저 바뀌고 자료는 나중에 오는 경우. 위에서 이미 처리했으면 다시 맞추지 않는다
+    if (fitted.current === fitKey) return;
+    fitted.current = fitKey;
     needsFit.current = true;
   }, [fitKey]);
 
@@ -126,7 +135,7 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
         linkWidth={(link) => {
           if (!linkLit(link)) return 0.1;
           if (link.type === "equity") return 0.4 + (link.value ?? 0) / 35;
-          return link.type === "supply_contract" ? 0.9 : 0.15;
+          return link.type === "affiliate" ? 0.15 : 0.9;
         }}
         linkLabel={(link) =>
           `${shortName((link.source as GraphNode).name)} → ${shortName((link.target as GraphNode).name)} · ${link.label}`

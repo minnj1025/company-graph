@@ -1,4 +1,4 @@
-import type { Company, CompanyDetail, GraphData, Meta, RelType } from "./types";
+import type { AskResult, AskStatus, Company, CompanyDetail, GraphData, Insights, Meta, RelType } from "./types";
 
 async function get<T>(path: string, params: Record<string, string | number> = {}): Promise<T> {
   const query = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)]));
@@ -16,3 +16,19 @@ export const fetchOverview = (asOf: string, types: RelType[], scope: Scope) =>
 export const fetchGraph = (center: number, asOf: string, types: RelType[], hops: number) =>
   get<GraphData>("/graph", { center, as_of: asOf, types: types.join(","), hops });
 export const fetchCompany = (id: number, asOf: string) => get<CompanyDetail>(`/company/${id}`, { as_of: asOf });
+export const fetchInsights = (asOf: string) => get<Insights>("/insights", { as_of: asOf });
+export const fetchAskStatus = () => get<AskStatus>("/ask/status");
+
+/** Agent에게 묻는다. 서버가 거절하면(횟수 초과 등) 그 사유를 그대로 던진다. */
+export async function askAgent(question: string): Promise<AskResult> {
+  const response = await fetch("/api/ask", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question }),
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(typeof body?.detail === "string" ? body.detail : "지금은 답할 수 없습니다. 잠시 뒤에 다시 시도해 주세요.");
+  }
+  return response.json();
+}

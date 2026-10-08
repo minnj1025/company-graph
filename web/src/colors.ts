@@ -1,17 +1,29 @@
-import type { GraphNode, RelType } from "./types";
+import type { GraphNode, LinkType } from "./types";
 
 export type ColorBy = "group" | "sector";
 
-export const LINK_COLORS: Record<RelType, string> = {
+export const LINK_COLORS: Record<LinkType, string> = {
   equity: "#7aa2ff",
   supply_contract: "#ffb454",
   affiliate: "#5d6b82",
+  supply_termination: "#ff6b6b",
+  stake_acquisition: "#6fd08c",
+  stake_disposal: "#f48fb1",
+  merger: "#b48cff",
+  split: "#b48cff",
+  business_transfer: "#b48cff",
 };
 
-export const LINK_LABELS: Record<RelType, string> = {
+export const LINK_LABELS: Record<LinkType, string> = {
   equity: "지분",
   supply_contract: "공급계약",
   affiliate: "계열",
+  supply_termination: "공급계약 해지",
+  stake_acquisition: "지분 취득 결정",
+  stake_disposal: "지분 처분 결정",
+  merger: "합병",
+  split: "분할",
+  business_transfer: "영업양수도",
 };
 
 const GROUP_PALETTE = ["#7aa2ff", "#ffb454", "#6fd08c", "#f48fb1", "#b48cff", "#5ad1c9", "#ff6b6b", "#c9a26b"];

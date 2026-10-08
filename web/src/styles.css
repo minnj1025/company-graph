@@ -716,3 +716,553 @@ h1 span {
     padding: 7px 11px;
   }
 }
+
+/* ---------- 탐색 화면의 배치: 위 띠, 큰 그래프, 아래 세 칸, 오른쪽 질문 ---------- */
+.app {
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  height: 52px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 30;
+  background: var(--bg);
+}
+
+.top h1 {
+  margin: 0;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.top h1 span {
+  display: inline;
+  margin-left: 8px;
+}
+
+.top .tabs {
+  position: static;
+  transform: none;
+}
+
+.top-stat {
+  justify-self: end;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.work {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  grid-template-rows: minmax(0, 1fr) 216px;
+  gap: 10px;
+  padding: 10px;
+}
+
+.stage {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.stage .left {
+  top: 10px;
+  left: 10px;
+  width: 276px;
+  max-height: calc(100% - 20px);
+  padding: 12px 14px 14px;
+}
+
+.fold,
+.unfold {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.fold {
+  float: right;
+  margin-bottom: 6px;
+}
+
+.unfold {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.found {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(122, 162, 255, 0.5);
+  background: rgba(20, 30, 52, 0.92);
+  backdrop-filter: blur(10px);
+}
+
+.found div {
+  min-width: 0;
+}
+
+.found b {
+  display: block;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.found span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.found button {
+  flex: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.stage .legend {
+  right: 10px;
+  bottom: 10px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr;
+  gap: 10px;
+  min-width: 0;
+}
+
+.card {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.card h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.card h3 span {
+  margin-left: 6px;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.feed,
+.hubs {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.feed li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 12.5px;
+}
+
+.feed i,
+.keys i {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.feed .when {
+  flex: none;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.feed button,
+.hubs button {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feed button:hover,
+.hubs button:hover {
+  color: var(--accent);
+}
+
+.feed em {
+  font-style: normal;
+  color: var(--muted);
+}
+
+.feed a {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.feed .empty,
+.hubs .empty {
+  color: var(--muted);
+}
+
+.monthly {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.monthly svg {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.monthly .axis,
+.monthly .keys {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.monthly .keys {
+  justify-content: flex-start;
+}
+
+.keys i {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.hubs li {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) 1fr 28px;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 12.5px;
+}
+
+.meter {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.meter div {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+.hubs span {
+  text-align: right;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.side {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+}
+
+.side-pane {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-pane.hidden {
+  display: none;
+}
+
+.side-head {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.side-head span {
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.side .panel {
+  position: static;
+  width: auto;
+  flex: 1;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.chat {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 16px;
+}
+
+.chat-intro p {
+  margin: 0 0 12px;
+  color: #b9c3d3;
+  line-height: 1.6;
+}
+
+.chat-intro .fine {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.suggestion {
+  display: block;
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 9px 12px;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.suggestion:hover:not(:disabled) {
+  border-color: rgba(122, 162, 255, 0.6);
+}
+
+.turn {
+  margin-bottom: 18px;
+}
+
+.turn .q {
+  margin: 0 0 8px auto;
+  width: fit-content;
+  max-width: 90%;
+  padding: 8px 12px;
+  border-radius: 12px 12px 2px 12px;
+  background: rgba(122, 162, 255, 0.18);
+}
+
+.turn .a {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 2px 12px 12px 12px;
+  line-height: 1.6;
+}
+
+.turn .a.shown {
+  border-color: rgba(122, 162, 255, 0.55);
+}
+
+.turn .a.pending {
+  color: var(--muted);
+}
+
+.turn .a.error,
+.warn {
+  color: #ffb454;
+}
+
+.warn {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.tools-head {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: left;
+}
+
+.chat .tools {
+  margin-bottom: 6px;
+}
+
+.a-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.a-foot button {
+  flex: none;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--accent);
+}
+
+.chat-input {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px 6px;
+  border-top: 1px solid var(--border);
+}
+
+.chat-input input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+}
+
+.chat-input input:focus {
+  border-color: var(--accent);
+}
+
+.chat-input button {
+  padding: 0 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #0b0f16;
+  font-weight: 600;
+}
+
+.chat-input button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.chat-status {
+  padding: 0 14px 10px;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.overlay {
+  top: 52px;
+}
+
+.page {
+  padding-top: 36px;
+}
+
+@media (max-width: 980px) {
+  html,
+  body,
+  #root {
+    overflow: auto;
+    height: auto;
+  }
+
+  .app {
+    position: static;
+    min-height: 100vh;
+  }
+
+  .top {
+    grid-template-columns: 1fr;
+    height: auto;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .top-stat {
+    display: none;
+  }
+
+  .work {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stage {
+    height: 62vh;
+    flex: none;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    height: 210px;
+  }
+
+  .side {
+    height: 78vh;
+    flex: none;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+  }
+}

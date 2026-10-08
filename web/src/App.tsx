@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, type Scope } from "./api";
 import { categoryColors, legend, LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
+import { Cards } from "./Cards";
+import { Chat } from "./Chat";
 import { Controls } from "./Controls";
 import { Graph, shortName } from "./Graph";
 import { AgentPage, DataPage } from "./Pages";
 import { Panel } from "./Panel";
-import type { Company, CompanyDetail, GraphData, GraphNode, Meta, RelType } from "./types";
+import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType } from "./types";
 
 const EMPTY: GraphData = { nodes: [], links: [] };
 
@@ -18,6 +20,9 @@ export function App() {
   const [hops, setHops] = useState(1);
   const [scope, setScope] = useState<Scope>("listed");
   const [tab, setTab] = useState<"graph" | "data" | "agent">("graph");
+  /** Agent가 찾은 결과. 있으면 그래프에 그 기업과 관계만 남긴다 */
+  const [found, setFound] = useState<AskResult | null>(null);
+  const [showControls, setShowControls] = useState(true);
   const [data, setData] = useState<GraphData>(EMPTY);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<CompanyDetail | null>(null);
@@ -76,99 +81,149 @@ export function App() {
     };
   }, [selectedId, asOf]);
 
-  const groups = useMemo(() => categoryColors(data.nodes, colorBy), [data, colorBy]);
+  const shownData = found ? found.graph : data;
+  const groups = useMemo(() => categoryColors(shownData.nodes, colorBy), [shownData, colorBy]);
   const onSelect = useCallback((node: GraphNode | null) => setSelectedId(node ? node.id : null), []);
-  const drawnTypes = center ? types : types.filter((t) => t !== "affiliate");
+  const drawnTypes = useMemo(() => {
+    const present = new Set<LinkType>(shownData.links.map((link) => link.type));
+    return (Object.keys(LINK_LABELS) as LinkType[]).filter((type) => present.has(type));
+  }, [shownData]);
+  const scopeLabel = found
+    ? "질문으로 찾은 결과"
+    : center
+      ? `${shortName(center.name)} 중심`
+      : scope === "listed"
+        ? "상장사 전체"
+        : scope === "focus"
+          ? "자동차 가치사슬"
+          : scope.split(":")[1];
 
   if (!meta || !asOf) return <div className="loading">{error ?? "불러오는 중…"}</div>;
 
   return (
     <div className="app">
-      <Graph
-        data={data}
-        colorBy={colorBy}
-        groups={groups}
-        selectedId={selectedId}
-        onSelect={onSelect}
-        fitKey={`${center?.id ?? scope}-${hops}`}
-      />
-
-      <div className="left">
+      <header className="top">
         <h1>
-          기업 관계 그래프 <span>공시 기반 · {scope === "listed" ? "상장사 전체" : scope === "focus" ? "자동차 가치사슬" : scope.split(":")[1]}</span>
+          기업 관계 그래프 <span>공시에서 뽑은 기업 사이의 관계</span>
         </h1>
-        <Controls
-          firstDate={meta.first_date}
-          lastDate={meta.last_date}
-          asOf={asOf}
-          onAsOf={setAsOf}
-          types={types}
-          onTypes={setTypes}
-          colorBy={colorBy}
-          onColorBy={setColorBy}
-          centerName={center ? shortName(center.name) : null}
-          hops={hops}
-          onHops={setHops}
-          onOverview={() => setCenter(null)}
-          scope={scope}
-          categories={meta.categories}
-          onScope={setScope}
-          onPick={(company) => {
-            setCenter(company);
-            setSelectedId(company.id);
-          }}
-        />
-      </div>
-
-      <div className="legend">
-        <div>
-          {drawnTypes.map((type) => (
-            <span key={type}>
-              <i className="line" style={{ background: LINK_COLORS[type] }} />
-              {LINK_LABELS[type]}
-            </span>
-          ))}
+        <nav className="tabs">
+          <button className={tab === "graph" ? "on" : ""} onClick={() => setTab("graph")}>
+            탐색
+          </button>
+          <button className={tab === "data" ? "on" : ""} onClick={() => setTab("data")}>
+            데이터와 검증
+          </button>
+          <button className={tab === "agent" ? "on" : ""} onClick={() => setTab("agent")}>
+            평가
+          </button>
+        </nav>
+        <div className="top-stat">
+          기업 {meta.companies.toLocaleString()}곳 · 최근 공시 {meta.last_date}
         </div>
-        <div>
-          {legend(colorBy, groups).map(([name, color]) => (
-            <span key={name}>
-              <i className="dot" style={{ background: color }} />
-              {name}
-            </span>
-          ))}
-        </div>
-        <div className="stat">
-          기업 {data.nodes.length}곳 · 선 {data.links.length}개 · 점을 끌어 옮기면 그 자리에 고정됩니다
-        </div>
-        <div className="stat">{meta.coverage?.notice}</div>
-      </div>
+      </header>
 
-      {error && <div className="toast">{error}</div>}
+      <main className="work">
+        <section className="stage">
+          <Graph
+            data={shownData}
+            colorBy={colorBy}
+            groups={groups}
+            selectedId={selectedId}
+            onSelect={onSelect}
+            fitKey={found ? `ask-${found.question}` : `${center?.id ?? scope}-${hops}`}
+          />
 
-      <nav className="tabs">
-        <button className={tab === "graph" ? "on" : ""} onClick={() => setTab("graph")}>
-          그래프
-        </button>
-        <button className={tab === "data" ? "on" : ""} onClick={() => setTab("data")}>
-          데이터와 검증
-        </button>
-        <button className={tab === "agent" ? "on" : ""} onClick={() => setTab("agent")}>
-          Agent 예시
-        </button>
-      </nav>
+          {found ? (
+            <div className="found">
+              <div>
+                <b>질문으로 찾은 것만 보는 중</b>
+                <span>{found.question}</span>
+              </div>
+              <button onClick={() => setFound(null)}>전체 그래프로</button>
+            </div>
+          ) : showControls ? (
+            <div className="left">
+              <button className="fold" onClick={() => setShowControls(false)}>
+                접기
+              </button>
+              <Controls
+                firstDate={meta.first_date}
+                lastDate={meta.last_date}
+                asOf={asOf}
+                onAsOf={setAsOf}
+                types={types}
+                onTypes={setTypes}
+                colorBy={colorBy}
+                onColorBy={setColorBy}
+                centerName={center ? shortName(center.name) : null}
+                hops={hops}
+                onHops={setHops}
+                onOverview={() => setCenter(null)}
+                scope={scope}
+                categories={meta.categories}
+                onScope={setScope}
+                onPick={(company) => {
+                  setCenter(company);
+                  setSelectedId(company.id);
+                }}
+              />
+            </div>
+          ) : (
+            <button className="unfold" onClick={() => setShowControls(true)}>
+              조건 · {scopeLabel} · {asOf}
+            </button>
+          )}
+
+          <div className="legend">
+            <div>
+              {drawnTypes.map((type) => (
+                <span key={type}>
+                  <i className="line" style={{ background: LINK_COLORS[type] }} />
+                  {LINK_LABELS[type]}
+                </span>
+              ))}
+            </div>
+            <div>
+              {legend(colorBy, groups).map(([name, color]) => (
+                <span key={name}>
+                  <i className="dot" style={{ background: color }} />
+                  {name}
+                </span>
+              ))}
+            </div>
+            <div className="stat">
+              기업 {shownData.nodes.length}곳 · 선 {shownData.links.length}개 · 점을 끌어 옮기면 그 자리에 고정됩니다
+            </div>
+          </div>
+          {error && <div className="toast">{error}</div>}
+        </section>
+
+        <Cards asOf={asOf} data={shownData} scopeLabel={scopeLabel} onOpen={setSelectedId} />
+
+        <aside className="side">
+          <div className={detail ? "side-pane hidden" : "side-pane"}>
+            <div className="side-head">
+              <b>질문하기</b>
+              <span>Agent가 공시 DB를 조회해 답합니다</span>
+            </div>
+            <Chat shown={found} onShow={setFound} />
+          </div>
+          {detail && (
+            <Panel
+              detail={detail}
+              onOpen={setSelectedId}
+              onCenter={(id) => {
+                const node = shownData.nodes.find((n) => n.id === id) ?? detail.company;
+                setFound(null);
+                setCenter(node);
+              }}
+              onClose={() => setSelectedId(null)}
+            />
+          )}
+        </aside>
+      </main>
+
       {tab !== "graph" && <div className="overlay">{tab === "data" ? <DataPage meta={meta} /> : <AgentPage />}</div>}
-
-      {detail && (
-        <Panel
-          detail={detail}
-          onOpen={setSelectedId}
-          onCenter={(id) => {
-            const node = data.nodes.find((n) => n.id === id) ?? detail.company;
-            setCenter(node);
-          }}
-          onClose={() => setSelectedId(null)}
-        />
-      )}
     </div>
   );
 }

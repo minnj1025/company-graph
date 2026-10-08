@@ -104,6 +104,18 @@ class QualityLog(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime)
 
 
+class AskLog(Base):
+    """화면에서 Agent에게 한 질문의 기록. 하루 질문 수 상한과 방문자별 제한을 세는 데 쓴다."""
+    __tablename__ = "ask_log"
+    ask_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    asked_at: Mapped[datetime] = mapped_column(DateTime, index=True)
+    visitor: Mapped[str] = mapped_column(String(16), index=True)   # 접속 주소를 한 방향으로 줄인 값. 주소 자체는 남기지 않는다
+    question: Mapped[str] = mapped_column(String(300))
+    ok: Mapped[bool] = mapped_column(Boolean, default=True)
+    tokens: Mapped[int] = mapped_column(Integer, default=0)
+    seconds: Mapped[float | None] = mapped_column(Numeric(6, 1))
+
+
 @lru_cache(maxsize=1)
 def get_engine():
     """프로세스에 엔진은 하나. 요청마다 새로 만들면 연결이 쌓인다."""
