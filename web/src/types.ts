@@ -1,7 +1,9 @@
 export type RelType = "equity" | "supply_contract" | "affiliate" | "stake_acquisition" | "stake_disposal";
 /** 사건형 관계. 첫 화면의 그래프에는 그리지 않고, 기업 상세와 Agent가 찾은 결과에 나온다 */
 export type EventType = "supply_termination" | "merger" | "split" | "business_transfer";
-export type LinkType = RelType | EventType;
+/** 기업과 사업 낱말을 잇는 선. 질문으로 찾은 결과에만 나온다 */
+export type TopicLink = "business";
+export type LinkType = RelType | EventType | TopicLink;
 
 export interface Company {
   id: number;
@@ -17,6 +19,8 @@ export interface Company {
 }
 
 export interface GraphNode extends Company {
+  /** "topic" 이면 기업이 아니라 사업 낱말이다 (번호가 음수) */
+  kind?: "topic";
   degree: number;
   focus: boolean;
   x?: number;

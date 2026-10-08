@@ -115,7 +115,7 @@ export function App() {
   }, [data]);
 
   useEffect(() => {
-    if (selectedId === null || !asOf) {
+    if (selectedId === null || selectedId < 0 || !asOf) {   // 음수는 사업 낱말 점이다
       setDetail(null);
       return;
     }
@@ -145,7 +145,7 @@ export function App() {
   const onSelect = useCallback(
     (node: GraphNode | null) => {
       setSelectedId(node ? node.id : null);
-      if (node) change({ sideOpen: true });
+      if (node && node.kind !== "topic") change({ sideOpen: true });
     },
     [change],
   );

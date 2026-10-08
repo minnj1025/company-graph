@@ -113,7 +113,9 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
         backgroundColor="#0b0f16"
         showNavInfo={false}
         nodeId="id"
-        nodeLabel={(node) => `${node.name}${node.group ? ` · ${node.group}` : ""} · ${node.sector}`}
+        nodeLabel={(node) =>
+          node.kind === "topic" ? `사업 낱말 "${node.name}" · 보고서에 이 말이 나온 기업 ${node.degree}곳` : `${node.name}${node.group ? ` · ${node.group}` : ""} · ${node.sector}`
+        }
         nodeVal={(node) => (node.focus ? 12 : 1.2 + node.degree * 0.45)}
         nodeRelSize={4}
         nodeOpacity={0.92}
@@ -122,8 +124,8 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
         nodeThreeObject={(node) => {
           const show = node.focus || node.id === selectedId || (isLit(node.id) && (lit !== null || labeled.has(node.id)));
           if (!show) return new SpriteText("");
-          const label = new SpriteText(shortName(node.name));
-          label.color = "#e8edf5";
+          const label = new SpriteText(node.kind === "topic" ? `# ${node.name}` : shortName(node.name));
+          label.color = node.kind === "topic" ? "#5ad1c9" : "#e8edf5";
           label.textHeight = node.focus || node.id === selectedId ? 9 : 6;
           label.fontFace = "Pretendard, 'Malgun Gothic', sans-serif";
           label.fontWeight = "600";
@@ -135,6 +137,7 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
         linkWidth={(link) => {
           if (!linkLit(link)) return 0.1;
           if (link.type === "equity") return 0.4 + (link.value ?? 0) / 35;
+          if (link.type === "business") return 0.3 + Math.min(link.count, 40) / 16;
           return link.type === "affiliate" ? 0.15 : 0.9;
         }}
         linkLabel={(link) =>
@@ -146,6 +149,7 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
         linkDirectionalParticleWidth={1.4}
         linkDirectionalParticleSpeed={0.006}
         onNodeClick={(node) => {
+          // 낱말 점은 기업이 아니라서 상세를 열지 않고, 이어진 기업만 밝힌다
           onSelect(node);
           const [x, y, z] = [node.x ?? 0, node.y ?? 0, node.z ?? 0];
           const ratio = 1 + 150 / Math.max(Math.hypot(x, y, z), 1);

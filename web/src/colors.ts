@@ -12,6 +12,7 @@ export const LINK_COLORS: Record<LinkType, string> = {
   merger: "#b48cff",
   split: "#b48cff",
   business_transfer: "#b48cff",
+  business: "#5ad1c9",
 };
 
 export const LINK_LABELS: Record<LinkType, string> = {
@@ -24,6 +25,7 @@ export const LINK_LABELS: Record<LinkType, string> = {
   merger: "합병",
   split: "분할",
   business_transfer: "영업양수도",
+  business: "사업 내용에 언급",
 };
 
 const GROUP_PALETTE = ["#7aa2ff", "#ffb454", "#6fd08c", "#f48fb1", "#b48cff", "#5ad1c9", "#ff6b6b", "#c9a26b"];
@@ -36,6 +38,7 @@ const keyOf = (node: GraphNode, colorBy: ColorBy) => (colorBy === "sector" ? nod
 export function categoryColors(nodes: GraphNode[], colorBy: ColorBy): Map<string, string> {
   const counts = new Map<string, number>();
   for (const node of nodes) {
+    if (node.kind === "topic") continue;
     const key = keyOf(node, colorBy);
     // 비상장 계열사는 업종 정보가 없다. 색을 주지 않고 회색으로 둔다
     if (key && key !== NO_SECTOR) counts.set(key, (counts.get(key) ?? 0) + 1);
@@ -44,7 +47,10 @@ export function categoryColors(nodes: GraphNode[], colorBy: ColorBy): Map<string
   return new Map(ordered.slice(0, GROUP_PALETTE.length).map((name, i) => [name, GROUP_PALETTE[i]]));
 }
 
+export const TOPIC_COLOR = "#5ad1c9";
+
 export function nodeColor(node: GraphNode, colorBy: ColorBy, colors: Map<string, string>): string {
+  if (node.kind === "topic") return TOPIC_COLOR;
   const key = keyOf(node, colorBy);
   return key ? (colors.get(key) ?? NO_GROUP) : NO_GROUP;
 }

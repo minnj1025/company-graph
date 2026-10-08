@@ -314,6 +314,7 @@ class _Found:
         self.companies: set[int] = set()
         self.focus: set[int] = set()
         self.links: dict[tuple, dict] = {}
+        self.topics: dict[str, dict[int, int]] = {}   # 사업 낱말 → {기업: 보고서에 나온 횟수}
 
     def relation(self, item: dict):
         subject, obj = item["subject"].get("company_id"), item["object"].get("company_id")
@@ -354,7 +355,11 @@ class _Found:
                     self.links.setdefault((company["company_id"], target, arguments["rel_type"]),
                                           {"count": company["new"] + company["corrections"], "value": None, "unit": None, "seen": set()})
         elif name == "search_business":
-            self.companies.update(c["company_id"] for c in result["companies"])
+            # 찾은 낱말을 점으로 두고, 보고서에 그 낱말이 나온 기업을 잇는다. 기업마다 많이 나온 낱말 둘까지만
+            for company in result["companies"]:
+                self.companies.add(company["company_id"])
+                for word, count in sorted(company["matched"].items(), key=lambda x: -x[1])[:2]:
+                    self.topics.setdefault(word, {})[company["company_id"]] = count
         elif name == "get_business":
             self.focus.add(result["company"]["company_id"])
         elif name == "list_companies":
@@ -380,9 +385,22 @@ class _Found:
                           "value": link["value"] if rel_type == "equity" else None, "label": label})
             degree[source] += 1
             degree[target] += 1
+        topics = []
+        for number, (word, members) in enumerate(self.topics.items(), 1):
+            members = {i: n for i, n in members.items() if i in ids}
+            if not members:
+                continue
+            # 낱말 점의 번호는 음수로 준다. 기업 번호와 겹치지 않게
+            topics.append({"id": -number, "name": word, "kind": "topic", "stock_code": None, "listed": False, "group": None,
+                           "stage": "", "sector": "사업 낱말", "market": None, "in_scope": False,
+                           "degree": len(members), "focus": True})
+            for company_id, count in members.items():
+                links.append({"source": company_id, "target": -number, "type": "business", "count": count, "value": None,
+                              "label": f"보고서의 사업 내용에 '{word}' {count}번"})
+                degree[company_id] += 1
         nodes = [{**company_json(c), "degree": degree[c.company_id], "focus": c.company_id in self.focus}
                  for c in db.scalars(select(Company).where(Company.company_id.in_(ids)))] if ids else []
-        return {"nodes": nodes, "links": links}
+        return {"nodes": nodes + topics, "links": links}
 
 
 @app.post("/api/ask")
