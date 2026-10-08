@@ -1266,3 +1266,23 @@ h1 span {
     top: 0;
   }
 }
+
+.feed .kind {
+  flex: none;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 18px;
+  background: rgba(255, 180, 84, 0.16);
+  color: #ffb454;
+}
+
+.feed .kind-해지,
+.feed .kind-철회 {
+  background: rgba(255, 107, 107, 0.16);
+  color: #ff8a8a;
+}
+
+.cards {
+  grid-template-columns: 1.2fr 1.2fr 0.9fr;
+}

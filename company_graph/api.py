@@ -10,7 +10,7 @@ from datetime import date, datetime, timedelta
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from pydantic import BaseModel, Field
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 
 from . import query
 from .db import AskLog, Base, Company, Document, Relation, get_engine, session
@@ -199,7 +199,7 @@ FEED_TYPES = ("supply_contract", "supply_termination", "stake_acquisition", "sta
 
 @app.get("/api/insights")
 def insights(as_of: date, db=Depends(get_db)):
-    """그 날짜까지의 최근 공시와, 그 전 18개월의 월별 공시 건수."""
+    """그 날짜까지의 최근 공시와, 최근에 바뀐 것(정정·해지·철회)."""
     hit = _insight_cache.get(as_of)
     if hit and time.time() - hit[0] < META_TTL:
         return hit[1]
@@ -221,16 +221,26 @@ def insights(as_of: date, db=Depends(get_db)):
                        "title": (r.attrs or {}).get("title") or (r.attrs or {}).get("purpose")})
         if len(recent) == 14:
             break
-    start = (as_of.replace(day=1) - timedelta(days=31 * 17)).replace(day=1)
-    counts: dict[str, Counter] = defaultdict(Counter)
-    for rel_type, day, n in db.execute(
-            select(Relation.rel_type, Relation.disclosed_date, func.count(func.distinct(Relation.rcept_no)))
-            .where(Relation.rel_type.in_(FEED_TYPES), Relation.retired_at.is_(None),
-                   Relation.disclosed_date >= start, Relation.disclosed_date <= as_of)
-            .group_by(Relation.rel_type, Relation.disclosed_date)):
-        counts[day.strftime("%Y-%m")][rel_type] += n
-    monthly = [{"month": month, **{t: counts[month].get(t, 0) for t in FEED_TYPES}} for month in sorted(counts)]
-    value = {"recent": recent, "monthly": monthly, "labels": {t: query.LABELS[t] for t in FEED_TYPES}}
+    # 최근에 바뀐 것: 정정, 해지, 철회. 한 번 공시된 사실이 그 뒤에 달라진 경우다
+    changed = []
+    documents = db.scalars(select(Document).where(
+        Document.doc_type.in_(("supply_contract", "event")), Document.rcept_dt <= as_of,
+        or_(Document.is_correction, Document.report_nm.like("%해지%"), Document.report_nm.like("%철회%")))
+        .order_by(Document.rcept_no.desc()).limit(40)).all()
+    for doc in documents:
+        row = db.scalars(select(Relation).where(Relation.rcept_no == doc.rcept_no, Relation.retired_at.is_(None)).limit(1)).first()
+        if row is None:
+            continue
+        attrs = row.attrs or {}
+        kind = "철회" if "철회" in doc.report_nm else "해지" if "해지" in doc.report_nm else "정정"
+        filer = db.get(Company, doc.company_id)
+        changed.append({"rcept_no": doc.rcept_no, "url": query.DART_VIEWER + doc.rcept_no, "date": doc.rcept_dt, "kind": kind,
+                        "company_id": filer.company_id, "company": filer.name,
+                        "what": attrs.get("title") or attrs.get("purpose") or row.object_name_raw,
+                        "reason": attrs.get("correction_reason") or attrs.get("reason")})
+        if len(changed) == 14:
+            break
+    value = {"recent": recent, "changed": changed}
     _insight_cache[as_of] = (time.time(), value)
     return value
 

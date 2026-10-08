@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchInsights } from "./api";
 import { LINK_COLORS } from "./colors";
 import { shortName } from "./Graph";
-import type { FeedType, GraphData, Insights } from "./types";
+import type { GraphData, Insights } from "./types";
 
-const FEED_TYPES: FeedType[] = ["supply_contract", "stake_acquisition", "stake_disposal", "supply_termination"];
 const won = (value: number) => (value >= 1e12 ? `${(value / 1e12).toFixed(1)}조` : `${Math.round(value / 1e8).toLocaleString()}억`);
 
 interface Props {
@@ -15,7 +14,7 @@ interface Props {
   onOpen: (id: number) => void;
 }
 
-/** 그래프 아래의 세 칸: 최근 공시, 월별 공시 건수, 지금 그래프에서 연결이 많은 기업. */
+/** 그래프 아래의 세 칸: 최근 공시, 최근에 바뀐 것, 지금 그래프에서 연결이 많은 기업. */
 export function Cards({ asOf, data, scopeLabel, onOpen }: Props) {
   const [insights, setInsights] = useState<Insights | null>(null);
   useEffect(() => {
@@ -60,9 +59,24 @@ export function Cards({ asOf, data, scopeLabel, onOpen }: Props) {
 
       <div className="card">
         <h3>
-          월별 공시 건수 <span>최근 18개월</span>
+          최근에 바뀐 것 <span>정정 · 해지 · 철회</span>
         </h3>
-        {insights && <Monthly insights={insights} />}
+        <ul className="feed">
+          {insights?.changed.map((item) => (
+            <li key={item.rcept_no}>
+              <span className={`kind kind-${item.kind}`}>{item.kind}</span>
+              <span className="when">{item.date.slice(5)}</span>
+              <button onClick={() => onOpen(item.company_id)} title={item.reason ? `${item.what} — ${item.reason}` : item.what}>
+                {shortName(item.company)}
+                <em> {item.reason ?? item.what}</em>
+              </button>
+              <a href={item.url} target="_blank" rel="noreferrer" title="공시 원문">
+                원문
+              </a>
+            </li>
+          ))}
+          {!insights && <li className="empty">불러오는 중…</li>}
+        </ul>
       </div>
 
       <div className="card">
@@ -83,42 +97,5 @@ export function Cards({ asOf, data, scopeLabel, onOpen }: Props) {
         </ul>
       </div>
     </section>
-  );
-}
-
-function Monthly({ insights }: { insights: Insights }) {
-  const months = insights.monthly.slice(-18);
-  const max = Math.max(1, ...months.map((m) => FEED_TYPES.reduce((sum, t) => sum + m[t], 0)));
-  const [width, height, gap] = [100 / months.length, 96, 0.22];
-  return (
-    <div className="monthly">
-      <svg viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" role="img" aria-label="월별 공시 건수 막대 그래프">
-        {months.map((month, i) => {
-          let y = height;
-          return FEED_TYPES.map((type) => {
-            const h = (month[type] / max) * height;
-            y -= h;
-            return (
-              <rect key={`${month.month}-${type}`} x={i * width + (width * gap) / 2} y={y} width={width * (1 - gap)} height={h} fill={LINK_COLORS[type]}>
-                <title>{`${month.month} ${insights.labels[type]} ${month[type]}건`}</title>
-              </rect>
-            );
-          });
-        })}
-      </svg>
-      <div className="axis">
-        <span>{months[0]?.month}</span>
-        <span>한 달 최대 {max.toLocaleString()}건</span>
-        <span>{months[months.length - 1]?.month}</span>
-      </div>
-      <div className="keys">
-        {FEED_TYPES.map((type) => (
-          <span key={type}>
-            <i style={{ background: LINK_COLORS[type] }} />
-            {insights.labels[type]}
-          </span>
-        ))}
-      </div>
-    </div>
   );
 }

@@ -105,10 +105,21 @@ export interface FeedItem {
   title: string | null;
 }
 
+/** 한 번 공시된 사실이 그 뒤에 달라진 것 */
+export interface ChangeItem {
+  rcept_no: string;
+  url: string;
+  date: string;
+  kind: "정정" | "해지" | "철회";
+  company_id: number;
+  company: string;
+  what: string;
+  reason: string | null;
+}
+
 export interface Insights {
   recent: FeedItem[];
-  monthly: ({ month: string } & Record<FeedType, number>)[];
-  labels: Record<FeedType, string>;
+  changed: ChangeItem[];
 }
 
 export interface ToolCall {
