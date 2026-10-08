@@ -198,5 +198,155 @@
   "tokens": 94602,
   "tool_uses": 26,
   "seconds": 200.3
+ },
+ "T03-04": {
+  "tokens": 61869,
+  "tool_uses": 4,
+  "seconds": 28.9
+ },
+ "T02-04": {
+  "tokens": 70701,
+  "tool_uses": 11,
+  "seconds": 82.8
+ },
+ "T03-05": {
+  "tokens": 75036,
+  "tool_uses": 10,
+  "seconds": 89.5
+ },
+ "T02-06": {
+  "tokens": 76937,
+  "tool_uses": 17,
+  "seconds": 120.4
+ },
+ "T01-04": {
+  "tokens": 79734,
+  "tool_uses": 15,
+  "seconds": 135.9
+ },
+ "T02-05": {
+  "tokens": 81953,
+  "tool_uses": 18,
+  "seconds": 156.6
+ },
+ "T01-05": {
+  "tokens": 87335,
+  "tool_uses": 18,
+  "seconds": 159.9
+ },
+ "T01-07": {
+  "tokens": 96548,
+  "tool_uses": 30,
+  "seconds": 219.4
+ },
+ "T02-07": {
+  "tokens": 91635,
+  "tool_uses": 27,
+  "seconds": 234.4
+ },
+ "T01-06": {
+  "tokens": 106176,
+  "tool_uses": 31,
+  "seconds": 259.2
+ },
+ "T03-06": {
+  "tokens": 69222,
+  "tool_uses": 10,
+  "seconds": 73.6
+ },
+ "T03-07": {
+  "tokens": 71989,
+  "tool_uses": 10,
+  "seconds": 74.6
+ },
+ "T05-05": {
+  "tokens": 68100,
+  "tool_uses": 7,
+  "seconds": 77.3
+ },
+ "T05-06": {
+  "tokens": 74417,
+  "tool_uses": 10,
+  "seconds": 103.5
+ },
+ "T04-07": {
+  "tokens": 74468,
+  "tool_uses": 12,
+  "seconds": 125.5
+ },
+ "T04-06": {
+  "tokens": 76870,
+  "tool_uses": 17,
+  "seconds": 130.5
+ },
+ "T04-04": {
+  "tokens": 76800,
+  "tool_uses": 15,
+  "seconds": 132.6
+ },
+ "T05-04": {
+  "tokens": 80253,
+  "tool_uses": 16,
+  "seconds": 148.3
+ },
+ "T04-05": {
+  "tokens": 83400,
+  "tool_uses": 15,
+  "seconds": 154.4
+ },
+ "T05-07": {
+  "tokens": 86158,
+  "tool_uses": 22,
+  "seconds": 188.5
+ },
+ "T09-03": {
+  "tokens": 64386,
+  "tool_uses": 7,
+  "seconds": 39.1
+ },
+ "T08-06": {
+  "tokens": 65604,
+  "tool_uses": 9,
+  "seconds": 53.7
+ },
+ "T08-05": {
+  "tokens": 67368,
+  "tool_uses": 8,
+  "seconds": 66.2
+ },
+ "T06-04": {
+  "tokens": 71522,
+  "tool_uses": 11,
+  "seconds": 74.3
+ },
+ "T06-06": {
+  "tokens": 81057,
+  "tool_uses": 13,
+  "seconds": 96.6
+ },
+ "T07-08": {
+  "tokens": 86392,
+  "tool_uses": 15,
+  "seconds": 99.4
+ },
+ "T09-04": {
+  "tokens": 83285,
+  "tool_uses": 15,
+  "seconds": 121.4
+ },
+ "T08-04": {
+  "tokens": 80554,
+  "tool_uses": 15,
+  "seconds": 141.3
+ },
+ "T07-07": {
+  "tokens": 95182,
+  "tool_uses": 16,
+  "seconds": 155.1
+ },
+ "T06-05": {
+  "tokens": 109369,
+  "tool_uses": 29,
+  "seconds": 230.9
  }
 }

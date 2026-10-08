@@ -82,7 +82,7 @@ export function DataPage({ meta }: { meta: Meta }) {
       <div className="checks">
         {CHECKS.map(([name, hit, total, meaning]) => (
           <div key={name} className="check">
-            <div className="ring" style={{ background: `conic-gradient(#6fd08c ${(hit / total) * 360}deg, rgba(24,36,62,0.1) 0)` }}>
+            <div className="ring" style={{ background: `conic-gradient(#6fd08c ${(hit / total) * 360}deg, rgba(255,255,255,0.08) 0)` }}>
               <b>{((hit / total) * 100).toFixed(hit === total ? 0 : 1)}%</b>
             </div>
             <div>
@@ -94,7 +94,7 @@ export function DataPage({ meta }: { meta: Meta }) {
           </div>
         ))}
         <div className="check">
-          <div className="ring" style={{ background: "conic-gradient(#7aa2ff 341deg, rgba(24,36,62,0.1) 0)" }}>
+          <div className="ring" style={{ background: "conic-gradient(#7aa2ff 341deg, rgba(255,255,255,0.08) 0)" }}>
             <b>94.9%</b>
           </div>
           <div>
@@ -193,19 +193,19 @@ function EvalSection() {
 
       <h2>웹 검색만 쓰는 Claude와 견주면</h2>
       <p className="lead">
-        같은 문항 {shared.length}개(종류마다 앞의 두 문항)를 이 DB 없이 웹 검색과 페이지 읽기만 쓸 수 있는 Claude({data.baseline_model})에게 풀게 했습니다.
+        같은 문항 {shared.length}개를 이 DB 없이 웹 검색과 페이지 읽기만 쓸 수 있는 Claude({data.baseline_model})에게 풀게 했습니다.
         Agent는 가장 작은 모델({data.agent_model})이고, 견준 쪽은 그보다 훨씬 큰 모델입니다. 아래는 Agent를 처음 돌렸을 때의 답으로 견준 것입니다. 정답이거나 부분 정답인 문항은 Agent{" "}
         {pct(tally(shared.map((i) => i.agent), "correct", "partial"), shared.length)}%, 웹 검색{" "}
         {pct(tally(shared.map((i) => i.baseline!), "correct", "partial"), shared.length)}%입니다. 결함을 고친 뒤의 Agent는 같은 {shared.length}문항에서 정답이{" "}
-        {tally(shared.map((i) => i.after), "correct")}개입니다. {shared.length}문항이라 이 차이는 크게만 읽어야 하고, 시간과 토큰의 차이는 분명합니다.
+        {tally(shared.map((i) => i.after), "correct")}개입니다. 견준 문항은 종류별로 수가 고르지 않습니다(공급계약 쪽이 많습니다). 시간과 토큰의 차이는 분명합니다.
       </p>
       <Compare data={data} />
       <ul className="notes">
         <li>
-          웹 검색이 더 잘한 문항도 있습니다. 널리 보도된 공시는 기사에 값이 실려 있어서, Agent가 도구에서 받지 못한 값(예정일자, 자기자본 대비 비율)을
-          웹 검색이 맞힌 문항이 6개입니다.
+          웹 검색이 더 잘한 문항도 있습니다. 널리 보도된 공시는 기사에 값이 실려 있어서, 처음 돌린 Agent가 도구에서 받지 못한 값(예정일자, 자기자본 대비
+          비율 등)을 웹 검색이 맞힌 문항이 14개입니다. 그 값을 내주게 고친 뒤에는 대부분 Agent도 맞혔습니다.
         </li>
-        <li>웹 검색이 틀린 6문항은 조회 시점 뒤의 정정을 놓치거나, 기사에 없는 값을 추정하거나, 여러 건 가운데 일부만 찾은 경우였습니다.</li>
+        <li>웹 검색이 틀린 10문항은 조회 시점 뒤의 정정을 놓치거나, 기사에 없는 값을 추정하거나, 여러 건 가운데 일부만 찾은 경우였습니다.</li>
       </ul>
 
       <h2>평가 문항</h2>

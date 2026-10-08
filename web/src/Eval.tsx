@@ -170,7 +170,7 @@ function Strip({ rows }: { rows: [string, number[], string][] }) {
           {values.map((value, i) => (
             <circle key={i} cx={x(value)} cy={30 + row * 40 + ((i % 5) - 2) * 3} r={4.5} fill={color} />
           ))}
-          <rect x={x(median(values)) - 1} y={14 + row * 40} width={2} height={32} fill="#1b2433" />
+          <rect x={x(median(values)) - 1} y={14 + row * 40} width={2} height={32} fill="#fff" />
         </g>
       ))}
     </svg>
@@ -260,7 +260,7 @@ const Answer = ({ text }: { text: string }) => (
 );
 
 const Chip = ({ verdict, who }: { verdict: Verdict; who?: string }) => (
-  <span className="chip" style={{ background: COLOR[verdict], borderColor: COLOR[verdict], color: "#10151f" }}>
+  <span className="chip" style={{ color: COLOR[verdict], borderColor: COLOR[verdict] }}>
     {who && <em>{who}</em>}
     {LABEL[verdict]}
   </span>

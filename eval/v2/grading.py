@@ -6,6 +6,7 @@
 실행: python -m eval.v2.grading bundle   → eval/v2/grading/*.json
       python -m eval.v2.grading collect  → eval/v2/grades.json
       결함을 고친 뒤 다시 돌린 답은 끝에 after 를 붙인다 (grading_after/, grades_after/, grades_after.json)
+      웹 검색 기준선을 나중에 더 푼 문항은 끝에 more 를 붙인다 (grading_more/, grades_more/, 판정은 grades.json 에 더한다)
 """
 import hashlib
 import json
@@ -21,6 +22,18 @@ BUNDLE_SIZE = 26
 
 def read(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def more_answers() -> list[dict]:
+    """웹 검색 기준선의 답 가운데 아직 판정이 없는 것."""
+    graded = read(ROOT / "grades.json")
+    rows = []
+    for path in sorted((ROOT / "baseline").glob("*.json")):
+        gold = read(ROOT / "gold" / path.name)
+        if "baseline" not in graded.get(gold["id"], {}):
+            key = hashlib.sha256(f"{SEED}/baseline/{gold['id']}".encode()).hexdigest()[:10]
+            rows.append({"key": key, "id": gold["id"], "side": "baseline", "answer": read(path)["answer"], "gold": gold})
+    return rows
 
 
 def answers(after: bool) -> list[dict]:
@@ -39,10 +52,10 @@ def answers(after: bool) -> list[dict]:
     return rows
 
 
-def bundle(after: bool):
-    rows = answers(after)
+def bundle(after: bool, more: bool = False):
+    rows = more_answers() if more else answers(after)
     random.Random(SEED).shuffle(rows)
-    out = ROOT / ("grading_after" if after else "grading")
+    out = ROOT / ("grading_more" if more else "grading_after" if after else "grading")
     out.mkdir(exist_ok=True)
     for old in out.glob("*.json"):
         old.unlink()
@@ -55,18 +68,22 @@ def bundle(after: bool):
     print(f"답 {len(rows)}개, 묶음 {-(-len(rows) // BUNDLE_SIZE)}개")
 
 
-def collect(after: bool):
-    suffix = "_after" if after else ""
+def collect(after: bool, more: bool = False):
+    suffix = "_more" if more else "_after" if after else ""
     keys = read(ROOT / f"grading{suffix}" / "keys.json")
-    grades: dict[str, dict] = {}
+    grades: dict[str, dict] = read(ROOT / "grades.json") if more else {}
+    if more:
+        suffix_out = ""
+    else:
+        suffix_out = suffix
     for path in sorted((ROOT / f"grades{suffix}").glob("b*.json")):
         for row in read(path):
             item, side = keys[row["key"]]
             grades.setdefault(item, {})[side] = {"verdict": row["verdict"], "reason": row["reason"]}
     missing = [key for key, (item, side) in keys.items() if side not in grades.get(item, {})]
-    (ROOT / f"grades{suffix}.json").write_text(json.dumps(dict(sorted(grades.items())), ensure_ascii=False, indent=1), encoding="utf-8")
+    (ROOT / f"grades{suffix_out}.json").write_text(json.dumps(dict(sorted(grades.items())), ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"문항 {len(grades)}개, 판정이 빠진 답 {len(missing)}개")
 
 
 if __name__ == "__main__":
-    {"bundle": bundle, "collect": collect}[sys.argv[1]](after=sys.argv[2:] == ["after"])
+    {"bundle": bundle, "collect": collect}[sys.argv[1]](after=sys.argv[2:] == ["after"], more=sys.argv[2:] == ["more"])

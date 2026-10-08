@@ -5,8 +5,8 @@ import SpriteText from "three-spritetext";
 import { LINK_COLORS, nodeColor, type ColorBy } from "./colors";
 import type { GraphData, GraphLink, GraphNode } from "./types";
 
-const DIM_NODE = "#3a465c";
-const DIM_LINK = "#252f42";
+const DIM_NODE = "#273140";
+const DIM_LINK = "#18202b";
 const MAX_LABELS = 45;
 
 export const shortName = (name: string) =>
@@ -110,7 +110,7 @@ export function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: P
         width={size.width}
         height={size.height}
         graphData={data}
-        backgroundColor="#131a29"
+        backgroundColor="#0b0f16"
         showNavInfo={false}
         nodeId="id"
         nodeLabel={(node) =>
