@@ -97,7 +97,7 @@ TOOLS = [
      "input_schema": {"type": "object", "properties": {"from_company_id": _COMPANY, "to_company_id": _COMPANY, "as_of": _AS_OF},
                       "required": ["from_company_id", "to_company_id", "as_of"]}},
     {"name": "search_business",
-     "description": "사업보고서의 '사업의 내용'(회사가 스스로 적은 사업 설명, 제품과 매출 비중 표, 원재료, 매출처)을 낱말로 검색해 "
+     "description": "정기보고서(사업보고서·반기보고서 가운데 조회 시점까지 나온 가장 나중 것)의 '사업의 내용'(회사가 스스로 적은 사업 설명, 제품과 매출 비중 표, 원재료, 매출처)을 낱말로 검색해 "
                     "그 사업을 하는 회사를 찾는다. 업종 분류가 아니라 보고서의 글에서 찾으므로, 이슈나 주제와 관련된 회사를 찾을 때 쓴다. "
                     "keywords 에는 이슈 이름이 아니라 그 이슈가 닿는 제품·서비스·원재료의 이름을 여러 개 넣는다 "
                     "(예: 노벨문학상 → [\"단행본\", \"도서\", \"서점\", \"전자책\", \"인쇄용지\"]). 낱말 하나는 2~15자, 붙여 쓴 그대로 찾는다. "
@@ -110,7 +110,7 @@ TOOLS = [
          "listed_only": {"type": "boolean", "description": "상장사만 (기본 true)"}},
          "required": ["keywords", "as_of"]}},
     {"name": "get_business",
-     "description": "한 회사의 사업보고서 '사업의 내용'을 읽는다. 기본은 사업의 개요와 주요 제품 및 서비스(매출 비중 표). "
+     "description": "한 회사의 가장 나중 정기보고서(사업보고서·반기보고서)에서 '사업의 내용'을 읽는다. 기본은 사업의 개요와 주요 제품 및 서비스(매출 비중 표). "
                     "표는 한 줄이 표의 한 줄이고 칸은 ' | ' 로 나뉜다. 매출 비중은 표에 적힌 숫자 그대로 옮긴다.",
      "input_schema": {"type": "object", "properties": {
          "company_id": _COMPANY, "as_of": _AS_OF,
@@ -355,6 +355,12 @@ def _latest_business(db, when: date, company_id: int | None = None):
     return latest.group_by(BusinessSection.company_id).subquery()
 
 
+def _report_name(db, rcept_no: str) -> str | None:
+    """어느 보고서의 글인지. 예: "반기보고서 (2026.06)". 반기보고서의 매출은 반년 치라는 것을 읽는 쪽이 알아야 한다."""
+    doc = db.get(Document, rcept_no)
+    return doc and doc.report_nm.strip()
+
+
 def search_business(db, keywords, as_of, listed_only: bool = True) -> dict:
     when = _date(as_of, "as_of", required=True)
     words = list(dict.fromkeys(str(w).strip() for w in (keywords if isinstance(keywords, list) else [keywords]) if str(w).strip()))
@@ -390,7 +396,7 @@ def search_business(db, keywords, as_of, listed_only: bool = True) -> dict:
                 seen.add((snippet["section"], snippet["keyword"]))
                 snippets.append(snippet)
         out.append({**_brief(companies[company_id]), "matched": entry["matched"], "snippets": snippets,
-                    "bsns_year": entry["bsns_year"], "rcept_no": entry["rcept_no"]})
+                    "report": _report_name(db, entry["rcept_no"]), "rcept_no": entry["rcept_no"]})
     return {"as_of": when.isoformat(), "keywords": words, "total": len(ranked), "truncated": len(ranked) > 30, "companies": out,
             "note": "보고서 글에 낱말이 나온 회사입니다. matched 는 낱말별로 나온 횟수이고, 낱말이 나왔다고 그 사업이 주력이라는 뜻은 아닙니다. "
                     "주력인지는 get_business 의 매출 비중 표로 확인하고, 확인하지 않은 회사는 '보고서에 언급이 있다'고만 말하세요"
@@ -405,14 +411,15 @@ def get_business(db, company_id, as_of, sections=None) -> dict:
                       .order_by(BusinessSection.section_no)).scalars().all()
     if not rows:
         return {"company": _brief(company), "sections": [],
-                "note": "이 회사의 사업보고서 '사업의 내용'은 DB에 없습니다. 상장사의 2025 사업연도 보고서만 담았습니다"}
+                "note": "이 회사의 '사업의 내용'은 DB에 없습니다. 상장사의 2025 사업보고서와 2026 반기보고서만 담았습니다"}
     limit = 6000
-    return {"company": _brief(company), "bsns_year": rows[0].bsns_year, "rcept_no": rows[0].rcept_no,
+    return {"company": _brief(company), "report": _report_name(db, rows[0].rcept_no), "rcept_no": rows[0].rcept_no,
             "disclosed_date": rows[0].disclosed_date.isoformat(),
             "available": [{"section": r.section_no, "title": r.title, "chars": len(r.text)} for r in rows],
             "sections": [{"section": r.section_no, "title": r.title, "text": r.text[:limit],
                           "cut": len(r.text) > limit or bool(r.truncated)} for r in rows if r.section_no in wanted],
-            "note": "보고서에 적힌 글 그대로입니다. 연결 기준인지 별도 기준인지, 단위가 무엇인지는 표의 머리말을 따릅니다"}
+            "note": "보고서에 적힌 글 그대로입니다. 연결 기준인지 별도 기준인지, 단위가 무엇인지는 표의 머리말을 따릅니다. "
+                    "report 가 반기·분기보고서이면 매출액은 그 기간(반년·누적) 치이므로, 금액을 옮길 때 어느 보고서의 값인지 밝히세요"}
 
 
 FUNCTIONS = {"search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,

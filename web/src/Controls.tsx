@@ -4,7 +4,22 @@ import { LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { shortName } from "./Graph";
 import type { Company, Meta, RelType } from "./types";
 
-const ALL_TYPES: RelType[] = ["equity", "supply_contract", "affiliate"];
+const ALL_TYPES: RelType[] = ["equity", "supply_contract", "stake_acquisition", "stake_disposal", "affiliate"];
+
+/** 그래프를 솎아 내는 조건. 서버에 다시 묻지 않고 받은 그래프에서 거른다 */
+export interface Filters {
+  /** 지분율이 이 값(%) 이상인 지분 선만 */
+  minPct: number;
+  /** 금액이 이 값(원) 이상인 계약·결정 선만 */
+  minAmount: number;
+  /** 연결이 이 수 이상인 기업만 */
+  minDegree: number;
+}
+
+export const NO_FILTER: Filters = { minPct: 0, minAmount: 0, minDegree: 1 };
+const PCT_STEPS: [number, string][] = [[0, "전체"], [5, "5% 이상"], [20, "20% 이상"], [50, "50% 이상"]];
+const AMOUNT_STEPS: [number, string][] = [[0, "전체"], [1e10, "100억 이상"], [1e11, "1,000억 이상"], [1e12, "1조 이상"]];
+const DEGREE_STEPS: [number, string][] = [[1, "전체"], [2, "2곳 이상"], [5, "5곳 이상"], [10, "10곳 이상"]];
 
 /** first~last 사이의 매달 말일 */
 function monthEnds(first: string, last: string): string[] {
@@ -36,6 +51,36 @@ interface Props {
   onHops: (hops: number) => void;
   onOverview: () => void;
   onPick: (company: Company) => void;
+  filters: Filters;
+  onFilters: (filters: Filters) => void;
+  /** 지금 그려진 기업과 선의 수 (조건을 건 뒤) */
+  shown: { nodes: number; links: number };
+}
+
+/** 자주 쓰는 날짜: 연말들과 가장 최근 */
+function quickDates(first: string, last: string): [string, string][] {
+  const dates: [string, string][] = [];
+  for (let year = Number(first.slice(0, 4)); year < Number(last.slice(0, 4)); year++) {
+    const end = `${year}-12-31`;
+    if (end >= first) dates.push([`${year}년 말`, end]);
+  }
+  dates.push(["최근", last]);
+  return dates.slice(-4);
+}
+
+function Steps({ label, steps, value, onChange }: { label: string; steps: [number, string][]; value: number; onChange: (value: number) => void }) {
+  return (
+    <label className="steps">
+      <span>{label}</span>
+      <select value={value} onChange={(e) => onChange(Number(e.target.value))}>
+        {steps.map(([step, text]) => (
+          <option key={step} value={step}>
+            {text}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
 }
 
 export function Controls(props: Props) {
@@ -129,6 +174,34 @@ export function Controls(props: Props) {
             aria-label="조회 시점"
           />
         </div>
+        <div className="chips">
+          {quickDates(firstDate, lastDate).map(([label, value]) => (
+            <button
+              key={label}
+              className={asOf === value ? "chip on" : "chip"}
+              onClick={() => {
+                setPlaying(false);
+                onAsOf(value);
+              }}
+            >
+              {label}
+            </button>
+          ))}
+          <input
+            type="date"
+            className="date"
+            value={asOf}
+            min={firstDate}
+            max={lastDate}
+            onChange={(e) => {
+              if (e.target.value >= firstDate && e.target.value <= lastDate) {
+                setPlaying(false);
+                onAsOf(e.target.value);
+              }
+            }}
+            aria-label="조회 시점을 날짜로 고르기"
+          />
+        </div>
         <p className="hint">그날까지 공시로 알려진 관계만 보입니다.</p>
       </div>
 
@@ -143,6 +216,7 @@ export function Controls(props: Props) {
               className={types.includes(type) ? "chip on" : "chip"}
               onClick={() => toggle(type)}
               disabled={type === "affiliate" && props.centerName === null}
+              data-type={type}
               title={type === "affiliate" && props.centerName === null ? "기업 하나를 중심으로 볼 때만 그립니다" : undefined}
             >
               <i style={{ background: LINK_COLORS[type] }} />
@@ -150,6 +224,29 @@ export function Controls(props: Props) {
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="block">
+        <div className="block-head">
+          <span>솎아 보기</span>
+          <strong>
+            기업 {props.shown.nodes.toLocaleString()} · 선 {props.shown.links.toLocaleString()}
+          </strong>
+        </div>
+        <Steps label="지분율" steps={PCT_STEPS} value={props.filters.minPct} onChange={(minPct) => props.onFilters({ ...props.filters, minPct })} />
+        <Steps
+          label="금액"
+          steps={AMOUNT_STEPS}
+          value={props.filters.minAmount}
+          onChange={(minAmount) => props.onFilters({ ...props.filters, minAmount })}
+        />
+        <Steps
+          label="연결 수"
+          steps={DEGREE_STEPS}
+          value={props.filters.minDegree}
+          onChange={(minDegree) => props.onFilters({ ...props.filters, minDegree })}
+        />
+        <p className="hint">지분율은 지분 선에, 금액은 공급계약과 취득·처분 결정 선에 적용됩니다. 조건에 맞는 선이 없는 기업은 사라집니다.</p>
       </div>
 
       <div className="block">

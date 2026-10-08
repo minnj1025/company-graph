@@ -3,7 +3,7 @@ import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, type Scope } from "
 import { categoryColors, legend, LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { Cards } from "./Cards";
 import { Chat } from "./Chat";
-import { Controls } from "./Controls";
+import { Controls, NO_FILTER, type Filters } from "./Controls";
 import { Graph, shortName } from "./Graph";
 import { Credit, DataPage, QuestionsPage } from "./Pages";
 import { Panel } from "./Panel";
@@ -23,6 +23,7 @@ export function App() {
   /** Agent가 찾은 결과. 있으면 그래프에 그 기업과 관계만 남긴다 */
   const [found, setFound] = useState<AskResult | null>(null);
   const [showControls, setShowControls] = useState(true);
+  const [filters, setFilters] = useState<Filters>(NO_FILTER);
   /** 오른쪽 칸의 너비. 왼쪽 가장자리를 끌어 바꾸고, 다음에 와도 그대로 둔다 */
   const [sideWidth, setSideWidth] = useState(() => Number(localStorage.getItem("side-width")) || 400);
   const resizeSide = useCallback((event: React.PointerEvent) => {
@@ -99,7 +100,21 @@ export function App() {
     };
   }, [selectedId, asOf]);
 
-  const shownData = found ? found.graph : data;
+  // 솎아 보기: 받은 그래프에서 조건에 맞는 선과, 그 선에 닿은 기업만 남긴다. 질문으로 찾은 결과에는 걸지 않는다
+  const filtered = useMemo(() => {
+    if (filters === NO_FILTER) return data;
+    const end = (side: number | GraphNode) => (typeof side === "number" ? side : side.id);
+    let links = data.links.filter((link) =>
+      link.type === "equity" ? (link.value ?? 0) >= filters.minPct : link.type === "affiliate" || (link.value ?? 0) >= filters.minAmount,
+    );
+    const degree = new Map<number, number>();
+    for (const link of links) for (const id of [end(link.source), end(link.target)]) degree.set(id, (degree.get(id) ?? 0) + 1);
+    const keep = new Set(data.nodes.filter((node) => node.focus || (degree.get(node.id) ?? 0) >= filters.minDegree).map((node) => node.id));
+    links = links.filter((link) => keep.has(end(link.source)) && keep.has(end(link.target)));
+    const linked = new Set(links.flatMap((link) => [end(link.source), end(link.target)]));
+    return { nodes: data.nodes.filter((node) => node.focus || linked.has(node.id)).map((node) => ({ ...node, degree: degree.get(node.id) ?? 0 })), links };
+  }, [data, filters]);
+  const shownData = found ? found.graph : filtered;
   const groups = useMemo(() => categoryColors(shownData.nodes, colorBy), [shownData, colorBy]);
   const onSelect = useCallback((node: GraphNode | null) => setSelectedId(node ? node.id : null), []);
   const drawnTypes = useMemo(() => {
@@ -180,6 +195,9 @@ export function App() {
                 scope={scope}
                 categories={meta.categories}
                 onScope={setScope}
+                filters={filters}
+                onFilters={setFilters}
+                shown={{ nodes: filtered.nodes.length, links: filtered.links.length }}
                 onPick={(company) => {
                   setCenter(company);
                   setSelectedId(company.id);

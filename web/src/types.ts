@@ -1,6 +1,6 @@
-export type RelType = "equity" | "supply_contract" | "affiliate";
+export type RelType = "equity" | "supply_contract" | "affiliate" | "stake_acquisition" | "stake_disposal";
 /** 사건형 관계. 첫 화면의 그래프에는 그리지 않고, 기업 상세와 Agent가 찾은 결과에 나온다 */
-export type EventType = "supply_termination" | "stake_acquisition" | "stake_disposal" | "merger" | "split" | "business_transfer";
+export type EventType = "supply_termination" | "merger" | "split" | "business_transfer";
 export type LinkType = RelType | EventType;
 
 export interface Company {

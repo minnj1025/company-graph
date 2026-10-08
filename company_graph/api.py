@@ -18,7 +18,8 @@ from .stages import sector, stage
 
 app = FastAPI(title="기업 관계 그래프")
 _engine = get_engine()
-GRAPH_TYPES = ("equity", "supply_contract", "affiliate")
+GRAPH_TYPES = ("equity", "supply_contract", "affiliate", "stake_acquisition", "stake_disposal")
+DEFAULT_TYPES = ("equity", "supply_contract", "affiliate")
 
 
 def get_db():
@@ -89,8 +90,11 @@ def build_graph(db, edges: list[dict], focus: set[int] = frozenset()) -> dict:
             # 상대가 둘인 계약은 줄마다 전체 금액이 들어 있지만, 여기서는 한 쌍만 보므로 겹쳐 세지 않는다
             link["value"] = float(sum(e["value"] or 0 for e in group))
             link["label"] = f"공급계약 {len(group)}건 · {link['value'] / 1e8:,.0f}억 원"
-        else:
+        elif rel_type == "affiliate":
             link["label"] = "계열"
+        else:   # 취득·처분 결정
+            link["value"] = float(sum(e["value"] or 0 for e in group))
+            link["label"] = f"{query.LABELS[rel_type]} {len(group)}건 · {link['value'] / 1e8:,.0f}억 원"
         links.append(link)
     ids = {i for link in links for i in (link["source"], link["target"])} | set(focus)
     degree = defaultdict(int)
@@ -104,7 +108,7 @@ def build_graph(db, edges: list[dict], focus: set[int] = frozenset()) -> dict:
 
 def parse_types(types: str | None) -> list[str]:
     chosen = [t for t in (types or "").split(",") if t in GRAPH_TYPES]
-    return chosen or list(GRAPH_TYPES)
+    return chosen or list(DEFAULT_TYPES)
 
 
 _meta_cache: dict = {}

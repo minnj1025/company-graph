@@ -5,11 +5,22 @@ import { askAgent, fetchAskStatus } from "./api";
 import type { AskResult, AskStatus, GraphData } from "./types";
 
 const DART = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=";
-const SUGGESTIONS = [
-  "현대모비스에 올해 공급계약을 공시한 회사는?",
-  "삼성물산의 최대주주와 지분율은?",
-  "포스코홀딩스가 지분을 가진 상장사를 모두 알려줘",
-  "올해 9월에 삼성 계열사를 상대로 공급계약을 공시한 회사는?",
+/** 처음 화면에 보이는 예시. 묶음마다 이 DB로 답할 수 있는 질문의 종류가 다르다 */
+const SUGGESTIONS: [string, string[]][] = [
+  ["누가 누구와", ["삼성물산의 최대주주와 지분율은?", "SK하이닉스에 올해 공급계약을 공시한 회사는?", "포스코홀딩스가 지분을 가진 상장사를 모두 알려줘"]],
+  ["무엇을 하는 회사", ["전기차 배터리 분리막을 실제로 만드는 상장사와 매출 비중은?", "책 매출 비중이 큰 상장사는 어디야?", "HBM 장비를 만드는 회사를 매출 비중과 함께 알려줘"]],
+  ["바뀐 것", ["한화오션이 올해 공시한 공급계약을 금액이 큰 순서로", "두산에너빌리티가 올해 낸 공급계약 중 나중에 정정된 것은?"]],
+];
+/** 입력 칸에 번갈아 보이는 질문 */
+const HINTS = [
+  "대한조선이 올해 공시한 공급계약은?",
+  "감열지를 만드는 상장사는?",
+  "카카오가 지분을 가진 상장사는?",
+  "현대모비스에 공급계약을 공시한 회사는?",
+  "웹툰 매출 비중이 큰 회사는?",
+  "한미반도체의 최대주주와 특수관계인 지분은?",
+  "원전 주기기를 만드는 회사와 최근 수주는?",
+  "예스24는 어떤 사업으로 돈을 버나?",
 ];
 
 /** 답에 나온 14자리 접수번호를 DART 원문 링크로 바꾼다. */
@@ -29,6 +40,12 @@ export function Chat({ shown, onShow }: Props) {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<AskStatus | null>(null);
   const bottom = useRef<HTMLDivElement>(null);
+  const [hint, setHint] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => setHint((n) => (n + 1) % HINTS.length), 2500);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     fetchAskStatus()
@@ -68,12 +85,17 @@ export function Chat({ shown, onShow }: Props) {
         {turns.length === 0 && (
           <div className="chat-intro">
             <p>
-              공시에서 뽑은 관계 DB에 질문해 보세요. 답에는 근거 공시가 붙고, 조회된 기업과 관계만 왼쪽 그래프에 남습니다.
+              공시에서 뽑은 관계와 사업 내용에 질문해 보세요. 답에는 근거 공시가 붙고, 조회된 기업과 관계만 왼쪽 그래프에 남습니다.
             </p>
-            {SUGGESTIONS.map((s) => (
-              <button key={s} className="suggestion" onClick={() => ask(s)} disabled={busy || closed}>
-                {s}
-              </button>
+            {SUGGESTIONS.map(([label, questions]) => (
+              <div key={label} className="suggestion-group">
+                <span>{label}</span>
+                {questions.map((q) => (
+                  <button key={q} className="suggestion" onClick={() => ask(q)} disabled={busy || closed}>
+                    {q}
+                  </button>
+                ))}
+              </div>
             ))}
             <p className="fine">
               매수·매도 판단은 답하지 않습니다. 질문은 사용량을 세기 위해 저장됩니다.
@@ -131,7 +153,7 @@ export function Chat({ shown, onShow }: Props) {
           value={text}
           onChange={(event) => setText(event.target.value)}
           maxLength={300}
-          placeholder={closed ? "지금은 질문을 받지 않습니다" : "예: 대한조선이 올해 공시한 공급계약은?"}
+          placeholder={closed ? "지금은 질문을 받지 않습니다" : HINTS[hint]}
           disabled={busy || closed}
         />
         <button disabled={busy || closed || text.trim().length < 2}>묻기</button>
