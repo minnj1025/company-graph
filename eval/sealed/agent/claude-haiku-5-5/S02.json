@@ -1,0 +1,45 @@
+{
+ "question": "서진시스템이 2024-05-20에 공시한 공급계약의 계약상대, 금액, 내용은?",
+ "as_of": "2026-09-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** 서진시스템(코스닥 178320)이 2024-05-20에 공시한 공급계약은 1건이며, 계약상대는 (주)에이스엔지니어링입니다.\n\n- **계약상대:** (주)에이스엔지니어링. 이 DB 원장에는 등록되어 있지 않고 이름만 확인됩니다.\n- **금액:** 68,355,943,644원\n- **내용:** ESS 공급계약\n- **계약기간:** 2024-07-12 ~ 2024-12-13\n- **공시 정보:** 접수번호 20240520900059, 공시 주체는 서진시스템, 상대방과의 관계는 \"거래처\", 비율 8.8%(공시 원문의 값)\n\n이 계약은 정정·해지 표시가 없어 조회 시점(2026-09-30) 기준 유효한 것으로 나옵니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "서진시스템"
+   },
+   "error": null,
+   "total": null,
+   "chars": 128
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3340,
+    "as_of": "2026-09-30",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "disclosed_from": "2024-05-20",
+    "disclosed_to": "2024-05-20"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 854
+  }
+ ],
+ "cited": [
+  "20240520900059"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 579,
+  "cache_read_input_tokens": 8928,
+  "cache_creation_input_tokens": 5166
+ },
+ "seconds": 4.1,
+ "number": "S02",
+ "gold": "(주)에이스엔지니어링, 68,355,943,644, ESS 공급계약"
+}

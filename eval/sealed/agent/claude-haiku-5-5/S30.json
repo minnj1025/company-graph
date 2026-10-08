@@ -1,0 +1,64 @@
+{
+ "question": "바이오니아의 최대주주는 누구이고, 그 최대주주가 지분을 가진 다른 상장사는 어디인가?",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 최대주주는 박한오(13.71%)이고, 이 DB에서는 박한오가 지분을 가진 상장사를 찾을 수 없습니다.**\n\n**1. 최대주주**\n- 박한오, 지분율 13.71%, 본인(최대주주)으로 보고됨\n- 기준일 2025-12-31 (사업보고서 기준, 공시일 2026-03-24, 접수번호 20260324001036)\n- 같은 보고서에 특수관계인 9명도 기재되어 있습니다: 이중열(임직원, 2.22%), 박한이(동생, 0.96%), 김명희(배우자, 0.54%), 박준성(자녀, 0.24%), PARK CLARAEUGENE(자녀, 0.11%), PARK JUNE YOUNG(자녀, 0.11%), 정진평(임직원, 0.08%), 김재하(임직원, 0.06%), 박미애(누이, 0.02%). 모두 접수번호 20260324001036입니다.\n\n**2. 박한오가 지분을 가진 다른 상장사**\n- 찾지 못했습니다. 이 DB는 최대주주와 특수관계인의 지분을 대상 회사 쪽 기록으로만 보여 주며, 개인이 가진 다른 회사 지분은 담지 않습니다. 박한오도 원장에 기업으로 없습니다(find_company 결과 없음).\n- 혼동하지 않도록 말씀드리면, 바이오니아 자신이 보유한 타법인 지분 목록(접수번호 20260324001036)에는 상장사가 없습니다. 출자 대상은 Bioneer Biotech GmbH, Bioneer Shanghai, Bioneer, Inc., ㈜에이스바이옴, SiRNAgen Therapeutics, PT Bioneer Indika Group(원장에 이름만 있음), (유)리서치벤처, 퓨쳐이엔지㈜, U2BIO THAILAND, ㈜가람아이앤씨, ㈜큐피크바이오, ㈜레보스케치, 바이오라딕스, ㈜우리연금 등이며, 이 중 상장사로 확인되는 곳은 없습니다.\n\n박한오 개인의 타사 지분을 확인하려면 공시 외 자료(예: 대량보유상황보고, 임원·주요주주 특정증권 등 보유 현황)를 봐야 합니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "바이오니아"
+   },
+   "error": null,
+   "total": null,
+   "chars": 128
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2311,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 10,
+   "chars": 4890
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "박한오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2311,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 14,
+   "chars": 6389
+  }
+ ],
+ "cited": [
+  "20260324001036"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2021,
+  "cache_read_input_tokens": 16278,
+  "cache_creation_input_tokens": 11650
+ },
+ "seconds": 11.6,
+ "number": "S30",
+ "gold": "최대주주 박한오 13.71%(개인). 개인이 가진 다른 회사 지분은 이 DB로 알 수 없다고 답해야 한다. 지어내면 오답"
+}

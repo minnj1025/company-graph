@@ -1,0 +1,59 @@
+{
+ "question": "2026-09-01 대한해운 공시에 나오는 현대자동차그룹 회사는 어디이고, 계약 내용은 무엇인가?",
+ "as_of": "2026-10-05",
+ "model": "claude-opus-5-5",
+ "answer": "**결론:** 2026-09-01 대한해운 공시에 나오는 현대자동차그룹 회사는 **현대글로비스(주)**(086280, 유가증권)입니다. 계약은 대한해운이 현대글로비스와 맺은 **자동차선 장기대선계약**입니다. 근거 공시는 접수번호 20260901800667입니다.\n\n**계약 내용**\n- 공시 종류: 단일판매ㆍ공급계약체결 (기타 판매ㆍ공급계약)\n- 계약 당사자: 대한해운(주)가 공급하는 쪽, 현대글로비스(HYUNDAI GLOVIS Co., LTD.)가 계약상대\n- 계약명: 자동차선 장기대선계약\n- 계약금액: 72,931,099,500원\n- 계약기간: 2026-11-25 ~ 2032-03-10\n- 금액 비율: 5.71% (공시 기재값)\n- 공시 기준일: 2026-08-31 / 공시일: 2026-09-01\n\n**유효 여부:** 조회 시점(2026-10-05)까지 이 공시를 고치거나 해지한 공시는 없습니다. 대한해운이 그날 낸 공급계약 공시는 이 1건뿐입니다.\n\n원문: https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260901800667",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "대한해운"
+   },
+   "error": null,
+   "total": null,
+   "chars": 128
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 4257,
+    "as_of": "2026-10-05",
+    "doc_type": "supply_contract",
+    "filed_from": "2026-09-01",
+    "filed_to": "2026-09-01"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 636
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4257,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "disclosed_from": "2026-09-01",
+    "disclosed_to": "2026-09-01",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 882
+  }
+ ],
+ "cited": [
+  "20260901800667"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 969,
+  "cache_read_input_tokens": 8955,
+  "cache_creation_input_tokens": 5792
+ },
+ "seconds": 11.8,
+ "number": "Q26",
+ "gold": "현대글로비스, 자동차선 장기대선계약 72,931,099,500원 (확인)"
+}

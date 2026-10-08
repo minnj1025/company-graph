@@ -1,0 +1,63 @@
+{
+ "question": "중소기업은행은 공정위가 지정한 대규모기업집단 소속인가? 사업보고서의 계열회사 중 상장사는 어디인가?",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론:** DB상 중소기업은행은 공정위 대규모기업집단 소속으로 나타나지 않습니다. 사업보고서 계열회사 중 상장사로 확정된 곳도 없습니다. 다만 보고서상 상장으로 표시된 계열사가 하나 있어 확인이 필요합니다.\n\n**1. 대규모기업집단 소속 여부**\n- 중소기업은행(company_id 3675, 024110, 유가증권)의 기업집단(group) 값은 null입니다.\n- DB에는 공정위 지정 여부를 직접 보여 주는 항목이 없어서, \"지정되지 않았다\"고 단정할 수는 없습니다. DB 기준으로는 소속 집단이 기록되어 있지 않다고만 답할 수 있습니다.\n\n**2. 사업보고서 계열회사 중 상장사**\n- 기준: 2025-12-31 기준 사업보고서(접수번호 20260318000761), 계열회사 49곳(조회 시점 2026-06-30).\n- 계열회사 중 원장에서 상장사로 확인된 곳은 0곳입니다(listed_only 조회 결과 0건). 나머지는 대부분 \"원장에 이름만 있음\" 상태입니다.\n- 다만 같은 사업보고서에서 **IBK인도네시아은행**이 상장(listed: true)으로 기재되어 있습니다. 이 회사는 원장에 기업 식별 정보가 없어 상장 필터에서 빠졌습니다. 종목코드는 DB에 없습니다. 상장 여부는 이 공시 표기만 근거로 한 것이므로 거래소 자료로 따로 확인하는 것이 안전합니다.\n\n**참고**\n- 계열회사 목록에는 IBK미얀마은행, IBK폴란드은행 등 해외 법인과 사모투자합자회사, 벤처투자·캐피탈·자산운용 등 금융 자회사·투자조합이 포함되어 있습니다.\n- 이 목록은 사업보고서 계열회사 표를 근거로 하며, 조회 시점에 없는 관계가 실제로 없다는 뜻은 아닙니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "중소기업은행"
+   },
+   "error": null,
+   "total": null,
+   "chars": 127
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3675,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 49,
+   "chars": 21902
+  },
+  {
+   "tool": "get_coverage",
+   "input": {},
+   "error": null,
+   "total": null,
+   "chars": 1025
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3675,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 344
+  }
+ ],
+ "cited": [
+  "20260318000761"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1817,
+  "cache_read_input_tokens": 25412,
+  "cache_creation_input_tokens": 17118
+ },
+ "seconds": 12.0,
+ "number": "S27",
+ "gold": "대규모기업집단 소속이 아니다. 계열회사 표에 49곳이 있고 그중 상장으로 적힌 곳은 IBK인도네시아은행 1곳(해외 상장). 국내 상장 계열사는 없다 (본인 제외)"
+}

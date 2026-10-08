@@ -1,0 +1,45 @@
+{
+ "question": "한세예스24홀딩스가 2024-12-16에 공시한 타법인 주식 취득 결정의 대상 회사와 금액은?",
+ "as_of": "2026-09-30",
+ "model": "claude-haiku-5-5",
+ "answer": "한세예스24홀딩스가 2024-12-16에 공시한 타법인 주식 취득 결정은 1건이고, 대상은 **이래에이엠에스 주식회사(erae AMS Co., Ltd.)**, 금액은 **30,000,000,000원(300억 원)**입니다.\n\n- 접수번호: 20241216801949\n- 취득 목적: 설비투자, 방법: 현금 취득\n- 취득 후 지분율: 85.3%\n- 이 DB에는 이래에이엠에스가 원장에 없는 상대로 이름만 있고, 정정이나 철회 기록은 확인되지 않았습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한세예스24홀딩스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 133
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1591,
+    "as_of": "2026-09-30",
+    "rel_type": "stake_acquisition",
+    "direction": "out",
+    "disclosed_from": "2024-12-16",
+    "disclosed_to": "2024-12-16"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 855
+  }
+ ],
+ "cited": [
+  "20241216801949"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 505,
+  "cache_read_input_tokens": 8958,
+  "cache_creation_input_tokens": 5203
+ },
+ "seconds": 4.0,
+ "number": "S13",
+ "gold": "이래에이엠에스 주식회사(erae AMS Co., Ltd.), 30,000,000,000"
+}

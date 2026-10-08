@@ -1,0 +1,56 @@
+{
+ "question": "제룡산업이 2025-01-10에 공시한 한국전기공업협동조합 \"HVDC 애자 및 전선 금구류\" 계약은 언제 끝나는가?",
+ "as_of": "2025-07-01",
+ "model": "claude-haiku-5-5",
+ "answer": "**답: 2025-11-30입니다.** 최초 공시의 종료일 2025-09-30은 정정으로 바뀌었습니다.\n\n- **최초 공시 (접수번호 20250110900371, 2025-01-10):** 계약 종료일 2025-09-30, 계약금액 22,204,174,177원. 이후 정정되어 현재는 무효 상태입니다.\n- **정정 공시 (접수번호 20250613900676, 2025-06-13, [기재정정]):** 최초 공시를 정정했고, 종료일이 **2025-11-30**으로 바뀌었습니다. 계약금액은 22,204,174,177원으로 동일합니다.\n\n조회 시점(2025-07-01) 기준으로 유효한 것은 정정 공시이므로, 계약은 2025-11-30에 끝나는 것으로 공시되어 있습니다. 다만 이 DB에는 해지나 기간 연장 공시가 없었고, 조회 시점 이후의 변동은 확인하지 않았습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "제룡산업"
+   },
+   "error": null,
+   "total": null,
+   "chars": 127
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2599,
+    "as_of": "2025-07-01",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-01-10",
+    "filed_to": "2025-01-10"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 617
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2599,
+    "as_of": "2025-07-01",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1005
+  }
+ ],
+ "cited": [
+  "20250110900371",
+  "20250613900676"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 849,
+  "cache_read_input_tokens": 14027,
+  "cache_creation_input_tokens": 5791
+ },
+ "seconds": 5.7,
+ "number": "S09",
+ "gold": "2025-11-30 (2025-06-13 정정, 사유: 거래처 요청에 따른 납기 변경)"
+}

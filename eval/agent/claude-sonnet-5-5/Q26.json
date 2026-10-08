@@ -1,0 +1,44 @@
+{
+ "question": "2026-09-01 대한해운 공시에 나오는 현대자동차그룹 회사는 어디이고, 계약 내용은 무엇인가?",
+ "as_of": "2026-10-05",
+ "model": "claude-sonnet-5-5",
+ "answer": "2026-09-01 대한해운 공시에 나오는 현대자동차그룹 회사는 **현대글로비스(주)**(종목코드 086280)입니다. 대한해운이 공급 쪽 주체로 공시했고, 접수번호는 20260901800667입니다.\n\n계약 내용은 다음과 같습니다.\n- **계약명:** 자동차선 장기대선계약(기타 판매ㆍ공급계약)\n- **계약금액:** 72,931,099,500원\n- **계약기간:** 2026-11-25부터 2032-03-10까지\n- **비율:** 5.71%\n- **기준일:** 2026-08-31\n\n정정이나 해지 공시가 있는지는 따로 확인하지 않았습니다. 다만 정정된 공시까지 포함해 조회했고, 그날 공시는 이 한 건뿐이었습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "대한해운"
+   },
+   "error": null,
+   "total": null,
+   "chars": 128
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4257,
+    "as_of": "2026-10-05",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "disclosed_from": "2026-09-01",
+    "disclosed_to": "2026-09-01",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 882
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 565,
+  "cache_read_input_tokens": 8955,
+  "cache_creation_input_tokens": 5225
+ },
+ "seconds": 5.8,
+ "number": "Q26",
+ "gold": "현대글로비스, 자동차선 장기대선계약 72,931,099,500원 (확인)"
+}

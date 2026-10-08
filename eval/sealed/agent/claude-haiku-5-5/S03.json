@@ -1,0 +1,44 @@
+{
+ "question": "대한조선이 2026-06-01에 공시한 공급계약의 계약상대, 금액, 내용은?",
+ "as_of": "2026-09-30",
+ "model": "claude-haiku-5-5",
+ "answer": "대한조선이 2026-06-01에 공시한 공급계약은 1건이며, 정정되거나 철회된 기록은 없습니다.\n\n- **계약상대:** \"오세아니아 지역 선주\"로만 공시되어 있습니다. 상대방의 실명은 공시에 나오지 않습니다.\n- **금액:** 282,800,000,000원(2,828억 원)\n- **내용:** 원유운반선(157,000 DWT) 2척\n- **계약 종료일(period_end):** 2028-12-31\n\n근거: 접수번호 20260601800013 (단일판매·공급계약체결)",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "대한조선"
+   },
+   "error": null,
+   "total": null,
+   "chars": 130
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3865,
+    "as_of": "2026-09-30",
+    "doc_type": "supply_contract",
+    "filed_from": "2026-06-01",
+    "filed_to": "2026-06-01"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 628
+  }
+ ],
+ "cited": [
+  "20260601800013"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 530,
+  "cache_read_input_tokens": 8926,
+  "cache_creation_input_tokens": 5032
+ },
+ "seconds": 3.9,
+ "number": "S03",
+ "gold": "오세아니아 지역 선주, 282,800,000,000, 원유운반선(157,000 DWT) 2척. 계약일 2026-05-29"
+}

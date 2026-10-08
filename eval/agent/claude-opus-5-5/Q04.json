@@ -1,0 +1,54 @@
+{
+ "question": "2025년 말 기준 현대자동차가 보유한 현대오토에버 지분율은?",
+ "as_of": "2026-10-05",
+ "model": "claude-opus-5-5",
+ "answer": "2025년 말 기준으로 현대자동차는 현대오토에버 지분 **31.59%**를 갖고 있습니다.\n\n- **기준일:** 2025-12-31. 질문하신 기준일과 같습니다.\n- **출처:** 2026-03-18에 공시된 사업보고서입니다. 현대자동차 쪽 공시와 현대오토에버 쪽 공시에 같은 값이 실려 있습니다.\n- **보유 목적:** 경영참여\n- **관계:** 현대오토에버의 최대주주 본인입니다.\n- **근거 접수번호:** 20260318001324, 20260318001394\n\n이 DB에는 아직 반기·분기보고서가 없습니다. 그래서 2026년 들어 지분율이 달라졌는지는 여기서 확인할 수 없습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대자동차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 130
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대오토에버"
+   },
+   "error": null,
+   "total": null,
+   "chars": 132
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-05",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 169
+   },
+   "error": null,
+   "total": 1,
+   "chars": 905
+  }
+ ],
+ "cited": [
+  "20260318001324",
+  "20260318001394"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 557,
+  "cache_read_input_tokens": 9085,
+  "cache_creation_input_tokens": 5356
+ },
+ "seconds": 10.1,
+ "number": "Q04",
+ "gold": "31.59% (확인)"
+}

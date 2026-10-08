@@ -1,0 +1,57 @@
+{
+ "question": "한화시스템의 해군군수사령부 \"국내 수상함 전투체계 외주정비\" 계약은 언제 끝나는가?",
+ "as_of": "2026-01-01",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 2026-01-01 시점 공시 기준 계약 종료일은 2026-03-31입니다.**\n\n- **계약명:** 국내 수상함 전투체계 외주정비 (상대: 해군군수사령부, 금액 125,017,460,000원)\n- **계약기간:** 2022-06-01 ~ 2026-03-31\n- **근거:** 2025-03-25 [기재정정]단일판매·공급계약체결, 접수번호 20250325801079. 정정 사유는 \"계약금액 및 계약기간 변경\"입니다.\n- **정정 이력:** 이 공시는 2025-03-25에 정정된 값이며, 2026-01-01 시점에는 나중에 정정된 공시가 없어 유효한 값입니다.\n\n**주의:** DB에는 이 공시가 2026-03-13에 다른 공시로 대체(superseded)된 것으로 기록되어 있습니다. 그 대체 공시의 내용은 2026-01-01 이후 일이라 이 조회에서는 확인되지 않았습니다. 그래서 계약기간이 그 뒤에 바뀌었는지는 알 수 없습니다. 2026년 3월 이후 시점으로 다시 조회하면 바뀐 종료일을 확인할 수 있습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한화시스템"
+   },
+   "error": null,
+   "total": null,
+   "chars": 129
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4165,
+    "as_of": "2026-01-01",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 28,
+   "chars": 16084
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 4165,
+    "as_of": "2026-01-01",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-03-01",
+    "filed_to": "2026-01-01"
+   },
+   "error": null,
+   "total": 14,
+   "chars": 5487
+  }
+ ],
+ "cited": [
+  "20250325801079"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1543,
+  "cache_read_input_tokens": 22442,
+  "cache_creation_input_tokens": 16879
+ },
+ "seconds": 9.0,
+ "number": "S06",
+ "gold": "2026-03-31 (금액 125,017,460,000)"
+}

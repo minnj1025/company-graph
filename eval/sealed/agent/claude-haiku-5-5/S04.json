@@ -1,0 +1,47 @@
+{
+ "question": "레이저쎌이 2025년에 새로 공시한 공급계약(정정 공시 제외)의 계약상대를 모두 들어라.",
+ "as_of": "2025-12-31",
+ "model": "claude-haiku-5-5",
+ "answer": "레이저쎌이 2025년에 새로 공시한 공급계약은 4건이고, 계약상대는 아래 4곳입니다. 정정 공시는 없었고, 4건 모두 지금 유효합니다.\n\n1. **국내 Probe Card 제조업체**: LPB_s 장비 공급 계약, 6억 5,000만 원, 공시일 2025-06-11, 접수번호 20250611900102\n2. **동우화인켐(주) 평택공장**: 점등검사기/Laser Repair장비 구매, 7억 5,300만 원, 공시일 2025-07-02, 접수번호 20250702900440\n3. **Sellingware Co.,LTD.**: LSR_300 BGA, 13億 2,145만 원(1,321,450,000원), 공시일 2025-09-08, 접수번호 20250908900127\n4. **Axend Pte Ltd**: LSR_BGA 장비 공급, 8억 7,184만 4천 원(871,844,000원), 공시일 2025-10-02, 접수번호 20251002900266\n\n조회 시점은 2025-12-31입니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "레이저쎌"
+   },
+   "error": null,
+   "total": null,
+   "chars": 129
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3318,
+    "as_of": "2025-12-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-01-01",
+    "filed_to": "2025-12-31"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 1747
+  }
+ ],
+ "cited": [
+  "20250611900102",
+  "20250702900440",
+  "20250908900127",
+  "20251002900266"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 751,
+  "cache_read_input_tokens": 9084,
+  "cache_creation_input_tokens": 5763
+ },
+ "seconds": 4.5,
+ "number": "S04",
+ "gold": "4건: 국내 Probe Card 제조업체(06-11, 650,000,000), 동우화인켐 평택공장(07-02, 753,000,000), Sellingware Co.,LTD.(09-08, 1,321,450,000), Axend Pte Ltd(10-02, 871,844,000)"
+}

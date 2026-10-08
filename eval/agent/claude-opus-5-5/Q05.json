@@ -1,0 +1,43 @@
+{
+ "question": "인지컨트롤스가 2026-08-21에 공시한 공급계약의 계약상대와 계약금액은?",
+ "as_of": "2026-10-05",
+ "model": "claude-opus-5-5",
+ "answer": "인지컨트롤스가 2026-08-21에 공시한 공급계약의 상대는 **현대모비스**이고, 계약금액은 **475,742,538,388원**입니다 (접수번호 20260821800662).\n\n- 계약 내용: SENSING ASSY 6종(Cell Connection System)\n- 계약 종료일: 2035-12-31\n- 2026-10-05까지 이 공시를 정정하거나 해지한 공시는 없습니다. 지금도 유효한 공시입니다.\n\n원문: https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260821800662",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "인지컨트롤스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 128
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 79,
+    "as_of": "2026-10-05",
+    "doc_type": "supply_contract",
+    "filed_from": "2026-08-21"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 638
+  }
+ ],
+ "cited": [
+  "20260821800662"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 433,
+  "cache_read_input_tokens": 8935,
+  "cache_creation_input_tokens": 5007
+ },
+ "seconds": 5.6,
+ "number": "Q05",
+ "gold": "현대모비스, 475,742,538,388원 (확인)"
+}

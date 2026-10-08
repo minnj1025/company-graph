@@ -1,0 +1,56 @@
+{
+ "question": "2025년 말 기준 더즌이 지분을 가진 상장사를 모두 들어라.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 2025년 말 기준으로 더즌(462860, 코스닥)이 지분을 가진 상장사는 DB에서 확인되지 않습니다.**\n\n2025-12-31 기준 지분 보유 5건이 모두 조회되었고, 상장사 필터를 걸면 0건입니다. 5개 대상은 모두 사업보고서(접수번호 20260320000486, 2026-03-20 공시)에 실린 값입니다.\n\n| 대상 | 지분율 | 목적 | 상장 여부 |\n|---|---|---|---|\n| PT. DOZN GLOBAL INDONESIA | 99.9% | 경영참여 | 원장에 이름만 있음 |\n| DOZN GLOBAL PTE.LTD | 60.0% | 경영참여 | 원장에 없음 (이름만 있음) |\n| 주식회사 오픈에셋 | 14.48% | 단순투자 | 원장에 없음 (이름만 있음) |\n| 주식회사 스위치원 | 9.1% | 단순투자 | 원장에 없음 (이름만 있음) |\n| 인포플러스 주식회사 | 7.42% | 단순투자 | 원장에 없음 (이름만 있음) |\n\n- 기준일: 결과의 as_of_date가 모두 2025-12-31이므로 질문의 기준일과 일치합니다.\n- 주의: 이 DB의 타법인 출자 정보는 사업보고서 기준이며, 원장에 상장 정보가 있는 대상이 없습니다. 그래서 \"상장사 없음\"은 이 DB 안에서의 결과입니다. 위 법인 중 상장된 곳이 있는지는 DB로 확인할 수 없습니다.\n- 여기 없는 것은 \"지분이 없다\"는 뜻이 아닙니다. 이 DB는 사업보고서의 타법인 출자현황과 최대주주 현황만 담으며, 5% 이상 주주 전체를 담지 않습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "더즌"
+   },
+   "error": null,
+   "total": null,
+   "chars": 125
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3886,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 2553
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3886,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 439
+  }
+ ],
+ "cited": [
+  "20260320000486"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1309,
+  "cache_read_input_tokens": 15259,
+  "cache_creation_input_tokens": 6760
+ },
+ "seconds": 7.7,
+ "number": "S24",
+ "gold": "없음. 타법인 출자 5곳이 모두 비상장이다 (5곳의 이름과 상장 여부는 원문 확인)"
+}

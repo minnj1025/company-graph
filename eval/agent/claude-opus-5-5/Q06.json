@@ -1,0 +1,44 @@
+{
+ "question": "2025년 말 기준 현대글로비스의 최대주주와 그 지분율은?",
+ "as_of": "2026-10-05",
+ "model": "claude-opus-5-5",
+ "answer": "**2025년 말 기준 현대글로비스의 최대주주는 정의선이고, 지분율은 20.0%입니다.** 이 값은 2026-03-18에 공시된 사업보고서(접수번호 20260318001205)에 실린 2025-12-31 기준 수치로, 질문하신 기준일과 같습니다.\n\n같은 보고서에 나온 최대주주 특수관계인의 지분은 다음과 같습니다.\n- Den Norske Amerikalinje AS(공동보유자): 11.0%\n- PROJECT GUARDIAN HOLDINGS LIMITED(공동보유자): 10.0%\n- 현대자동차(주)(계열회사, 경영참여 목적): 4.88%. 현대자동차의 공시(20260318001394)에도 같은 값이 있습니다.\n- 현대차 정몽구 재단(재단): 4.46%\n- 이규복(계열회사 임원): 0.01%\n\n이 DB의 주주 정보에는 최대주주와 그 특수관계인만 들어 있습니다. 그래서 특수관계가 없는 다른 5% 이상 주주는 위 목록에 없습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대글로비스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 132
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 150,
+    "as_of": "2026-10-05",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 3239
+  }
+ ],
+ "cited": [
+  "20260318001205",
+  "20260318001394"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 605,
+  "cache_read_input_tokens": 8917,
+  "cache_creation_input_tokens": 6458
+ },
+ "seconds": 8.7,
+ "number": "Q06",
+ "gold": "정의선, 20.00% (확인)"
+}

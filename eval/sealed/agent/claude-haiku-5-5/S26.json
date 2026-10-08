@@ -1,0 +1,53 @@
+{
+ "question": "(주)원광씨에스가 가진 동양고속 지분율은?",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**답: 6.59%** (기준일 2025-12-31, 사업보고서 기준)\n\n- 보유 주체: (주)원광씨에스 → 대상: (주)동양고속(084670, 유가증권)\n- 지분율: 6.59%\n- 기준일(as_of_date): 2025-12-31 / 공시일: 2026-03-23\n- 근거 접수번호: 20260323001365\n- 기록상 원광씨에스는 동양고속의 최대주주 특수관계인으로 표시되어 있습니다.\n\n이 값은 2025년 말 사업보고서의 것입니다. 이 DB에는 반기·분기보고서가 아직 없어서, 2026년 6월 30일 이후 지분 변동은 반영되어 있지 않을 수 있습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "원광씨에스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 128
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "동양고속"
+   },
+   "error": null,
+   "total": null,
+   "chars": 128
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 9368,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 2267
+   },
+   "error": null,
+   "total": 1,
+   "chars": 858
+  }
+ ],
+ "cited": [
+  "20260323001365"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 788,
+  "cache_read_input_tokens": 9092,
+  "cache_creation_input_tokens": 5376
+ },
+ "seconds": 5.1,
+ "number": "S26",
+ "gold": "6.59% (2025년 말, 2025 사업보고서)"
+}

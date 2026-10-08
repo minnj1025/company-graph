@@ -1,0 +1,43 @@
+{
+ "question": "유니크의 최대주주와 지분율은?",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**(주)유니크(011320, 코스닥)의 최대주주는 안영구이며, 지분율은 21.02%입니다.**\n\n- 기준일: 2025-12-31 (2026-03-20 공시된 사업보고서, 접수번호 20260320001049). 조회 시점인 2026-06-30 기준으로 가장 최근에 나온 사업보고서 값입니다. 반기·분기보고서는 아직 DB에 없습니다.\n- 안영구는 본인으로 표기되어 있습니다.\n- 특수관계인 지분도 같은 공시에 있습니다: 안정구 9.51%(제), 한애영 4.21%(제수), 안재범 2.92%(자), 정귀소 0.52%(처) 외 다수.\n\n이 DB의 주주 정보는 최대주주와 그 특수관계인에 한정됩니다. 그 밖의 5% 이상 주주는 포함되어 있지 않습니다.",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "유니크"
+   },
+   "error": null,
+   "total": null,
+   "chars": 125
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 101,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 14,
+   "chars": 6590
+  }
+ ],
+ "cited": [
+  "20260320001049"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 665,
+  "cache_read_input_tokens": 8877,
+  "cache_creation_input_tokens": 8182
+ },
+ "seconds": 5.3,
+ "number": "S21",
+ "gold": "안영구, 21.02% (2025년 말, 보통주). 최대주주가 개인이다. DB에는 개인 주주가 없으므로 Agent가 \"법인 주주만 수집했다\"고 밝히는지 본다"
+}
