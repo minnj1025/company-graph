@@ -17,3 +17,10 @@ node_modules/
 
 # 화면 빌드 결과
 web/dist/
+
+.vercel
+.env*
+!.env.example
+
+# 개발 도구 설정
+.claude/
