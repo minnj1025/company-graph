@@ -53,7 +53,7 @@ CREATE TABLE relation (
   subject_name_raw   VARCHAR(300)   NULL COMMENT '주체가 원장에 없을 때 공시에 적힌 이름 그대로',
   object_company_id  INT            NULL COMMENT '상대. 이름을 기업에 못 붙였으면 NULL',
   object_name_raw    VARCHAR(300)   NOT NULL COMMENT '공시에 적힌 상대 이름 그대로',
-  rel_type           ENUM('affiliate', 'equity', 'supply_contract', 'major_customer',
+  rel_type           ENUM('affiliate', 'equity', 'supply_contract', 'supply_termination', 'major_customer',
                           'stake_acquisition', 'stake_disposal', 'merger', 'split', 'business_transfer') NOT NULL
                      COMMENT '뒤의 다섯은 사건형: 그런 결정을 공시했다는 사실',
   value_num          DECIMAL(24, 4) NULL COMMENT '지분율(%) 또는 금액(원)',

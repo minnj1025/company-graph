@@ -20,10 +20,11 @@ from sqlalchemy import and_, func, or_, select
 from .db import Company, CompanyAlias, Document, Relation, session
 from .names import clean_reported, normalize
 
-LABELS = {"equity": "지분", "affiliate": "계열", "supply_contract": "공급계약", "major_customer": "주요 고객",
+LABELS = {"equity": "지분", "affiliate": "계열", "supply_contract": "공급계약", "supply_termination": "공급계약 해지",
+          "major_customer": "주요 고객",
           "stake_acquisition": "지분 취득 결정", "stake_disposal": "지분 처분 결정", "merger": "합병 결정",
           "split": "분할 결정", "business_transfer": "영업양수도 결정"}
-EVENT_TYPES = ("stake_acquisition", "stake_disposal", "merger", "split", "business_transfer")
+EVENT_TYPES = ("supply_termination", "stake_acquisition", "stake_disposal", "merger", "split", "business_transfer")
 DART_VIEWER = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo="
 # 사업보고서는 1년에 한 번 나온다. 기준일이 이보다 오래된 지분·계열은 "그 뒤 보고서가 없다"는 뜻이다
 STALE_AFTER = timedelta(days=548)
@@ -139,11 +140,14 @@ def coverage(db) -> dict:
             .where(Relation.retired_at.is_(None)).group_by(Relation.rel_type)):
         kinds[rel_type] = {"label": LABELS[rel_type], "first_disclosed": first, "last_disclosed": last, "rows": count}
     return {"notice": NOTICE, "relations": kinds,
-            "sources": {"equity": "사업보고서의 타법인 출자현황과 최대주주 현황 (반기·분기보고서는 아직 없음). 주주 쪽은 최대주주와 그 특수관계인만 있고, 5% 이상 주주 전체가 아니다. 개인·정부 같은 원장에 없는 주주는 이름만 있다",
+            "sources": {"equity": "사업보고서의 타법인 출자현황과 최대주주 현황 (반기·분기보고서는 아직 없음). 주주 쪽은 최대주주와 그 특수관계인만 있고, 5% 이상 주주 전체가 아니다. 개인·정부 같은 원장에 없는 주주는 이름만 있다. 지분율은 그 표에 적힌 값으로, 회사에 따라 우선주를 포함한 발행주식총수 기준이다. 같은 보고서의 5% 이상 주주 표(보통주나 의결권 있는 주식 기준)의 값과 다를 수 있다",
                         "affiliate": "사업보고서의 계열회사 현황 표",
                         "supply_contract": "단일판매ㆍ공급계약 체결 공시 (건별로 공시한 계약만)",
-                        "stake_acquisition": "타법인 주식 및 출자증권 취득결정 공시 (수집 대상 기업이 낸 것만)",
-                        "stake_disposal": "타법인 주식 및 출자증권 처분결정 공시 (수집 대상 기업이 낸 것만)"}}
+                        "supply_termination": "단일판매ㆍ공급계약 해지 공시. 해지된 계약은 공급계약 조회에서 빠진다",
+                        "stake_acquisition": "타법인 주식 및 출자증권 취득결정 공시 (2024-01 이후, 전 시장). 철회된 결정은 빠진다",
+                        "stake_disposal": "타법인 주식 및 출자증권 처분결정 공시 (2024-01 이후, 전 시장). 철회된 결정은 빠진다",
+                        "group": "기업의 group 값은 공정거래위원회가 2026년 5월에 지정한 대규모기업집단의 소속회사 명단에서 왔다. "
+                                 "group 이 없는 기업은 그 명단에 없다, 곧 지정 집단 소속이 아니다. 계열회사 표는 지정 여부와 무관하게 회사가 사업보고서에 적은 것이다"}}
 
 
 def group_members(db, company_id: int, as_of: date) -> list[dict]:

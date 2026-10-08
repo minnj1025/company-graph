@@ -77,3 +77,13 @@ def test_withdrawal_with_an_empty_body_still_gives_the_original_filing_date():
     raw = table("정정신고(보고)", "정정일자", "2026-08-20", "1. 정정관련 공시서류", "타법인주식및출자증권취득결정",
                 "2. 정정관련 공시서류제출일", "2026-01-27", "3. 정정사유", "취득결정 철회")
     assert parse(raw, "acquisition") is None and original_filing_date(raw) == date(2026, 1, 27)
+
+
+def test_withdrawal_notes_keep_what_was_withdrawn():
+    from company_graph.stake_parser import withdrawal_notes
+    raw = table("정정신고(보고)", "2. 정정관련 공시서류제출일", "2023-7-27", "3. 정정사유", "취득에 관한 계약의 취소", "4. 정정사항",
+                "정정항목", "정정전", "정정후", "2. 취득내역", "- 취득금액", "19,180,500,000", "45.99", "-",
+                "타법인 주식 및 출자증권 취득결정", "1. 발행회사", "회사명(국적)", "-")
+    notes = withdrawal_notes(raw)
+    assert notes["reason"] == "취득에 관한 계약의 취소" and notes["amount"] == Decimal("19180500000")
+    assert "19,180,500,000" in notes["before"]

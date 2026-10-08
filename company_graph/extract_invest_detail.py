@@ -65,7 +65,7 @@ def main(years: list[int]):
                 if key in known or key in seen:
                     stats["표준 표에 이미 있거나 겹치는 줄"] += 1
                     continue
-                if pct is None or not 0 <= pct <= 100:
+                if pct is None or not 0 < pct <= 100:   # 기말 지분 0은 다 판 것이다
                     stats["기말 지분율이 없거나 범위 밖"] += 1
                     continue
                 seen.add(key)

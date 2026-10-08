@@ -105,6 +105,7 @@ export function Panel({ detail, onOpen, onCenter, onClose }: Props) {
         <Section title="이 기업의 주주 (기업)" rows={of("equity", false)} other={subject} onOpen={onOpen} />
         <Section title="판 계약 (공급계약 공시)" rows={of("supply_contract", true)} other={object} onOpen={onOpen} />
         <Section title="산 계약 (상대가 공시)" rows={of("supply_contract", false)} other={subject} onOpen={onOpen} />
+        <Section title="공급계약 해지" rows={of("supply_termination", true)} other={object} onOpen={onOpen} />
         <Section title="지분 취득 결정" rows={of("stake_acquisition", true)} other={object} onOpen={onOpen} />
         <Section title="지분 처분 결정" rows={of("stake_disposal", true)} other={object} onOpen={onOpen} />
         <Section

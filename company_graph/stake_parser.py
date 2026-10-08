@@ -85,6 +85,21 @@ def original_filing_date(raw: bytes) -> date | None:
     return to_date(_value(cs, r"^2\.\s*정정관련 공시서류제출일", 0, free_text=True))
 
 
+def withdrawal_notes(raw: bytes) -> dict:
+    """철회 공시의 머리말: 사유와, "정정전" 칸에 남은 원래 값들. 본문이 비어 있어도 무엇을 철회했는지 알 수 있게 한다."""
+    cs = cells(raw)
+    header = next((i for i, c in enumerate(cs) if c == "정정후"), None)
+    before = []
+    if header is not None:
+        for cell in cs[header + 1:header + 40]:
+            if re.match(r"^(타법인\s*주식|1\.\s*발행회사$)", cell):
+                break
+            before.append(cell[:200])
+    amounts = [to_decimal(c) for c in before if re.fullmatch(r"[\d,]{9,}", c)]
+    return {"reason": _value(cs, r"^3\.\s*정정사유", 0, free_text=True), "before": before or None,
+            "amount": max(amounts) if amounts else None}
+
+
 def parse(raw: bytes, action: str) -> StakeDecision | None:
     """양식을 찾지 못하면 None."""
     cs = cells(raw)

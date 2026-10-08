@@ -55,3 +55,17 @@ def test_empty_value_is_not_filled_with_the_next_label():
 
 def test_other_forms_return_none():
     assert parse(table("단일판매ㆍ공급계약 해지", "1. 해지 내용", "계약 해지")) is None
+
+
+def test_termination_forms():
+    from company_graph.supply_parser import parse_termination
+    kospi = parse_termination(table("단일판매ㆍ공급계약 해지", "1. 판매ㆍ공급계약 해지 구분", "공사수주", "- 해지계약명", "영종 공동주택 개발 공사",
+                                    "2. 해지내역", "해지금액(원)", "396,299,951,000", "최근매출액(원)", "7,991,063,616,680",
+                                    "3. 계약상대", "주식회사 영종리츠", "- 회사와의 관계", "-", "5. 해지 주요사유", "발주처와의 사업 중단 합의",
+                                    "6. 해지일자", "2024-07-31"))
+    assert (kospi.title, kospi.party, kospi.reason) == ("영종 공동주택 개발 공사", "주식회사 영종리츠", "발주처와의 사업 중단 합의")
+    assert (kospi.amount, kospi.termination_date) == (Decimal("396299951000"), date(2024, 7, 31))
+    kosdaq = parse_termination(table("1. 판매ㆍ공급계약 해지 내용", "게임 퍼블리싱 계약", "2. 해지내역", "해지금액(원)", "25,888,000,000",
+                                     "3. 계약상대방", "Blockchain Game Partners, Inc.", "6. 해지일자", "2023-12-28"))
+    assert (kosdaq.title, kosdaq.party, kosdaq.amount) == ("게임 퍼블리싱 계약", "Blockchain Game Partners, Inc.", Decimal("25888000000"))
+    assert parse_termination(table("1. 판매ㆍ공급계약 구분", "공사수주")) is None

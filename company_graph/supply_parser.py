@@ -66,11 +66,13 @@ def to_decimal(text: str | None) -> Decimal | None:
 
 
 def to_date(text: str | None) -> date | None:
-    match = re.search(r"(\d{4})[-./](\d{1,2})[-./](\d{1,2})", text or "")
+    # "2024-02-07", "2024.2.7", "2024년 2월 7일", 그리고 연도를 두 자리로 적은 "24년 02월 07일"
+    match = re.search(r"(?<!\d)(\d{4}|\d{2})\s*[-./년]\s*(\d{1,2})\s*[-./월]\s*(\d{1,2})", text or "")
     if not match:
         return None
+    year, month, day = map(int, match.groups())
     try:
-        return date(*map(int, match.groups()))
+        return date(year + 2000 if year < 100 else year, month, day)
     except ValueError:
         return None
 
@@ -124,3 +126,34 @@ def parse(raw: bytes) -> SupplyContract | None:
                 c.changes.append((rows[0], rows[1], rows[2]))
                 rows = rows[3:]
     return c
+
+
+@dataclass
+class Termination:
+    """단일판매ㆍ공급계약 해지 공시. 유가증권 양식은 "- 해지계약명", 코스닥 양식은 "1. 판매ㆍ공급계약 해지 내용"에 계약명이 온다."""
+    title: str | None = None
+    amount: Decimal | None = None          # 해지금액(원)
+    party: str | None = None
+    termination_date: date | None = None
+    reason: str | None = None
+    subsidiary: str | None = None
+
+
+def parse_termination(raw: bytes) -> Termination | None:
+    cs = cells(raw)
+    starts = [i for i, c in enumerate(cs) if re.search(r"^1\.\s*판매ㆍ공급계약\s*해지", c)]
+    if not starts:
+        return None
+    body = starts[-1]
+    kosdaq_form = "내용" in cs[body]
+    t = Termination(
+        title=_value(cs, r"^1\.\s*판매", body, free_text=True) if kosdaq_form else _value(cs, r"^-\s*해지계약명", body, free_text=True),
+        amount=to_decimal(_value(cs, r"^해지금액", body)),
+        party=_value(cs, r"^3\.\s*계약상대", body, free_text=True),
+        termination_date=to_date(_value(cs, r"^\d+\.\s*해지일자", body)),
+        reason=_value(cs, r"^\d+\.\s*해지\s*주요사유", body, free_text=True),
+    )
+    for i in range(min(body, len(cs) - 1)):
+        if cs[i] in ("자회사인", "종속회사인"):
+            t.subsidiary = cs[i + 1]
+    return t

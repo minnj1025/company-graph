@@ -33,7 +33,9 @@ TOOLS = [
      "input_schema": {"type": "object", "properties": {"name": {"type": "string"}}, "required": ["name"]}},
     {"name": "get_relations",
      "description": "한 기업의 관계를 조회한다. rel_type: equity(지분, 사업보고서 기준), affiliate(계열회사), "
-                    "supply_contract(단일판매·공급계약 공시), stake_acquisition / stake_disposal(타법인 주식 취득·처분 결정). "
+                    "supply_contract(단일판매·공급계약 공시), supply_termination(공급계약 해지 공시), "
+                    "stake_acquisition / stake_disposal(타법인 주식 취득·처분 결정). "
+                    "detail.subsidiary 가 있으면 공시는 이 기업(모회사)이 냈지만 실제 계약·결정의 당사자는 그 자회사다. "
                     "direction: out 은 이 기업이 주체(지분을 가진 쪽, 판 쪽, 결정한 쪽), in 은 이 기업이 상대(지분을 내준 쪽, 산 쪽, 대상). "
                     "equity 의 in 은 이 기업의 주주 목록이다: 최대주주와 그 특수관계인(개인 포함, detail.relation_to_filer 에 본인·친인척·계열회사 등), "
                     "그리고 이 기업 지분을 가졌다고 자기 보고서에 적은 다른 회사. 최대주주 본인은 relation_to_filer 로 가린다. "
@@ -43,7 +45,7 @@ TOOLS = [
                     "결과가 잘리면(truncated) counterparty_id 나 공시일 범위로 좁혀 다시 부른다.",
      "input_schema": {"type": "object", "properties": {
          "company_id": _COMPANY, "as_of": _AS_OF,
-         "rel_type": {"type": "string", "enum": ["equity", "affiliate", "supply_contract", "stake_acquisition", "stake_disposal"]},
+         "rel_type": {"type": "string", "enum": ["equity", "affiliate", "supply_contract", "supply_termination", "stake_acquisition", "stake_disposal"]},
          "direction": {"type": "string", "enum": ["out", "in", "both"]},
          "disclosed_from": {"type": "string", "description": "이 날짜부터 공시된 것만 (YYYY-MM-DD)"},
          "disclosed_to": {"type": "string", "description": "이 날짜까지 공시된 것만 (YYYY-MM-DD)"},
@@ -54,7 +56,9 @@ TOOLS = [
          "required": ["company_id", "as_of", "rel_type", "direction"]}},
     {"name": "get_filings",
      "description": "한 기업이 낸 공시 목록(공급계약, 취득·처분 결정, 사업보고서)을 접수 순으로 준다. 정정·해지·철회 공시가 포함되고, "
-                    "어느 공시를 고친 것인지(corrects)와 그 시점에 최신본인지가 나온다. 계약이 해지됐는지, 결정이 철회됐는지, "
+                    "어느 공시를 고친 것인지(corrects)와 그 시점에 최신본인지가 나온다. 해지·철회 공시는 contents 에 무엇을 해지·철회했는지 "
+                    "(계약명, 상대, 금액, 사유, 철회 전 값)가 들어 있고, 원래 공시가 수집 기간(2024-01) 이전이어도 이것으로 답할 수 있다. "
+                    "계약이 해지됐는지, 결정이 철회됐는지, "
                     "정정 전에는 값이 무엇이었는지 확인할 때 쓴다.",
      "input_schema": {"type": "object", "properties": {
          "company_id": _COMPANY, "as_of": _AS_OF,
@@ -74,7 +78,7 @@ TOOLS = [
                     "기업마다 새로 낸 공시 수(new)와 정정 공시 수(corrections), 접수번호를 준다. 나중에 정정된 공시도 센다.",
      "input_schema": {"type": "object", "properties": {
          "as_of": _AS_OF,
-         "rel_type": {"type": "string", "enum": ["supply_contract", "stake_acquisition", "stake_disposal"]},
+         "rel_type": {"type": "string", "enum": ["supply_contract", "supply_termination", "stake_acquisition", "stake_disposal"]},
          "disclosed_from": {"type": "string"}, "disclosed_to": {"type": "string"},
          "industry": {"type": "string", "description": "공시를 낸 기업의 KSIC 코드 앞자리"},
          "group": {"type": "string", "description": "공시를 낸 기업의 기업집단"},
@@ -124,7 +128,8 @@ def _brief(company: Company | None) -> dict | None:
 def find_company(db, name: str) -> dict:
     found = query.find_companies(db, name.strip())
     return {"candidates": [_brief(c) for c in found],
-            "note": None if found else "원장에 없는 이름입니다. 상장사와 그 계열회사만 들어 있습니다"}
+            "note": "group 은 공정위 2026년 5월 지정 대규모기업집단 이름입니다. group 이 null 이면 지정 집단 소속이 아닙니다"
+                    if found else "원장에 없는 이름입니다. 상장사와 그 계열회사만 들어 있습니다"}
 
 
 def _edge(db, edge: dict) -> dict:
@@ -164,9 +169,13 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
         edges = [e for e in edges if other in (e["subject_id"], e["object_id"])]
     edges = [e for e in edges if (start is None or e["disclosed_date"] >= start) and (end is None or e["disclosed_date"] <= end)]
     rows = [_edge(db, e) for e in edges]
+    unknown_listing = None
     if listed_only:
         other = "object" if direction != "in" else "subject"
-        rows = [r for r in rows if r[other].get("market") in ("유가증권", "코스닥", "코넥스")]
+        # 원장에 없는 상대라도 보고서가 스스로 '상장'이라고 적었으면 남긴다 (해외 상장사가 여기에 든다)
+        kept = [r for r in rows if r[other].get("market") in ("유가증권", "코스닥", "코넥스") or r["detail"].get("listed") == "상장"]
+        unknown_listing = sum(1 for r in rows if r not in kept and r[other]["company_id"] is None and "listed" not in r["detail"])
+        rows = kept
     if rel_type == "equity":   # 지분은 큰 것부터
         rows.sort(key=lambda r: (-(r["value"] or 0), r["subject"]["name"] or "", r["object"]["name"] or ""))
     else:
@@ -174,6 +183,8 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
     sources = query.coverage(db)
     return {"company": _brief(company), "as_of": when.isoformat(), "total": len(rows), "truncated": len(rows) > LIMIT,
             "relations": rows[:LIMIT],
+            "unknown_listing": unknown_listing and f"원장에 없는 상대 {unknown_listing}곳은 상장 여부를 알 수 없어 뺐습니다. "
+                                                   "해외 상장사일 수 있으니 listed_only 없이 다시 조회해 이름을 확인하세요",
             "coverage": {"source": sources["sources"].get(rel_type), **{k: str(v) for k, v in
                          sources["relations"].get(rel_type, {}).items() if k in ("first_disclosed", "last_disclosed")}},
             "note": query.NOTICE if not rows else (
@@ -196,8 +207,11 @@ def get_filings(db, company_id, as_of, doc_type: str, filed_from=None, filed_to=
                      "is_correction": bool(doc.is_correction), "corrects": doc.corrects_rcept_no,
                      "superseded_by_later_filing": doc.rcept_no in superseded,
                      "contents": [{"counterparty": r.object_name_raw, "value": None if r.value_num is None else float(r.value_num),
-                                   "unit": r.value_unit, **{k: (r.attrs or {})[k] for k in ("title", "period_end", "purpose")
-                                                            if (r.attrs or {}).get(k)}}
+                                   "unit": r.value_unit, "kind": query.LABELS[r.rel_type],
+                                   **{k: (r.attrs or {})[k] for k in ("title", "period_end", "purpose", "reason", "subsidiary",
+                                                                      "withdrawn", "before_withdrawal", "original_filed",
+                                                                      "terminated_filing", "withdrawn_filing")
+                                      if (r.attrs or {}).get(k)}}
                                   for r in relations if r.rel_type not in ("equity", "affiliate")][:5],
                      "url": DART_LINK + doc.rcept_no})
     return {"company": _brief(company), "as_of": when.isoformat(), "total": len(rows), "truncated": len(rows) > LIMIT,
@@ -236,8 +250,8 @@ def find_disclosers(db, as_of, rel_type: str, disclosed_from, disclosed_to, indu
                     listed_only: bool = True) -> dict:
     when = _date(as_of, "as_of", required=True)
     start, end = _date(disclosed_from, "disclosed_from", required=True), _date(disclosed_to, "disclosed_to", required=True)
-    if rel_type not in ("supply_contract", "stake_acquisition", "stake_disposal"):
-        raise ToolError("rel_type 은 supply_contract, stake_acquisition, stake_disposal 중 하나입니다")
+    if rel_type not in ("supply_contract", "supply_termination", "stake_acquisition", "stake_disposal"):
+        raise ToolError("rel_type 은 supply_contract, supply_termination, stake_acquisition, stake_disposal 중 하나입니다")
     target = aliased(Company)
     conditions = [Relation.rel_type == rel_type, Relation.retired_at.is_(None), Relation.disclosed_date >= start,
                   Relation.disclosed_date <= min(end, when)]
@@ -267,7 +281,7 @@ def find_disclosers(db, as_of, rel_type: str, disclosed_from, disclosed_to, indu
 
 def get_coverage(db) -> dict:
     covered = query.coverage(db)
-    return {"notice": covered["notice"], "sources": covered["sources"],
+    return {"notice": covered["notice"], "sources": covered["sources"], "group": covered["sources"]["group"],
             "relations": {v["label"]: {"first_disclosed": str(v["first_disclosed"]), "last_disclosed": str(v["last_disclosed"]),
                                        "rows": v["rows"]} for v in covered["relations"].values()},
             "not_collected": ["최대주주와 특수관계인이 아닌 주주(5% 이상 주주, 소액주주)", "개인이 가진 다른 회사 지분", "반기·분기보고서", "주요 고객(사업보고서 본문 서술)", "뉴스", "주가",

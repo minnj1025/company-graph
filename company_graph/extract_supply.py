@@ -24,10 +24,10 @@ from .db import Company, Document, QualityLog, Relation, init_db, session
 from .extract_equity import alias_index, link, own_affiliates, rcept_date
 from .manual_aliases import GROUPS, SINGLE
 from .names import clean_reported, normalize
-from .supply_parser import SupplyContract, parse
+from .supply_parser import SupplyContract, Termination, parse, parse_termination
 
 SINCE = "20240101"
-VERSION = "supply-2"  # 2: 자기 계열회사 표를 먼저 보고 연결, 비율 검산을 반올림 구간으로, 줄을 지우지 않음
+VERSION = "supply-3"  # 3: 해지 공시를 줄로 넣고 해지된 계약을 무효로. 2: 자기 계열회사 표를 먼저 보고 연결, 비율 검산을 반올림 구간으로, 줄을 지우지 않음
 _AND_OTHERS = re.compile(r"\s*외\s*(\d+\s*(개사|개|사|인|곳))?\s*$")
 _SPLIT = re.compile(r"\s*[,，、/]\s*|\s+및\s+")
 
@@ -111,6 +111,7 @@ def load_company(db, company: Company, filings: list[dict], resolver: PartyResol
 
     chains: dict[tuple, list[tuple[Document, list[Relation], SupplyContract]]] = defaultdict(list)
     loaded: list[tuple[Document, list[Relation], SupplyContract]] = []
+    terminations: list[tuple[Document, Termination]] = []
     for filing in filings:
         rcept_no, report_nm = filing["rcept_no"], " ".join(filing["report_nm"].split())
         try:
@@ -134,7 +135,14 @@ def load_company(db, company: Company, filings: list[dict], resolver: PartyResol
         doc.content_sha256 = hashlib.sha256(raw).hexdigest()
         stats["공시"] += 1
         if "해지" in report_nm:
-            stats["해지 공시 (문서만 기록)"] += 1
+            stats["해지 공시"] += 1
+            ended = parse_termination(raw)
+            if ended is None or not (ended.title or ended.party):
+                stats["해지 양식을 읽지 못함"] += 1
+                db.add(QualityLog(check_name="range", rcept_no=rcept_no, created_at=datetime.now(),
+                                  detail=f"{company.name} {report_nm}: 해지 양식을 찾지 못함"))
+                continue
+            terminations.append((doc, ended))
             continue
         contract = parse(raw)
         if contract is None or (contract.party is None and contract.amount is None):
@@ -203,12 +211,41 @@ def load_company(db, company: Company, filings: list[dict], resolver: PartyResol
             db.add(QualityLog(check_name="correction", rcept_no=doc.rcept_no, created_at=datetime.now(),
                               detail=f"{company.name}: 원래 공시({contract.original_date})를 찾지 못함"))
 
+    # 해지: 해지 사실을 따로 한 줄로 넣고, 같은 계약(계약명과 상대가 같음)의 지금 유효한 공시를 무효로 돌린다
+    ended_rows: list[Relation] = []
+    for doc, ended in terminations:
+        raw_party = ended.party or "-"
+        party_ids = resolver.resolve(raw_party, affiliates) if ended.party else []
+        same = [x for x in loaded if x[0].rcept_no < doc.rcept_no and x[0].is_latest
+                and normalize(x[2].title or "") == normalize(ended.title or "")
+                and normalize(clean_reported(x[2].party or "")) == normalize(clean_reported(raw_party))]
+        original = same[-1] if same else None
+        if original:
+            doc.corrects_rcept_no = original[0].rcept_no
+            original[0].is_latest = False
+            for relation in original[1]:
+                relation.invalidated_date = doc.rcept_dt
+            stats["해지로 무효가 된 줄"] += len(original[1])
+        else:
+            stats["해지인데 원래 계약이 수집 기간 밖이거나 찾지 못함"] += 1
+        attrs = {"title": ended.title, "reason": ended.reason, "subsidiary": ended.subsidiary,
+                 "terminated_filing": original[0].rcept_no if original else None}
+        ended_rows += [Relation(
+            subject_company_id=company.company_id, object_company_id=party_id, object_name_raw=raw_party[:300],
+            rel_type="supply_termination", value_num=ended.amount, value_unit="krw" if ended.amount else None,
+            as_of_date=ended.termination_date, disclosed_date=doc.rcept_dt, rcept_no=doc.rcept_no,
+            extract_method="rule", trust_tier=1, attrs={k: v for k, v in attrs.items() if v is not None})
+            for party_id in (party_ids or [None])]
+
     if stats["원문을 받지 못함"] > failed_before:
         # 못 받은 공시가 있으면 줄을 맞추지 않는다. 일시적인 실패 때문에 멀쩡한 줄을 내리면 안 된다
         stats["원문 실패로 줄 맞추기를 건너뛴 회사"] += 1
         return
     counts = loader.sync(db, [Relation.rel_type == "supply_contract", Relation.subject_company_id == company.company_id],
                          [relation for _, relations, _ in loaded for relation in relations], VERSION)
+    ended_counts = loader.sync(db, [Relation.rel_type == "supply_termination",
+                                    Relation.subject_company_id == company.company_id], ended_rows, VERSION)
+    stats.update({f"해지 줄: {k}": v for k, v in ended_counts.items()})
     stats.update({f"줄: {k}": v for k, v in counts.items()})
 
 

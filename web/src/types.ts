@@ -1,6 +1,6 @@
 export type RelType = "equity" | "supply_contract" | "affiliate";
 /** 화면의 관계 목록에만 나오는 사건형 관계. 그래프의 선으로는 아직 그리지 않는다 */
-export type EventType = "stake_acquisition" | "stake_disposal" | "merger" | "split" | "business_transfer";
+export type EventType = "supply_termination" | "stake_acquisition" | "stake_disposal" | "merger" | "split" | "business_transfer";
 
 export interface Company {
   id: number;

@@ -21,9 +21,10 @@ from .config import CACHE_DIR
 from .db import Company, Document, QualityLog, Relation, init_db, session
 from .extract_equity import alias_index, link_in_context, own_affiliates, rcept_date
 from .names import clean_reported, normalize
-from .stake_parser import StakeDecision, original_filing_date, parse
+from .stake_parser import StakeDecision, original_filing_date, parse, withdrawal_notes
 
-VERSION = "stake-2"  # 2: 주석이 "1. 발행회사..."로 시작하는 공시를 읽음, 비율이 맞지 않는 줄에 표시, 철회 처리
+VERSION = "stake-3"  # 3: 철회 내용을 줄로 남김, 대상 이름을 고친 정정을 이음.
+# stake-2  # 2: 주석이 "1. 발행회사..."로 시작하는 공시를 읽음, 비율이 맞지 않는 줄에 표시, 철회 처리
 REPORTS = {"타법인주식및출자증권취득결정": "acquisition", "타법인주식및출자증권처분결정": "disposal"}
 REL_TYPE = {"acquisition": "stake_acquisition", "disposal": "stake_disposal"}
 
@@ -54,7 +55,7 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
     db.execute(delete(QualityLog).where(QualityLog.rcept_no.in_([f["rcept_no"] for f, _ in filings])))
     failed_before = stats["원문을 받지 못함"]
     loaded: list[tuple[Document, Relation, StakeDecision]] = []
-    withdrawals: list[tuple[Document, str, str | None, date | None]] = []
+    withdrawals: list[tuple[Document, str, str | None, date | None, dict]] = []
     for filing, action in filings:
         rcept_no, report_nm = filing["rcept_no"], " ".join(filing["report_nm"].split())
         try:
@@ -80,7 +81,8 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
         if "철회" in report_nm:
             # 결정을 거둬들인 공시. 새 줄을 만들지 않고 아래에서 앞선 결정을 무효로 돌린다. 본문을 비워 내는 회사가 많다
             stats["철회 공시"] += 1
-            withdrawals.append((doc, action, decision.target if decision else None, original_filing_date(raw)))
+            withdrawals.append((doc, action, decision.target if decision else None, original_filing_date(raw),
+                                withdrawal_notes(raw)))
             continue
         if decision is None or not decision.target:
             stats["양식을 읽지 못함"] += 1
@@ -119,10 +121,16 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
         doc, relation, decision = item
         key = (decision.action, normalize(clean_reported(decision.target)), decision.decision_date)
         previous = chains[key][-1] if chains[key] else None
-        if previous is None and doc.is_correction and decision.original_date:
-            # 결의일이 정정으로 바뀐 경우: 원래 공시 제출일과 대상이 같은 공시가 하나뿐이면 잇는다
-            same_day = [x for x in loaded if x[0].rcept_dt == decision.original_date and x[0].rcept_no < doc.rcept_no
-                        and x[0].is_latest and (x[2].action, normalize(clean_reported(x[2].target))) == key[:2]]
+        if previous is None and doc.is_correction:
+            # 결의일이 정정으로 바뀐 경우: 원래 공시 제출일과 대상이 같은 공시가 하나뿐이면 잇는다.
+            # 원래 공시 제출일을 읽지 못했으면 앞선 공시 전부에서 찾는다
+            filed_then = [x for x in loaded if x[0].rcept_no < doc.rcept_no and x[0].is_latest and x[2].action == decision.action
+                          and decision.original_date in (None, x[0].rcept_dt)]
+            same_day = [x for x in filed_then if normalize(clean_reported(x[2].target)) == key[1]]
+            if not same_day:
+                # 대상 회사 이름을 고친 정정(예: "티케이이엔에" → "티케이이엔에스"): 금액과 결의일이 같은 공시가 하나뿐이면 잇는다
+                same_day = [x for x in filed_then if x[2].amount is not None and x[2].amount == decision.amount
+                            and x[2].decision_date == decision.decision_date]
             previous = same_day[0] if len(same_day) == 1 else None
         if previous:
             doc.corrects_rcept_no = previous[0].rcept_no
@@ -143,13 +151,28 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
             doc = docs[doc.corrects_rcept_no]
         return doc.rcept_dt
 
-    for doc, action, target, original_date in withdrawals:
+    withdrawn_rows: list[Relation] = []
+    for doc, action, target, original_date, notes in withdrawals:
         earlier = [x for x in loaded if x[2].action == action and x[0].rcept_no < doc.rcept_no and x[0].is_latest]
         if target and len(earlier) > 1:
             key = normalize(clean_reported(target))
             earlier = [x for x in earlier if normalize(clean_reported(x[2].target)) == key] or earlier
         if original_date and len(earlier) > 1:
             earlier = [x for x in earlier if original_date in (x[0].rcept_dt, first_filed(x[0]))] or earlier
+        # 철회 사실도 한 줄로 남긴다. 무효일을 공개일과 같게 두어 "유효한 결정"으로는 조회되지 않고, 공시 목록에서만 내용이 보인다
+        found = earlier[0] if len(earlier) == 1 else None
+        attrs = {"withdrawn": True, "reason": notes["reason"], "before_withdrawal": notes["before"],
+                 "original_filed": original_date and original_date.isoformat(),
+                 "withdrawn_filing": found[0].rcept_no if found else None}
+        # 철회 공시의 "정정전" 칸에는 금액이 여럿(취득금액, 자기자본 등) 섞여 있어 어느 것이 취득금액인지 가릴 수 없다.
+        # 원래 결정을 찾았을 때만 그 금액을 쓰고, 못 찾았으면 비워 두고 before_withdrawal 에 적힌 그대로를 남긴다
+        amount = found[1].value_num if found else None
+        withdrawn_rows.append(Relation(
+            subject_company_id=company.company_id, object_company_id=found[1].object_company_id if found else None,
+            object_name_raw=(target or (found[1].object_name_raw if found else None) or "(철회 공시에 대상 회사가 적혀 있지 않음)")[:300],
+            rel_type=REL_TYPE[action], value_num=amount, value_unit="krw" if amount else None,
+            as_of_date=None, disclosed_date=doc.rcept_dt, invalidated_date=doc.rcept_dt, rcept_no=doc.rcept_no,
+            extract_method="rule", trust_tier=1, attrs={k: v for k, v in attrs.items() if v is not None}))
         if len(earlier) == 1:
             doc.corrects_rcept_no = earlier[0][0].rcept_no
             earlier[0][0].is_latest = False
@@ -165,7 +188,7 @@ def load_company(db, company: Company, filings: list[tuple[dict, str]], index, s
         return
     counts = loader.sync(db, [Relation.rel_type.in_(list(REL_TYPE.values())),
                               Relation.subject_company_id == company.company_id],
-                         [relation for _, relation, _ in loaded], VERSION)
+                         [relation for _, relation, _ in loaded] + withdrawn_rows, VERSION)
     stats.update({f"줄: {k}": v for k, v in counts.items()})
 
 
