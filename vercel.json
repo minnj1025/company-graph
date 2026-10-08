@@ -5,7 +5,7 @@
   "buildCommand": "npm --prefix web run build",
   "outputDirectory": "web/dist",
   "regions": ["icn1"],
-  "functions": { "api/index.py": { "maxDuration": 60 } },
+  "functions": { "api/index.py": { "maxDuration": 120 } },
   "rewrites": [{ "source": "/api/(.*)", "destination": "/api/index" }],
   "crons": [{ "path": "/api/health", "schedule": "0 3 * * *" }]
 }

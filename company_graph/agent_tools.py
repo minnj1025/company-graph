@@ -10,11 +10,11 @@
 import re
 from datetime import date
 
-from sqlalchemy import select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import aliased
 
 from . import query
-from .db import Company, Document, Relation
+from .db import BusinessSection, Company, Document, Relation
 
 LIMIT = 50
 LISTED = ("Y", "K", "N")
@@ -96,6 +96,28 @@ TOOLS = [
      "description": "두 기업을 잇는 가장 짧은 관계 경로를 찾는다 (최대 3단계, 방향 무시).",
      "input_schema": {"type": "object", "properties": {"from_company_id": _COMPANY, "to_company_id": _COMPANY, "as_of": _AS_OF},
                       "required": ["from_company_id", "to_company_id", "as_of"]}},
+    {"name": "search_business",
+     "description": "사업보고서의 '사업의 내용'(회사가 스스로 적은 사업 설명, 제품과 매출 비중 표, 원재료, 매출처)을 낱말로 검색해 "
+                    "그 사업을 하는 회사를 찾는다. 업종 분류가 아니라 보고서의 글에서 찾으므로, 이슈나 주제와 관련된 회사를 찾을 때 쓴다. "
+                    "keywords 에는 이슈 이름이 아니라 그 이슈가 닿는 제품·서비스·원재료의 이름을 여러 개 넣는다 "
+                    "(예: 노벨문학상 → [\"단행본\", \"도서\", \"서점\", \"전자책\", \"인쇄용지\"]). 낱말 하나는 2~15자, 붙여 쓴 그대로 찾는다. "
+                    "결과의 snippets 는 보고서에 적힌 문장 그대로이고, 낱말이 스쳐 지나간 회사도 섞여 있으니 "
+                    "주력인지 일부인지는 get_business 로 매출 비중 표를 읽고 판단한다.",
+     "input_schema": {"type": "object", "properties": {
+         "keywords": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 8,
+                      "description": "찾을 낱말들. 여러 낱말에 걸리고 사업 개요나 제품 표에 나온 회사가 앞에 온다"},
+         "as_of": _AS_OF,
+         "listed_only": {"type": "boolean", "description": "상장사만 (기본 true)"}},
+         "required": ["keywords", "as_of"]}},
+    {"name": "get_business",
+     "description": "한 회사의 사업보고서 '사업의 내용'을 읽는다. 기본은 사업의 개요와 주요 제품 및 서비스(매출 비중 표). "
+                    "표는 한 줄이 표의 한 줄이고 칸은 ' | ' 로 나뉜다. 매출 비중은 표에 적힌 숫자 그대로 옮긴다.",
+     "input_schema": {"type": "object", "properties": {
+         "company_id": _COMPANY, "as_of": _AS_OF,
+         "sections": {"type": "array", "items": {"type": "integer"},
+                      "description": "읽을 소제목 번호. 1 사업의 개요, 2 주요 제품 및 서비스, 3 원재료 및 생산설비, 4 매출 및 수주상황, "
+                                     "6 주요계약 및 연구개발활동, 7 기타 참고사항. 기본 [1, 2]"}},
+         "required": ["company_id", "as_of"]}},
     {"name": "get_coverage",
      "description": "이 DB가 무엇을 언제부터 언제까지 모았고 무엇을 모으지 않았는지. 결과가 비었을 때 답하기 전에 확인한다.",
      "input_schema": {"type": "object", "properties": {}}},
@@ -321,7 +343,79 @@ def get_coverage(db) -> dict:
                               "2024-01 이전의 공급계약과 취득·처분 결정"]}
 
 
-FUNCTIONS = {"find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
+_SECTION_WEIGHT = {1: 3, 2: 3, 4: 2, 6: 2}   # 사업 개요와 제품 표에 나온 낱말을 더 무겁게 친다. 나머지는 1
+
+
+def _latest_business(db, when: date, company_id: int | None = None):
+    """조회 시점까지 나온 사업보고서 가운데 회사마다 가장 나중 것의 접수번호."""
+    latest = select(BusinessSection.company_id, func.max(BusinessSection.rcept_no).label("rcept_no")).where(
+        BusinessSection.disclosed_date <= when)
+    if company_id is not None:
+        latest = latest.where(BusinessSection.company_id == company_id)
+    return latest.group_by(BusinessSection.company_id).subquery()
+
+
+def search_business(db, keywords, as_of, listed_only: bool = True) -> dict:
+    when = _date(as_of, "as_of", required=True)
+    words = list(dict.fromkeys(str(w).strip() for w in (keywords if isinstance(keywords, list) else [keywords]) if str(w).strip()))
+    if not words or any(not 2 <= len(w) <= 15 for w in words):
+        raise ToolError("keywords 는 2~15자인 낱말의 목록입니다. 문장이 아니라 제품·서비스 이름을 넣으세요")
+    words = words[:8]
+    latest = _latest_business(db, when)
+    rows = db.execute(select(BusinessSection).join(latest, BusinessSection.rcept_no == latest.c.rcept_no).where(
+        or_(*[BusinessSection.text.contains(w, autoescape=True) for w in words]))).scalars().all()
+    found: dict[int, dict] = {}
+    for row in rows:
+        entry = found.setdefault(row.company_id, {"score": 0, "matched": {}, "snippets": [], "rcept_no": row.rcept_no,
+                                                  "bsns_year": row.bsns_year})
+        weight = _SECTION_WEIGHT.get(row.section_no, 1)
+        for word in words:
+            count = row.text.count(word)
+            if not count:
+                continue
+            entry["score"] += weight * min(count, 5)
+            entry["matched"][word] = entry["matched"].get(word, 0) + count
+            at = row.text.find(word)
+            entry["snippets"].append((weight, {"section": row.title, "keyword": word,
+                                               "text": " ".join(row.text[max(0, at - 90):at + 130].split())}))
+    companies = {c.company_id: c for c in db.scalars(select(Company).where(Company.company_id.in_(list(found))))} if found else {}
+    ranked = sorted(((i, e) for i, e in found.items()
+                     if not listed_only or MARKETS.get(companies[i].corp_cls) in ("유가증권", "코스닥", "코넥스")),
+                    key=lambda x: (-len(x[1]["matched"]), -x[1]["score"], companies[x[0]].name))
+    out = []
+    for company_id, entry in ranked[:30]:
+        snippets, seen = [], set()
+        for _, snippet in sorted(entry["snippets"], key=lambda s: -s[0]):
+            if (snippet["section"], snippet["keyword"]) not in seen and len(snippets) < 3:
+                seen.add((snippet["section"], snippet["keyword"]))
+                snippets.append(snippet)
+        out.append({**_brief(companies[company_id]), "matched": entry["matched"], "snippets": snippets,
+                    "bsns_year": entry["bsns_year"], "rcept_no": entry["rcept_no"]})
+    return {"as_of": when.isoformat(), "keywords": words, "total": len(ranked), "truncated": len(ranked) > 30, "companies": out,
+            "note": "보고서 글에 낱말이 나온 회사입니다. matched 는 낱말별로 나온 횟수이고, 낱말이 나왔다고 그 사업이 주력이라는 뜻은 아닙니다. "
+                    "주력인지는 get_business 의 매출 비중 표로 확인하고, 확인하지 않은 회사는 '보고서에 언급이 있다'고만 말하세요"
+                    if out else "이 낱말이 나온 사업보고서가 없습니다. 다른 이름(제품명, 원재료명)으로 다시 찾아 보세요"}
+
+
+def get_business(db, company_id, as_of, sections=None) -> dict:
+    company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
+    wanted = [int(n) for n in (sections or [1, 2])]
+    latest = _latest_business(db, when, company.company_id)
+    rows = db.execute(select(BusinessSection).join(latest, BusinessSection.rcept_no == latest.c.rcept_no)
+                      .order_by(BusinessSection.section_no)).scalars().all()
+    if not rows:
+        return {"company": _brief(company), "sections": [],
+                "note": "이 회사의 사업보고서 '사업의 내용'은 DB에 없습니다. 상장사의 2025 사업연도 보고서만 담았습니다"}
+    limit = 6000
+    return {"company": _brief(company), "bsns_year": rows[0].bsns_year, "rcept_no": rows[0].rcept_no,
+            "disclosed_date": rows[0].disclosed_date.isoformat(),
+            "available": [{"section": r.section_no, "title": r.title, "chars": len(r.text)} for r in rows],
+            "sections": [{"section": r.section_no, "title": r.title, "text": r.text[:limit],
+                          "cut": len(r.text) > limit or bool(r.truncated)} for r in rows if r.section_no in wanted],
+            "note": "보고서에 적힌 글 그대로입니다. 연결 기준인지 별도 기준인지, 단위가 무엇인지는 표의 머리말을 따릅니다"}
+
+
+FUNCTIONS = {"search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
              "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}
 

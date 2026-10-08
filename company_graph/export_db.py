@@ -10,9 +10,9 @@ import sys
 
 from sqlalchemy import create_engine, func, select, text
 
-from .db import Base, Company, CompanyAlias, Document, Relation, get_engine
+from .db import Base, BusinessSection, Company, CompanyAlias, Document, Relation, get_engine
 
-TABLES = (Company, CompanyAlias, Document, Relation)
+TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection)
 CHUNK = 5000
 
 

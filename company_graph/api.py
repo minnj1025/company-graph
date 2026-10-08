@@ -332,6 +332,10 @@ class _Found:
                     self.focus.add(target)
                     self.links.setdefault((company["company_id"], target, arguments["rel_type"]),
                                           {"count": company["new"] + company["corrections"], "value": None, "unit": None, "seen": set()})
+        elif name == "search_business":
+            self.companies.update(c["company_id"] for c in result["companies"])
+        elif name == "get_business":
+            self.focus.add(result["company"]["company_id"])
         elif name == "list_companies":
             self.companies.update(c["company_id"] for c in result["companies"][:80])
         elif name == "get_filings":
