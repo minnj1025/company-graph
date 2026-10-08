@@ -37,6 +37,7 @@ def cross_check(db):
     filers = set(db.scalars(select(Document.company_id).distinct()))
     by_source: dict[str, dict[tuple, str]] = defaultdict(dict)
     for r in db.scalars(select(Relation).where(Relation.rel_type == "equity", Relation.object_company_id.is_not(None),
+                                               Relation.subject_company_id.is_not(None),
                                                Relation.retired_at.is_(None))):
         by_source[r.attrs["source"]][(r.subject_company_id, r.object_company_id, r.as_of_date.year)] = r.attrs["raw_pct"]
     held, holders = by_source["other_corp_investments"], by_source["largest_shareholders"]

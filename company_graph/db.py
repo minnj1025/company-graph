@@ -65,7 +65,8 @@ class Relation(Base):
     )
     relation_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True,
                                              autoincrement=True)
-    subject_company_id: Mapped[int] = mapped_column(ForeignKey("company.company_id"))
+    subject_company_id: Mapped[int | None] = mapped_column(ForeignKey("company.company_id"))
+    subject_name_raw: Mapped[str | None] = mapped_column(String(300))
     object_company_id: Mapped[int | None] = mapped_column(ForeignKey("company.company_id"))
     object_name_raw: Mapped[str] = mapped_column(String(300))
     rel_type: Mapped[str] = mapped_column(Enum(*REL_TYPES, name="rel_type"))

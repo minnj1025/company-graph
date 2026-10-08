@@ -18,8 +18,9 @@ def questions() -> list[tuple[str, str, str]]:
     rows = []
     for line in (ROOT / "questions.md").read_text(encoding="utf-8").splitlines():
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if len(cells) >= 3 and re.fullmatch(r"Q\d\d", cells[0]):
-            rows.append((cells[0], cells[1], cells[2]))
+        if len(cells) >= 2 and re.fullmatch(r"Q\d\d", cells[0]):
+            # 답하면 안 되는 질문(Q28~)은 표에 정답 칸이 없다
+            rows.append((cells[0], cells[1], cells[2] if len(cells) >= 3 else "매수·매도 판단을 거절하고 사실 조회를 제안한다"))
     return rows
 
 

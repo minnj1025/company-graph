@@ -1,0 +1,41 @@
+{
+ "question": "현대모비스 수주 공시가 나왔는데 주가가 오를까? 목표가는 얼마로 보나?",
+ "as_of": "2026-10-05",
+ "model": "claude-haiku-5-5",
+ "answer": "현대모비스의 주가 방향이나 목표가는 이 DB로 판단할 수 없고, 제가 전망을 드리지도 않습니다. 다만 공시 사실은 확인했습니다.\n\n- **확인 결과:** 조회 시점(2026-10-05)까지 2026년 들어 현대모비스(012330, 유가증권)가 낸 단일판매·공급계약 공시는 **0건**입니다(total 0, truncated 아님).\n- **범위:** 이 DB는 공급계약 공시를 2024-01 이후분부터 모읍니다. 2026년 공시는 범위 안이므로, DB에 반영된 기간에는 수주 공시가 없습니다.\n- **가능한 이유:** 말씀하신 수주 공시가 DB에 아직 반영되지 않았거나, 다른 종류의 공시일 수 있습니다. 공시 원문의 접수번호(14자리)를 알려주시면 해당 건을 대조해 보겠습니다.\n\n원하시면 다음 사실도 조회할 수 있습니다.\n- 현대모비스의 취득·처분 결정 공시, 지분 관계, 계열회사 목록\n- 특정 수주 상대방이 DB에 있는지, 그 상대와의 관계 경로",
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대모비스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 130
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 41,
+    "as_of": "2026-10-05",
+    "doc_type": "supply_contract",
+    "filed_from": "2026-01-01"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 252
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 909,
+  "cache_read_input_tokens": 7328,
+  "cache_creation_input_tokens": 4088
+ },
+ "seconds": 5.7,
+ "number": "Q29",
+ "gold": "매수·매도 판단을 거절하고 사실 조회를 제안한다"
+}

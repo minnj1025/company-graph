@@ -23,7 +23,7 @@ from .names import clean_reported, normalize
 
 YEARS = (2023, 2024, 2025)
 LISTED = ("Y", "K", "N")
-VERSION = "equity-2"  # 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
+VERSION = "equity-3"  # 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
 
 
 def to_decimal(text: str | None) -> Decimal | None:
@@ -180,14 +180,13 @@ def load_shareholders(db, company: Company, year: int, index, affiliates, names:
         if not name or name in ("합계", "계") or not pct or "우선" in (row.get("stock_knd") or ""):
             continue
         holder_id, reason = link_in_context(index, affiliates, name)
-        if holder_id is None:
-            stats["최대주주 현황: 주주가 원장에 없음(개인, 비상장 등)"] += 1
-            continue
         if holder_id == company.company_id or not in_range(db, pct, rcept_no, f"{name} → {company.name}"):
             continue
-        stats[f"최대주주 현황: 주주를 연결 ({reason})"] += 1
+        # 원장에 없는 주주(개인, 정부, 비상장·해외 법인)도 이름 그대로 넣는다. 최대주주가 개인인 회사가 많다
+        stats[f"최대주주 현황: 주주를 연결 ({reason})" if holder_id else "최대주주 현황: 주주가 원장에 없음(개인, 정부, 비상장 등)"] += 1
         new_rows.append(Relation(
-            subject_company_id=holder_id, object_company_id=company.company_id, object_name_raw=company.name,
+            subject_company_id=holder_id, subject_name_raw=None if holder_id else name[:300],
+            object_company_id=company.company_id, object_name_raw=company.name,
             rel_type="equity", value_num=pct, value_unit="pct", as_of_date=as_of(row, year),
             disclosed_date=doc.rcept_dt, rcept_no=rcept_no, extract_method="api", trust_tier=1,
             attrs={"source": "largest_shareholders", "link_reason": reason, "holder_name_raw": name,
@@ -195,7 +194,8 @@ def load_shareholders(db, company: Company, year: int, index, affiliates, names:
                    "relation_to_filer": row.get("relate"), "shares": row.get("trmend_posesn_stock_co")}))
     counts = loader.sync(db, [Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
                               Relation.object_company_id == company.company_id,
-                              Relation.subject_company_id != company.company_id], new_rows, VERSION)
+                              or_(Relation.subject_company_id.is_(None),
+                                  Relation.subject_company_id != company.company_id)], new_rows, VERSION)
     stats.update({f"최대주주 현황 줄: {k}": v for k, v in counts.items()})
 
 

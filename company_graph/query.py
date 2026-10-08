@@ -62,7 +62,8 @@ def _rows(db, as_of: date, company_ids, rel_types, direction: str, superseded: b
 
 def _edge(rel: Relation, evidence: list[str], disclosed_by: str, as_of: date) -> dict:
     stale = rel.rel_type in ("equity", "affiliate") and rel.as_of_date is not None and as_of - rel.as_of_date > STALE_AFTER
-    return {"type": rel.rel_type, "subject_id": rel.subject_company_id, "object_id": rel.object_company_id,
+    return {"type": rel.rel_type, "subject_id": rel.subject_company_id, "subject_name_raw": rel.subject_name_raw,
+            "object_id": rel.object_company_id,
             "disclosed_by": disclosed_by, "stale": stale,
             "object_name_raw": rel.object_name_raw, "value": rel.value_num, "unit": rel.value_unit,
             "as_of_date": rel.as_of_date, "disclosed_date": rel.disclosed_date, "rcept_no": rel.rcept_no,
@@ -100,14 +101,19 @@ def _reduce(rows: list[Relation], latest_report: dict[int, str], as_of: date) ->
     equity = defaultdict(list)
     for r in current:
         if r.rel_type == "equity":
-            equity[(r.subject_company_id, r.object_company_id or r.object_name_raw)].append(r)
+            equity[(r.subject_company_id or r.subject_name_raw, r.object_company_id or r.object_name_raw)].append(r)
     for group in equity.values():
         latest = max(r.as_of_date for r in group)
         same_date = sorted((r for r in group if r.as_of_date == latest),
                            key=lambda r: (r.attrs or {}).get("source") != "other_corp_investments")
         sides = {_side(r) for r in same_date}
-        edges.append(_edge(same_date[0], sorted({r.rcept_no for r in same_date}),
-                           "both" if len(sides) == 2 else sides.pop(), as_of))
+        edge = _edge(same_date[0], sorted({r.rcept_no for r in same_date}),
+                     "both" if len(sides) == 2 else sides.pop(), as_of)
+        # 가진 쪽의 표를 대표로 쓰더라도, 내준 쪽 표에 적힌 관계(최대주주 본인, 계열회사 등)는 같이 싣는다
+        role = next(((r.attrs or {}).get("relation_to_filer") for r in same_date if (r.attrs or {}).get("relation_to_filer")), None)
+        if role:
+            edge["attrs"] = {**edge["attrs"], "relation_to_filer": role}
+        edges.append(edge)
 
     edges += [_edge(r, [r.rcept_no], "subject", as_of) for r in current if r.rel_type != "equity"]
     return edges
@@ -130,7 +136,7 @@ def coverage(db) -> dict:
             .where(Relation.retired_at.is_(None)).group_by(Relation.rel_type)):
         kinds[rel_type] = {"label": LABELS[rel_type], "first_disclosed": first, "last_disclosed": last, "rows": count}
     return {"notice": NOTICE, "relations": kinds,
-            "sources": {"equity": "사업보고서의 타법인 출자현황과 최대주주 현황 (반기·분기보고서는 아직 없음, 개인 주주 제외)",
+            "sources": {"equity": "사업보고서의 타법인 출자현황과 최대주주 현황 (반기·분기보고서는 아직 없음). 주주 쪽은 최대주주와 그 특수관계인만 있고, 5% 이상 주주 전체가 아니다. 개인·정부 같은 원장에 없는 주주는 이름만 있다",
                         "affiliate": "사업보고서의 계열회사 현황 표",
                         "supply_contract": "단일판매ㆍ공급계약 체결 공시 (건별로 공시한 계약만)",
                         "stake_acquisition": "타법인 주식 및 출자증권 취득결정 공시 (수집 대상 기업이 낸 것만)",
@@ -161,7 +167,7 @@ def neighborhood(db, center_ids, as_of: date, *, rel_types=None, hops: int = 1) 
             break
     links = defaultdict(list)
     for e in edges:
-        if e["object_id"]:
+        if e["object_id"] and e["subject_id"]:
             links[(e["subject_id"], e["object_id"], e["type"])].append(e)
     names = dict(db.execute(select(Company.company_id, Company.name).where(Company.company_id.in_(seen))).all())
     return {"nodes": [{"id": i, "name": names.get(i, "?")} for i in sorted(seen)],
@@ -204,7 +210,7 @@ def describe(db, edge: dict) -> str:
     if edge["value"] is not None:
         value = f" {edge['value']:.2f}%" if edge["unit"] == "pct" else f" {int(edge['value']):,}원"
     title = edge["attrs"].get("title")
-    return (f"{name(edge['subject_id'])} → {name(edge['object_id']) or edge['object_name_raw'] + ' (원장에 없음)'}"
+    return (f"{name(edge['subject_id']) or edge['subject_name_raw'] + ' (원장에 없음)'} → {name(edge['object_id']) or edge['object_name_raw'] + ' (원장에 없음)'}"
             f" | {LABELS[edge['type']]}{value}{' | ' + title if title else ''}"
             f" | 기준일 {edge['as_of_date']} | 공개일 {edge['disclosed_date']} | 근거 {', '.join(edge['evidence'])}")
 

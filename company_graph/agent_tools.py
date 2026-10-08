@@ -18,7 +18,8 @@ LIMIT = 50
 DART_LINK = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo="
 MARKETS = {"Y": "유가증권", "K": "코스닥", "N": "코넥스", "E": "비상장 등"}
 ATTRS = ("title", "kind", "period_start", "period_end", "party_hidden", "party_relation", "subsidiary", "ratio_pct",
-         "purpose", "method", "pct_after", "nationality", "relation", "ratio_check", "correction_reason", "listed")
+         "purpose", "method", "pct_after", "nationality", "relation", "ratio_check", "correction_reason", "listed",
+         "relation_to_filer")
 
 _AS_OF = {"type": "string", "description": "조회 시점 (YYYY-MM-DD). 이 날짜까지 공시된 것만 본다. 질문에 시점이 없으면 오늘 날짜"}
 _COMPANY = {"type": "integer", "description": "find_company 가 돌려준 company_id"}
@@ -31,6 +32,8 @@ TOOLS = [
      "description": "한 기업의 관계를 조회한다. rel_type: equity(지분, 사업보고서 기준), affiliate(계열회사), "
                     "supply_contract(단일판매·공급계약 공시), stake_acquisition / stake_disposal(타법인 주식 취득·처분 결정). "
                     "direction: out 은 이 기업이 주체(지분을 가진 쪽, 판 쪽, 결정한 쪽), in 은 이 기업이 상대(지분을 내준 쪽, 산 쪽, 대상). "
+                    "equity 의 in 은 이 기업의 주주 목록이다: 최대주주와 그 특수관계인(개인 포함, detail.relation_to_filer 에 본인·친인척·계열회사 등), "
+                    "그리고 이 기업 지분을 가졌다고 자기 보고서에 적은 다른 회사. 최대주주 본인은 relation_to_filer 로 가린다. "
                     "지분과 계열은 그 시점에 나와 있는 가장 최근 사업보고서의 값이다. 공급계약과 취득·처분 결정은 그 시점에 유효한 공시이고 "
                     "정정 전 값이나 철회된 결정은 빠진다. 공시일 범위를 좁히려면 disclosed_from, disclosed_to 를 쓴다. "
                     "\"그 기간에 나온 공시를 모두\"처럼 공시 건수를 세는 질문에는 include_superseded=true 로, 나중에 정정된 공시까지 받는다. "
@@ -101,10 +104,12 @@ def find_company(db, name: str) -> dict:
 
 
 def _edge(db, edge: dict) -> dict:
-    subject, obj = db.get(Company, edge["subject_id"]), db.get(Company, edge["object_id"]) if edge["object_id"] else None
+    subject = db.get(Company, edge["subject_id"]) if edge["subject_id"] else None
+    obj = db.get(Company, edge["object_id"]) if edge["object_id"] else None
     value = edge["value"]
     return {"type": query.LABELS[edge["type"]],
-            "subject": _brief(subject),
+            "subject": _brief(subject) or {"company_id": None, "name": edge["subject_name_raw"],
+                                           "note": "원장에 없는 주주 (개인, 정부, 비상장·해외 법인 등. 이름만 있음)"},
             "object": _brief(obj) or {"company_id": None, "name": edge["object_name_raw"], "note": "원장에 없는 상대 (이름만 있음)"},
             "value": None if value is None else (float(value) if edge["unit"] == "pct" else int(value)),
             "unit": {"pct": "%", "krw": "원"}.get(edge["unit"]),
@@ -138,7 +143,10 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
     if listed_only:
         other = "object" if direction != "in" else "subject"
         rows = [r for r in rows if r[other].get("market") in ("유가증권", "코스닥", "코넥스")]
-    rows.sort(key=lambda r: (r["disclosed_date"], r["rcept_no"][0], r["object"]["name"]))
+    if rel_type == "equity":   # 지분은 큰 것부터
+        rows.sort(key=lambda r: (-(r["value"] or 0), r["subject"]["name"] or "", r["object"]["name"] or ""))
+    else:
+        rows.sort(key=lambda r: (r["disclosed_date"], r["rcept_no"][0], r["object"]["name"]))
     sources = query.coverage(db)
     return {"company": _brief(company), "as_of": when.isoformat(), "total": len(rows), "truncated": len(rows) > LIMIT,
             "relations": rows[:LIMIT],
@@ -186,7 +194,7 @@ def get_coverage(db) -> dict:
     return {"notice": covered["notice"], "sources": covered["sources"],
             "relations": {v["label"]: {"first_disclosed": str(v["first_disclosed"]), "last_disclosed": str(v["last_disclosed"]),
                                        "rows": v["rows"]} for v in covered["relations"].values()},
-            "not_collected": ["개인 주주", "반기·분기보고서", "주요 고객(사업보고서 본문 서술)", "뉴스", "주가",
+            "not_collected": ["최대주주와 특수관계인이 아닌 주주(5% 이상 주주, 소액주주)", "개인이 가진 다른 회사 지분", "반기·분기보고서", "주요 고객(사업보고서 본문 서술)", "뉴스", "주가",
                               "2024-01 이전의 공급계약과 취득·처분 결정"]}
 
 

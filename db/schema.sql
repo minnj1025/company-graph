@@ -49,7 +49,8 @@ CREATE TABLE document (
 
 CREATE TABLE relation (
   relation_id        BIGINT AUTO_INCREMENT PRIMARY KEY,
-  subject_company_id INT            NOT NULL COMMENT '주체. 지분은 보유한 쪽, 공급계약·주요 고객은 파는 쪽',
+  subject_company_id INT            NULL COMMENT '주체. 지분은 보유한 쪽, 공급계약·주요 고객은 파는 쪽. 원장에 없는 주주(개인, 정부 등)면 NULL',
+  subject_name_raw   VARCHAR(300)   NULL COMMENT '주체가 원장에 없을 때 공시에 적힌 이름 그대로',
   object_company_id  INT            NULL COMMENT '상대. 이름을 기업에 못 붙였으면 NULL',
   object_name_raw    VARCHAR(300)   NOT NULL COMMENT '공시에 적힌 상대 이름 그대로',
   rel_type           ENUM('affiliate', 'equity', 'supply_contract', 'major_customer',

@@ -30,7 +30,7 @@ def company_json(c: Company) -> dict:
 def edge_json(db, e: dict) -> dict:
     name = lambda i: db.get(Company, i).name if i else None
     return {"type": e["type"], "label": query.LABELS[e["type"]],
-            "subject_id": e["subject_id"], "subject": name(e["subject_id"]),
+            "subject_id": e["subject_id"], "subject": name(e["subject_id"]) or e["subject_name_raw"],
             "object_id": e["object_id"], "object": name(e["object_id"]) or e["object_name_raw"],
             "value": float(e["value"]) if e["value"] is not None else None, "unit": e["unit"],
             "as_of_date": e["as_of_date"], "disclosed_date": e["disclosed_date"],
@@ -44,7 +44,7 @@ def build_graph(db, edges: list[dict], focus: set[int] = frozenset()) -> dict:
     """선 목록을 화면용 점·선으로 바꾼다. 같은 두 기업 사이의 같은 종류 관계는 선 하나로 묶는다."""
     bundles = defaultdict(list)
     for e in edges:
-        if e["object_id"] and e["object_id"] != e["subject_id"]:
+        if e["object_id"] and e["subject_id"] and e["object_id"] != e["subject_id"]:
             bundles[(e["subject_id"], e["object_id"], e["type"])].append(e)
     links = []
     for (source, target, rel_type), group in bundles.items():

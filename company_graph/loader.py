@@ -17,7 +17,7 @@ from .db import Relation
 
 def _key(r: Relation) -> tuple:
     value = None if r.value_num is None else format(Decimal(r.value_num).normalize(), "f")
-    return (r.subject_company_id, r.object_company_id, r.object_name_raw, r.rel_type, value, r.value_unit,
+    return (r.subject_company_id, r.subject_name_raw, r.object_company_id, r.object_name_raw, r.rel_type, value, r.value_unit,
             r.as_of_date, r.disclosed_date, r.invalidated_date, r.rcept_no, r.extract_method, r.trust_tier,
             r.evidence_text, json.dumps(r.attrs or {}, sort_keys=True, ensure_ascii=False))
 

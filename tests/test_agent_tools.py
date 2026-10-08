@@ -48,3 +48,19 @@ def test_superseded_filings_and_counterparty_filter(db):
     both = ask(include_superseded=True)["relations"]
     assert [(r["value"], r["superseded_on"]) for r in both] == [(100, "2026-08-05"), (120, None)]
     assert ask(counterparty_id=HMC)["total"] == 1 and ask(counterparty_id=KIA)["total"] == 0
+
+
+def test_holder_not_in_master_is_listed_by_name(db):
+    from datetime import date
+    from decimal import Decimal
+    from company_graph.db import Relation
+    db.add(Relation(subject_company_id=None, subject_name_raw="홍길동", object_company_id=MOBIS, object_name_raw="현대모비스(주)",
+                    rel_type="equity", value_num=Decimal("20.00"), value_unit="pct", as_of_date=date(2025, 12, 31),
+                    disclosed_date=date(2026, 3, 9), rcept_no="20260309000001", extract_method="api", trust_tier=1,
+                    attrs={"source": "largest_shareholders", "relation_to_filer": "본인"}))
+    db.flush()
+    out = agent_tools.call(db, "get_relations", {"company_id": MOBIS, "as_of": "2026-06-30", "rel_type": "equity", "direction": "in"})
+    top = out["relations"][0]
+    assert (top["subject"]["name"], top["subject"]["company_id"], top["value"]) == ("홍길동", None, 20.0)
+    assert top["detail"]["relation_to_filer"] == "본인" and out["total"] == 2
+    assert agent_tools.call(db, "find_paths", {"from_company_id": KIA, "to_company_id": MOBIS, "as_of": "2026-06-30"})["total"] >= 1
