@@ -42,7 +42,7 @@ export function DataPage({ meta }: { meta: Meta }) {
       <p className="lead">
         금융감독원 전자공시(DART)에서 기업과 기업의 관계를 뽑아, 언제 성립했고 언제 공개됐고 언제 바뀌었는지를 같이 저장했습니다.
         상장사 2,759곳의 공시를 읽었고, 양식이 정해진 공시만 규칙으로 읽었습니다. 관계 추출에 LLM은 쓰지 않았습니다. 관계 말고 기업이 무엇을
-        하는지도 담았습니다(아래 "사업 내용과 제품").
+        하는지도 담았습니다.
       </p>
       <div className="tiles">
         <div className="tile">
