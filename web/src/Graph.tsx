@@ -528,7 +528,8 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
         onEngineTick={place}
         onEngineStop={onEngineStop}
         warmupTicks={warmup}
-        cooldownTime={7000}
+        cooldownTime={8000}
+        d3VelocityDecay={0.56}
       />
     </div>
   );

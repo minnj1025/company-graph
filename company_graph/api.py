@@ -642,9 +642,12 @@ OWNER = "owner"   # 운영자가 물은 것은 이 이름으로 적어 두고, �
 
 
 def _is_owner(request: Request) -> bool:
-    """운영자인가. 서버의 ASK_OWNER_KEY 와 같은 값을 X-Owner-Key 로 보내면 횟수 한도를 적용하지 않는다."""
+    """운영자인가. 운영자에게는 횟수 한도를 적용하지 않는다. 배포된 서버에서는 ASK_OWNER_KEY 와 같은 값을 X-Owner-Key 로 보내야 한다."""
+    # 내 컴퓨터에서 띄운 서버에 내 컴퓨터로 들어온 요청은 운영자다 (배포된 서버에는 이런 요청이 없다)
+    local = (not os.environ.get("VERCEL") and "x-forwarded-for" not in request.headers
+             and request.client is not None and request.client.host in ("127.0.0.1", "::1"))
     key = os.environ.get("ASK_OWNER_KEY", "")
-    return len(key) >= 16 and hmac.compare_digest(request.headers.get("x-owner-key", "").encode(), key.encode())
+    return local or (len(key) >= 16 and hmac.compare_digest(request.headers.get("x-owner-key", "").encode(), key.encode()))
 
 
 def _asked_today(db, visitor: str | None = None) -> int:
