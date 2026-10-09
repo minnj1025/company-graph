@@ -28,10 +28,16 @@ class Company(Base):
     biz_no: Mapped[str | None] = mapped_column(String(20))
     stock_code: Mapped[str | None] = mapped_column(String(6), index=True)
     name: Mapped[str] = mapped_column(String(200))
+    # 화면과 답에 쓰는 대표 이름. 종목명이나, 영문 상호를 영문으로 적은 이름이다 (display_names.py). name 은 등기 이름 그대로다
+    display_name: Mapped[str | None] = mapped_column(String(200))
     corp_cls: Mapped[str | None] = mapped_column(String(1))
     induty_code: Mapped[str | None] = mapped_column(String(10))
     ftc_group: Mapped[str | None] = mapped_column(String(100))
     in_scope: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    @property
+    def label(self) -> str:
+        return self.display_name or self.name
 
 
 class CompanyAlias(Base):

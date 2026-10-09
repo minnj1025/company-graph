@@ -205,6 +205,11 @@ export function Panel({ detail, onOpen, onCenter, onClose }: Props) {
             {company.sector}
             {company.group ? ` · ${company.group}그룹` : ""}
           </p>
+          {company.legal_name && company.legal_name !== company.name && (
+            <p className="sub legal" title="법인 등기에 적힌 이름">
+              등기 이름 {company.legal_name}
+            </p>
+          )}
         </div>
         <button className="icon" onClick={onClose} aria-label="닫기">
           ×

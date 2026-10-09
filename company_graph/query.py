@@ -176,7 +176,7 @@ def neighborhood(db, center_ids, as_of: date, *, rel_types=None, hops: int = 1) 
     for e in edges:
         if e["object_id"] and e["subject_id"]:
             links[(e["subject_id"], e["object_id"], e["type"])].append(e)
-    names = dict(db.execute(select(Company.company_id, Company.name).where(Company.company_id.in_(seen))).all())
+    names = dict(db.execute(select(Company.company_id, func.coalesce(Company.display_name, Company.name)).where(Company.company_id.in_(seen))).all())
     return {"nodes": [{"id": i, "name": names.get(i, "?")} for i in sorted(seen)],
             "links": [{"source": s, "target": o, "type": t, "count": len({e["rcept_no"] for e in es}),
                        "evidence": sorted({r for e in es for r in e["evidence"]})}
@@ -212,7 +212,7 @@ def paths(db, start_id: int, goal_id: int, as_of: date, *, rel_types=None, max_h
 
 
 def describe(db, edge: dict) -> str:
-    name = lambda i: db.get(Company, i).name if i else None
+    name = lambda i: db.get(Company, i).label if i else None
     value = ""
     if edge["value"] is not None:
         value = f" {edge['value']:.2f}%" if edge["unit"] == "pct" else f" {int(edge['value']):,}원"
@@ -235,7 +235,7 @@ def main():
             print("기업을 찾지 못했습니다")
             return
         company = found[0]
-        print(f"{company.name} ({company.stock_code or '비상장'}) — {args.as_of} 시점")
+        print(f"{company.label} ({company.stock_code or '비상장'}) — {args.as_of} 시점")
         edges = relations(db, args.as_of, company_ids=[company.company_id], rel_types=args.type)
         for edge in sorted(edges, key=lambda e: (e["type"], e["subject_id"] != company.company_id, -(e["value"] or 0))):
             if edge["object_id"] or not args.linked_only:

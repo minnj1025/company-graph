@@ -7,7 +7,10 @@ export type LinkType = RelType | EventType | TopicLink;
 
 export interface Company {
   id: number;
+  /** 대표 이름 (종목명, 또는 영문 상호를 영문으로 적은 이름) */
   name: string;
+  /** 등기 이름. 기업이 아닌 점에는 없다 */
+  legal_name?: string;
   stock_code: string | null;
   listed: boolean;
   group: string | null;

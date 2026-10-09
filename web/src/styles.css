@@ -2919,3 +2919,20 @@ body.resizing .drawer {
 .bar-right .settings-anchor {
   order: -1;
 }
+
+/* 최근 공시는 오른쪽 칸을 여는 버튼이라, 칸이 열리는 오른쪽 끝에 둔다 */
+.bar-right .feed-button {
+  order: 1;
+  margin-left: auto;
+}
+
+.panel .sub.legal {
+  opacity: 0.7;
+}
+
+.bar-right .chat-button {
+  order: 2;
+  padding-inline: 10px;
+  font-size: 15px;
+  line-height: 1;
+}

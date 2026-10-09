@@ -24,8 +24,10 @@ interface View {
   scope: Scope;
   /** Agent가 찾은 결과나 고른 제품. 있으면 그래프에 그 기업과 관계만 남긴다 */
   found: Shown | null;
+  /** 고른 점. 점을 누르는 것도 한 걸음으로 쌓아서, 뒤로 가면 바로 앞의 행동으로 돌아간다 */
+  selected: number | null;
 }
-const HOME: View = { center: null, hops: 1, scope: "listed", found: null };
+const HOME: View = { center: null, hops: 1, scope: "listed", found: null, selected: null };
 
 const DRAWER_TITLES: Record<Exclude<Drawer, null>, string> = { answer: "질문과 답", company: "기업 상세", feed: "최근 공시" };
 
@@ -35,7 +37,7 @@ export function App() {
   const [types, setTypes] = useState<RelType[]>(["equity", "supply_contract"]);
   const [colorBy, setColorBy] = useState<ColorBy>("group");
   const [views, setViews] = useState<{ list: View[]; at: number }>({ list: [HOME], at: 0 });
-  const { center, hops, scope, found } = views.list[views.at];
+  const { center, hops, scope, found, selected: selectedId } = views.list[views.at];
   const [tab, setTab] = useState<"graph" | "data" | "agent">("graph");
   const [filters, setFilters] = useState<Filters>(NO_FILTER);
   const [loading, setLoading] = useState(false);
@@ -49,7 +51,6 @@ export function App() {
   const [level, setLevel] = useState<Level>("family");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [data, setData] = useState<GraphData>(EMPTY);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<CompanyDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const positions = useRef(new Map<number, { x: number; y: number; z: number }>());
@@ -60,17 +61,25 @@ export function App() {
     setViews((now) => {
       const current = now.list[now.at];
       const next = { ...current, ...patch };
+      // 그리는 것이 바뀌면 고른 점은 푼다 (같이 정해 준 경우는 빼고)
+      if (!("selected" in patch) && (next.center !== current.center || next.found !== current.found || next.scope !== current.scope)) next.selected = null;
       if ((Object.keys(next) as (keyof View)[]).every((key) => next[key] === current[key])) return now;
       if (replace) return { list: now.list.map((view, i) => (i === now.at ? next : view)), at: now.at };
       const list = [...now.list.slice(0, now.at + 1), next].slice(-40);
       return { list, at: list.length - 1 };
     });
   }, []);
-  const step = useCallback((by: number) => {
-    setViews((now) => ({ list: now.list, at: Math.min(Math.max(now.at + by, 0), now.list.length - 1) }));
-    setSelectedId(null);
-    setDrawer((open) => (open === "company" ? null : open));
-  }, []);
+  const setSelectedId = useCallback((id: number | null) => go({ selected: id }), [go]);
+  const step = useCallback(
+    (by: number) => {
+      const at = Math.min(Math.max(views.at + by, 0), views.list.length - 1);
+      const to = views.list[at].selected;
+      setViews({ list: views.list, at });
+      // 그때 기업을 골라 두었으면 상세도 다시 연다
+      setDrawer((open) => (to !== null && to >= 0 ? "company" : open === "company" ? null : open));
+    },
+    [views],
+  );
   const showFound = useCallback((result: AskResult | null) => go({ found: result }), [go]);
   /** 제품·제품군·분류를 골랐다: 그것을 파는 기업 전부를 그린다 (Agent를 부르지 않는다) */
   const showPicked = useCallback(
@@ -193,14 +202,13 @@ export function App() {
   /** 전체 그래프가 아니라 좁혀서 보고 있는가 */
   const narrowed = Boolean(found || center || filtering);
   const backToAll = useCallback(() => {
-    go({ found: null, center: null });
+    go({ found: null, center: null, selected: null });
     setFilters(NO_FILTER);
-    setSelectedId(null);
   }, [go]);
   const closeDrawer = useCallback(() => {
     setDrawer(null);
     setSelectedId(null);
-  }, []);
+  }, [setSelectedId]);
   // Esc: 펼친 설정, 오른쪽 칸, 고른 기업 순으로 닫고, 다 닫혀 있으면 전체 그래프로 돌아간다
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -218,13 +226,13 @@ export function App() {
   const openCompany = useCallback((id: number) => {
     setSelectedId(id);
     setDrawer("company");
-  }, []);
+  }, [setSelectedId]);
   const onSelect = useCallback((node: GraphNode | null) => {
     setSelectedId(node ? node.id : null);
     // 낱말 점과 제품 점은 기업이 아니라서 상세를 열지 않고, 이어진 기업만 밝힌다
     if (node && !node.kind) setDrawer("company");
     else setDrawer((now) => (now === "company" ? null : now));
-  }, []);
+  }, [setSelectedId]);
   const drawnTypes = useMemo(() => {
     const present = new Set<LinkType>(shownData.links.map((link) => link.type));
     return (Object.keys(LINK_LABELS) as LinkType[]).filter((type) => present.has(type));
@@ -341,8 +349,16 @@ export function App() {
                   </div>
                 )}
               </div>
-              <button className={drawer === "feed" ? "on" : ""} onClick={() => setDrawer(drawer === "feed" ? null : "feed")}>
+              <button className={drawer === "feed" ? "feed-button on" : "feed-button"} onClick={() => setDrawer(drawer === "feed" ? null : "feed")}>
                 최근 공시
+              </button>
+              <button
+                className={drawer === "answer" ? "chat-button on" : "chat-button"}
+                onClick={() => setDrawer(drawer === "answer" ? null : "answer")}
+                title="질문과 답"
+                aria-label="질문과 답"
+              >
+                💬
               </button>
               <button onClick={() => setRefit((n) => n + 1)} title="그래프 전체가 보이게 화면을 다시 맞춥니다">
                 화면 맞추기
@@ -373,8 +389,8 @@ export function App() {
               onFocus={() => chat.turns.length > 0 && setDrawer((now) => now ?? "answer")}
               onPickProduct={showPicked}
               onPick={(company: Company) => {
-                go({ found: null, center: company });
-                openCompany(company.id);
+                go({ found: null, center: company, selected: company.id });
+                setDrawer("company");
               }}
             />
             <div className="legend">
@@ -436,7 +452,7 @@ export function App() {
                   onOpen={openCompany}
                   onCenter={(id) => {
                     const node = shownData.nodes.find((n) => n.id === id) ?? detail.company;
-                    go({ found: null, center: node });
+                    go({ found: null, center: node, selected: id });
                   }}
                   onClose={closeDrawer}
                 />

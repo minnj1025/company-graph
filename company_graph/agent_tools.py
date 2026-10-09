@@ -15,6 +15,7 @@ from sqlalchemy.orm import aliased
 
 from . import query
 from . import ksic as ksic_table
+from .display_names import group_key, group_label
 from .db import BusinessSection, Company, Document, Product, ProductCode, Relation
 from .product_families import FAMILIES, FAMILY_FIELD
 
@@ -191,8 +192,8 @@ def _company(db, company_id) -> Company:
 def _brief(company: Company | None) -> dict | None:
     if company is None:
         return None
-    return {"company_id": company.company_id, "name": company.name, "stock_code": company.stock_code,
-            "market": MARKETS.get(company.corp_cls, "원장에 이름만 있음"), "group": company.ftc_group}
+    return {"company_id": company.company_id, "name": company.label, "stock_code": company.stock_code,
+            "market": MARKETS.get(company.corp_cls, "원장에 이름만 있음"), "group": group_label(company.ftc_group)}
 
 
 def find_company(db, name: str) -> dict:
@@ -257,7 +258,7 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
         report = db.scalars(select(Document).where(Document.company_id == company.company_id, Document.doc_type == "annual",
                                                    Document.rcept_dt <= when).order_by(Document.rcept_no.desc()).limit(1)).first()
         self_listed = MARKETS.get(company.corp_cls) in ("유가증권", "코스닥", "코넥스")
-        summary = ({"self": f"{company.name} 자신은 {'상장사' if self_listed else '비상장사'}이고 아래 relations 목록에는 들어 있지 않습니다",
+        summary = ({"self": f"{company.label} 자신은 {'상장사' if self_listed else '비상장사'}이고 아래 relations 목록에는 들어 있지 않습니다",
                     "excluding_self": {"listed": listed, "unlisted": len(rows) - listed},
                     "including_self": {"listed": listed + self_listed, "unlisted": len(rows) - listed + (not self_listed)},
                     "note": "보고서의 계열회사 표는 보통 자신을 넣어 셉니다. 상장·비상장 수를 물으면 including_self 를 답하고, "
@@ -324,9 +325,9 @@ def list_companies(db, industry: str | None = None, group: str | None = None, li
         raise ToolError("industry 나 group 중 하나는 주어야 합니다")
     conditions = [Company.corp_cls.in_(LISTED)] if listed_only else []
     if group:
-        conditions.append(Company.ftc_group == group)
+        conditions.append(Company.ftc_group == group_key(group))
     found = sorted((c for c in db.scalars(select(Company).where(*conditions)) if _in_industry(c, industry)),
-                   key=lambda c: (c.name, c.company_id))
+                   key=lambda c: (c.label, c.company_id))
     return {"total": len(found), "truncated": len(found) > 300,
             "companies": [{**_brief(c), "industry_code": c.induty_code} for c in found[:300]],
             "note": None if found else "조건에 맞는 기업이 없습니다. group 은 find_company 결과의 group 값 그대로 써야 합니다"}
@@ -347,11 +348,11 @@ def find_disclosers(db, as_of, rel_type: str, disclosed_from, disclosed_to, indu
     statement = select(Relation, Document.is_correction).join(Document, Document.rcept_no == Relation.rcept_no)
     if counterparty_group:
         statement = statement.join(target, target.company_id == Relation.object_company_id)
-        conditions.append(target.ftc_group == counterparty_group)
+        conditions.append(target.ftc_group == group_key(counterparty_group))
     by_company: dict[int, dict] = {}
     for relation, is_correction in db.execute(statement.where(*conditions)):
         filer = db.get(Company, relation.subject_company_id)
-        if (listed_only and filer.corp_cls not in LISTED) or (group and filer.ftc_group != group) or not _in_industry(filer, industry):
+        if (listed_only and filer.corp_cls not in LISTED) or (group and filer.ftc_group != group_key(group)) or not _in_industry(filer, industry):
             continue
         entry = by_company.setdefault(filer.company_id, {**_brief(filer), "new": set(), "corrections": set(), "counterparties": set()})
         entry["corrections" if is_correction else "new"].add(relation.rcept_no)
@@ -428,7 +429,7 @@ def search_business(db, keywords, as_of, listed_only: bool = True) -> dict:
         entry["score"] += entry["share"] * 0.6
     ranked = sorted(((i, e) for i, e in found.items()
                      if not listed_only or MARKETS.get(companies[i].corp_cls) in ("유가증권", "코스닥", "코넥스")),
-                    key=lambda x: (-len(x[1]["matched"]), -x[1]["score"], companies[x[0]].name))
+                    key=lambda x: (-len(x[1]["matched"]), -x[1]["score"], companies[x[0]].label))
     out = []
     for company_id, entry in ranked[:30]:
         snippets, seen = [], set()
@@ -559,7 +560,7 @@ def find_by_product(db, as_of, families=None, keywords=None, ksic=None, min_shar
     floor = float(min_share) if min_share is not None else 0.0
     ranked = sorted(((i, e) for i, e in found.items() if e["share_pct"] >= floor
                      and (not listed_only or MARKETS.get(companies[i].corp_cls) in ("유가증권", "코스닥", "코넥스"))),
-                    key=lambda x: (-x[1]["share_pct"], companies[x[0]].name))
+                    key=lambda x: (-x[1]["share_pct"], companies[x[0]].label))
     spread: dict[str, set] = {}
     for company_id, entry in ranked:
         for row in entry["rows"]:

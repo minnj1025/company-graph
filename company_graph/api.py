@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
 from . import ksic, query
+from .display_names import group_key, group_label
 from .db import AskLog, Base, BusinessSection, Company, Document, Product, ProductCode, Relation, get_engine, session
 from .product_families import FAMILY_FIELD
 from .stages import sector, stage
@@ -43,7 +44,7 @@ def categories(db) -> dict:
     count = lambda key: sorted(Counter(filter(None, map(key, listed))).items(), key=lambda x: (-x[1], x[0]))
     return {"market": [{"name": MARKETS[k], "count": n} for k, n in count(lambda c: c.corp_cls)],
             "sector": [{"name": k, "count": n} for k, n in count(lambda c: sector(c.induty_code))],
-            "group": [{"name": k, "count": n} for k, n in count(lambda c: c.ftc_group)]}
+            "group": [{"name": k, "count": n} for k, n in count(lambda c: group_label(c.ftc_group))]}
 
 
 def scope_members(db, scope: str) -> tuple[list[int], str]:
@@ -57,18 +58,19 @@ def scope_members(db, scope: str) -> tuple[list[int], str]:
     if kind == "sector":
         return [c.company_id for c in listed if sector(c.induty_code) == name], "both"
     if kind == "group":   # 집단은 비상장 계열사까지
-        return list(db.scalars(select(Company.company_id).where(Company.ftc_group == name))), "both"
+        return list(db.scalars(select(Company.company_id).where(Company.ftc_group == group_key(name)))), "both"
     return [c.company_id for c in listed], "within"
 
 
 def company_json(c: Company) -> dict:
-    return {"id": c.company_id, "name": c.name, "stock_code": c.stock_code, "listed": c.corp_cls in ("Y", "K"),
-            "group": c.ftc_group, "stage": stage(c.induty_code), "sector": sector(c.induty_code),
+    # name 은 대표 이름(종목명 등), legal_name 은 등기 이름
+    return {"id": c.company_id, "name": c.label, "legal_name": c.name, "stock_code": c.stock_code,
+            "listed": c.corp_cls in ("Y", "K"), "group": group_label(c.ftc_group), "stage": stage(c.induty_code), "sector": sector(c.induty_code),
             "market": MARKETS.get(c.corp_cls), "in_scope": c.in_scope, "corp_code": c.corp_code}
 
 
 def edge_json(db, e: dict) -> dict:
-    name = lambda i: db.get(Company, i).name if i else None
+    name = lambda i: db.get(Company, i).label if i else None
     return {"type": e["type"], "label": query.LABELS[e["type"]],
             "subject_id": e["subject_id"], "subject": name(e["subject_id"]) or e["subject_name_raw"],
             "object_id": e["object_id"], "object": name(e["object_id"]) or e["object_name_raw"],
@@ -585,8 +587,8 @@ def insights(as_of: date, db=Depends(get_db)):
         subject, obj = db.get(Company, r.subject_company_id), db.get(Company, r.object_company_id) if r.object_company_id else None
         recent.append({"rcept_no": r.rcept_no, "url": query.DART_VIEWER + r.rcept_no, "date": r.disclosed_date,
                        "type": r.rel_type, "label": query.LABELS[r.rel_type],
-                       "subject_id": subject.company_id, "subject": subject.name,
-                       "object_id": obj and obj.company_id, "object": obj.name if obj else r.object_name_raw,
+                       "subject_id": subject.company_id, "subject": subject.label,
+                       "object_id": obj and obj.company_id, "object": obj.label if obj else r.object_name_raw,
                        "value": float(r.value_num) if r.value_num is not None else None,
                        "title": (r.attrs or {}).get("title") or (r.attrs or {}).get("purpose")})
         if len(recent) == 14:
@@ -605,7 +607,7 @@ def insights(as_of: date, db=Depends(get_db)):
         kind = "철회" if "철회" in doc.report_nm else "해지" if "해지" in doc.report_nm else "정정"
         filer = db.get(Company, doc.company_id)
         changed.append({"rcept_no": doc.rcept_no, "url": query.DART_VIEWER + doc.rcept_no, "date": doc.rcept_dt, "kind": kind,
-                        "company_id": filer.company_id, "company": filer.name,
+                        "company_id": filer.company_id, "company": filer.label,
                         "what": attrs.get("title") or attrs.get("purpose") or row.object_name_raw,
                         "reason": attrs.get("correction_reason") or attrs.get("reason")})
         if len(changed) == 14:
@@ -662,11 +664,12 @@ GRAPH_COMPANIES = 500  # 질문 결과 그래프에 그리는 기업 수의 상�
 _listed_names: dict[int, str] = {}
 
 
-def listed_names(db) -> dict[int, str]:
+def listed_names(db) -> dict[int, set[str]]:
     """상장사 번호 → 비교하기 좋게 다듬은 이름. 답의 글에 어느 회사가 나왔는지 찾는 데 쓴다."""
     if not _listed_names:
         from .names import normalize
-        _listed_names.update({c.company_id: normalize(c.name) for c in db.scalars(select(Company).where(Company.corp_cls.in_(LISTED)))})
+        _listed_names.update({c.company_id: {normalize(c.name), normalize(c.label)}
+                              for c in db.scalars(select(Company).where(Company.corp_cls.in_(LISTED)))})
     return _listed_names
 
 
@@ -754,12 +757,12 @@ class _Found:
         candidates = self.companies | self.focus | set(self.ranked)
         text = normalize(answer)
         mentioned = set()
-        for company_id, name in listed_names(db).items():
-            if len(name) >= (2 if company_id in candidates else 3) and name in text:
+        for company_id, names in listed_names(db).items():
+            if any(len(name) >= (2 if company_id in candidates else 3) and name in text for name in names):
                 mentioned.add(company_id)
         if candidates - listed_names(db).keys():
             for c in db.scalars(select(Company).where(Company.company_id.in_(candidates - listed_names(db).keys()))):
-                if len(normalize(c.name)) >= 2 and normalize(c.name) in text:
+                if any(len(name) >= 2 and name in text for name in {normalize(c.name), normalize(c.label)}):
                     mentioned.add(c.company_id)
         focus = self.focus | mentioned
         ids = set(focus)
@@ -851,7 +854,7 @@ def _answered(db, question: str, visitor: str, ask_id: int, result: dict, found:
     cited = [no for no in result["cited"] if no not in result["cited_not_in_results"]]
     documents = {d.rcept_no: d for d in db.scalars(select(Document).where(Document.rcept_no.in_(cited))).all()} if cited else {}
     sources = [{"rcept_no": no, "url": query.DART_VIEWER + no,
-                "company": documents[no].company_id and db.get(Company, documents[no].company_id).name,
+                "company": documents[no].company_id and db.get(Company, documents[no].company_id).label,
                 "report": documents[no].report_nm.strip(), "filed": documents[no].rcept_dt.isoformat()}
                if no in documents else {"rcept_no": no, "url": query.DART_VIEWER + no, "company": None, "report": None, "filed": None}
                for no in cited]

@@ -120,6 +120,7 @@ Agent는 SQL을 쓰지 않고 조회 함수 열한 가지만 부른다 (`agent_t
 company_graph/
   dart.py, ftc.py, cache.py      수집 (하루 호출 한도 관리, 파일 캐시)
   load_companies.py              기업 원장
+  display_names.py               대표 이름 (에스케이하이닉스(주) → SK하이닉스). 상장사는 종목명, 비상장사는 소속 집단이나 이어진 상장사가 확인될 때만 바꿈
   *_parser.py                    공시 양식 읽기 (공급계약, 취득·처분, 계열회사 표, 출자 상세표, 사업 내용, 제품 표)
   extract_*.py                   추출기: 원문 → 관계 줄, 사업 내용의 절, 제품 줄
   product_families.py            제품군 목록 (분야 > 제품군)
@@ -150,6 +151,7 @@ python -m venv .venv && .venv/Scripts/pip install -r requirements-dev.txt
 
 ```bash
 python -m company_graph.load_companies
+python -m company_graph.display_names --apply
 python -m company_graph.extract_equity --all
 python -m company_graph.extract_affiliates
 python -m company_graph.extract_equity --all      # 계열회사 표로 이름 연결을 다시 맞춘다
