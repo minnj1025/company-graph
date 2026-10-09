@@ -53,9 +53,6 @@ export function App() {
   const [refit, setRefit] = useState(0);
   const [drawer, setDrawer] = useState<Drawer>(null);
   const [drawerWidth, setDrawerWidth] = useState(520);
-  /** 가장자리를 눌러 다시 열 때 보여 줄 것. 마지막에 보던 것 */
-  const lastDrawer = useRef<Exclude<Drawer, null>>("feed");
-  if (drawer) lastDrawer.current = drawer;
   const [level, setLevel] = useState<Level>("family");
   const [settingsOpen, setSettingsOpen] = useState(false);
   /** 보기 설정에서 옆에 목록을 펴 둔 제품 범주 */
@@ -139,7 +136,7 @@ export function App() {
     },
     [asOf, go, seed],
   );
-  /** 그래프의 오른쪽 가장자리: 누르면 오른쪽 칸을 여닫고, 끌면 너비를 바꾼다 */
+  /** 오른쪽 칸이 열려 있을 때 그 경계를 끌어 너비를 바꾼다 */
   const dragEdge = (event: React.PointerEvent) => {
     event.preventDefault();
     const startX = event.clientX;
@@ -149,17 +146,12 @@ export function App() {
       const dx = startX - e.clientX;
       if (Math.abs(dx) > 4) moved = true;
       if (!moved) return;
-      const width = startWidth + dx;
-      if (width > 140) {
-        setDrawerWidth(Math.round(Math.min(Math.max(width, 340), Math.min(760, window.innerWidth * 0.6))));
-        setDrawer((now) => now ?? lastDrawer.current);
-      } else setDrawer(null);
+      setDrawerWidth(Math.round(Math.min(Math.max(startWidth + dx, 340), Math.min(760, window.innerWidth * 0.6))));
     };
     const stop = () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", stop);
       document.body.classList.remove("resizing");
-      if (!moved) setDrawer((now) => (now ? null : lastDrawer.current));
     };
     document.body.classList.add("resizing");
     window.addEventListener("pointermove", move);
@@ -528,11 +520,7 @@ export function App() {
               </div>
             </div>
           </div>
-          <div
-            className={drawer ? "edge open" : "edge"}
-            onPointerDown={dragEdge}
-            title={drawer ? "누르면 오른쪽 칸을 닫고, 끌면 너비를 바꿉니다" : "누르거나 왼쪽으로 끌면 채팅, 최근 공시가 열립니다"}
-          />
+          {drawer && <div className="edge open" onPointerDown={dragEdge} title="끌어서 오른쪽 칸의 너비를 바꿉니다" />}
         </section>
 
         <aside className="drawer" aria-hidden={drawer === null} style={{ "--drawer-width": `${drawerWidth}px` } as React.CSSProperties}>
