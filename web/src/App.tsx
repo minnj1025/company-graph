@@ -325,7 +325,14 @@ export function App() {
     <div className="app">
       <header className="top">
         <h1>
-          기업 관계 그래프 <span>공시에서 뽑은 기업 사이의 관계</span>
+          {/* 기업(점)을 잇는 길이 C 모양을 이룬다 */}
+          <svg className="logo" width="22" height="22" viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M22.4 9.2A9.4 9.4 0 1 0 22.4 22.8" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+            <circle cx="6.6" cy="16" r="3" fill="currentColor" />
+            <circle cx="22.4" cy="9.2" r="3" fill="currentColor" />
+            <circle cx="22.4" cy="22.8" r="3.2" fill="var(--accent)" />
+          </svg>
+          Corpath <span>공시에서 뽑은 기업 사이의 관계</span>
         </h1>
         <nav className="tabs">
           <button className={tab === "graph" ? "on" : ""} onClick={() => setTab("graph")}>
