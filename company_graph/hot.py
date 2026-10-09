@@ -9,7 +9,7 @@
 
 실행: python -m company_graph.hot store                      아직 계산하지 않은 날을 계산해 hot_day 에 넣는다 (store 시작 끝 으로 기간을 정할 수도 있다)
       python -m company_graph.hot 2026-10-07                 그날의 무리를 찍어 본다
-      python -m company_graph.hot check 2025-02-01 2025-12-30   기간 전체를 돌려 섞은 결과와 견줌 (--save 파일.json)
+      python -m company_graph.hot check 2025-02-01 2025-12-30   기간 전체를 돌려 섞은 결과와 견줌 (--down 이면 내린 쪽, --save=파일.json)
 """
 import collections
 import json
@@ -95,8 +95,9 @@ def load_prices(db, start: date | None = None, end: date | None = None) -> tuple
     return sorted(prices), prices
 
 
-def movers(days: list[date], prices: dict, k: int, links: Links) -> tuple[set[int], dict[int, float], dict[int, float], float]:
-    """k 번째 거래일에 볼 종목, 등락률, 시장 중앙값을 뺀 등락률, 오른 곳의 기준선."""
+def movers(days: list[date], prices: dict, k: int, links: Links, down: bool = False) -> tuple[set[int], dict[int, float], dict[int, float], float]:
+    """k 번째 거래일에 볼 종목, 등락률, 시장 중앙값을 뺀 등락률, 오른 곳의 기준선.
+    down 이면 내린 쪽을 본다: 셋째 값의 부호를 뒤집어, 많이 내린 곳이 큰 값이 되게 한다 (뒤의 규칙을 그대로 쓴다)."""
     day, before = days[k], days[max(0, k - LIQUID_DAYS):k]
     liquid = set()
     for company in prices[day]:
@@ -107,7 +108,7 @@ def movers(days: list[date], prices: dict, k: int, links: Links) -> tuple[set[in
     if not change:
         return liquid, change, {}, FLOOR
     market = statistics.median(change.values())
-    excess = {company: value - market for company, value in change.items()}
+    excess = {company: (market - value if down else value - market) for company, value in change.items()}
     line = max(FLOOR, sorted(excess.values(), reverse=True)[int(len(excess) * TOP)])
     return liquid, change, excess, line
 
@@ -167,43 +168,51 @@ def find_groups(excess: dict[int, float], line: float, liquid: set[int], links: 
     return sorted(out, key=lambda g: (g["grade"] != CLEAR, -len(g["members"]), -g["third"]))
 
 
-def day_result(days: list[date], prices: dict, k: int, links: Links) -> dict:
-    liquid, change, excess, line = movers(days, prices, k, links)
+def _side(days: list[date], prices: dict, k: int, links: Links, down: bool) -> dict:
+    liquid, change, excess, line = movers(days, prices, k, links, down)
     groups = find_groups(excess, line, liquid, links)
     grouped = set().union(*(g["members"] for g in groups)) if groups else set()
     alone = sorted((c for c, value in excess.items() if value >= max(line, SOLO) and c not in grouped), key=lambda c: -excess[c])
-    return {"day": days[k].isoformat(), "market": round(statistics.median(change.values()), 2) if change else None,
-            "watched": len(liquid), "hot": sum(1 for value in excess.values() if value >= line),
+    return {"hot": sum(1 for value in excess.values() if value >= line),
             "groups": [{"grade": g["grade"], "kind": g["kind"], "why": g["why"][:4], "n": len(g["members"]), "of": g["of"], "third": round(g["third"], 1),
                         "members": [{"id": m, "name": links.names[m], "change": change[m]} for m in sorted(g["members"], key=lambda m: -excess[m])]}
                        for g in groups],
             "alone": [{"id": c, "name": links.names[c], "change": change[c]} for c in alone]}
 
 
+def day_result(days: list[date], prices: dict, k: int, links: Links) -> dict:
+    """오른 쪽은 맨 위에(hot, groups, alone), 내린 쪽은 down 아래에 같은 모양으로."""
+    liquid, change, _, _ = movers(days, prices, k, links)
+    return {"day": days[k].isoformat(), "market": round(statistics.median(change.values()), 2) if change else None, "watched": len(liquid),
+            **_side(days, prices, k, links, False), "down": _side(days, prices, k, links, True)}
+
+
 def store(db, days: list[date], prices: dict, links: Links, start: date, end: date) -> int:
     """기간의 날마다 결과를 hot_day 에 넣는다. 혼자 오른 곳에는 그 무렵에 나온 공시를 붙인다."""
     count = 0
     before = db.scalar(select(HotDay).where(HotDay.trade_date < start).order_by(HotDay.trade_date.desc()).limit(1))
-    previous = before.payload["groups"] if before and days.index(before.trade_date) + 1 < len(days) and days[days.index(before.trade_date) + 1] >= start else []
+    follows = before and days.index(before.trade_date) + 1 < len(days) and days[days.index(before.trade_date) + 1] >= start
+    previous = [before.payload["groups"], before.payload.get("down", {}).get("groups", [])] if follows else [[], []]
     for k, day in enumerate(days):
         if k < LIQUID_DAYS or not start <= day <= end:
             continue
         result = day_result(days, prices, k, links)
-        for group in result["groups"]:   # 앞 거래일에도 절반 이상 같은 구성으로 올랐으면 이어진 것으로 센다
-            ids = {member["id"] for member in group["members"]}
-            same = [g for g in previous if len(ids & {m["id"] for m in g["members"]}) * 2 >= len(ids)]
-            group["streak"] = 1 + max((g.get("streak", 1) for g in same), default=0)
-        previous = result["groups"]
-        result["alone_total"] = len(result["alone"])
-        result["alone"] = result["alone"][:ALONE_SHOWN]
-        filings = collections.defaultdict(list)
-        ids = [item["id"] for item in result["alone"]]
-        if ids:
-            for doc in db.scalars(select(Document).where(Document.company_id.in_(ids), Document.rcept_dt <= day,
-                                                         Document.rcept_dt > day - timedelta(days=FILING_DAYS)).order_by(Document.rcept_no.desc())):
-                filings[doc.company_id].append({"title": doc.report_nm.strip(), "rcept_no": doc.rcept_no, "date": doc.rcept_dt.isoformat()})
-        for item in result["alone"]:
-            item["filings"] = filings[item["id"]][:3]
+        for number, side in enumerate((result, result["down"])):
+            for group in side["groups"]:   # 앞 거래일에도 절반 이상 같은 구성으로 움직였으면 이어진 것으로 센다
+                ids = {member["id"] for member in group["members"]}
+                same = [g for g in previous[number] if len(ids & {m["id"] for m in g["members"]}) * 2 >= len(ids)]
+                group["streak"] = 1 + max((g.get("streak", 1) for g in same), default=0)
+            previous[number] = side["groups"]
+            side["alone_total"] = len(side["alone"])
+            side["alone"] = side["alone"][:ALONE_SHOWN]
+            filings = collections.defaultdict(list)
+            ids = [item["id"] for item in side["alone"]]
+            if ids:
+                for doc in db.scalars(select(Document).where(Document.company_id.in_(ids), Document.rcept_dt <= day,
+                                                             Document.rcept_dt > day - timedelta(days=FILING_DAYS)).order_by(Document.rcept_no.desc())):
+                    filings[doc.company_id].append({"title": doc.report_nm.strip(), "rcept_no": doc.rcept_no, "date": doc.rcept_dt.isoformat()})
+            for item in side["alone"]:
+                item["filings"] = filings[item["id"]][:3]
         row = db.get(HotDay, day)
         if row is None:
             db.add(HotDay(trade_date=day, payload=result, computed_at=datetime.now()))
@@ -214,15 +223,16 @@ def store(db, days: list[date], prices: dict, links: Links, start: date, end: da
     return count
 
 
-def check(days: list[date], prices: dict, links: Links, start: date, end: date, shuffles: int = 8, seed: int = 5) -> dict:
+def check(days: list[date], prices: dict, links: Links, start: date, end: date, shuffles: int = 8, seed: int = 5, down: bool = False) -> dict:
     """기간 전체를 돌리고, 등락률은 그대로 둔 채 어느 회사의 것인지만 섞었을 때 나오는 무리 수와 견준다."""
     rnd = random.Random(seed)
     real, chance, results = collections.Counter(), collections.Counter(), []
     for k, day in enumerate(days):
         if k < LIQUID_DAYS or not start <= day <= end:
             continue
-        liquid, _, excess, line = movers(days, prices, k, links)
+        liquid, _, excess, line = movers(days, prices, k, links, down)
         result = day_result(days, prices, k, links)
+        result = result["down"] | {"day": result["day"]} if down else result
         results.append(result)
         real.update((g["grade"], g["kind"]) for g in result["groups"])
         order = sorted(excess)
@@ -267,7 +277,7 @@ def main():
             return
     if args and args[0] == "check":
         start, end = (date.fromisoformat(a) for a in args[1:3])
-        outcome = check(days, prices, links, start, end)
+        outcome = check(days, prices, links, start, end, down="--down" in sys.argv)
         _print_check(outcome)
         if save:
             with open(save, "w", encoding="utf-8") as file:

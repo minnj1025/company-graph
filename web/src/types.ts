@@ -252,14 +252,21 @@ export interface HotGroup {
   streak?: number;
 }
 
-export interface HotDay {
-  day: string;
-  /** 계산해 둔 거래일 전부. 최근 것부터. strong, weak 는 그날 잡힌 종목군의 수 */
-  days: { day: string; market: number; strong: number; weak: number }[];
-  market: number;
-  watched: number;
+/** 오른 쪽이나 내린 쪽 하나의 결과 */
+export interface HotSide {
+  /** 그날 급등(급락)한 종목의 수 */
   hot: number;
   groups: HotGroup[];
   alone: { id: number; name: string; change: number; filings: { title: string; rcept_no: string; date: string }[] }[];
   alone_total: number;
+}
+
+/** 하루 치. 오른 쪽은 맨 위에, 내린 쪽은 down 에 같은 모양으로 들어 있다 */
+export interface HotDay extends HotSide {
+  day: string;
+  /** 계산해 둔 거래일 전부. 최근 것부터. up, down 은 그날 잡힌 연관 급등·급락의 수 */
+  days: { day: string; market: number; up: number; down: number }[];
+  market: number;
+  watched: number;
+  down: HotSide;
 }

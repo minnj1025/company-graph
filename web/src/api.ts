@@ -40,7 +40,7 @@ export const fetchSuggest = (q: string) => get<Suggestion[]>("/suggest", { q });
 export const fetchPick = (kind: Suggestion["kind"], key: string, asOf: string) => get<GraphData>("/pick", { kind, key, as_of: asOf });
 /** 그날 함께 오른 무리. day 가 없으면 가장 최근 거래일 */
 export const fetchHot = (day?: string) => get<HotDay>("/hot", day ? { day } : {});
-export const fetchHotGraph = (day: string, group: number) => get<GraphData>("/hot/graph", { day, group });
+export const fetchHotGraph = (day: string, group: number, side: "up" | "down") => get<GraphData>("/hot/graph", { day, group, side });
 export const fetchTaxonomy = () => get<Taxonomy>("/taxonomy");
 export const fetchCompany = (id: number, asOf: string) => get<CompanyDetail>(`/company/${id}`, { as_of: asOf });
 export const fetchInsights = (asOf: string) => get<Insights>("/insights", { as_of: asOf });

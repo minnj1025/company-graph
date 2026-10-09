@@ -585,17 +585,18 @@ def hot(day: date | None = None, db=Depends(get_db)):
         raise HTTPException(404, "아직 계산한 날이 없습니다")
     row = next((r for r in rows if r.trade_date == day), rows[0])
     return {**row.payload, "days": [{"day": r.trade_date.isoformat(), "market": r.payload["market"],
-                                     "strong": sum(1 for g in r.payload["groups"] if g["grade"] == "뚜렷함"),
-                                     "weak": sum(1 for g in r.payload["groups"] if g["grade"] != "뚜렷함")} for r in rows]}
+                                     "up": sum(1 for g in r.payload["groups"] if g["grade"] == "뚜렷함"),
+                                     "down": sum(1 for g in r.payload.get("down", {}).get("groups", []) if g["grade"] == "뚜렷함")} for r in rows]}
 
 
 @app.get("/api/hot/graph")
-def hot_graph(day: date, group: int = Query(ge=0), db=Depends(get_db)):
-    """무리 하나를 그래프로: 무리의 기업들, 그 사이의 관계 선, 무리를 묶은 제품 점."""
+def hot_graph(day: date, group: int = Query(ge=0), side: str = "up", db=Depends(get_db)):
+    """종목군 하나를 그래프로: 그 기업들, 그 사이의 관계 선, 묶어 준 제품 점. side 는 up(오른 쪽) 또는 down(내린 쪽)."""
     row = db.get(HotDay, day)
-    if row is None or group >= len(row.payload["groups"]):
-        raise HTTPException(404, "그런 무리가 없습니다")
-    found = row.payload["groups"][group]
+    groups = [] if row is None else row.payload["groups"] if side == "up" else row.payload.get("down", {}).get("groups", [])
+    if group >= len(groups):
+        raise HTTPException(404, "그런 종목군이 없습니다")
+    found = groups[group]
     ids = {member["id"] for member in found["members"]}
     edges = [e for e in query.relations(db, day, company_ids=ids, rel_types=["equity", "affiliate", "supply_contract"])
              if e["subject_id"] in ids and e["object_id"] in ids]

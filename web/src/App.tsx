@@ -332,7 +332,7 @@ export function App() {
             탐색
           </button>
           <button className={tab === "hot" ? "on" : ""} onClick={() => setTab("hot")}>
-            동반 상승
+            이슈 종목
           </button>
           <button className={tab === "data" ? "on" : ""} onClick={() => setTab("data")}>
             데이터와 검증

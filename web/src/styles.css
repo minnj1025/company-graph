@@ -4106,3 +4106,86 @@ details.sources a {
 .hot-lead span + span {
   margin-left: 0;
 }
+
+
+/* 날짜 띠: 가운데 선 위로 급등, 아래로 급락 */
+.hot-days {
+  height: 44px;
+  align-items: stretch;
+}
+
+.hot-days button {
+  flex-direction: column;
+  align-items: stretch;
+  border-bottom: 2px solid transparent;
+}
+
+.hot-days button span {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.hot-days button span:first-child {
+  align-items: flex-end;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.hot-days i.up {
+  background: color-mix(in srgb, var(--up) 55%, transparent);
+}
+
+.hot-days i.down {
+  background: color-mix(in srgb, var(--down) 55%, transparent);
+}
+
+.hot-days button:hover i.up,
+.hot-days button.on i.up {
+  background: var(--up);
+}
+
+.hot-days button:hover i.down,
+.hot-days button.on i.down {
+  background: var(--down);
+}
+
+.hot-days button.on {
+  border-bottom-color: var(--text);
+}
+
+.hot-sides {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hot-sides button {
+  padding: 8px 2px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.hot-sides button.on {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.hot-sides button.on.up {
+  border-bottom-color: var(--up);
+}
+
+.hot-sides button.on.down {
+  border-bottom-color: var(--down);
+}
+
+.hot-bar.fall i {
+  background: var(--down);
+}
+
+.hot-stats small {
+  margin-left: 4px;
+}
