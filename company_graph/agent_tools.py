@@ -14,7 +14,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.orm import aliased
 
 from . import query
-from .db import BusinessSection, Company, Document, Relation
+from .db import BusinessSection, Company, Document, Product, Relation
 
 LIMIT = 50
 LISTED = ("Y", "K", "N")
@@ -118,6 +118,25 @@ TOOLS = [
                       "description": "읽을 소제목 번호. 1 사업의 개요, 2 주요 제품 및 서비스, 3 원재료 및 생산설비, 4 매출 및 수주상황, "
                                      "6 주요계약 및 연구개발활동, 7 기타 참고사항. 기본 [1, 2]"}},
          "required": ["company_id", "as_of"]}},
+    {"name": "find_by_product",
+     "description": "제품 이름으로 그것을 파는 회사를 찾는다. 정기보고서의 '주요 제품 및 서비스' 매출 비중 표에서 읽은 줄을 찾으므로 "
+                    "회사마다 그 제품이 매출에서 차지하는 비중(share_pct)이 바로 나온다. 비중이 큰 회사가 앞에 온다. "
+                    "keywords 에는 제품 이름을 여러 표기로 넣는다 (예: [\"분리막\", \"LiBS\"], [\"인쇄회로기판\", \"PCB\"]). "
+                    "줄마다 name 과 segment 는 보고서 표에 적힌 그대로이고, std_names 는 여러 회사의 같은 제품을 묶으려고 모델이 붙인 표준 이름이라 "
+                    "틀릴 수 있다. 답에는 표에 적힌 이름과 비중을 옮긴다. "
+                    "표를 읽지 못한 회사와 제품 표가 없는 회사(금융업 등)는 여기에 나오지 않으므로, 빠짐없이 찾아야 하면 search_business 도 함께 쓴다.",
+     "input_schema": {"type": "object", "properties": {
+         "keywords": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 8,
+                      "description": "제품 이름들. 낱말 하나는 2~20자. 띄어쓰기는 무시하고 찾는다"},
+         "as_of": _AS_OF,
+         "min_share": {"type": "number", "description": "매출 비중이 이 값(%) 이상인 회사만. 주력인 회사만 볼 때 쓴다"},
+         "listed_only": {"type": "boolean", "description": "상장사만 (기본 true)"}},
+         "required": ["keywords", "as_of"]}},
+    {"name": "get_products",
+     "description": "한 회사의 제품과 매출 비중을 표로 읽은 그대로 준다 (가장 나중 정기보고서의 '주요 제품 및 서비스' 표). "
+                    "읽지 못한 회사는 read=false 로 나오고, 그때는 get_business 로 표의 글을 직접 읽는다.",
+     "input_schema": {"type": "object", "properties": {"company_id": _COMPANY, "as_of": _AS_OF},
+                      "required": ["company_id", "as_of"]}},
     {"name": "get_coverage",
      "description": "이 DB가 무엇을 언제부터 언제까지 모았고 무엇을 모으지 않았는지. 결과가 비었을 때 답하기 전에 확인한다.",
      "input_schema": {"type": "object", "properties": {}}},
@@ -339,7 +358,10 @@ def get_coverage(db) -> dict:
     return {"notice": covered["notice"], "sources": covered["sources"], "group": covered["sources"]["group"],
             "relations": {v["label"]: {"first_disclosed": str(v["first_disclosed"]), "last_disclosed": str(v["last_disclosed"]),
                                        "rows": v["rows"]} for v in covered["relations"].values()},
-            "not_collected": ["최대주주와 특수관계인이 아닌 주주(5% 이상 주주, 소액주주)", "개인이 가진 다른 회사 지분", "반기·분기보고서", "주요 고객(사업보고서 본문 서술)", "뉴스", "주가",
+            "business": "사업 내용(search_business, get_business)과 제품(find_by_product, get_products)은 상장사의 2025 사업보고서와 2026 반기보고서에서 왔다. "
+                        "제품은 매출 비중 표를 읽을 수 있었던 회사만 있다",
+            "not_collected": ["최대주주와 특수관계인이 아닌 주주(5% 이상 주주, 소액주주)", "개인이 가진 다른 회사 지분",
+                              "분기보고서", "반기보고서의 지분·계열 표", "주요 고객(사업보고서 본문 서술)", "뉴스", "주가",
                               "2024-01 이전의 공급계약과 취득·처분 결정"]}
 
 
@@ -422,7 +444,77 @@ def get_business(db, company_id, as_of, sections=None) -> dict:
                     "report 가 반기·분기보고서이면 매출액은 그 기간(반년·누적) 치이므로, 금액을 옮길 때 어느 보고서의 값인지 밝히세요"}
 
 
-FUNCTIONS = {"search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
+def _latest_products(db, when: date, company_id: int | None = None):
+    """조회 시점까지 나온 보고서 가운데 회사마다 제품 표를 읽은 가장 나중 것의 접수번호."""
+    latest = select(Product.company_id, func.max(Product.rcept_no).label("rcept_no")).where(Product.disclosed_date <= when)
+    if company_id is not None:
+        latest = latest.where(Product.company_id == company_id)
+    return latest.group_by(Product.company_id).subquery()
+
+
+def _product_row(row: Product) -> dict:
+    return {"segment": row.segment, "name": row.name, "share_pct": float(row.share_pct), "std_names": row.std_names or []}
+
+
+_PRODUCT_NOTE = ("name 과 segment 는 보고서 표에 적힌 그대로, share_pct 는 그 줄이 매출에서 차지하는 비중(%)입니다. "
+                 "std_names 는 모델이 붙인 표준 이름이라 틀릴 수 있으니 답에는 표에 적힌 이름을 옮기세요. "
+                 "한 줄에 여러 제품이 함께 적혀 있으면 share_pct 는 그 줄 전체의 비중이지 그 제품만의 비중이 아닙니다")
+
+
+def find_by_product(db, keywords, as_of, min_share=None, listed_only: bool = True) -> dict:
+    when = _date(as_of, "as_of", required=True)
+    words = list(dict.fromkeys(str(w).strip() for w in (keywords if isinstance(keywords, list) else [keywords]) if str(w).strip()))
+    if not words or any(not 2 <= len(w) <= 20 for w in words):
+        raise ToolError("keywords 는 2~20자인 제품 이름의 목록입니다")
+    squeeze = lambda text: re.sub(r"\s", "", text or "").lower()
+    keys = [squeeze(w) for w in words[:8]]
+    latest = _latest_products(db, when)
+    found: dict[int, dict] = {}
+    names: dict[str, set] = {}
+    for row in db.scalars(select(Product).join(latest, Product.rcept_no == latest.c.rcept_no).order_by(Product.rcept_no, Product.row_no)):
+        if row.share_pct <= 0:
+            continue
+        matched = [name for name in row.std_names or () if any(key in squeeze(name) for key in keys)]
+        if not matched and not any(key in squeeze(row.name) or key in squeeze(row.segment) for key in keys):
+            continue
+        entry = found.setdefault(row.company_id, {"share_pct": 0.0, "rows": [], "rcept_no": row.rcept_no, "matched_products": []})
+        entry["share_pct"] = round(min(100.0, entry["share_pct"] + float(row.share_pct)), 2)
+        entry["rows"].append(_product_row(row))
+        for name in matched:
+            names.setdefault(name, set()).add(row.company_id)
+            if name not in entry["matched_products"]:
+                entry["matched_products"].append(name)
+    companies = {c.company_id: c for c in db.scalars(select(Company).where(Company.company_id.in_(list(found))))} if found else {}
+    floor = float(min_share) if min_share is not None else 0.0
+    ranked = sorted(((i, e) for i, e in found.items() if e["share_pct"] >= floor
+                     and (not listed_only or MARKETS.get(companies[i].corp_cls) in ("유가증권", "코스닥", "코넥스"))),
+                    key=lambda x: (-x[1]["share_pct"], companies[x[0]].name))
+    shown = {i for i, _ in ranked}
+    out = [{**_brief(companies[i]), "share_pct": e["share_pct"], "rows": e["rows"][:5], "matched_products": e["matched_products"],
+            "report": _report_name(db, e["rcept_no"]), "rcept_no": e["rcept_no"]} for i, e in ranked[:LIMIT]]
+    return {"as_of": when.isoformat(), "keywords": words[:8], "total": len(ranked), "truncated": len(ranked) > LIMIT, "companies": out,
+            "standard_names": sorted(({"name": name, "companies": len(ids & shown)} for name, ids in names.items() if ids & shown),
+                                     key=lambda x: (-x["companies"], x["name"]))[:20],
+            "fields": "회사의 share_pct 는 걸린 줄의 비중을 더한 값입니다. " + _PRODUCT_NOTE,
+            "note": "제품 표를 읽을 수 있었던 회사만 나옵니다. 표를 읽지 못한 회사, 제품 표가 없는 회사(금융업 등)는 빠져 있으니 "
+                    "빠짐없이 찾아야 하면 search_business 로도 찾으세요" if out else
+                    "이 이름이 제품 표에 나온 회사가 없습니다. 다른 표기(영문 약어, 상위 제품 이름)로 다시 찾거나 search_business 로 보고서 글에서 찾으세요"}
+
+
+def get_products(db, company_id, as_of) -> dict:
+    company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
+    latest = _latest_products(db, when, company.company_id)
+    rows = db.scalars(select(Product).join(latest, Product.rcept_no == latest.c.rcept_no).order_by(Product.row_no)).all()
+    if not rows:
+        return {"company": _brief(company), "read": False, "products": [],
+                "note": "이 회사의 제품 표는 읽지 못했거나 없습니다. 제품이 없다는 뜻이 아닙니다. get_business 로 '주요 제품 및 서비스'의 글을 직접 읽으세요"}
+    return {"company": _brief(company), "read": True, "report": _report_name(db, rows[0].rcept_no), "rcept_no": rows[0].rcept_no,
+            "disclosed_date": rows[0].disclosed_date.isoformat(), "total": len(rows),
+            "products": [_product_row(row) for row in rows], "fields": _PRODUCT_NOTE}
+
+
+FUNCTIONS = {"find_by_product": find_by_product, "get_products": get_products,
+             "search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
              "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}
 

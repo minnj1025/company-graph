@@ -75,3 +75,27 @@ def test_find_disclosers_counts_new_and_corrected_filings(db):
                                                         "counterparty_id": KIA})
     assert [c["company_id"] for c in only_kia["companies"]] == [5]
     assert "industry" in agent_tools.call(db, "list_companies", {})["error"]
+
+
+def test_find_by_product_ranks_by_share_and_keeps_the_reported_name(db):
+    from datetime import date
+    from decimal import Decimal
+    from company_graph.db import Product
+    row = lambda company, no, segment, name, share, std: Product(
+        company_id=company, rcept_no=f"2026031500000{company}", bsns_year=2025, disclosed_date=date(2026, 3, 15), row_no=no,
+        segment=segment, name=name, share_pct=Decimal(share), std_names=std, named_by="test")
+    db.add_all([row(SUPPLIER, 1, "LiBS", "분리막 등", "90", ["이차전지 분리막"]), row(SUPPLIER, 2, None, "기타", "10", []),
+                row(MOBIS, 1, "제품", "분리막", "30", ["이차전지 분리막"]), row(MOBIS, 2, "제품", "모듈", "70", ["자동차 모듈"])])
+    db.commit()
+    ask = lambda **more: agent_tools.call(db, "find_by_product", {"keywords": ["분리 막"], "as_of": "2026-06-30", **more})
+    out = ask(listed_only=False)
+    assert [(c["company_id"], c["share_pct"], c["rows"][0]["name"]) for c in out["companies"]] == [(SUPPLIER, 90.0, "분리막 등"), (MOBIS, 30.0, "분리막")]
+    assert out["standard_names"] == [{"name": "이차전지 분리막", "companies": 2}]
+    assert [c["company_id"] for c in ask(listed_only=False, min_share=50)["companies"]] == [SUPPLIER]
+    assert ask(as_of="2026-01-01", listed_only=False)["total"] == 0   # 보고서가 나오기 전 시점
+    # 상표나 약어로 사업부문 칸에만 적힌 것도 찾는다
+    assert agent_tools.call(db, "find_by_product", {"keywords": ["LiBS"], "as_of": "2026-06-30", "listed_only": False})["total"] == 1
+    products = agent_tools.call(db, "get_products", {"company_id": MOBIS, "as_of": "2026-06-30"})
+    assert products["read"] and [p["share_pct"] for p in products["products"]] == [30.0, 70.0]
+    assert agent_tools.call(db, "get_products", {"company_id": KIA, "as_of": "2026-06-30"})["read"] is False
+    json.dumps(out, ensure_ascii=False)

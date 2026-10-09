@@ -418,6 +418,7 @@ class _Found:
         self.focus: set[int] = set()
         self.links: dict[tuple, dict] = {}
         self.topics: dict[str, dict[int, int]] = {}   # 사업 낱말 → {기업: 보고서에 나온 횟수}
+        self.products: dict[str, dict[int, float]] = {}   # 제품 → {기업: 매출 비중(%)}
 
     def relation(self, item: dict):
         subject, obj = item["subject"].get("company_id"), item["object"].get("company_id")
@@ -463,7 +464,13 @@ class _Found:
                 self.companies.add(company["company_id"])
                 for word, count in sorted(company["matched"].items(), key=lambda x: -x[1])[:2]:
                     self.topics.setdefault(word, {})[company["company_id"]] = count
-        elif name == "get_business":
+        elif name == "find_by_product":
+            # 찾은 제품을 점으로 두고 기업을 매출 비중으로 잇는다. 표준 이름에 걸린 것이 없으면 찾은 낱말을 점으로 쓴다
+            for company in result["companies"]:
+                self.companies.add(company["company_id"])
+                for product in company["matched_products"][:2] or result["keywords"][:1]:
+                    self.products.setdefault(product, {})[company["company_id"]] = company["share_pct"]
+        elif name in ("get_business", "get_products"):
             self.focus.add(result["company"]["company_id"])
         elif name == "list_companies":
             self.companies.update(c["company_id"] for c in result["companies"][:80])
@@ -500,6 +507,16 @@ class _Found:
             for company_id, count in members.items():
                 links.append({"source": company_id, "target": -number, "type": "business", "count": count, "value": None,
                               "label": f"보고서의 사업 내용에 '{word}' {count}번"})
+                degree[company_id] += 1
+        for name, members in self.products.items():
+            members = {i: share for i, share in members.items() if i in ids}
+            if not members:
+                continue
+            topics.append({"id": product_id(name), "name": name, "kind": "product", "stock_code": None, "listed": False, "group": None,
+                           "stage": "", "sector": "제품", "market": None, "in_scope": False, "degree": len(members), "focus": True})
+            for company_id, share in members.items():
+                links.append({"source": company_id, "target": product_id(name), "type": "product", "count": 1, "value": share,
+                              "label": f"매출의 {share:.1f}%"})
                 degree[company_id] += 1
         nodes = [{**company_json(c), "degree": degree[c.company_id], "focus": c.company_id in self.focus}
                  for c in db.scalars(select(Company).where(Company.company_id.in_(ids)))] if ids else []
