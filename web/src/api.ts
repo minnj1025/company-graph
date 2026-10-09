@@ -49,11 +49,15 @@ export type AskEvent = { kind: "tool"; name: string; input: Record<string, unkno
 const REFUSED = "지금은 답할 수 없습니다. 잠시 뒤에 다시 시도해 주세요.";
 
 /** Agent에게 묻고, 답이 만들어지는 대로 onEvent 로 받는다. 끝나면 askAgent 와 같은 값을 돌려준다. */
-export async function askAgentStream(question: string, onEvent: (event: AskEvent) => void): Promise<AskResult> {
+export async function askAgentStream(
+  question: string,
+  onEvent: (event: AskEvent) => void,
+  history: { question: string; answer: string }[] = [],
+): Promise<AskResult> {
   const response = await fetch("/api/ask/stream", {
     method: "POST",
     headers: { "Content-Type": "application/json", ...ownerHeaders() },
-    body: JSON.stringify({ question }),
+    body: JSON.stringify({ question, history }),
   });
   if (!response.ok || !response.body) {
     const body = await response.json().catch(() => null);

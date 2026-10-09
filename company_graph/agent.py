@@ -55,6 +55,10 @@ SYSTEM = """당신은 한국 상장사의 공시(DART)에서 뽑은 기업 관�
 - 매수·매도·보유 판단, 주가 전망은 답하지 않습니다. 정중히 거절하고, 대신 조회해 줄 수 있는 사실(공시된 계약, 지분, 계열)을 제안합니다.
 - 공시 사실을 묻는 질문은 투자와 관련돼 보여도 거절하지 않고 사실만 답합니다.
 
+이어지는 대화
+- 앞선 질문과 답이 같이 올 수 있습니다. "그중", "그 회사"처럼 앞을 가리키는 말이 무엇인지 아는 데만 씁니다.
+- 앞선 답에 적힌 숫자나 사실을 그대로 옮기지 않습니다. 이번 답에 쓰는 사실은 이번에 도구로 다시 조회합니다.
+
 답의 모양
 - 답은 한국어로 씁니다. 첫 줄에 결론을 한두 문장으로 적습니다 (몇 곳인지, 가장 큰 곳이 어디인지처럼 물은 것에 대한 답).
 - 기업이나 공시를 셋 이상 나열하거나 비교할 때는 마크다운 표로 정리합니다. 열은 질문에 맞게 고르되 기업, 물은 값(제품과 매출 비중, 지분율, 계약 금액과 날짜 등), 근거 접수번호를 둡니다. 하나나 둘이면 문장으로 씁니다.
@@ -75,7 +79,7 @@ def split_followups(text: str) -> tuple[str, list[str]]:
 
 
 def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effort: str = "medium", client=None,
-           max_turns: int = MAX_TURNS, on_result=None, on_event=None) -> dict:
+           max_turns: int = MAX_TURNS, on_result=None, on_event=None, history: list[tuple[str, str]] | None = None) -> dict:
     """on_result(도구 이름, 입력, 결과): 도구를 부를 때마다 불린다. 화면이 조회된 기업과 관계를 그래프로 그리는 데 쓴다.
 
     on_event(종류, 값): 주면 답을 만들어지는 대로 흘려보낸다. "text" 는 답의 글 조각, "tool" 은 지금 부르는 도구와 입력,
@@ -83,7 +87,11 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
     """
     client = client or anthropic.Anthropic(api_key=secret("ANTHROPIC_API_KEY"))
     when = as_of or date.today()
-    messages = [{"role": "user", "content": f"조회 시점: {when.isoformat()}\n\n질문: {question}"}]
+    # history: 같은 대화의 앞선 (질문, 답). 글만 넘긴다. 그때의 조회 결과는 넘기지 않으므로 사실은 이번에 다시 조회해야 한다
+    messages = []
+    for asked, said in history or []:
+        messages += [{"role": "user", "content": f"질문: {asked}"}, {"role": "assistant", "content": said}]
+    messages.append({"role": "user", "content": f"조회 시점: {when.isoformat()}\n\n질문: {question}"})
     usage = {"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}
     calls, seen, started = [], set(), time.time()
     text, stop = "", None

@@ -629,8 +629,19 @@ ASK_TYPES = {label: key for key, label in query.LABELS.items()}
 _ask_ready = False
 
 
+class Said(BaseModel):
+    question: str = Field(max_length=300)
+    answer: str = Field(max_length=6000)
+
+
 class Ask(BaseModel):
     question: str = Field(min_length=2, max_length=300)
+    # 같은 대화의 앞선 질문과 답 (글만). "그중 가장 큰 곳은?" 같은 이어지는 질문을 알아듣는 데 쓴다
+    history: list[Said] = Field(default_factory=list, max_length=4)
+
+
+def _history(body: Ask) -> list[tuple[str, str]]:
+    return [(said.question, said.answer) for said in body.history if said.question.strip() and said.answer.strip()]
 
 
 def _visitor(request: Request) -> str:
@@ -896,7 +907,7 @@ def ask(body: Ask, request: Request, db=Depends(get_db)):
     question, visitor, ask_id = _admit(body, request, db)
     found = _Found()
     try:
-        result = agent.answer(question, model=ASK_MODEL, as_of=date.today(), max_turns=8, on_result=found.take)
+        result = agent.answer(question, model=ASK_MODEL, as_of=date.today(), max_turns=8, on_result=found.take, history=_history(body))
     except Exception as error:   # 키가 없거나 API가 실패한 경우. 방문자에게는 사정만 알린다
         raise HTTPException(503, UNAVAILABLE) from error
     return _answered(db, question, visitor, ask_id, result, found)
@@ -914,11 +925,12 @@ def ask_stream(body: Ask, request: Request, db=Depends(get_db)):
     question, visitor, ask_id = _admit(body, request, db)
     events: queue.Queue = queue.Queue()
 
+    history = _history(body)
     def work():
         found = _Found()
         try:
             result = agent.answer(question, model=ASK_MODEL, as_of=date.today(), max_turns=8, on_result=found.take,
-                                  on_event=lambda kind, value: events.put((kind, value)))
+                                  history=history, on_event=lambda kind, value: events.put((kind, value)))
             with session(_engine) as own:   # 요청의 DB 연결은 응답을 흘려보내는 동안 닫힐 수 있어서 따로 연다
                 events.put(("done", _answered(own, question, visitor, ask_id, result, found)))
         except Exception:

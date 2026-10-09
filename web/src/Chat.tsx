@@ -84,53 +84,102 @@ function describe(event: Extract<AskEvent, { kind: "tool" }>): string {
   return `${TOOL_LABELS[event.name] ?? event.name}${what ? `: ${what}` : ""}`;
 }
 
-const HISTORY_KEY = "chat-turns";
-const HISTORY_MAX = 20;
+const CHATS_KEY = "chats";
+const OLD_KEY = "chat-turns";   // 대화로 묶기 전에 쓰던 자리
+const CHATS_MAX = 10;
+const TURNS_MAX = 20;
+/** 이어지는 질문에 같이 보내는 앞선 질문의 수 */
+const CONTEXT_TURNS = 4;
 
-/** 지난 질문과 답을 이 브라우저에 적어 둔다. 새로 고치거나 다시 들어와도 남는다 */
-function saveTurns(turns: Turn[]) {
+/** 대화 하나: 이어지는 질문들의 묶음. 같은 대화 안에서는 앞선 질문과 답을 Agent가 안다 */
+export interface Conversation {
+  id: string;
+  turns: Turn[];
+}
+
+const newId = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
+/** 대화들을 이 브라우저에 적어 둔다. 새로 고치거나 다시 들어와도 남는다 */
+function saveChats(chats: Conversation[], current: string) {
   try {
     // 그래프 라이브러리가 점과 선에 그리기용 값을 붙여 두므로, 서버에서 받은 값만 골라 적는다
     const plainNode = ({ id, name, legal_name, stock_code, listed, group, stage, sector, market, in_scope, kind, degree, focus, mentioned }: GraphNode) =>
       ({ id, name, legal_name, stock_code, listed, group, stage, sector, market, in_scope, kind, degree, focus, mentioned });
     const end = (side: number | GraphNode) => (typeof side === "number" ? side : side.id);
-    const done = turns
-      .filter((turn) => turn.result || turn.error)
-      .slice(-HISTORY_MAX)
-      .map((turn) => ({
-        question: turn.question,
-        error: turn.error,
-        result: turn.result && {
-          ...turn.result,
-          graph: {
-            nodes: turn.result.graph.nodes.map(plainNode),
-            links: turn.result.graph.links.map(({ source, target, type, count, value, label }) => ({ source: end(source), target: end(target), type, count, value, label })),
+    const plainTurns = (turns: Turn[]) =>
+      turns
+        .filter((turn) => turn.result || turn.error)
+        .slice(-TURNS_MAX)
+        .map((turn) => ({
+          question: turn.question,
+          error: turn.error,
+          result: turn.result && {
+            ...turn.result,
+            graph: {
+              nodes: turn.result.graph.nodes.map(plainNode),
+              links: turn.result.graph.links.map(({ source, target, type, count, value, label }) => ({ source: end(source), target: end(target), type, count, value, label })),
+            },
           },
-        },
-      }));
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(done));
+        }));
+    const kept = chats.map((chat) => ({ id: chat.id, turns: plainTurns(chat.turns) })).filter((chat) => chat.turns.length > 0).slice(-CHATS_MAX);
+    localStorage.setItem(CHATS_KEY, JSON.stringify({ current, chats: kept }));
   } catch {
     // 저장 공간이 없거나 막혀 있으면 기록 없이 쓴다
   }
 }
 
-function loadTurns(): Turn[] {
+type Saved = Pick<Turn, "question" | "result" | "error">[];
+const revive = (turns: Saved): Turn[] => turns.map((turn) => ({ ...turn, steps: [], partial: "" }));
+
+function loadChats(): { chats: Conversation[]; current: string } {
   try {
-    const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? "[]") as Pick<Turn, "question" | "result" | "error">[];
-    return saved.map((turn) => ({ ...turn, steps: [], partial: "" }));
+    const saved = JSON.parse(localStorage.getItem(CHATS_KEY) ?? "null") as { current: string; chats: { id: string; turns: Saved }[] } | null;
+    const old = JSON.parse(localStorage.getItem(OLD_KEY) ?? "[]") as Saved;
+    localStorage.removeItem(OLD_KEY);
+    const chats = (saved?.chats ?? []).map((chat) => ({ id: chat.id, turns: revive(chat.turns) }));
+    if (old.length > 0) chats.push({ id: newId(), turns: revive(old) });
+    if (chats.length > 0) return { chats, current: chats.some((chat) => chat.id === saved?.current) ? saved!.current : chats[chats.length - 1].id };
   } catch {
-    return [];
+    // 아래에서 빈 대화로 시작한다
   }
+  const first = { id: newId(), turns: [] };
+  return { chats: [first], current: first.id };
 }
 
 /** 질문과 답의 기록. 입력 칸(그래프 아래)과 답이 보이는 칸(오른쪽)이 떨어져 있어서 화면 맨 위에서 쥐고 내려 준다 */
 export function useChat(onShow: (result: AskResult | null) => void) {
-  const [turns, setTurns] = useState<Turn[]>(loadTurns);
+  const [{ chats, current }, setBook] = useState(loadChats);
   const [busy, setBusy] = useState(false);
+  const turns = chats.find((chat) => chat.id === current)?.turns ?? [];
+  /** 지금 대화의 질문들을 바꾼다 */
+  const setTurns = useCallback(
+    (change: (all: Turn[]) => Turn[]) =>
+      setBook((book) => ({ ...book, chats: book.chats.map((chat) => (chat.id === book.current ? { ...chat, turns: change(chat.turns) } : chat)) })),
+    [],
+  );
   useEffect(() => {
-    if (!busy) saveTurns(turns);
-  }, [turns, busy]);
-  const clear = useCallback(() => setTurns([]), []);
+    if (!busy) saveChats(chats, current);
+  }, [chats, current, busy]);
+  /** 새 대화를 연다. 앞 대화는 지난 대화로 남는다 */
+  const startNew = useCallback(
+    () =>
+      setBook((book) => {
+        const kept = book.chats.filter((chat) => chat.turns.length > 0);
+        const fresh = { id: newId(), turns: [] };
+        return { chats: [...kept, fresh], current: fresh.id };
+      }),
+    [],
+  );
+  const open = useCallback((id: string) => setBook((book) => ({ chats: book.chats.filter((chat) => chat.turns.length > 0 || chat.id === id), current: id })), []);
+  /** 지금 대화를 지운다 */
+  const clear = useCallback(
+    () =>
+      setBook((book) => {
+        const fresh = { id: newId(), turns: [] };
+        return { chats: [...book.chats.filter((chat) => chat.id !== book.current), fresh], current: fresh.id };
+      }),
+    [],
+  );
   const [status, setStatus] = useState<AskStatus | null>(null);
 
   useEffect(() => {
@@ -148,15 +197,24 @@ export function useChat(onShow: (result: AskResult | null) => void) {
       const clean = question.trim();
       if (clean.length < 2 || busy || closed) return false;
       setBusy(true);
+      // 같은 대화의 앞선 질문과 답(글만)을 같이 보낸다
+      const context = turns
+        .filter((turn) => turn.result)
+        .slice(-CONTEXT_TURNS)
+        .map((turn) => ({ question: turn.question, answer: turn.result!.answer.slice(0, 6000) }));
       setTurns((all) => [...all, { question: clean, steps: [], partial: "" }]);
       const patch = (change: (turn: Turn) => Turn) => setTurns((all) => all.map((t, i) => (i === all.length - 1 ? change(t) : t)));
       try {
-        const result = await askAgentStream(clean, (event) => {
-          if (event.kind === "text") patch((t) => ({ ...t, partial: t.partial + event.text }));
-          // 도구를 부르기 전에 쓴 말은 답이 아니라서, 조회가 시작되면 지운다
-          else if (event.kind === "tool") patch((t) => ({ ...t, partial: "", steps: [...t.steps, describe(event)] }));
-          else patch((t) => ({ ...t, partial: "" }));
-        });
+        const result = await askAgentStream(
+          clean,
+          (event) => {
+            if (event.kind === "text") patch((t) => ({ ...t, partial: t.partial + event.text }));
+            // 도구를 부르기 전에 쓴 말은 답이 아니라서, 조회가 시작되면 지운다
+            else if (event.kind === "tool") patch((t) => ({ ...t, partial: "", steps: [...t.steps, describe(event)] }));
+            else patch((t) => ({ ...t, partial: "" }));
+          },
+          context,
+        );
         setTurns((all) => all.map((t, i) => (i === all.length - 1 ? { ...t, result } : t)));
         setStatus((s) => (s && !s.owner ? { ...s, left_for_you: result.left_for_you, left_today: (s.left_today ?? 1) - 1 } : s));
         if (result.graph.nodes.length > 0) onShow(result);
@@ -167,10 +225,12 @@ export function useChat(onShow: (result: AskResult | null) => void) {
       }
       return true;
     },
-    [busy, closed, onShow],
+    [busy, closed, onShow, turns, setTurns],
   );
 
-  return { turns, busy, status, left, closed, ask, owner, clear };
+  /** 지금 대화 말고 남아 있는 대화들. 최근 것이 위로 */
+  const others = chats.filter((chat) => chat.id !== current && chat.turns.length > 0).reverse();
+  return { turns, busy, status, left, closed, ask, owner, clear, startNew, open, others };
 }
 
 export type ChatState = ReturnType<typeof useChat>;
@@ -258,7 +318,38 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
 
   return (
     <div className="chat-log">
-      {chat.turns.length === 0 && <p className="empty">아래 입력 칸에 궁금한 것을 적으면 답이 여기에 쌓입니다.</p>}
+      {(chat.turns.length > 0 || chat.others.length > 0) && (
+        <div className="chat-bar">
+          <button onClick={chat.startNew} disabled={chat.busy || chat.turns.length === 0} title="앞 내용을 잇지 않는 새 대화를 엽니다. 지금 대화는 지난 대화로 남습니다">
+            + 새 대화
+          </button>
+          {chat.others.length > 0 && (
+            <details className="past">
+              <summary>지난 대화 {chat.others.length}</summary>
+              {chat.others.map((other) => (
+                <button
+                  key={other.id}
+                  disabled={chat.busy}
+                  onClick={(event) => {
+                    (event.currentTarget.closest("details") as HTMLDetailsElement).open = false;
+                    chat.open(other.id);
+                    const last = [...other.turns].reverse().find((turn) => turn.result && turn.result.graph.nodes.length > 0);
+                    if (last) onShow(last.result!);
+                  }}
+                >
+                  <span>{other.turns[0].question}</span>
+                  <em>질문 {other.turns.length}개</em>
+                </button>
+              ))}
+            </details>
+          )}
+        </div>
+      )}
+      {chat.turns.length === 0 && (
+        <p className="empty">
+          아래 입력 칸에 궁금한 것을 적으면 답이 여기에 쌓입니다. 같은 대화 안에서는 "그중 가장 큰 곳은?"처럼 이어서 물을 수 있습니다.
+        </p>
+      )}
       {chat.turns.map((turn, i) => (
         <div key={i} className={i === open ? "turn" : "turn folded"}>
           <button
@@ -333,9 +424,9 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
             onShow(null);
             chat.clear();
           }}
-          title="이 브라우저에 적어 둔 질문과 답을 지웁니다"
+          title="이 대화를 이 브라우저에서 지웁니다. 다른 대화는 남습니다"
         >
-          기록 지우기
+          이 대화 지우기
         </button>
       )}
       <div ref={bottom} />
