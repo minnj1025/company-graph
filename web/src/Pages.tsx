@@ -250,10 +250,9 @@ function sourceOf(meta: Meta, label: string): string {
   return (meta.coverage.sources[key[label]] ?? "").replace(/(\d)-(?=\d)/g, "$1\u2011");
 }
 
-/** Agent 평가: 149문항 결과, 웹 검색만 쓴 Claude와의 비교, 문항 열어보기. */
+/** Agent 평가: 149문항 결과, 웹 검색만 쓴 Claude와의 비교. 문항은 "평가 문항" 탭에 있다. */
 function EvalSection() {
   const data = useEval();
-  const [open, setOpen] = useState(false);
   if (!data) return null;
   const before = data.items.map((item) => item.agent);
   const sides = data.items.map((item) => item.after);
@@ -326,12 +325,7 @@ function EvalSection() {
         <li>웹 검색이 틀린 15문항은 조회 시점 뒤의 정정을 놓치거나, 기사에 없는 값을 추정하거나, 여러 건 가운데 일부만 찾은 경우였습니다.</li>
       </ul>
 
-      <h2>평가 문항</h2>
-      <p className="lead">문항, 정답, Agent가 부른 도구와 답, 판정 사유를 모두 볼 수 있습니다. 틀린 문항도 그대로 두었습니다.</p>
-      <button className="reveal" onClick={() => setOpen(!open)}>
-        {open ? "접기" : `${sides.length}문항 열어보기`}
-      </button>
-      {open && <Questions data={data} />}
+      <p className="lead">문항과 정답, Agent가 부른 도구와 답, 판정 사유는 위의 "평가 문항" 탭에서 모두 볼 수 있습니다.</p>
     </>
   );
 }

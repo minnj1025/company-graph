@@ -4,7 +4,8 @@
 무엇인지 알 수 없기 때문이다. 그래서 일감을 회사 단위로 묶어 글 파일로 내보내고, 붙인 결과를 받아 DB에 반영한다.
 붙이는 주체(사람이든 모델이든)는 같은 안내문(GUIDE)과 같은 제품군 목록(product_families)을 본다.
 
-실행: python -m company_graph.product_naming export     data/product_naming/ 에 안내문과 일감 묶음을 쓴다
+실행: python -m company_graph.product_naming export     data/product_naming/ 에 안내문과 일감 묶음을 쓴다 (처음 한 번. 다시 하면 번호가 바뀐다)
+      python -m company_graph.product_naming export add  아직 이름이 없는 줄이 있는 회사만 data/product_naming/add_NN/ 에 따로 낸다
       python -m company_graph.product_naming check      결과 파일에서 빠진 줄, 목록에 없는 제품군을 찾는다
       python -m company_graph.product_naming apply 이름  결과를 DB에 반영한다 (이름은 named_by 에 적을 값)
 """
@@ -150,10 +151,20 @@ def collect(db) -> list[dict]:
     return out
 
 
-def export():
+def rounds() -> list:
+    """일감을 낸 자리들. 처음 낸 것(WORK)과 그 뒤에 더 낸 것(add_01, add_02, …). 뒤의 결과가 앞의 것을 덮는다."""
+    return [WORK, *sorted(path for path in WORK.glob("add_*") if path.is_dir())]
+
+
+def export(add: bool = False):
     WORK.mkdir(parents=True, exist_ok=True)
     with session(init_db()) as db:
         companies = collect(db)
+        if add:   # 이름이 아직 없는 줄이 있는 회사만. 그 회사의 표는 전부 다시 낸다(다른 줄을 같이 봐야 맞게 붙는다)
+            unnamed = set(db.scalars(select(Product.company_id).where(Product.named_by.is_(None)).distinct()))
+            companies = [company for company in companies if company["company_id"] in unnamed]
+    work = WORK / f"add_{len(rounds()):02d}" if add else WORK
+    work.mkdir(parents=True, exist_ok=True)
     (WORK / "GUIDE.md").write_text(guide(), encoding="utf-8")
     index, batches, current, count = [], [], [], 0
     for company in companies:
@@ -168,16 +179,27 @@ def export():
         count += len(company["rows"])
     batches.append(current)
     for number, batch in enumerate(batches, 1):
-        (WORK / f"batch_{number:02d}.txt").write_text("\n\n".join(batch) + "\n", encoding="utf-8")
-    (WORK / "index.json").write_text(json.dumps(index, ensure_ascii=False), encoding="utf-8")
-    print(f"회사 {len(companies):,}곳, 줄 {len(index):,}개, 묶음 {len(batches)}개 → {WORK}")
+        (work / f"batch_{number:02d}.txt").write_text("\n\n".join(batch) + "\n", encoding="utf-8")
+    (work / "index.json").write_text(json.dumps(index, ensure_ascii=False), encoding="utf-8")
+    print(f"회사 {len(companies):,}곳, 줄 {len(index):,}개, 묶음 {len(batches)}개 → {work}")
 
 
-def read_results() -> tuple[dict[int, tuple[list, bool]], list[str]]:
-    """결과 파일을 읽는다. {줄 번호: ([(제품, 제품군), …], 짐작 표시)} 와 문제 목록."""
-    index = json.loads((WORK / "index.json").read_text(encoding="utf-8"))
-    results, problems = {}, []
-    for path in sorted(WORK.glob("out_*.tsv")):
+def read_results() -> tuple[dict[tuple, tuple[list, bool]], list[str]]:
+    """결과 파일을 읽는다. {(기업, 사업부문, 품목): ([(제품, 제품군), …], 짐작 표시)} 와 문제 목록."""
+    keyed, problems = {}, []
+    for work in rounds():
+        index = json.loads((work / "index.json").read_text(encoding="utf-8"))
+        numbered = _read_round(work, problems)
+        missing = [n for n in range(len(index)) if n not in numbered]
+        if missing:
+            problems.append(f"{work.name}: 빠진 줄 {len(missing):,}개 (예: {missing[:8]})")
+        keyed.update({tuple(index[number]): value for number, value in numbered.items() if number < len(index)})
+    return _tidy(keyed, problems), problems
+
+
+def _read_round(work, problems: list[str]) -> dict[int, tuple[list, bool]]:
+    results = {}
+    for path in sorted(work.glob("out_*.tsv")):
         for line in path.read_text(encoding="utf-8").splitlines():
             if not line.strip():
                 continue
@@ -207,6 +229,11 @@ def read_results() -> tuple[dict[int, tuple[list, bool]], list[str]]:
             if number in results:
                 problems.append(f"{path.name}: {number} 이 두 번 나옵니다")
             results[number] = (pairs[:MAX_PRODUCTS], unsure)
+    return results
+
+
+def _tidy(results: dict, problems: list[str]) -> dict:
+    """모든 결과를 모아 놓고 이름을 다듬는다."""
     # 같은 제품군 안에서 띄어쓰기만 다른 이름("실리콘카바이드 부품", "실리콘 카바이드 부품")은 더 많이 쓰인 표기로 모은다
     spellings: dict[tuple, Counter] = defaultdict(Counter)
     for pairs, _ in results.values():
@@ -238,10 +265,7 @@ def read_results() -> tuple[dict[int, tuple[list, bool]], list[str]]:
             del moves[(family, old)]
     for number, (pairs, unsure) in results.items():
         results[number] = (list(dict.fromkeys((moves.get((family, name), name), family) for name, family in pairs)), unsure)
-    missing = [n for n in range(len(index)) if n not in results]
-    if missing:
-        problems.append(f"빠진 줄 {len(missing):,}개 (예: {missing[:8]})")
-    return results, problems
+    return results
 
 
 def check():
@@ -257,11 +281,10 @@ def check():
 
 
 def apply(named_by: str):
-    index = json.loads((WORK / "index.json").read_text(encoding="utf-8"))
-    results, problems = read_results()
+    by_key, problems = read_results()
     if any("빠진 줄" in p for p in problems):
         sys.exit("빠진 줄이 있어 반영하지 않습니다. check 로 확인하세요")
-    by_key = {(company_id, segment, name): results[number] for number, (company_id, segment, name) in enumerate(index)}
+    results = by_key
     changed = 0
     with session(init_db()) as db:
         for row in db.scalars(select(Product)):
@@ -292,7 +315,7 @@ def apply(named_by: str):
 if __name__ == "__main__":
     command = sys.argv[1] if len(sys.argv) > 1 else ""
     if command == "export":
-        export()
+        export(add=sys.argv[2:] == ["add"])
     elif command == "check":
         check()
     elif command == "apply" and len(sys.argv) > 2:
