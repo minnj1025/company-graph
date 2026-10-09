@@ -370,11 +370,13 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
           <button
             className={turn.result !== undefined && turn.result === shown ? "q shown" : "q"}
             onClick={() => {
+              // 펼친 질문을 다시 누르면 접힌다
+              if (i === open) return setOpen(-1);
               setOpen(i);
               if (turn.result && turn.result.graph.nodes.length > 0) onShow(turn.result);
             }}
             aria-expanded={i === open}
-            title={i === open ? "이 질문으로 찾은 그래프를 봅니다" : "답을 펼치고, 이 질문으로 찾은 그래프를 봅니다"}
+            title={i === open ? "다시 누르면 답을 접습니다" : "답을 펼치고, 이 질문으로 찾은 그래프를 봅니다"}
           >
             {turn.question}
           </button>
