@@ -3,13 +3,17 @@
 실행: uvicorn company_graph.api:app --port 8000
 """
 import hashlib
+import json
 import os
+import queue
+import threading
 import time
 import zlib
 from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
@@ -577,11 +581,8 @@ class _Found:
         return {"nodes": nodes + extra, "links": links}
 
 
-@app.post("/api/ask")
-def ask(body: Ask, request: Request, db=Depends(get_db)):
-    """질문 하나를 Agent에게 넘기고, 답과 함께 조회된 기업·관계를 그래프로 돌려준다."""
-    from . import agent   # anthropic 패키지는 여기서만 필요하다
-
+def _admit(body: Ask, request: Request, db) -> tuple[str, str, int]:
+    """질문을 받을 수 있는지 보고, 받으면 먼저 센다. (다듬은 질문, 방문자, 기록 번호)"""
     _prepare_ask()
     visitor = _visitor(request)
     if _asked_today(db, visitor) >= ASK_VISITOR_LIMIT:
@@ -592,14 +593,15 @@ def ask(body: Ask, request: Request, db=Depends(get_db)):
     entry = AskLog(asked_at=datetime.now(), visitor=visitor, question=question[:300], ok=False)
     db.add(entry)
     db.commit()   # 답이 오기 전에 먼저 센다. 동시에 여러 번 눌러도 상한을 넘지 않게
-    found = _Found()
-    try:
-        result = agent.answer(question, model=ASK_MODEL, as_of=date.today(), max_turns=8, on_result=found.take)
-    except Exception as error:   # 키가 없거나 API가 실패한 경우. 방문자에게는 사정만 알린다
-        raise HTTPException(503, "지금은 Agent가 답할 수 없습니다. 잠시 뒤에 다시 시도해 주세요.") from error
+    return question, visitor, entry.ask_id
+
+
+def _answered(db, question: str, visitor: str, ask_id: int, result: dict, found: _Found) -> dict:
+    """Agent의 답을 화면에 줄 모양으로 만든다. 출처와 그래프는 답의 글과 따로, 원장에서 다시 찾아 붙인다."""
+    entry = db.get(AskLog, ask_id)
     entry.ok, entry.tokens, entry.seconds = True, sum(result["usage"].values()), result["seconds"]
     db.commit()
-    # 출처: 답에 적힌 접수번호 가운데 조회 결과에 실제로 있었던 공시. 답의 글과 따로, 원장에서 다시 찾아 붙인다
+    # 출처: 답에 적힌 접수번호 가운데 조회 결과에 실제로 있었던 공시
     cited = [no for no in result["cited"] if no not in result["cited_not_in_results"]]
     documents = {d.rcept_no: d for d in db.scalars(select(Document).where(Document.rcept_no.in_(cited))).all()} if cited else {}
     sources = [{"rcept_no": no, "url": query.DART_VIEWER + no,
@@ -614,3 +616,59 @@ def ask(body: Ask, request: Request, db=Depends(get_db)):
             "sources": sources,
             "graph": found.graph(db, result["answer"]),
             "left_for_you": max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}
+
+
+UNAVAILABLE = "지금은 Agent가 답할 수 없습니다. 잠시 뒤에 다시 시도해 주세요."
+
+
+@app.post("/api/ask")
+def ask(body: Ask, request: Request, db=Depends(get_db)):
+    """질문 하나를 Agent에게 넘기고, 답과 함께 조회된 기업·관계를 그래프로 돌려준다."""
+    from . import agent   # anthropic 패키지는 여기서만 필요하다
+
+    question, visitor, ask_id = _admit(body, request, db)
+    found = _Found()
+    try:
+        result = agent.answer(question, model=ASK_MODEL, as_of=date.today(), max_turns=8, on_result=found.take)
+    except Exception as error:   # 키가 없거나 API가 실패한 경우. 방문자에게는 사정만 알린다
+        raise HTTPException(503, UNAVAILABLE) from error
+    return _answered(db, question, visitor, ask_id, result, found)
+
+
+@app.post("/api/ask/stream")
+def ask_stream(body: Ask, request: Request, db=Depends(get_db)):
+    """ask 와 같되, 답을 만들어지는 대로 흘려보낸다 (Server-Sent Events).
+
+    사건: tool(지금 부르는 도구와 입력), text(답의 글 조각), turn(도구 결과를 받고 새로 쓰기 시작),
+    done(ask 가 돌려주는 것과 같은 값), error(사유). 횟수 초과 같은 거절은 흘려보내기 전에 보통의 오류 응답으로 준다.
+    """
+    from . import agent
+
+    question, visitor, ask_id = _admit(body, request, db)
+    events: queue.Queue = queue.Queue()
+
+    def work():
+        found = _Found()
+        try:
+            result = agent.answer(question, model=ASK_MODEL, as_of=date.today(), max_turns=8, on_result=found.take,
+                                  on_event=lambda kind, value: events.put((kind, value)))
+            with session(_engine) as own:   # 요청의 DB 연결은 응답을 흘려보내는 동안 닫힐 수 있어서 따로 연다
+                events.put(("done", _answered(own, question, visitor, ask_id, result, found)))
+        except Exception:
+            events.put(("error", UNAVAILABLE))
+
+    threading.Thread(target=work, daemon=True).start()
+
+    def stream():
+        while True:
+            try:
+                kind, value = events.get(timeout=10)
+            except queue.Empty:
+                yield ": 기다리는 중\n\n"   # 사이에 있는 장비가 연결을 끊지 않게
+                continue
+            yield f"event: {kind}\ndata: {json.dumps(value, ensure_ascii=False, default=str)}\n\n"
+            if kind in ("done", "error"):
+                return
+
+    return StreamingResponse(stream(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"})

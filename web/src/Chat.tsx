@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { askAgent, fetchAskStatus, searchCompanies } from "./api";
+import { askAgentStream, fetchAskStatus, searchCompanies, type AskEvent } from "./api";
 import { shortName } from "./Graph";
 import type { AskResult, AskStatus, Company } from "./types";
 
@@ -27,7 +27,29 @@ const HINTS = [
 const linkReceipts = (text: string) => text.replace(/(?<![\d/=])(20\d{12})(?!\d)/g, `[$1](${DART}$1)`);
 const squeeze = (text: string) => text.replace(/\s/g, "").toLowerCase();
 
-type Turn = { question: string; result?: AskResult; error?: string };
+/** steps 와 partial 은 답이 오는 동안에만 쓴다: Agent가 지금까지 한 조회와, 흘러나오고 있는 답의 글 */
+type Turn = { question: string; result?: AskResult; error?: string; steps: string[]; partial: string };
+
+const TOOL_LABELS: Record<string, string> = {
+  find_company: "기업 찾기",
+  get_relations: "관계 조회",
+  get_filings: "공시 목록 조회",
+  list_companies: "기업 목록 조회",
+  find_disclosers: "공시를 낸 기업 찾기",
+  find_paths: "두 기업을 잇는 경로 찾기",
+  search_business: "사업 내용의 글에서 찾기",
+  get_business: "사업 내용 읽기",
+  find_by_product: "제품 표에서 찾기",
+  get_products: "제품과 매출 비중 읽기",
+  get_coverage: "수집 범위 확인",
+};
+
+/** "제품 표에서 찾기: 분리막, LiBS" 처럼, Agent가 지금 무엇을 조회하는지 한 줄로 */
+function describe(event: Extract<AskEvent, { kind: "tool" }>): string {
+  const { keywords, name } = event.input as { keywords?: unknown; name?: unknown };
+  const what = Array.isArray(keywords) ? keywords.join(", ") : typeof name === "string" ? name : "";
+  return `${TOOL_LABELS[event.name] ?? event.name}${what ? `: ${what}` : ""}`;
+}
 
 /** 질문과 답의 기록. 입력 칸(그래프 아래)과 답이 보이는 칸(오른쪽)이 떨어져 있어서 화면 맨 위에서 쥐고 내려 준다 */
 export function useChat(onShow: (result: AskResult | null) => void) {
@@ -49,9 +71,15 @@ export function useChat(onShow: (result: AskResult | null) => void) {
       const clean = question.trim();
       if (clean.length < 2 || busy || closed) return false;
       setBusy(true);
-      setTurns((all) => [...all, { question: clean }]);
+      setTurns((all) => [...all, { question: clean, steps: [], partial: "" }]);
+      const patch = (change: (turn: Turn) => Turn) => setTurns((all) => all.map((t, i) => (i === all.length - 1 ? change(t) : t)));
       try {
-        const result = await askAgent(clean);
+        const result = await askAgentStream(clean, (event) => {
+          if (event.kind === "text") patch((t) => ({ ...t, partial: t.partial + event.text }));
+          // 도구를 부르기 전에 쓴 말은 답이 아니라서, 조회가 시작되면 지운다
+          else if (event.kind === "tool") patch((t) => ({ ...t, partial: "", steps: [...t.steps, describe(event)] }));
+          else patch((t) => ({ ...t, partial: "" }));
+        });
         setTurns((all) => all.map((t, i) => (i === all.length - 1 ? { ...t, result } : t)));
         setStatus((s) => (s ? { ...s, left_for_you: result.left_for_you, left_today: s.left_today - 1 } : s));
         if (result.graph.nodes.length > 0) onShow(result);
@@ -70,8 +98,8 @@ export function useChat(onShow: (result: AskResult | null) => void) {
 
 export type ChatState = ReturnType<typeof useChat>;
 
-/** 답을 기다리는 동안. 답은 한꺼번에 오므로 얼마나 지났는지만 보여 준다 */
-function Waiting() {
+/** 답을 기다리는 동안: 지금까지 한 조회와 지난 시간, 그리고 글이 오기 시작하면 흘러나오는 답 */
+function Waiting({ turn }: { turn: Turn }) {
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
     const timer = setInterval(() => setSeconds((n) => n + 1), 1000);
@@ -79,7 +107,22 @@ function Waiting() {
   }, []);
   return (
     <div className="a pending">
-      공시 DB를 조회하는 중입니다… {seconds}초<span className="fine"> 보통 10~20초 걸립니다</span>
+      <ul className="steps-done">
+        {turn.steps.map((step, i) => (
+          <li key={i} className={i === turn.steps.length - 1 && !turn.partial ? "now" : ""}>
+            {step}
+          </li>
+        ))}
+      </ul>
+      {turn.partial ? (
+        <div className="answer streaming">
+          <Markdown remarkPlugins={[remarkGfm]}>{linkReceipts(turn.partial)}</Markdown>
+        </div>
+      ) : (
+        <p className="waiting">
+          {turn.steps.length === 0 ? "질문을 읽는 중입니다…" : "조회한 것을 읽고 있습니다…"} {seconds}초
+        </p>
+      )}
     </div>
   );
 }
@@ -137,7 +180,7 @@ export function ChatLog({ chat, shown, onShow }: LogProps) {
               )}
             </div>
           )}
-          {!turn.result && !turn.error && <Waiting />}
+          {!turn.result && !turn.error && <Waiting turn={turn} />}
         </div>
       ))}
       <div ref={bottom} />

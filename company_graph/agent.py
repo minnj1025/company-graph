@@ -57,8 +57,12 @@ SYSTEM = """당신은 한국 상장사의 공시(DART)에서 뽑은 기업 관�
 
 
 def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effort: str = "medium", client=None,
-           max_turns: int = MAX_TURNS, on_result=None) -> dict:
-    """on_result(도구 이름, 입력, 결과): 도구를 부를 때마다 불린다. 화면이 조회된 기업과 관계를 그래프로 그리는 데 쓴다."""
+           max_turns: int = MAX_TURNS, on_result=None, on_event=None) -> dict:
+    """on_result(도구 이름, 입력, 결과): 도구를 부를 때마다 불린다. 화면이 조회된 기업과 관계를 그래프로 그리는 데 쓴다.
+
+    on_event(종류, 값): 주면 답을 만들어지는 대로 흘려보낸다. "text" 는 답의 글 조각, "tool" 은 지금 부르는 도구와 입력,
+    "turn" 은 도구 결과를 받고 다음 글을 쓰기 시작한다는 뜻(앞서 흘려보낸 글은 도구를 부르기 전의 말이었으니 지운다).
+    """
     client = client or anthropic.Anthropic(api_key=secret("ANTHROPIC_API_KEY"))
     when = as_of or date.today()
     messages = [{"role": "user", "content": f"조회 시점: {when.isoformat()}\n\n질문: {question}"}]
@@ -67,9 +71,15 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
     text, stop = "", None
     with session() as db:
         for _ in range(max_turns):
-            response = client.messages.create(
-                model=model, max_tokens=16000, system=SYSTEM, tools=agent_tools.TOOLS, messages=messages,
-                cache_control={"type": "ephemeral"}, output_config={"effort": effort})
+            request = dict(model=model, max_tokens=16000, system=SYSTEM, tools=agent_tools.TOOLS, messages=messages,
+                           cache_control={"type": "ephemeral"}, output_config={"effort": effort})
+            if on_event:
+                with client.messages.stream(**request) as stream:
+                    for piece in stream.text_stream:
+                        on_event("text", piece)
+                    response = stream.get_final_message()
+            else:
+                response = client.messages.create(**request)
             for key in usage:
                 usage[key] += getattr(response.usage, key, 0) or 0
             stop = response.stop_reason
@@ -81,6 +91,8 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
             for block in response.content:
                 if block.type != "tool_use":
                     continue
+                if on_event:
+                    on_event("tool", {"name": block.name, "input": dict(block.input)})
                 result = agent_tools.call(db, block.name, dict(block.input))
                 if on_result:
                     on_result(block.name, dict(block.input), result)
@@ -92,6 +104,8 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
                 results.append({"type": "tool_result", "tool_use_id": block.id, "content": body,
                                 "is_error": "error" in result})
             messages.append({"role": "user", "content": results})
+            if on_event:
+                on_event("turn", None)
     cited = set(re.findall(r"\b\d{14}\b", text))
     return {"question": question, "as_of": when.isoformat(), "model": model, "answer": text, "stop_reason": stop,
             "tool_calls": calls, "cited": sorted(cited), "cited_not_in_results": sorted(cited - seen),

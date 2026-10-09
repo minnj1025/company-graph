@@ -2630,3 +2630,51 @@ select:focus-visible {
   font-size: 12px;
   line-height: 1.55;
 }
+
+/* 답이 오는 동안: 지금까지 한 조회와 흘러나오는 글 */
+.turn .a.pending {
+  font-style: normal;
+  color: var(--text);
+}
+
+.steps-done {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.steps-done li::before {
+  content: "✓ ";
+  color: #6fd08c;
+}
+
+.steps-done li.now::before {
+  content: "· ";
+  color: var(--accent);
+}
+
+.steps-done li.now {
+  color: var(--text);
+}
+
+.waiting {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.answer.streaming > :last-child::after {
+  content: "▍";
+  margin-left: 2px;
+  color: var(--accent);
+  animation: caret 1s steps(2) infinite;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
