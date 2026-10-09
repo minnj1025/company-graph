@@ -3,7 +3,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { askAgentStream, fetchAskStatus, fetchSuggest, searchCompanies, type AskEvent } from "./api";
 import { shortName } from "./Graph";
-import type { AskResult, AskStatus, Company, Suggestion } from "./types";
+import type { AskResult, AskStatus, Company, GraphNode, Suggestion } from "./types";
 
 const DART = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=";
 /** 처음 화면의 입력 칸 위에 보이는 예시. 이 DB로 답할 수 있는 질문의 종류가 하나씩 다르다 */
@@ -84,10 +84,53 @@ function describe(event: Extract<AskEvent, { kind: "tool" }>): string {
   return `${TOOL_LABELS[event.name] ?? event.name}${what ? `: ${what}` : ""}`;
 }
 
+const HISTORY_KEY = "chat-turns";
+const HISTORY_MAX = 20;
+
+/** 지난 질문과 답을 이 브라우저에 적어 둔다. 새로 고치거나 다시 들어와도 남는다 */
+function saveTurns(turns: Turn[]) {
+  try {
+    // 그래프 라이브러리가 점과 선에 그리기용 값을 붙여 두므로, 서버에서 받은 값만 골라 적는다
+    const plainNode = ({ id, name, legal_name, stock_code, listed, group, stage, sector, market, in_scope, kind, degree, focus, mentioned }: GraphNode) =>
+      ({ id, name, legal_name, stock_code, listed, group, stage, sector, market, in_scope, kind, degree, focus, mentioned });
+    const end = (side: number | GraphNode) => (typeof side === "number" ? side : side.id);
+    const done = turns
+      .filter((turn) => turn.result || turn.error)
+      .slice(-HISTORY_MAX)
+      .map((turn) => ({
+        question: turn.question,
+        error: turn.error,
+        result: turn.result && {
+          ...turn.result,
+          graph: {
+            nodes: turn.result.graph.nodes.map(plainNode),
+            links: turn.result.graph.links.map(({ source, target, type, count, value, label }) => ({ source: end(source), target: end(target), type, count, value, label })),
+          },
+        },
+      }));
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(done));
+  } catch {
+    // 저장 공간이 없거나 막혀 있으면 기록 없이 쓴다
+  }
+}
+
+function loadTurns(): Turn[] {
+  try {
+    const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? "[]") as Pick<Turn, "question" | "result" | "error">[];
+    return saved.map((turn) => ({ ...turn, steps: [], partial: "" }));
+  } catch {
+    return [];
+  }
+}
+
 /** 질문과 답의 기록. 입력 칸(그래프 아래)과 답이 보이는 칸(오른쪽)이 떨어져 있어서 화면 맨 위에서 쥐고 내려 준다 */
 export function useChat(onShow: (result: AskResult | null) => void) {
-  const [turns, setTurns] = useState<Turn[]>([]);
+  const [turns, setTurns] = useState<Turn[]>(loadTurns);
   const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    if (!busy) saveTurns(turns);
+  }, [turns, busy]);
+  const clear = useCallback(() => setTurns([]), []);
   const [status, setStatus] = useState<AskStatus | null>(null);
 
   useEffect(() => {
@@ -127,7 +170,7 @@ export function useChat(onShow: (result: AskResult | null) => void) {
     [busy, closed, onShow],
   );
 
-  return { turns, busy, status, left, closed, ask, owner };
+  return { turns, busy, status, left, closed, ask, owner, clear };
 }
 
 export type ChatState = ReturnType<typeof useChat>;
@@ -265,6 +308,18 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
           {!turn.result && !turn.error && <Waiting turn={turn} />}
         </div>
       ))}
+      {chat.turns.length > 0 && !chat.busy && (
+        <button
+          className="clear-history"
+          onClick={() => {
+            onShow(null);
+            chat.clear();
+          }}
+          title="이 브라우저에 적어 둔 질문과 답을 지웁니다"
+        >
+          기록 지우기
+        </button>
+      )}
       <div ref={bottom} />
     </div>
   );
