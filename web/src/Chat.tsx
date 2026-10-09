@@ -236,9 +236,21 @@ export function useChat(onShow: (result: AskResult | null) => void) {
     [busy, closed, onShow, turns, setTurns],
   );
 
+  /** 바로 앞의 대화를 연다. 거듭 누르면 더 앞의 대화로 가고, 맨 앞에서는 가장 최근 대화로 돌아온다 */
+  const openPrevious = useCallback(
+    () =>
+      setBook((book) => {
+        const kept = book.chats.filter((chat) => chat.turns.length > 0);
+        if (kept.length === 0) return book;
+        const at = kept.findIndex((chat) => chat.id === book.current);
+        const target = kept[(at === -1 ? kept.length : at) - 1] ?? kept[kept.length - 1];
+        return target.id === book.current ? book : { chats: kept, current: target.id };
+      }),
+    [],
+  );
   /** 지금 대화 말고 남아 있는 대화들. 최근 것이 위로 (지금 대화의 질문은 아래에 이미 죽 보인다) */
   const others = chats.filter((chat) => chat.id !== current && chat.turns.length > 0).reverse();
-  return { turns, busy, status, left, closed, ask, owner, clear, startNew, open, others, current };
+  return { turns, busy, status, left, closed, ask, owner, clear, startNew, open, openPrevious, others, current };
 }
 
 export type ChatState = ReturnType<typeof useChat>;
@@ -338,30 +350,14 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
           <button onClick={chat.startNew} disabled={chat.busy || chat.turns.length === 0} title="앞 내용을 잇지 않는 새 대화를 엽니다. 지금 대화는 지난 대화로 남습니다">
             + 새 대화
           </button>
-          {chat.others.length === 0 ? (
-            <span className="past none" title="이 대화 말고 남아 있는 대화가 없습니다">
-              지난 대화 0
-            </span>
-          ) : (
-            <details className="past">
-              <summary>지난 대화 {chat.others.length}</summary>
-              <div className="past-list">
-                {chat.others.map((other) => (
-                  <button
-                    key={other.id}
-                    disabled={chat.busy}
-                    onClick={(event) => {
-                      (event.currentTarget.closest("details") as HTMLDetailsElement).open = false;
-                      chat.open(other.id);
-                    }}
-                  >
-                    <span>{other.turns[0].question}</span>
-                    <em>질문 {other.turns.length}개</em>
-                  </button>
-                ))}
-              </div>
-            </details>
-          )}
+          <button
+            className="past"
+            disabled={chat.busy || chat.others.length === 0}
+            onClick={chat.openPrevious}
+            title={chat.others.length > 1 ? "바로 앞의 대화를 엽니다. 다시 누르면 그 앞의 대화로 갑니다" : "지난 대화를 엽니다"}
+          >
+            지난 대화 {chat.others.length}
+          </button>
         </div>
       }
       {chat.turns.length === 0 && (
