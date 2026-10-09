@@ -333,8 +333,10 @@ export function App() {
                 {!found && filtering && center && <em>· 솎아 보는 중</em>}
               </div>
               {narrowed && (
-                <button className="primary" onClick={backToAll} title="질문 결과, 한 기업 중심 보기, 솎아 보기를 모두 풀고 전체 그래프로 돌아갑니다 (Esc)">
-                  ← 전체 그래프로
+                <button className="reset" onClick={backToAll} title="전체 그래프로 돌아갑니다 (Esc)" aria-label="전체 그래프로">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+                    <path d="M2 2l8 8M10 2l-8 8" />
+                  </svg>
                 </button>
               )}
               <div className="bar-right">

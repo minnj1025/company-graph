@@ -3490,3 +3490,32 @@ button.q:hover {
   box-shadow: none;
   text-shadow: 0 0 4px var(--bg), 0 0 4px var(--bg), 0 0 8px var(--bg);
 }
+
+
+/* 보는 범위 옆의 작은 ×: 좁혀 보던 것을 풀고 전체 그래프로. 앞뒤 화살표와 함께 칸 없는 작은 단추로 둔다 */
+.stage-bar .reset,
+.stage-bar .history button {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  background: none;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.stage-bar .reset {
+  margin-left: -4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  color: var(--text);
+}
+
+.stage-bar .reset:hover:not(:disabled),
+.stage-bar .history button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
