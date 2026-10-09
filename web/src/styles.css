@@ -66,8 +66,7 @@ a:hover {
   padding: 16px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  backdrop-filter: blur(10px);
+  border-radius: 8px;
 }
 
 h1 {
@@ -195,7 +194,7 @@ h1 span {
   padding: 5px 10px;
   background: transparent;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 6px;
   color: var(--muted);
   font-size: 12px;
 }
@@ -231,7 +230,7 @@ h1 span {
   padding: 10px 14px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 8px;
   font-size: 12px;
   color: var(--muted);
   pointer-events: none;
@@ -283,8 +282,7 @@ h1 span {
   flex-direction: column;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  backdrop-filter: blur(10px);
+  border-radius: 8px;
 }
 
 .panel header {
@@ -314,8 +312,8 @@ h1 span {
 .panel-actions button {
   flex: none;
   padding: 6px 11px;
-  background: rgba(122, 162, 255, 0.16);
-  border: 1px solid rgba(122, 162, 255, 0.4);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 8px;
   font-size: 12px;
 }
@@ -455,22 +453,21 @@ h1 span {
   display: flex;
   gap: 4px;
   padding: 4px;
-  border-radius: 999px;
+  border-radius: 6px;
   background: var(--surface);
   border: 1px solid var(--border);
-  backdrop-filter: blur(10px);
 }
 
 .tabs button {
   padding: 7px 16px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 6px;
   background: transparent;
   color: var(--muted);
 }
 
 .tabs button.on {
-  background: rgba(122, 162, 255, 0.18);
+  background: rgba(255, 255, 255, 0.18);
   color: var(--text);
 }
 
@@ -512,7 +509,7 @@ h1 span {
 
 .tile {
   padding: 16px 18px;
-  border-radius: 12px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
 }
@@ -609,7 +606,7 @@ h1 span {
 .example {
   text-align: left;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.03);
   line-height: 1.45;
@@ -623,14 +620,14 @@ h1 span {
 }
 
 .example.on {
-  border-color: rgba(122, 162, 255, 0.6);
-  background: rgba(122, 162, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .example-body {
   min-width: 0;
   padding: 18px 20px;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.03);
 }
@@ -773,7 +770,7 @@ h1 span {
   position: relative;
   min-width: 0;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -788,7 +785,7 @@ h1 span {
 .fold,
 .unfold {
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 6px;
   background: var(--surface);
   color: var(--muted);
   font-size: 12px;
@@ -804,7 +801,6 @@ h1 span {
   position: absolute;
   top: 10px;
   left: 10px;
-  backdrop-filter: blur(10px);
 }
 
 .found {
@@ -817,10 +813,9 @@ h1 span {
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(122, 162, 255, 0.5);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   background: rgba(20, 30, 52, 0.92);
-  backdrop-filter: blur(10px);
 }
 
 .found div {
@@ -843,7 +838,7 @@ h1 span {
 .found button {
   flex: none;
   padding: 6px 12px;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.08);
 }
@@ -867,7 +862,7 @@ h1 span {
   flex-direction: column;
   padding: 12px 14px;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.025);
 }
 
@@ -1015,7 +1010,7 @@ h1 span {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.025);
   overflow: hidden;
   position: relative;
@@ -1051,7 +1046,6 @@ h1 span {
   border: 0;
   border-radius: 0;
   background: transparent;
-  backdrop-filter: none;
 }
 
 .chat {
@@ -1087,12 +1081,12 @@ h1 span {
   padding: 9px 12px;
   text-align: left;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
 }
 
 .suggestion:hover:not(:disabled) {
-  border-color: rgba(122, 162, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .turn {
@@ -1105,7 +1099,7 @@ h1 span {
   max-width: 90%;
   padding: 8px 12px;
   border-radius: 12px 12px 2px 12px;
-  background: rgba(122, 162, 255, 0.18);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .turn .a {
@@ -1116,7 +1110,7 @@ h1 span {
 }
 
 .turn .a.shown {
-  border-color: rgba(122, 162, 255, 0.55);
+  border-color: rgba(255, 255, 255, 0.55);
 }
 
 .turn .a.pending {
@@ -1159,7 +1153,7 @@ h1 span {
 .a-foot button {
   flex: none;
   padding: 3px 10px;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: none;
   color: var(--accent);
@@ -1178,7 +1172,7 @@ h1 span {
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   outline: none;
 }
 
@@ -1189,7 +1183,7 @@ h1 span {
 .chat-input button {
   padding: 0 16px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--accent);
   color: #0b0f16;
   font-weight: 600;
@@ -1339,7 +1333,7 @@ h1 span {
   gap: 14px;
   align-items: center;
   padding: 14px 16px;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.03);
 }
@@ -1450,7 +1444,7 @@ h1 span {
 
 .versus {
   padding: 14px 16px;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.03);
 }
@@ -1502,9 +1496,9 @@ h1 span {
 
 .reveal {
   padding: 10px 18px;
-  border-radius: 10px;
-  border: 1px solid rgba(122, 162, 255, 0.6);
-  background: rgba(122, 162, 255, 0.12);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.12);
   font-weight: 600;
   margin-bottom: 14px;
 }
@@ -1535,7 +1529,7 @@ h1 span {
 
 .q {
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   margin-bottom: 6px;
   background: rgba(255, 255, 255, 0.025);
 }
@@ -1570,7 +1564,7 @@ h1 span {
   flex: none;
   padding: 0 8px;
   border: 1px solid;
-  border-radius: 999px;
+  border-radius: 6px;
   font-size: 11.5px;
   line-height: 20px;
   white-space: nowrap;
@@ -1669,7 +1663,7 @@ h1 span {
 
 .side-grip:hover,
 body.resizing .side-grip {
-  background: rgba(122, 162, 255, 0.45);
+  background: rgba(255, 255, 255, 0.45);
 }
 
 body.resizing {
@@ -1764,7 +1758,7 @@ body.resizing {
 /* ---------- 왼쪽 조절 칸: 날짜 바로 고르기, 솎아 보기 ---------- */
 .controls .date {
   padding: 3px 6px;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: transparent;
   color: inherit;
@@ -1836,7 +1830,7 @@ body.resizing {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.025);
   overflow: hidden;
 }
@@ -1890,7 +1884,7 @@ body.resizing {
 .fold-cards {
   flex: none;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 6px;
   background: transparent;
   color: var(--muted);
   font-size: 11.5px;
@@ -1930,13 +1924,13 @@ body.resizing {
   letter-spacing: 0;
   padding: 0 14px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.025);
 }
 
 .strip:hover {
   color: var(--text);
-  background: rgba(122, 162, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .side.folded .side-pane,
@@ -1978,7 +1972,7 @@ body.resizing {
 body.resizing .grip-left,
 body.resizing .grip-right,
 body.resizing-row .grip-top {
-  background: rgba(122, 162, 255, 0.45);
+  background: rgba(255, 255, 255, 0.45);
 }
 
 body.resizing-row {
@@ -2011,7 +2005,7 @@ body.resizing-row {
     letter-spacing: 0;
     padding: 0 14px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 8px;
   }
 
   .cards-wrap {
@@ -2042,15 +2036,14 @@ body.resizing-row {
   align-items: center;
   gap: 8px;
   padding: 7px 12px;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--surface);
-  backdrop-filter: blur(10px);
   font-size: 13px;
 }
 
 .crumb.narrowed {
-  border-color: rgba(143, 178, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.7);
   background: rgba(38, 54, 92, 0.95);
 }
 
@@ -2074,15 +2067,14 @@ body.resizing-row {
 .stage-bar button {
   flex: none;
   padding: 7px 13px;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--surface);
-  backdrop-filter: blur(10px);
   font-size: 12.5px;
 }
 
 .stage-bar button.primary {
-  border-color: rgba(143, 178, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.8);
   background: #3d5fb8;
   color: #fff;
   font-weight: 600;
@@ -2107,7 +2099,7 @@ body.resizing-row {
   pointer-events: auto;
   margin-top: 8px;
   padding: 7px 14px;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--panel);
 }
@@ -2118,7 +2110,7 @@ body.resizing-row {
   bottom: 14px;
   transform: translateX(-50%);
   padding: 5px 12px;
-  border-radius: 999px;
+  border-radius: 6px;
   background: var(--surface);
   border: 1px solid var(--border);
   font-size: 12px;
@@ -2128,7 +2120,7 @@ body.resizing-row {
 .reset-filters {
   margin-top: 4px;
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--accent);
@@ -2147,7 +2139,7 @@ select:focus-visible {
 .col-head button:hover,
 .side-head button:hover,
 .fold-cards:hover {
-  border-color: rgba(143, 178, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.7);
   color: var(--text);
 }
 
@@ -2187,7 +2179,7 @@ select:focus-visible {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.025);
   overflow: hidden;
 }
@@ -2204,7 +2196,7 @@ select:focus-visible {
 .drawer-head button {
   padding: 6px 11px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 6px;
   background: transparent;
   color: var(--muted);
   font-size: 13px;
@@ -2238,7 +2230,6 @@ select:focus-visible {
   border: 0;
   border-radius: 0;
   background: transparent;
-  backdrop-filter: none;
 }
 
 .drawer .panel header .icon {
@@ -2279,7 +2270,7 @@ select:focus-visible {
 }
 
 .stage-bar button.on {
-  border-color: rgba(143, 178, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.8);
   color: var(--accent);
 }
 
@@ -2288,10 +2279,9 @@ select:focus-visible {
   align-items: center;
   gap: 8px;
   padding: 3px 10px 3px 12px;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--surface);
-  backdrop-filter: blur(10px);
   font-size: 12.5px;
 }
 
@@ -2306,7 +2296,6 @@ select:focus-visible {
   padding: 0;
   border-radius: 50%;
   font-size: 9px;
-  backdrop-filter: none;
 }
 
 .timebar input[type="range"] {
@@ -2315,7 +2304,7 @@ select:focus-visible {
 
 .timebar .date {
   padding: 3px 6px;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: transparent;
   color: inherit;
@@ -2333,7 +2322,7 @@ select:focus-visible {
   overflow-y: auto;
   padding: 12px 14px 4px;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 8px;
   background: var(--panel);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
   animation: settings-in 0.18s ease;
@@ -2383,16 +2372,15 @@ select:focus-visible {
 
 .examples-row button {
   padding: 6px 12px;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--surface);
-  backdrop-filter: blur(10px);
   color: #c9d2e0;
   font-size: 12.5px;
 }
 
 .examples-row button:hover:not(:disabled) {
-  border-color: rgba(143, 178, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.7);
   color: var(--text);
 }
 
@@ -2406,9 +2394,8 @@ select:focus-visible {
   gap: 8px;
   padding: 7px;
   border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 18px;
+  border-radius: 8px;
   background: rgba(20, 26, 38, 0.94);
-  backdrop-filter: blur(12px);
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4);
 }
 
@@ -2430,7 +2417,7 @@ select:focus-visible {
   flex: none;
   padding: 0 18px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--accent);
   color: #0b0f16;
   font-weight: 600;
@@ -2453,7 +2440,7 @@ select:focus-visible {
   margin: 0;
   padding: 6px;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 8px;
   background: var(--panel);
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4);
 }
@@ -2606,7 +2593,7 @@ select:focus-visible {
 }
 
 .examples-row .reopen {
-  border-color: rgba(143, 178, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.6);
   color: var(--accent);
 }
 
@@ -2625,7 +2612,7 @@ select:focus-visible {
   margin: 0 0 12px;
   padding: 9px 11px;
   border-radius: 9px;
-  background: rgba(122, 162, 255, 0.12);
+  background: rgba(255, 255, 255, 0.12);
   color: #c9d2e0;
   font-size: 12px;
   line-height: 1.55;
@@ -3002,7 +2989,7 @@ body.resizing .drawer {
 .stage-bar button:active:not(:disabled),
 .examples-row button:active:not(:disabled),
 .chip:active:not(:disabled) {
-  background: rgba(122, 162, 255, 0.4);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .stage-bar button.on,
@@ -3010,7 +2997,7 @@ body.resizing .drawer {
 .chip.on,
 .chip.on:hover {
   border-color: transparent;
-  background: rgba(122, 162, 255, 0.3);
+  background: rgba(255, 255, 255, 0.3);
   color: #fff;
   font-weight: 600;
 }
@@ -3068,7 +3055,7 @@ body.resizing .drawer {
   top: 5px;
   bottom: 5px;
   border-radius: 0 4px 4px 0;
-  background: rgba(122, 162, 255, 0.28);
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .answer td.pct span {
@@ -3109,15 +3096,15 @@ body.resizing .drawer {
 .followups button {
   padding: 7px 12px;
   border: 0;
-  border-radius: 12px;
-  background: rgba(122, 162, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
   color: var(--text);
   font-size: 13px;
   text-align: left;
 }
 
 .followups button:hover:not(:disabled) {
-  background: rgba(122, 162, 255, 0.26);
+  background: rgba(255, 255, 255, 0.26);
 }
 
 .followups button:disabled {
@@ -3135,7 +3122,7 @@ body.resizing .drawer {
   max-height: min(560px, calc(100vh - 300px));
   overflow-y: auto;
   padding: 8px;
-  border-radius: 14px;
+  border-radius: 8px;
   background: var(--panel);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
   scrollbar-width: thin;
@@ -3151,7 +3138,6 @@ body.resizing .drawer {
   padding: 7px 10px;
   border-radius: 8px;
   background: transparent;
-  backdrop-filter: none;
   font-size: 13px;
   font-weight: 400;
   text-align: left;
@@ -3159,14 +3145,14 @@ body.resizing .drawer {
 }
 
 .stage-bar .level-list button:hover {
-  background: rgba(122, 162, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .stage-bar .level-list button.all {
   flex-direction: column;
   gap: 2px;
   margin-bottom: 6px;
-  background: rgba(122, 162, 255, 0.14);
+  background: rgba(255, 255, 255, 0.14);
   font-weight: 600;
 }
 
@@ -3229,15 +3215,192 @@ body.resizing .drawer {
 }
 
 .composer-input {
-  border-radius: 11px;
+  border-radius: 8px;
 }
 
 .settings,
 .level-list,
 .composer-results {
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .stage-bar .level-list button {
   border-radius: 6px;
+}
+
+
+/* ---------- 색과 면: 무채색 바탕에 강조색 하나. 유리 효과·넓은 그림자·겹친 카드를 쓰지 않는다 ---------- */
+:root {
+  --bg: #0d0e10;
+  --panel: #17181b;
+  --surface: #1b1c20;
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #ececec;
+  --muted: #9a9ca3;
+  --accent: #e2b04a;
+}
+
+body {
+  background: var(--bg);
+}
+
+/* 떠 있는 칸은 테두리 하나로만 구분한다 */
+.settings,
+.level-list,
+.composer-input,
+.composer-results {
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--panel);
+}
+
+.explore .stage,
+.drawer-inner {
+  border-radius: 8px;
+}
+
+.drawer-inner {
+  background: var(--panel);
+}
+
+/* 눌린 것: 밝은 면에 어두운 글자 */
+.stage-bar button.on,
+.stage-bar button.on:hover,
+.chip.on,
+.chip.on:hover,
+.tabs button.on {
+  background: #e4e5e7;
+  color: #111214;
+  font-weight: 600;
+}
+
+.stage-bar button:hover:not(:disabled):not(.on):not(.primary),
+.examples-row button:hover:not(:disabled),
+.chip:hover:not(:disabled):not(.on) {
+  background: #2a2b30;
+}
+
+.stage-bar button.primary,
+.stage-bar button.primary:hover,
+.composer-input button:not(:disabled) {
+  background: #e4e5e7;
+  color: #111214;
+}
+
+.stage-bar button.primary:hover,
+.composer-input button:hover:not(:disabled) {
+  background: #fff;
+}
+
+.crumb.narrowed {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+.chip.listed {
+  box-shadow: inset 0 0 0 1.5px #e4e5e7;
+}
+
+.stage-bar .level-list button.all {
+  background: #24252a;
+}
+
+.stage-bar .level-list button:hover {
+  background: #2e2f35;
+}
+
+/* 채팅: 답은 칸에 넣지 않고 글 그대로 둔다 (칸 안에 또 칸을 두지 않는다) */
+.turn .q {
+  border-radius: 8px;
+  background: #26272c;
+}
+
+.turn .a,
+.turn .a.shown {
+  padding: 2px 2px 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.turn {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.turn:last-of-type {
+  border-bottom: 0;
+}
+
+.followups button {
+  background: #24252a;
+}
+
+.followups button:hover:not(:disabled) {
+  background: #2e2f35;
+}
+
+.answer td.pct i {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.answer a,
+.sources a {
+  color: #9ec1ff;
+}
+
+/* 글이 흘러나올 때의 깜빡이는 막대는 두지 않는다 */
+.answer.streaming > :last-child::after {
+  animation: none;
+  opacity: 0.6;
+}
+
+.edge:hover::after,
+body.resizing .edge::after {
+  background: #e4e5e7;
+}
+
+.chat-button svg {
+  display: block;
+}
+
+.bar-right .chat-button {
+  padding: 7px 10px;
+}
+
+.composer-input button:disabled {
+  background: #26272c;
+  color: var(--muted);
+}
+
+input[type="range"] {
+  accent-color: #d8d9dc;
+}
+
+
+/* 데이터 페이지의 숫자: 카드에 하나씩 담지 않고 한 줄에 나란히, 사이에 금만 긋는다 */
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.tile {
+  flex: 1 1 160px;
+  padding: 12px 18px 12px 0;
+  margin-right: 18px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.tile + .tile {
+  padding-left: 18px;
+  border-left: 1px solid var(--border);
+}
+
+.tile b {
+  font-size: 20px;
+  font-weight: 600;
 }

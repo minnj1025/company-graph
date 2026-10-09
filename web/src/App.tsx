@@ -403,7 +403,9 @@ export function App() {
                 title="채팅"
                 aria-label="채팅"
               >
-                💬
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M2.5 3.5h11v7.5H7.2L4.3 13.4V11H2.5z" />
+                </svg>
               </button>
               <button onClick={() => setRefit((n) => n + 1)} title="그래프 전체가 보이게 화면을 다시 맞춥니다">
                 화면 맞추기
