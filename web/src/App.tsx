@@ -243,7 +243,23 @@ export function App() {
     const linked = new Set(links.flatMap((link) => [end(link.source), end(link.target)]));
     return { nodes: data.nodes.filter((node) => node.focus || linked.has(node.id)).map((node) => ({ ...node, degree: degree.get(node.id) ?? 0 })), links };
   }, [data, filters]);
-  const shownData = found ? found.graph : filtered;
+  // 찾은 그래프로 넘어갈 때는 먼저 지금 그래프에서 그 점들만 밝게 남기고(나머지는 흐려진다), 잠깐 뒤에 바꾼다
+  const [drawn, setDrawn] = useState<Shown | null>(found);
+  const [spotlight, setSpotlight] = useState<Set<number> | null>(null);
+  useEffect(() => {
+    if (!found) {
+      setDrawn(null);
+      setSpotlight(null);
+      return;
+    }
+    setSpotlight(new Set(found.graph.nodes.map((node) => node.id)));
+    const timer = setTimeout(() => {
+      setDrawn(found);
+      setSpotlight(null);
+    }, 520);
+    return () => clearTimeout(timer);
+  }, [found]);
+  const shownData = drawn ? drawn.graph : filtered;
   // 전체에서 기업 수가 많은 순서. 이 순서의 앞쪽 분류는 어느 화면에서나 같은 색을 받는다
   const colorOrder = useMemo(() => (meta ? meta.categories[colorBy === "sector" ? "sector" : "group"].map((c) => c.name) : []), [meta, colorBy]);
   const groups = useMemo(() => categoryColors(shownData.nodes, colorBy, colorOrder), [shownData, colorBy, colorOrder]);
@@ -333,9 +349,10 @@ export function App() {
             data={shownData}
             colorBy={colorBy}
             groups={groups}
-            selectedId={selectedId}
+            selectedId={drawn === found ? selectedId : null}
             onSelect={onSelect}
-            fitKey={found ? `ask-${found.question}` : `${center?.id ?? scope}-${hops}`}
+            spotlight={spotlight}
+            fitKey={drawn ? `ask-${drawn.question}` : `${center?.id ?? scope}-${hops}`}
             refit={refit}
           />
 

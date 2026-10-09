@@ -94,9 +94,11 @@ interface Props {
   fitKey: string;
   /** "화면 맞추기"를 누른 횟수. 바뀌면 자료가 그대로여도 바로 맞춘다 */
   refit: number;
+  /** 곧 이 점들만 남는 그래프로 바뀐다. 바뀌기 직전에 이 점들만 밝게 두고 나머지를 흐려서, 화면이 한 번에 바뀌지 않게 한다 */
+  spotlight: Set<number> | null;
 }
 
-export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey, refit }: Props) {
+export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey, refit, spotlight }: Props) {
   grouped = data.nodes.some((node) => node.kind === "class" || node.kind === "family");
   const container = useRef<HTMLDivElement>(null);
   const graph = useRef<ForceGraphMethods<GraphNode, GraphLink> | undefined>(undefined);
@@ -186,6 +188,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
 
   // 선택한 기업과 바로 이어진 기업만 밝게 둔다
   const lit = useMemo(() => {
+    if (spotlight) return spotlight;
     if (selectedId === null) return null;
     const ids = new Set<number>([selectedId]);
     for (const link of data.links) {
@@ -194,7 +197,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
       if (target === selectedId) ids.add(source);
     }
     return ids;
-  }, [data, selectedId]);
+  }, [data, selectedId, spotlight]);
 
   // 이름표는 연결이 많은 기업부터. 전부 붙이면 글자가 겹쳐 읽을 수 없다
   const labeled = useMemo(() => {
@@ -300,15 +303,15 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     if (lines && arrows) {
       const colors = lines.geometry.getAttribute("color") as BufferAttribute;
       made.data.links.forEach((link, i) => {
-        paint.set(selectedId === null ? LINK_COLORS[link.type] : DIM);
+        paint.set(lit === null ? LINK_COLORS[link.type] : DIM);
         paint.toArray(colors.array, i * 6);
         paint.toArray(colors.array, i * 6 + 3);
         arrows.setColorAt(i, paint);
       });
       // 기업을 고르면 묶어 그리는 선은 전부 이어지지 않은 선이다. 아주 옅게 두고 화살표는 뺀다
-      lines.material.opacity = selectedId === null ? LINK_OPACITY : DIM_LINK_OPACITY;
-      lines.material.depthWrite = selectedId === null;
-      arrows.visible = selectedId === null;
+      lines.material.opacity = lit === null ? LINK_OPACITY : DIM_LINK_OPACITY;
+      lines.material.depthWrite = lit === null;
+      arrows.visible = lit === null;
       colors.needsUpdate = true;
       if (arrows.instanceColor) arrows.instanceColor.needsUpdate = true;
     }
@@ -355,12 +358,15 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     [selectedId, lit, labeled],
   );
   const linkLit = useCallback(
-    (link: GraphLink) => selectedId === null || endId(link.source) === selectedId || endId(link.target) === selectedId,
-    [selectedId],
+    (link: GraphLink) =>
+      spotlight
+        ? spotlight.has(endId(link.source)) && spotlight.has(endId(link.target))
+        : selectedId === null || endId(link.source) === selectedId || endId(link.target) === selectedId,
+    [selectedId, spotlight],
   );
   const linkShown = useCallback(
     (link: GraphLink) => {
-      if (selectedId === null || lit === null) return !batch;
+      if (lit === null) return !batch;
       if (linkLit(link)) return true;
       // 고른 기업과 이어진 점에서 다른 곳으로 가는 선은 감춘다
       return !batch && !lit.has(endId(link.source)) && !lit.has(endId(link.target));
