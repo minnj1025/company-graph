@@ -3,6 +3,7 @@
 실행: uvicorn company_graph.api:app --port 8000
 """
 import hashlib
+import hmac
 import json
 import os
 import queue
@@ -388,6 +389,8 @@ def pick(kind: str, key: str, as_of: date, db=Depends(get_db)):
         number, match = product_id(key), (lambda name, item: name == key)
     elif kind == "family":
         number, match = family_id(key), (lambda name, item: item["family"] == key)
+    elif kind == "class" and ksic.valid(key) and key.isalpha():   # 대분류는 글자(C)라서 코드의 앞자리로는 못 찾는다
+        number, match = class_id(key), (lambda name, item: bool(item.get("ksic")) and ksic.section(item["ksic"]) == key)
     elif kind == "class" and ksic.valid(key):
         number, match = class_id(key), (lambda name, item: (item.get("ksic") or "").startswith(key))
     else:
@@ -635,9 +638,18 @@ def _visitor(request: Request) -> str:
     return hashlib.sha256((address + os.environ.get("ASK_SALT", "company-graph")).encode()).hexdigest()[:16]
 
 
+OWNER = "owner"   # 운영자가 물은 것은 이 이름으로 적어 두고, 방문자들의 하루 한도에서 뺀다
+
+
+def _is_owner(request: Request) -> bool:
+    """운영자인가. 서버의 ASK_OWNER_KEY 와 같은 값을 X-Owner-Key 로 보내면 횟수 한도를 적용하지 않는다."""
+    key = os.environ.get("ASK_OWNER_KEY", "")
+    return len(key) >= 16 and hmac.compare_digest(request.headers.get("x-owner-key", "").encode(), key.encode())
+
+
 def _asked_today(db, visitor: str | None = None) -> int:
     since = datetime.now() - timedelta(hours=24)
-    conditions = [AskLog.asked_at >= since] + ([AskLog.visitor == visitor] if visitor else [])
+    conditions = [AskLog.asked_at >= since, AskLog.visitor == visitor if visitor else AskLog.visitor != OWNER]
     return db.scalar(select(func.count()).select_from(AskLog).where(*conditions)) or 0
 
 
@@ -646,6 +658,8 @@ def ask_status(request: Request, db=Depends(get_db)):
     """질문을 받을 수 있는 상태인지와 남은 횟수."""
     _prepare_ask()
     enabled = bool(os.environ.get("ANTHROPIC_API_KEY")) or os.name == "nt"
+    if _is_owner(request):
+        return {"enabled": enabled, "model": ASK_MODEL, "left_today": None, "left_for_you": None, "owner": True}
     return {"enabled": enabled, "model": ASK_MODEL,
             "left_today": max(0, ASK_DAILY_LIMIT - _asked_today(db)),
             "left_for_you": max(0, ASK_VISITOR_LIMIT - _asked_today(db, _visitor(request)))}
@@ -833,10 +847,10 @@ class _Found:
 def _admit(body: Ask, request: Request, db) -> tuple[str, str, int]:
     """질문을 받을 수 있는지 보고, 받으면 먼저 센다. (다듬은 질문, 방문자, 기록 번호)"""
     _prepare_ask()
-    visitor = _visitor(request)
-    if _asked_today(db, visitor) >= ASK_VISITOR_LIMIT:
+    visitor = OWNER if _is_owner(request) else _visitor(request)
+    if visitor != OWNER and _asked_today(db, visitor) >= ASK_VISITOR_LIMIT:
         raise HTTPException(429, f"한 사람이 하루에 물을 수 있는 횟수({ASK_VISITOR_LIMIT}번)를 다 썼습니다. 내일 다시 물어 주세요.")
-    if _asked_today(db) >= ASK_DAILY_LIMIT:
+    if visitor != OWNER and _asked_today(db) >= ASK_DAILY_LIMIT:
         raise HTTPException(429, "오늘 받을 수 있는 질문을 다 받았습니다. 미리 돌려 둔 예시는 '평가' 탭에서 볼 수 있습니다.")
     question = " ".join(body.question.split())
     entry = AskLog(asked_at=datetime.now(), visitor=visitor, question=question[:300], ok=False)
@@ -865,7 +879,7 @@ def _answered(db, question: str, visitor: str, ask_id: int, result: dict, found:
             "unverified_citations": result["cited_not_in_results"],
             "sources": sources,
             "graph": found.graph(db, result["answer"]),
-            "left_for_you": max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}
+            "left_for_you": None if visitor == OWNER else max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}
 
 
 UNAVAILABLE = "지금은 Agent가 답할 수 없습니다. 잠시 뒤에 다시 시도해 주세요."

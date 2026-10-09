@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, fetchPick, type Level, type Scope } from "./api";
+import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, fetchPick, fetchTaxonomy, type Level, type Scope } from "./api";
 import { categoryColors, legend, LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { Cards } from "./Cards";
 import { ChatLog, Composer, useChat } from "./Chat";
-import { NO_FILTER, Settings, TimeBar, type Filters } from "./Controls";
+import { LevelList, NO_FILTER, Settings, TimeBar, type Filters } from "./Controls";
 import { Graph, MENTIONED, shortName } from "./Graph";
 import { Credit, DataPage, QuestionsPage } from "./Pages";
 import { Panel } from "./Panel";
-import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType, Suggestion } from "./types";
+import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType, Suggestion, Taxonomy } from "./types";
 
 /** 그래프에 따로 띄운 것: Agent의 답이 찾은 결과이거나, 입력 칸에서 고른 제품·제품군·분류 */
 type Shown = Pick<AskResult, "question" | "graph"> & { picked?: boolean };
@@ -50,6 +50,23 @@ export function App() {
   if (drawer) lastDrawer.current = drawer;
   const [level, setLevel] = useState<Level>("family");
   const [settingsOpen, setSettingsOpen] = useState(false);
+  /** 보기 설정에서 옆에 목록을 펴 둔 제품 범주 */
+  const [listLevel, setListLevel] = useState<Level | null>(null);
+  const [taxonomy, setTaxonomy] = useState<Taxonomy | null>(null);
+  // 보기 설정은 바깥(그래프, 다른 단추)을 누르면 닫힌다
+  useEffect(() => {
+    if (!settingsOpen) return;
+    const onDown = (event: PointerEvent) => {
+      if ((event.target as HTMLElement | null)?.closest(".settings-anchor")) return;
+      setSettingsOpen(false);
+      setListLevel(null);
+    };
+    window.addEventListener("pointerdown", onDown, true);
+    return () => window.removeEventListener("pointerdown", onDown, true);
+  }, [settingsOpen]);
+  useEffect(() => {
+    if (listLevel && !taxonomy) fetchTaxonomy().then(setTaxonomy).catch(() => undefined);
+  }, [listLevel, taxonomy]);
   const [data, setData] = useState<GraphData>(EMPTY);
   const [detail, setDetail] = useState<CompanyDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -341,12 +358,30 @@ export function App() {
                       onScope={(value) => go({ scope: value })}
                       locked={found !== null}
                       level={level}
-                      onLevel={setLevel}
+                      listed={listLevel}
+                      onLevel={(value) => setListLevel((now) => (now === value ? null : value))}
                       filters={filters}
                       onFilters={setFilters}
                       shown={{ nodes: filtered.nodes.length, links: filtered.links.length }}
                     />
                   </div>
+                )}
+                {settingsOpen && listLevel && (
+                  <LevelList
+                    level={listLevel}
+                    taxonomy={taxonomy}
+                    onAll={() => {
+                      setLevel(listLevel);
+                      setTypes((now) => (now.includes("product") ? now : [...now, "product"]));
+                      go({ found: null });
+                      setListLevel(null);
+                    }}
+                    onPick={(item) => {
+                      showPicked(item);
+                      setListLevel(null);
+                      setSettingsOpen(false);
+                    }}
+                  />
                 )}
               </div>
               <button className={drawer === "feed" ? "feed-button on" : "feed-button"} onClick={() => setDrawer(drawer === "feed" ? null : "feed")}>

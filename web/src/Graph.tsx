@@ -39,7 +39,16 @@ export const shortName = (name: string) =>
 
 const endId = (end: number | GraphNode) => (typeof end === "number" ? end : end.id);
 // 제품군 점은 기업이 수십 곳씩 달려서, 연결 수 그대로 키우면 화면을 덮는다
-const nodeVal = (node: GraphNode) => (node.focus ? 12 : node.kind === "family" || node.kind === "class" ? 6 + Math.sqrt(node.degree) * 3 : 1.2 + Math.min(node.degree, 60) * 0.45);
+/** 범주 점(공식 분류, 제품군)이 그려져 있는가. 그때는 범주가 가장 큰 공이어야 해서 기업 점을 작게 묶어 둔다 */
+let grouped = false;
+// 크기는 층을 따른다: 공식 분류 > 제품군 > 제품 > 기업. 같은 층 안에서는 이어진 수가 많을수록 크다
+const nodeVal = (node: GraphNode) => {
+  if (node.kind === "class") return 70 + Math.sqrt(node.degree) * 12;
+  if (node.kind === "family") return 26 + Math.sqrt(node.degree) * 6;
+  if (node.kind === "product" || node.kind === "topic") return (node.focus ? 14 : 4) + Math.sqrt(node.degree) * 2;
+  const own = 1.2 + Math.min(node.degree, grouped ? 14 : 60) * 0.45;
+  return node.focus ? Math.max(own, 12) : own;
+};
 const nodeRadius = (node: GraphNode) => Math.cbrt(nodeVal(node)) * REL_SIZE;
 
 // 점마다 물체를 하나씩 그리면 기업 1,800곳에서 그리기 명령이 수천 번이 된다.
@@ -86,6 +95,7 @@ interface Props {
 }
 
 export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey, refit }: Props) {
+  grouped = data.nodes.some((node) => node.kind === "class" || node.kind === "family");
   const container = useRef<HTMLDivElement>(null);
   const graph = useRef<ForceGraphMethods<GraphNode, GraphLink> | undefined>(undefined);
   const [size, setSize] = useState({ width: 800, height: 600 });

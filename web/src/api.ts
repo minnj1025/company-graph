@@ -1,8 +1,25 @@
 import type { AskResult, AskStatus, Company, CompanyDetail, GraphData, Insights, Meta, RelType, Suggestion, Taxonomy } from "./types";
 
+/** 운영자 열쇠. 주소 끝에 #owner=열쇠 를 붙여 한 번 열면 이 브라우저에 적어 두고, 질문할 때 같이 보낸다 (횟수 한도를 받지 않는다) */
+function ownerKey(): string | null {
+  try {
+    const fromHash = /^#owner=(.*)$/.exec(window.location.hash)?.[1];
+    if (fromHash !== undefined) {
+      if (fromHash) localStorage.setItem("owner-key", decodeURIComponent(fromHash));
+      else localStorage.removeItem("owner-key");   // #owner= 만 적으면 지운다
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+    return localStorage.getItem("owner-key");
+  } catch {
+    return null;
+  }
+}
+const OWNER_KEY = ownerKey();
+const ownerHeaders = (): Record<string, string> => (OWNER_KEY ? { "X-Owner-Key": OWNER_KEY } : {});
+
 async function get<T>(path: string, params: Record<string, string | number> = {}): Promise<T> {
   const query = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)]));
-  const response = await fetch(`/api${path}?${query}`);
+  const response = await fetch(`/api${path}?${query}`, path.startsWith("/ask") ? { headers: ownerHeaders() } : undefined);
   if (!response.ok) throw new Error(`${path} ${response.status}`);
   return response.json();
 }
@@ -35,7 +52,7 @@ const REFUSED = "지금은 답할 수 없습니다. 잠시 뒤에 다시 시도�
 export async function askAgentStream(question: string, onEvent: (event: AskEvent) => void): Promise<AskResult> {
   const response = await fetch("/api/ask/stream", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...ownerHeaders() },
     body: JSON.stringify({ question }),
   });
   if (!response.ok || !response.body) {
@@ -71,7 +88,7 @@ export async function askAgentStream(question: string, onEvent: (event: AskEvent
 export async function askAgent(question: string): Promise<AskResult> {
   const response = await fetch("/api/ask", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...ownerHeaders() },
     body: JSON.stringify({ question }),
   });
   if (!response.ok) {

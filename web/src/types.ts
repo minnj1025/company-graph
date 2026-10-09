@@ -225,12 +225,14 @@ export interface AskResult {
   /** 답이 근거로 든 공시. 조회 결과에 실제로 있었던 것만 */
   sources: { rcept_no: string; url: string; company: string | null; report: string | null; filed: string | null }[];
   graph: GraphData;
-  left_for_you: number;
+  /** 운영자에게는 한도가 없어서 null */
+  left_for_you: number | null;
 }
 
 export interface AskStatus {
   enabled: boolean;
   model: string;
-  left_today: number;
-  left_for_you: number;
+  left_today: number | null;
+  left_for_you: number | null;
+  owner?: boolean;
 }

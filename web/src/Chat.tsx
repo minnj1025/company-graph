@@ -96,7 +96,8 @@ export function useChat(onShow: (result: AskResult | null) => void) {
       .catch(() => setStatus(null));
   }, []);
 
-  const left = status ? Math.min(status.left_for_you, status.left_today) : null;
+  const owner = status?.owner === true;
+  const left = status && !owner ? Math.min(status.left_for_you ?? 0, status.left_today ?? 0) : null;
   const closed = status !== null && (!status.enabled || left === 0);
 
   const ask = useCallback(
@@ -114,7 +115,7 @@ export function useChat(onShow: (result: AskResult | null) => void) {
           else patch((t) => ({ ...t, partial: "" }));
         });
         setTurns((all) => all.map((t, i) => (i === all.length - 1 ? { ...t, result } : t)));
-        setStatus((s) => (s ? { ...s, left_for_you: result.left_for_you, left_today: s.left_today - 1 } : s));
+        setStatus((s) => (s && !s.owner ? { ...s, left_for_you: result.left_for_you, left_today: (s.left_today ?? 1) - 1 } : s));
         if (result.graph.nodes.length > 0) onShow(result);
       } catch (error) {
         setTurns((all) => all.map((t, i) => (i === all.length - 1 ? { ...t, error: (error as Error).message } : t)));
@@ -126,7 +127,7 @@ export function useChat(onShow: (result: AskResult | null) => void) {
     [busy, closed, onShow],
   );
 
-  return { turns, busy, status, left, closed, ask };
+  return { turns, busy, status, left, closed, ask, owner };
 }
 
 export type ChatState = ReturnType<typeof useChat>;
@@ -427,7 +428,9 @@ export function Composer({ chat, onPick, onAsk, examples, onPickProduct, onFocus
             ? "Agent 상태를 확인하지 못했습니다"
             : !chat.status.enabled
               ? "Agent가 아직 연결되지 않았습니다"
-              : chat.left === 0
+              : chat.owner
+                ? "운영자로 열려 있어 질문 횟수에 한도가 없습니다"
+                : chat.left === 0
                 ? "오늘 물을 수 있는 횟수를 다 썼습니다"
                 : `질문은 오늘 ${chat.left}번 남았습니다`}
         </span>
