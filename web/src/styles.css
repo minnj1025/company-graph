@@ -3206,3 +3206,38 @@ body.resizing .drawer {
     z-index: 6;
   }
 }
+
+/* ---------- 모서리: 알약 모양을 걷고 살짝만 둥글게 ---------- */
+.stage-bar button,
+.crumb,
+.timebar,
+.timebar .date,
+.examples-row button,
+.chip,
+.drawer-head button,
+.tabs,
+.tabs button,
+.composer-input button,
+.followups button,
+.a-foot button,
+.reset-filters {
+  border-radius: 7px;
+}
+
+.stage-bar .timebar .icon {
+  border-radius: 6px;
+}
+
+.composer-input {
+  border-radius: 11px;
+}
+
+.settings,
+.level-list,
+.composer-results {
+  border-radius: 10px;
+}
+
+.stage-bar .level-list button {
+  border-radius: 6px;
+}
