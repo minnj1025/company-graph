@@ -214,6 +214,29 @@ def read_results() -> tuple[dict[int, tuple[list, bool]], list[str]]:
     best = {key: max(names, key=lambda n: (names[n], " " in n, n)) for key, names in spellings.items()}
     for number, (pairs, unsure) in results.items():
         results[number] = (list(dict.fromkeys((best[(family, name.replace(" ", "").lower())], family) for name, family in pairs)), unsure)
+    # 같은 제품군 안에서 같은 제품을 가리키는 다른 이름을 하나로 모은다 (merge_*.tsv: 제품군, 옮길 이름, 남길 이름).
+    # 넓은 이름과 좁은 이름은 모으지 않는다. 목록에 없는 이름이나 사슬(남길 이름이 다시 옮겨짐)은 받지 않는다
+    names = defaultdict(set)
+    for pairs, _ in results.values():
+        for name, family in pairs:
+            names[family].add(name)
+    moves = {}
+    for path in sorted(WORK.glob("merge_*.tsv")):
+        for line in path.read_text(encoding="utf-8").splitlines():
+            parts = [part.strip() for part in line.split("\t")]
+            if len(parts) != 3 or not all(parts):
+                continue
+            family, old, new = parts
+            if old not in names[family] or new not in names[family] or old == new:
+                problems.append(f"{path.name}: 모을 수 없는 줄 ({family} | {old} → {new})")
+                continue
+            moves[(family, old)] = new
+    for (family, old), new in list(moves.items()):
+        if (family, new) in moves:
+            problems.append(f"사슬: {family} | {old} → {new} → {moves[(family, new)]}")
+            del moves[(family, old)]
+    for number, (pairs, unsure) in results.items():
+        results[number] = (list(dict.fromkeys((moves.get((family, name), name), family) for name, family in pairs)), unsure)
     missing = [n for n in range(len(index)) if n not in results]
     if missing:
         problems.append(f"빠진 줄 {len(missing):,}개 (예: {missing[:8]})")
