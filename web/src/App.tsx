@@ -444,7 +444,12 @@ export function App() {
                 ×
               </button>
             </div>
-            {drawer === "answer" && <ChatLog chat={chat} shown={found as AskResult | null} onShow={showFound} />}
+            {drawer === "answer" && <ChatLog
+                chat={chat}
+                shown={found as AskResult | null}
+                onShow={showFound}
+                onCompany={(result, id) => go({ found: result, selected: id })}
+              />}
             {drawer === "company" &&
               (detail ? (
                 <Panel

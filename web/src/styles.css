@@ -3037,3 +3037,90 @@ body.resizing .drawer {
 .stage-bar .timebar .icon {
   background: rgba(255, 255, 255, 0.08);
 }
+
+/* ---------- 답의 표, 기업 링크, 이어서 물어보기 ---------- */
+.answer table {
+  width: 100%;
+}
+
+.answer th {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.answer th,
+.answer td {
+  border-width: 0 0 1px;
+}
+
+.answer td.pct {
+  position: relative;
+  min-width: 84px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.answer td.pct i {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  bottom: 5px;
+  border-radius: 0 4px 4px 0;
+  background: rgba(122, 162, 255, 0.28);
+}
+
+.answer td.pct span {
+  position: relative;
+}
+
+.company-link {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline dotted rgba(255, 214, 102, 0.8);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.company-link:hover {
+  color: #ffd666;
+}
+
+.followups {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.followups b {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.followups button {
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(122, 162, 255, 0.12);
+  color: var(--text);
+  font-size: 13px;
+  text-align: left;
+}
+
+.followups button:hover:not(:disabled) {
+  background: rgba(122, 162, 255, 0.26);
+}
+
+.followups button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

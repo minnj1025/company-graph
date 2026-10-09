@@ -55,7 +55,23 @@ SYSTEM = """당신은 한국 상장사의 공시(DART)에서 뽑은 기업 관�
 - 매수·매도·보유 판단, 주가 전망은 답하지 않습니다. 정중히 거절하고, 대신 조회해 줄 수 있는 사실(공시된 계약, 지분, 계열)을 제안합니다.
 - 공시 사실을 묻는 질문은 투자와 관련돼 보여도 거절하지 않고 사실만 답합니다.
 
-답은 한국어로, 결론부터 짧게 씁니다."""
+답의 모양
+- 답은 한국어로 씁니다. 첫 줄에 결론을 한두 문장으로 적습니다 (몇 곳인지, 가장 큰 곳이 어디인지처럼 물은 것에 대한 답).
+- 기업이나 공시를 셋 이상 나열하거나 비교할 때는 마크다운 표로 정리합니다. 열은 질문에 맞게 고르되 기업, 물은 값(제품과 매출 비중, 지분율, 계약 금액과 날짜 등), 근거 접수번호를 둡니다. 하나나 둘이면 문장으로 씁니다.
+- 매출 비중과 지분율은 한 칸에 "45.2%"처럼 숫자와 %만 적습니다. 어림값이나 기준일 같은 단서는 그 칸에 붙이지 않고 표 아래에 문장으로 적습니다.
+- 기업 이름은 도구 결과의 name 그대로 적습니다.
+- 답의 맨 끝에 "<<이어서>>" 한 줄을 적고, 그 아래에 이 DB로 바로 답할 수 있는 다음 질문을 2~3개, 한 줄에 하나씩 "- "로 시작해 적습니다. 방금 답에 나온 기업이나 제품의 이름을 넣어 그 질문만 읽어도 뜻이 통하게 씁니다. 매수·매도나 전망을 묻는 질문은 넣지 않습니다."""
+
+FOLLOWUP_MARK = "<<이어서>>"
+
+
+def split_followups(text: str) -> tuple[str, list[str]]:
+    """답의 글과, 그 끝에 붙은 "이어서 물을 질문"을 나눈다."""
+    body, mark, tail = text.partition(FOLLOWUP_MARK)
+    if not mark:
+        return text, []
+    questions = [line.strip().lstrip("-•* ").strip() for line in tail.splitlines()]
+    return body.rstrip(), [q for q in questions if len(q) >= 4][:3]
 
 
 def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effort: str = "medium", client=None,
@@ -108,8 +124,9 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
             messages.append({"role": "user", "content": results})
             if on_event:
                 on_event("turn", None)
+    text, followups = split_followups(text)
     cited = set(re.findall(r"\b\d{14}\b", text))
-    return {"question": question, "as_of": when.isoformat(), "model": model, "answer": text, "stop_reason": stop,
+    return {"question": question, "as_of": when.isoformat(), "model": model, "answer": text, "followups": followups, "stop_reason": stop,
             "tool_calls": calls, "cited": sorted(cited), "cited_not_in_results": sorted(cited - seen),
             "usage": usage, "seconds": round(time.time() - started, 1)}
 

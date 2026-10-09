@@ -214,6 +214,8 @@ export interface ToolCall {
 export interface AskResult {
   question: string;
   answer: string;
+  /** 이어서 물을 만한 질문. Agent가 답 끝에 붙인 것 */
+  followups?: string[];
   as_of: string;
   model: string;
   seconds: number;

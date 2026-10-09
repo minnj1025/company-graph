@@ -858,7 +858,8 @@ def _answered(db, question: str, visitor: str, ask_id: int, result: dict, found:
                 "report": documents[no].report_nm.strip(), "filed": documents[no].rcept_dt.isoformat()}
                if no in documents else {"rcept_no": no, "url": query.DART_VIEWER + no, "company": None, "report": None, "filed": None}
                for no in cited]
-    return {"question": question, "answer": result["answer"], "as_of": result["as_of"], "model": result["model"],
+    return {"question": question, "answer": result["answer"], "followups": result.get("followups", []),
+            "as_of": result["as_of"], "model": result["model"],
             "seconds": result["seconds"], "tokens": entry.tokens,
             "tools": [{"name": c["tool"], "input": c["input"], "total": c["total"], "error": c["error"]} for c in result["tool_calls"]],
             "unverified_citations": result["cited_not_in_results"],
