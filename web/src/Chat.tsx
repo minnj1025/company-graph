@@ -252,23 +252,26 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
     // 새 브라우저에서는 scrollIntoView 가 Promise 를 돌려주므로, 그 값을 effect 의 반환값으로 내보내지 않는다
     bottom.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [chat.turns, chat.busy]);
+  // 펼쳐 둔 질문 하나. 나머지는 질문만 한 줄씩 쌓인다. 새로 물으면 그 질문이 펼쳐진다
+  const [open, setOpen] = useState(chat.turns.length - 1);
+  useEffect(() => setOpen(chat.turns.length - 1), [chat.turns.length]);
 
   return (
     <div className="chat-log">
       {chat.turns.length === 0 && <p className="empty">아래 입력 칸에 궁금한 것을 적으면 답이 여기에 쌓입니다.</p>}
       {chat.turns.map((turn, i) => (
-        <div key={i} className="turn">
-          {turn.result && turn.result.graph.nodes.length > 0 ? (
-            <button
-              className={turn.result === shown ? "q shown" : "q"}
-              onClick={() => onShow(turn.result!)}
-              title="이 질문으로 찾은 그래프를 봅니다"
-            >
-              {turn.question}
-            </button>
-          ) : (
-            <div className="q">{turn.question}</div>
-          )}
+        <div key={i} className={i === open ? "turn" : "turn folded"}>
+          <button
+            className={turn.result !== undefined && turn.result === shown ? "q shown" : "q"}
+            onClick={() => {
+              setOpen(i);
+              if (turn.result && turn.result.graph.nodes.length > 0) onShow(turn.result);
+            }}
+            aria-expanded={i === open}
+            title={i === open ? "이 질문으로 찾은 그래프를 봅니다" : "답을 펼치고, 이 질문으로 찾은 그래프를 봅니다"}
+          >
+            {turn.question}
+          </button>
           {turn.error && <div className="a error">{turn.error}</div>}
           {turn.result && (
             <div className={turn.result === shown ? "a shown" : "a"}>

@@ -3519,3 +3519,50 @@ button.q:hover {
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
 }
+
+
+/* 접힌 질문: 답은 감추고 질문만 한 줄씩 쌓는다 */
+.turn.folded {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.turn.folded > :not(.q) {
+  display: none;
+}
+
+.turn.folded .q {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 7px 10px;
+  background: none;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: none;
+}
+
+.turn.folded .q::before {
+  content: "›";
+  margin-right: 8px;
+  color: var(--muted);
+}
+
+.turn.folded .q:hover {
+  background: #24252a;
+  color: var(--text);
+}
+
+.turn.folded .q.shown {
+  color: var(--text);
+}
+
+.chat-log .turn.folded + .turn:not(.folded) {
+  margin-top: 8px;
+}
+
+.turn.folded {
+  margin-bottom: 2px;
+}
