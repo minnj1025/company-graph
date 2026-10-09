@@ -132,3 +132,36 @@ def test_price_rows_are_parsed():
                   {"BAS_DD": "20261008", "ISU_CD": "000001", "TDD_CLSPRC": "-"}])
     assert rows == [{"stock_code": "005930", "trade_date": date(2026, 10, 8), "close_price": Decimal("71200"), "change_pct": Decimal("-1.25"),
                      "volume": 12345, "trade_value": 878964000, "market_cap": 425000000000000}]
+
+
+def _links(holders=None, rel=None):
+    from company_graph.hot import Links
+    return Links({i: f"회사{i}" for i in range(1, 40)}, holders or {}, rel or {})
+
+
+def test_hot_product_group_needs_three_strong_members():
+    from company_graph.hot import find_groups
+
+    links = _links({"강관": {1, 2, 3, 4, 5, 6}})
+    liquid = set(range(1, 40))
+    quiet = {i: 0.0 for i in liquid}
+    clear = find_groups({**quiet, 1: 30.0, 2: 19.0, 3: 9.4, 4: 9.1}, 3.0, liquid, links)
+    assert [(g["grade"], g["why"], len(g["members"]), g["of"]) for g in clear] == [("뚜렷함", ["강관"], 4, 6)]
+    # 한 곳만 급등하고 나머지는 기준선을 겨우 넘었다
+    assert find_groups({**quiet, 1: 30.0, 2: 4.9, 3: 3.7}, 3.0, liquid, links) == []
+    # 세 곳이 올랐지만 그 제품을 가진 곳의 절반이 안 된다
+    wide = _links({"레미콘": set(range(1, 9))})
+    assert find_groups({**quiet, 1: 13.0, 2: 8.0, 3: 7.0}, 3.0, liquid, wide) == []
+
+
+def test_hot_relation_group_skips_hubs_and_merges_same_members():
+    from company_graph.hot import find_groups
+
+    liquid = set(range(1, 40))
+    quiet = {i: 0.0 for i in liquid}
+    family = {(1, 2): {"계열"}, (2, 3): {"계열", "지분"}}
+    groups = find_groups({**quiet, 1: 30.0, 2: 29.0, 3: 25.0}, 3.0, liquid, _links({"MLCC": {1, 2, 3}}, family))
+    assert [(g["grade"], g["kind"], sorted(g["members"])) for g in groups] == [("보통", "둘 다", [1, 2, 3])]
+    # 여러 곳에 출자한 회사(20)를 거쳐서만 이어진 곳들은 무리가 아니다
+    hub = {(i, 20): {"지분"} for i in range(1, 13)}
+    assert find_groups({**quiet, 1: 9.0, 2: 9.0, 3: 9.0, 20: 9.0}, 3.0, liquid, _links(rel=hub)) == []
