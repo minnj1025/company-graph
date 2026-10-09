@@ -29,7 +29,7 @@ interface View {
 }
 const HOME: View = { center: null, hops: 1, scope: "listed", found: null, selected: null };
 
-const DRAWER_TITLES: Record<Exclude<Drawer, null>, string> = { answer: "질문과 답", company: "기업 상세", feed: "최근 공시" };
+const DRAWER_TITLES: Record<Exclude<Drawer, null>, string> = { answer: "채팅", company: "기업 상세", feed: "최근 공시" };
 
 export function App() {
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -253,7 +253,7 @@ export function App() {
   const products = shownData.nodes.filter((node) => node.kind === "product").length;
   const families = shownData.nodes.filter((node) => node.kind === "family").length;
   const drawerTabs = (["answer", "company", "feed"] as const).filter(
-    (kind) => kind === "feed" || kind === drawer || (kind === "answer" ? chat.turns.length > 0 : detail !== null),
+    (kind) => kind !== "company" || kind === drawer || detail !== null,
   );
 
   return (
@@ -355,8 +355,8 @@ export function App() {
               <button
                 className={drawer === "answer" ? "chat-button on" : "chat-button"}
                 onClick={() => setDrawer(drawer === "answer" ? null : "answer")}
-                title="질문과 답"
-                aria-label="질문과 답"
+                title="채팅"
+                aria-label="채팅"
               >
                 💬
               </button>
@@ -427,7 +427,7 @@ export function App() {
           <div
             className={drawer ? "edge open" : "edge"}
             onPointerDown={dragEdge}
-            title={drawer ? "누르면 오른쪽 칸을 닫고, 끌면 너비를 바꿉니다" : "누르거나 왼쪽으로 끌면 질문과 답, 최근 공시가 열립니다"}
+            title={drawer ? "누르면 오른쪽 칸을 닫고, 끌면 너비를 바꿉니다" : "누르거나 왼쪽으로 끌면 채팅, 최근 공시가 열립니다"}
           />
         </section>
 
