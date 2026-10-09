@@ -22,7 +22,7 @@ const AMOUNT_STEPS: [number, string][] = [[0, "전체"], [1e10, "100억 이상"]
 const LEVELS: [Level, string, string][] = [
   ["section", "대분류", "공식 분류 21개"],
   ["division", "중분류", "공식 분류 77개"],
-  ["family", "제품군", "약 165개"],
+  ["family", "제품군", "약 170개"],
   ["product", "제품", "가장 작게"],
 ];
 const DEGREE_STEPS: [number, string][] = [[1, "전체"], [2, "2곳 이상"], [5, "5곳 이상"], [10, "10곳 이상"]];

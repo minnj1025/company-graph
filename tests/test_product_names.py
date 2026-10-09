@@ -37,3 +37,16 @@ def test_product_id_is_stable_and_negative():
 
     assert product_id("전기밥솥") == product_id("전기밥솥") < -1000
     assert product_id("전기밥솥") != product_id("화장품")
+
+
+def test_finance_is_split_by_product_name():
+    from company_graph.product_naming import refile
+
+    assert refile("금융 서비스", "자동차보험") == "보험"
+    assert refile("금융 서비스", "은행 여수신") == "은행·저축은행"
+    assert refile("금융 서비스", "증권 중개") == "증권·투자은행"
+    assert refile("금융 서비스", "리스") == "여신·카드·캐피탈"
+    assert refile("금융 서비스", "벤처 투자") == "자산운용·투자"
+    assert refile("금융 서비스", "신용 평가") == "신용정보·리서치"   # 따로 옮긴 것이 먼저다
+    assert refile("금융 서비스", "세금 환급 대행") == "금융 서비스"
+    assert refile("게임", "모바일 게임") == "게임"

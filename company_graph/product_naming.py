@@ -53,12 +53,33 @@ MOVED = {
     **{(old, name): "신용정보·리서치" for old, name in (
         ("핀테크·결제", "신용 조회 서비스"), ("핀테크·결제", "기업 신용정보 서비스"), ("핀테크·결제", "본인인증 서비스"), ("정보보안", "본인인증 서비스"),
         ("금융 서비스", "신용 평가"), ("금융 서비스", "신용 정보 서비스"), ("사업지원 서비스", "채권 추심"),
+        ("금융 서비스", "채권 평가"), ("금융 서비스", "채권 평가 서비스"), ("금융 서비스", "기술 평가 서비스"),
+        ("금융 서비스", "사업가치 평가"), ("금융 서비스", "투자 정보 서비스"),
         ("엔지니어링·시험·연구 용역", "시장 조사 서비스"), ("인공지능·데이터", "패널 데이터 서비스"))},
     **{(old, name): "스포츠 구단·e스포츠" for old, name in (
         ("기타", "스포츠 구단 운영"), ("기타", "프로축구단 운영"), ("게임", "e스포츠 구단 운영"), ("게임", "e스포츠 콘텐츠 제작"))},
     **{(old, name): "시뮬레이터·가상훈련" for old, name in (
         ("기타", "훈련 시뮬레이터"), ("기타", "XR 교육훈련 시스템"), ("기업용 소프트웨어", "XR 솔루션"))},
 }
+# "금융 서비스" 하나에 은행·증권·보험이 다 들어 있던 것을 나눴다. 제품 이름으로 가린다 (위에서부터 먼저 맞는 것)
+_FINANCE = (
+    ("보험", re.compile(r"보험|재보험|퇴직연금|손해사정")),
+    ("은행·저축은행", re.compile(r"은행|저축은행|기업 대출|기업금융|외환 거래|금융 플랫폼")),
+    ("여신·카드·캐피탈", re.compile(r"여신|리스$|할부|신용카드|카드론|카드 대출|현금서비스|대부|대출 중개|렌탈 금융|담보대출|금융 중개|프로젝트 금융|채무보증")),
+    ("자산운용·투자", re.compile(r"벤처 투자|자산 운용|사모펀드|헤지펀드|신기술사업금융|자기자본 투자|유가증권 (운용|투자)|부실채권|대체투자|신탁|리츠 자산|자산 관리|대리사무")),
+    ("증권·투자은행", re.compile(r"증권|선물 중개|파생상품|투자은행|채권 인수|M&A|인수합병|금융상품 판매|유가증권 대여|펀드 판매|투자 자문|금융 투자")),
+)
+
+
+def refile(family: str, name: str) -> str:
+    """제품군을 나중에 고친 것을 반영한다. 예전에 붙인 결과 파일은 그대로 두고 읽을 때 옮긴다."""
+    if (family, name) in MOVED:
+        return MOVED[(family, name)]
+    if family == "금융 서비스":
+        return next((new for new, pattern in _FINANCE if pattern.search(name)), family)
+    return family
+
+
 # 처음에는 "기타 전자부품"에 들어 있던 모터류. 제품군을 따로 세웠다
 MOTORS = ("모터", "소형 모터", "BLDC 모터", "스테핑 모터", "DC 모터", "AC 모터", "기어드 모터", "모터 코어", "모터 컨트롤러", "권선 코일")
 ROWS_PER_BATCH = 380
@@ -238,7 +259,7 @@ def _read_round(work, problems: list[str]) -> dict[int, tuple[list, bool]]:
                         family = "모터"
                     elif family == "타이어 보강재":   # 제품 이름을 제품군 자리에 적은 한 줄
                         family = "타이어"
-                    family = MOVED.get((family, name), family)
+                    family = refile(family, name)
                     if not name or family not in FAMILY_FIELD:
                         problems.append(f"{path.name}: {number} 의 제품군 {family!r} 이 목록에 없습니다 ({part.strip()[:40]})")
                         continue
@@ -273,6 +294,7 @@ def _tidy(results: dict, problems: list[str]) -> dict:
             if len(parts) != 3 or not all(parts):
                 continue
             family, old, new = parts
+            family = refile(family, old)
             if old not in names[family] or new not in names[family] or old == new:
                 problems.append(f"{path.name}: 모을 수 없는 줄 ({family} | {old} → {new})")
                 continue
@@ -323,7 +345,7 @@ def apply(named_by: str):
                 if len(parts) != 3:
                     continue
                 family, name, code = parts[0], parts[1], parts[2].replace("?", "").strip()
-                family = MOVED.get((family, name), family)   # 코드를 붙인 뒤에 제품군을 옮긴 이름
+                family = refile(family, name)   # 코드를 붙인 뒤에 제품군을 옮긴 이름
                 if (family, name) in used and (family, name) not in coded and len(code) == 5 and ksic.valid(code):
                     coded.add((family, name))
                     db.add(ProductCode(family=family, name=name, ksic=code, unsure="?" in parts[2]))
