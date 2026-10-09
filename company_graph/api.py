@@ -687,6 +687,7 @@ def _prepare_ask():
 
 
 GRAPH_COMPANIES = 500  # 질문 결과 그래프에 그리는 기업 수의 상한
+AROUND_COMPANIES = 24   # 한 기업만 물었을 때 함께 그리는 상대의 수
 
 
 _listed_names: dict[int, str] = {}
@@ -716,6 +717,8 @@ class _Found:
         self.families: set[str] = set()                   # products 의 이름 가운데 제품군인 것
         self.topics: dict[str, dict[int, int]] = {}       # 사업 낱말 → {기업: 보고서에 나온 횟수}
         self.ranked: list[int] = []                       # 찾은 순서대로의 기업. 상한에 걸리면 앞에서부터 그린다
+        self.calls = 0                                    # 도구를 부른 횟수. 0이면 조회 없이 답한 것(거절 등)이라 그릴 것이 없다
+        self.receipts: set[str] = set()                   # get_filings 로 읽은 공시. 그 공시의 상대 기업을 선으로 잇는다
 
     def relation(self, item: dict):
         subject, obj = item["subject"].get("company_id"), item["object"].get("company_id")
@@ -734,6 +737,7 @@ class _Found:
                 link["value"] = item["value"] if item.get("unit") == "%" else (link["value"] or 0) + item["value"]
 
     def take(self, name: str, arguments: dict, result: dict):
+        self.calls += 1
         if "error" in result:
             return
         if name == "find_company" and len(result["candidates"]) == 1:
@@ -770,28 +774,89 @@ class _Found:
                 for word, count in matched:
                     self.topics.setdefault(word, {})[company_id] = count
         elif name in ("get_business", "get_products", "get_filings"):
-            self.focus.add(result["company"]["company_id"])
+            company_id = result["company"]["company_id"]
+            self.focus.add(company_id)
+            if name == "get_filings":
+                self.receipts.update(f["rcept_no"] for f in result.get("filings", []) if f.get("contents"))
+            # 제품 표를 읽었으면 그 회사의 제품을 점으로 그린다 (한 줄에 여럿이면 줄의 비중을 나눈다. 비중이 큰 8개까지)
+            rows = sorted(result.get("products") or [], key=lambda row: -row["share_pct"]) if name == "get_products" else []
+            shown = 0
+            for row in rows:
+                for product in row["products"] if shown < 8 else []:
+                    shares = self.products.setdefault(product["name"], {})
+                    shares[company_id] = max(shares.get(company_id, 0.0), round(row["share_pct"] / len(row["products"]), 2))
+                    shown += 1
         elif name == "list_companies":
             self.companies.update(c["company_id"] for c in result["companies"][:80])
+
+    def _link(self, edge: dict):
+        """원장에서 읽은 관계 한 줄(query.relations 의 모양)을 선으로 더한다."""
+        subject, obj = edge["subject_id"], edge["object_id"]
+        if not subject or not obj or subject == obj:
+            return
+        self.companies.update((subject, obj))
+        link = self.links.setdefault((subject, obj, edge["type"]), {"count": 0, "value": None, "unit": edge["unit"], "seen": set()})
+        receipt = (edge["rcept_no"],)
+        if receipt in link["seen"] or any(edge["rcept_no"] in seen for seen in link["seen"]):
+            return
+        link["seen"].add(receipt)
+        link["count"] += 1
+        if edge["value"] is not None:
+            link["value"] = float(edge["value"]) if edge["type"] == "equity" else (link["value"] or 0) + float(edge["value"])
+
+    def _contracts(self, db):
+        """get_filings 로 읽은 공시의 상대 기업을 잇는다. 도구 결과에는 상대의 이름만 있어서 원장에서 다시 찾는다."""
+        if not self.receipts:
+            return
+        receipts = list(self.receipts)[:200]
+        for edge in query.relations(db, date.today(), company_ids=list(self.focus), rel_types=["supply_contract", *query.EVENT_TYPES]):
+            if edge["rcept_no"] in receipts and edge["type"] not in ("equity", "affiliate"):
+                self._link(edge)
+
+    def _around(self, db):
+        """기업 한두 곳만 묻고 관계는 조회하지 않은 질문("○○ 근황 어때")이면 점 하나만 남는다.
+        그럴 때는 그 기업의 지분과 공급계약 가운데 큰 것을 함께 그려, 그 기업이 어디에 놓여 있는지 보이게 한다."""
+        # 제품 점에라도 이어져 있으면 혼자가 아니다 (제품 비중을 비교하는 질문에 계약 상대를 수십 곳 덧그리지 않는다)
+        linked = {i for source, target, _ in self.links for i in (source, target)}
+        linked |= {i for members in (*self.products.values(), *self.topics.values()) for i in members}
+        alone = [i for i in self.focus if i not in linked]
+        if not alone or len(self.focus) > 3:
+            return
+        for company_id in alone:
+            edges = query.relations(db, date.today(), company_ids=[company_id], rel_types=["equity", "supply_contract"])
+            edges = [e for e in edges if e["subject_id"] and e["object_id"]]
+            other = lambda e: e["object_id"] if e["subject_id"] == company_id else e["subject_id"]
+            seen = set()
+            for edge in sorted(edges, key=lambda e: -(float(e["value"]) if e["value"] is not None else 0)):
+                if len(seen) >= AROUND_COMPANIES and other(edge) not in seen:
+                    continue
+                seen.add(other(edge))
+                self._link(edge)
 
     def graph(self, db, answer: str = "") -> dict:
         from .names import normalize
 
+        if self.calls == 0:   # 조회 없이 답했다(매수·매도 판단을 거절한 경우 등). 그릴 것이 없다
+            return {"nodes": [], "links": []}
+        self._contracts(db)
+        self._around(db)
         products = {name: dict(members) for name, members in self.products.items()}
         topics = {word: dict(members) for word, members in self.topics.items()}
 
-        # 답에 이름이 나온 회사는 반드시 그리고 크게 보인다. 조회 결과에 있던 회사는 두 글자 이름도 보고,
-        # 그 밖의 상장사는 세 글자 이상인 이름만 본다("대상", "효성" 같은 이름이 보통 낱말로 쓰인 것과 헷갈리지 않게)
+        # 답에 이름이 나온 회사는 크게 보인다. 조회 결과에 있던 회사만 본다 ("뉴트리션"이라는 낱말에서 뉴트리를 찾지 않게).
+        # 긴 이름부터 찾고 찾은 자리는 지운다 ("SK하이닉스"에서 이닉스를, "현대모비스"에서 모비스를 또 찾지 않게)
         candidates = self.companies | self.focus | set(self.ranked)
-        text = normalize(answer)
-        mentioned = set()
-        for company_id, names in listed_names(db).items():
-            if any(len(name) >= (2 if company_id in candidates else 3) and name in text for name in names):
-                mentioned.add(company_id)
-        if candidates - listed_names(db).keys():
-            for c in db.scalars(select(Company).where(Company.company_id.in_(candidates - listed_names(db).keys()))):
-                if any(len(name) >= 2 and name in text for name in {normalize(c.name), normalize(c.label)}):
-                    mentioned.add(c.company_id)
+        names = [(name, company_id) for company_id, known in listed_names(db).items() for name in known]
+        unlisted = candidates - listed_names(db).keys()
+        if unlisted:
+            names += [(name, c.company_id) for c in db.scalars(select(Company).where(Company.company_id.in_(unlisted)))
+                      for name in {normalize(c.name), normalize(c.label)}]
+        text, mentioned = normalize(answer), set()
+        for name, company_id in sorted(set(names), key=lambda pair: -len(pair[0])):
+            if len(name) >= 2 and name in text:
+                text = text.replace(name, "\0" * len(name))
+                if company_id in candidates:
+                    mentioned.add(company_id)
         focus = self.focus | mentioned
         ids = set(focus)
         for company_id in [*self.ranked, *sorted(self.companies)]:
