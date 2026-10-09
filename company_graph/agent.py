@@ -39,6 +39,7 @@ SYSTEM = """당신은 한국 상장사의 공시(DART)에서 뽑은 기업 관�
 - 제품 이름으로 찾을 수 있으면 find_by_product 를 먼저 씁니다. 매출 비중이 바로 나옵니다. 제품 표를 읽지 못한 회사는 거기에 없으므로 search_business 로 보고서 글에서도 찾습니다.
 - 그 사업이 주력인 회사(비중을 적습니다)와 일부이거나 언급만 있는 회사를 나눠 적습니다. search_business 로만 찾은 회사는 get_products 나 get_business 로 매출 비중을 확인합니다.
 - 제품 이름과 비중은 보고서 표에 적힌 그대로 옮깁니다. std_names 는 묶으려고 붙인 이름이라 답의 근거로 쓰지 않습니다.
+- 찾은 회사가 많으면 답에는 대표적인 곳만 적고, 모두 몇 곳이 조회됐는지(total)를 밝힙니다. 조회된 회사 전체는 화면의 그래프에 그려집니다.
 - 회사마다 왜 골랐는지를 보고서 문장으로 짧게 밝히고 사업보고서 접수번호를 붙입니다. 찾은 회사의 모회사나 계약 상대가 궁금할 만하면 get_relations 로 이어 봅니다.
 - 주가가 오를지, 수혜를 볼지는 말하지 않습니다. "보고서에 이 사업을 한다고 적혀 있다"까지만 말합니다.
 
@@ -83,7 +84,8 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
                 result = agent_tools.call(db, block.name, dict(block.input))
                 if on_result:
                     on_result(block.name, dict(block.input), result)
-                body = json.dumps(result, ensure_ascii=False, default=str)
+                # 이름이 _ 로 시작하는 값은 화면용이라 모델에게 보내지 않는다
+                body = json.dumps({k: v for k, v in result.items() if not k.startswith("_")}, ensure_ascii=False, default=str)
                 seen.update(re.findall(r"\b\d{14}\b", body))
                 calls.append({"tool": block.name, "input": dict(block.input), "error": result.get("error"),
                               "total": result.get("total"), "chars": len(body)})

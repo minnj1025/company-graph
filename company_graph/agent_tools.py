@@ -17,6 +17,7 @@ from . import query
 from .db import BusinessSection, Company, Document, Product, Relation
 
 LIMIT = 50
+GRAPH_MENTIONS = 150   # 글 검색으로만 걸린 회사는 낱말이 많이 나온 순으로 이만큼까지 그래프에 그린다
 LISTED = ("Y", "K", "N")
 DART_LINK = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo="
 MARKETS = {"Y": "유가증권", "K": "코스닥", "N": "코넥스", "E": "비상장 등"}
@@ -420,6 +421,8 @@ def search_business(db, keywords, as_of, listed_only: bool = True) -> dict:
         out.append({**_brief(companies[company_id]), "matched": entry["matched"], "snippets": snippets,
                     "report": _report_name(db, entry["rcept_no"]), "rcept_no": entry["rcept_no"]})
     return {"as_of": when.isoformat(), "keywords": words, "total": len(ranked), "truncated": len(ranked) > 30, "companies": out,
+            # 화면의 그래프가 쓴다. Agent에게는 보내지 않는다(이름이 _ 로 시작하는 값): 30곳 너머까지, 기업마다 많이 나온 낱말 둘
+            "_graph": [(i, sorted(e["matched"].items(), key=lambda x: -x[1])[:2]) for i, e in ranked[:GRAPH_MENTIONS]],
             "note": "보고서 글에 낱말이 나온 회사입니다. matched 는 낱말별로 나온 횟수이고, 낱말이 나왔다고 그 사업이 주력이라는 뜻은 아닙니다. "
                     "주력인지는 get_business 의 매출 비중 표로 확인하고, 확인하지 않은 회사는 '보고서에 언급이 있다'고만 말하세요"
                     if out else "이 낱말이 나온 사업보고서가 없습니다. 다른 이름(제품명, 원재료명)으로 다시 찾아 보세요"}
@@ -493,6 +496,8 @@ def find_by_product(db, keywords, as_of, min_share=None, listed_only: bool = Tru
     out = [{**_brief(companies[i]), "share_pct": e["share_pct"], "rows": e["rows"][:5], "matched_products": e["matched_products"],
             "report": _report_name(db, e["rcept_no"]), "rcept_no": e["rcept_no"]} for i, e in ranked[:LIMIT]]
     return {"as_of": when.isoformat(), "keywords": words[:8], "total": len(ranked), "truncated": len(ranked) > LIMIT, "companies": out,
+            # 화면의 그래프가 쓴다. Agent에게는 보내지 않는다: 찾은 회사 전부의 (기업, 매출 비중, 걸린 표준 이름)
+            "_graph": [(i, e["share_pct"], e["matched_products"][:3]) for i, e in ranked],
             "standard_names": sorted(({"name": name, "companies": len(ids & shown)} for name, ids in names.items() if ids & shown),
                                      key=lambda x: (-x["companies"], x["name"]))[:20],
             "fields": "회사의 share_pct 는 걸린 줄의 비중을 더한 값입니다. " + _PRODUCT_NOTE,

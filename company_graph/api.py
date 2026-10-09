@@ -410,15 +410,34 @@ def _prepare_ask():
         _ask_ready = True
 
 
+GRAPH_COMPANIES = 500  # 질문 결과 그래프에 그리는 기업 수의 상한
+
+
+_listed_names: dict[int, str] = {}
+
+
+def listed_names(db) -> dict[int, str]:
+    """상장사 번호 → 비교하기 좋게 다듬은 이름. 답의 글에 어느 회사가 나왔는지 찾는 데 쓴다."""
+    if not _listed_names:
+        from .names import normalize
+        _listed_names.update({c.company_id: normalize(c.name) for c in db.scalars(select(Company).where(Company.corp_cls.in_(LISTED)))})
+    return _listed_names
+
+
 class _Found:
-    """Agent가 도구로 조회한 기업과 관계를 모아, 화면이 그릴 그래프로 만든다."""
+    """Agent가 도구로 조회한 기업과 관계를 모아, 화면이 그릴 그래프로 만든다.
+
+    답의 글은 다 적지 못해 일부만 적으므로 그래프가 전체를 보여 준다. 제품 표에서 찾은 회사는 모두 그리고,
+    답에 이름이 나온 회사는 반드시 그래프에 있고 크게 보이게 한다.
+    """
 
     def __init__(self):
         self.companies: set[int] = set()
         self.focus: set[int] = set()
         self.links: dict[tuple, dict] = {}
-        self.topics: dict[str, dict[int, int]] = {}   # 사업 낱말 → {기업: 보고서에 나온 횟수}
         self.products: dict[str, dict[int, float]] = {}   # 제품 → {기업: 매출 비중(%)}
+        self.topics: dict[str, dict[int, int]] = {}       # 사업 낱말 → {기업: 보고서에 나온 횟수}
+        self.ranked: list[int] = []                       # 찾은 순서대로의 기업. 상한에 걸리면 앞에서부터 그린다
 
     def relation(self, item: dict):
         subject, obj = item["subject"].get("company_id"), item["object"].get("company_id")
@@ -458,28 +477,48 @@ class _Found:
                     self.focus.add(target)
                     self.links.setdefault((company["company_id"], target, arguments["rel_type"]),
                                           {"count": company["new"] + company["corrections"], "value": None, "unit": None, "seen": set()})
-        elif name == "search_business":
-            # 찾은 낱말을 점으로 두고, 보고서에 그 낱말이 나온 기업을 잇는다. 기업마다 많이 나온 낱말 둘까지만
-            for company in result["companies"]:
-                self.companies.add(company["company_id"])
-                for word, count in sorted(company["matched"].items(), key=lambda x: -x[1])[:2]:
-                    self.topics.setdefault(word, {})[company["company_id"]] = count
         elif name == "find_by_product":
-            # 찾은 제품을 점으로 두고 기업을 매출 비중으로 잇는다. 표준 이름에 걸린 것이 없으면 찾은 낱말을 점으로 쓴다
-            for company in result["companies"]:
-                self.companies.add(company["company_id"])
-                for product in company["matched_products"][:2] or result["keywords"][:1]:
-                    self.products.setdefault(product, {})[company["company_id"]] = company["share_pct"]
-        elif name in ("get_business", "get_products"):
+            # Agent에게는 비중이 큰 50곳만 갔지만 그래프는 찾은 회사를 모두 그린다. 표준 이름에 걸린 것이 없으면 찾은 낱말을 점으로 쓴다
+            for company_id, share, matched in result["_graph"]:
+                self.ranked.append(company_id)
+                for product in matched or result["keywords"][:1]:
+                    shares = self.products.setdefault(product, {})
+                    shares[company_id] = max(shares.get(company_id, 0.0), share)
+        elif name == "search_business":
+            for company_id, matched in result["_graph"]:
+                self.ranked.append(company_id)
+                for word, count in matched:
+                    self.topics.setdefault(word, {})[company_id] = count
+        elif name in ("get_business", "get_products", "get_filings"):
             self.focus.add(result["company"]["company_id"])
         elif name == "list_companies":
             self.companies.update(c["company_id"] for c in result["companies"][:80])
-        elif name == "get_filings":
-            self.focus.add(result["company"]["company_id"])
 
-    def graph(self, db) -> dict:
-        ids = (self.companies | self.focus)
-        ids = set(sorted(ids)[:200]) | self.focus
+    def graph(self, db, answer: str = "") -> dict:
+        from .names import normalize
+
+        products = {name: dict(members) for name, members in self.products.items()}
+        topics = {word: dict(members) for word, members in self.topics.items()}
+
+        # 답에 이름이 나온 회사는 반드시 그리고 크게 보인다. 조회 결과에 있던 회사는 두 글자 이름도 보고,
+        # 그 밖의 상장사는 세 글자 이상인 이름만 본다("대상", "효성" 같은 이름이 보통 낱말로 쓰인 것과 헷갈리지 않게)
+        candidates = self.companies | self.focus | set(self.ranked)
+        text = normalize(answer)
+        mentioned = set()
+        for company_id, name in listed_names(db).items():
+            if len(name) >= (2 if company_id in candidates else 3) and name in text:
+                mentioned.add(company_id)
+        if candidates - listed_names(db).keys():
+            for c in db.scalars(select(Company).where(Company.company_id.in_(candidates - listed_names(db).keys()))):
+                if len(normalize(c.name)) >= 2 and normalize(c.name) in text:
+                    mentioned.add(c.company_id)
+        focus = self.focus | mentioned
+        ids = set(focus)
+        for company_id in [*self.ranked, *sorted(self.companies)]:
+            if len(ids) >= GRAPH_COMPANIES:
+                break
+            ids.add(company_id)
+
         links, degree = [], Counter()
         for (source, target, rel_type), link in self.links.items():
             if source not in ids or target not in ids:
@@ -495,32 +534,46 @@ class _Found:
                           "value": link["value"] if rel_type == "equity" else None, "label": label})
             degree[source] += 1
             degree[target] += 1
-        topics = []
-        for number, (word, members) in enumerate(self.topics.items(), 1):
-            members = {i: n for i, n in members.items() if i in ids}
-            if not members:
-                continue
-            # 낱말 점의 번호는 음수로 준다. 기업 번호와 겹치지 않게
-            topics.append({"id": -number, "name": word, "kind": "topic", "stock_code": None, "listed": False, "group": None,
-                           "stage": "", "sector": "사업 낱말", "market": None, "in_scope": False,
-                           "degree": len(members), "focus": True})
-            for company_id, count in members.items():
-                links.append({"source": company_id, "target": -number, "type": "business", "count": count, "value": None,
-                              "label": f"보고서의 사업 내용에 '{word}' {count}번"})
-                degree[company_id] += 1
-        for name, members in self.products.items():
+
+        # 3. 답에 나왔는데 어디에도 이어지지 않은 회사는 자기 제품에 잇는다 (매출 비중이 큰 둘)
+        linked = set(degree) | {i for members in (*products.values(), *topics.values()) for i in members}
+        own = product_index(db, date.today())
+        for company_id in mentioned - linked:
+            for name, item in sorted(own.get(company_id, {}).items(), key=lambda x: -x[1]["share"])[:2]:
+                products.setdefault(name, {})[company_id] = round(item["share"], 2)
+
+        # 4. 제품 점과 낱말 점. 이름이 같으면 제품 점 하나로 합친다
+        extra = []
+        point = lambda number, name, kind, members: {
+            "id": number, "name": name, "kind": kind, "stock_code": None, "listed": False, "group": None, "stage": "",
+            "sector": "제품" if kind == "product" else "사업 낱말", "market": None, "in_scope": False, "degree": members, "focus": True}
+        for name, members in products.items():
             members = {i: share for i, share in members.items() if i in ids}
-            if not members:
+            mentions = {i: n for i, n in topics.pop(name, {}).items() if i in ids and i not in members}
+            if not members and not mentions:
                 continue
-            topics.append({"id": product_id(name), "name": name, "kind": "product", "stock_code": None, "listed": False, "group": None,
-                           "stage": "", "sector": "제품", "market": None, "in_scope": False, "degree": len(members), "focus": True})
+            extra.append(point(product_id(name), name, "product", len(members) + len(mentions)))
             for company_id, share in members.items():
                 links.append({"source": company_id, "target": product_id(name), "type": "product", "count": 1, "value": share,
                               "label": f"매출의 {share:.1f}%"})
                 degree[company_id] += 1
-        nodes = [{**company_json(c), "degree": degree[c.company_id], "focus": c.company_id in self.focus}
+            for company_id, count in mentions.items():
+                links.append({"source": company_id, "target": product_id(name), "type": "business", "count": count, "value": None,
+                              "label": f"보고서의 사업 내용에 '{name}' {count}번"})
+                degree[company_id] += 1
+        for number, (word, members) in enumerate(topics.items(), 1):
+            members = {i: n for i, n in members.items() if i in ids}
+            if not members:
+                continue
+            # 낱말 점의 번호는 음수로 준다. 기업 번호와 겹치지 않게
+            extra.append(point(-number, word, "topic", len(members)))
+            for company_id, count in members.items():
+                links.append({"source": company_id, "target": -number, "type": "business", "count": count, "value": None,
+                              "label": f"보고서의 사업 내용에 '{word}' {count}번"})
+                degree[company_id] += 1
+        nodes = [{**company_json(c), "degree": degree[c.company_id], "focus": c.company_id in focus}
                  for c in db.scalars(select(Company).where(Company.company_id.in_(ids)))] if ids else []
-        return {"nodes": nodes + topics, "links": links}
+        return {"nodes": nodes + extra, "links": links}
 
 
 @app.post("/api/ask")
@@ -558,5 +611,5 @@ def ask(body: Ask, request: Request, db=Depends(get_db)):
             "tools": [{"name": c["tool"], "input": c["input"], "total": c["total"], "error": c["error"]} for c in result["tool_calls"]],
             "unverified_citations": result["cited_not_in_results"],
             "sources": sources,
-            "graph": found.graph(db),
+            "graph": found.graph(db, result["answer"]),
             "left_for_you": max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}

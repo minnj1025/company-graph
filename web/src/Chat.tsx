@@ -127,6 +127,8 @@ export function ChatLog({ chat, shown, onShow }: LogProps) {
               <div className="a-foot">
                 <span>
                   {turn.result.seconds}초 · {turn.result.tokens.toLocaleString()}토큰 · 조회 시점 {turn.result.as_of}
+                  {turn.result.graph.nodes.length > 0 &&
+                    ` · 그래프에 기업 ${turn.result.graph.nodes.filter((node) => !node.kind).length}곳 (답은 그 일부입니다)`}
                 </span>
                 {turn.result.graph.nodes.length > 0 && turn.result !== shown && <button onClick={() => onShow(turn.result!)}>그래프에 보기</button>}
               </div>
