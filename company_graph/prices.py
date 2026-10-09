@@ -6,6 +6,7 @@
 
 실행: python -m company_graph.prices                 (가장 최근에 넣은 날 다음부터 어제까지)
       python -m company_graph.prices 20260101 20261008 (기간을 정해서)
+      python -m company_graph.prices --keep=90          (받은 뒤 90일보다 오래된 줄을 지운다. 최근 것만 두는 배포용 DB에서 쓴다)
 하루에 시장 셋(유가증권, 코스닥, 코넥스)을 한 번씩 부른다. 한도는 열쇠 하나에 하루 10,000회다.
 """
 import sys
@@ -72,13 +73,20 @@ def load(start: date, end: date) -> int:
 
 
 def main():
-    if len(sys.argv) >= 3:
-        start, end = (datetime.strptime(a, "%Y%m%d").date() for a in sys.argv[1:3])
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    keep = next((int(a.split("=", 1)[1]) for a in sys.argv if a.startswith("--keep=")), None)
+    if len(args) >= 2:
+        start, end = (datetime.strptime(a, "%Y%m%d").date() for a in args[:2])
     else:
         with session() as db:
             last = db.scalar(select(func.max(PriceDaily.trade_date)))
         start, end = (last + timedelta(days=1) if last else FIRST_DAY), date.today() - timedelta(days=1)
     print(f"{start} ~ {end}: {load(start, end)}줄")
+    if keep:
+        with session() as db:
+            old = db.query(PriceDaily).filter(PriceDaily.trade_date < date.today() - timedelta(days=keep)).delete()
+            db.commit()
+        print(f"{keep}일보다 오래된 {old}줄을 지움")
 
 
 if __name__ == "__main__":

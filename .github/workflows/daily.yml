@@ -1,0 +1,23 @@
+# 거래일 다음 날: 한국거래소의 일별 시세를 받아 배포용 DB에 넣고, 그날 함께 오른 무리를 계산한다.
+# 시세가 아직 올라오지 않았으면 아무것도 하지 않고 끝나며, 다음 실행 때 다시 받는다.
+name: daily
+on:
+  schedule:
+    - cron: "30 0 * * *"   # 한국 시간 09:30
+    - cron: "30 5 * * *"   # 한국 시간 14:30 (아침에 아직 없었을 때)
+  workflow_dispatch:
+jobs:
+  hot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      COMPANY_GRAPH_DB_URL: ${{ secrets.TARGET_DB_URL }}
+      KRX_API_KEY: ${{ secrets.KRX_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt requests
+      - run: python -m company_graph.prices --keep=90
+      - run: python -m company_graph.hot store
