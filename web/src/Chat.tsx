@@ -334,6 +334,7 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
           {chat.others.length > 0 && (
             <details className="past">
               <summary>지난 대화 {chat.others.length}</summary>
+              <div className="past-list">
               {chat.others.map((other) => (
                 <button
                   key={other.id}
@@ -349,6 +350,7 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
                   <em>질문 {other.turns.length}개</em>
                 </button>
               ))}
+              </div>
             </details>
           )}
         </div>
