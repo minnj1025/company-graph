@@ -43,6 +43,22 @@ REFILE = {
     "새싹 재배기": "생활 가전", "소독기": "생활 가전", "피아노": "스포츠·레저 용품", "응원봉": "음악·공연·매니지먼트",
     "분리막 모듈": "환경·폐기물",
 }
+# 제품군을 나중에 세워서 옮긴 것: (전의 제품군, 제품 이름) → 새 제품군. 새로 붙이는 줄은 GUIDE 의 목록을 보고 바로 새 제품군에 붙는다
+MOVED = {
+    **{(old, name): "의료·요양 서비스" for old, name in (
+        ("기타", "병원 의료 서비스"), ("기타", "의료 서비스"), ("기타", "장기요양 서비스"), ("기타", "시니어 케어 서비스"), ("기타", "수의 서비스"))},
+    **{(old, name): "보안·시설관리 서비스" for old, name in (
+        ("사업지원 서비스", "경비 서비스"), ("사업지원 서비스", "시설 관리"), ("사업지원 서비스", "반도체 시설 관리"),
+        ("사업지원 서비스", "무인 주차 운영"), ("부동산 개발·분양", "주차장 운영"), ("부동산 개발·분양", "부동산 관리"))},
+    **{(old, name): "신용정보·리서치" for old, name in (
+        ("핀테크·결제", "신용 조회 서비스"), ("핀테크·결제", "기업 신용정보 서비스"), ("핀테크·결제", "본인인증 서비스"), ("정보보안", "본인인증 서비스"),
+        ("금융 서비스", "신용 평가"), ("금융 서비스", "신용 정보 서비스"), ("사업지원 서비스", "채권 추심"),
+        ("엔지니어링·시험·연구 용역", "시장 조사 서비스"), ("인공지능·데이터", "패널 데이터 서비스"))},
+    **{(old, name): "스포츠 구단·e스포츠" for old, name in (
+        ("기타", "스포츠 구단 운영"), ("기타", "프로축구단 운영"), ("게임", "e스포츠 구단 운영"), ("게임", "e스포츠 콘텐츠 제작"))},
+    **{(old, name): "시뮬레이터·가상훈련" for old, name in (
+        ("기타", "훈련 시뮬레이터"), ("기타", "XR 교육훈련 시스템"), ("기업용 소프트웨어", "XR 솔루션"))},
+}
 # 처음에는 "기타 전자부품"에 들어 있던 모터류. 제품군을 따로 세웠다
 MOTORS = ("모터", "소형 모터", "BLDC 모터", "스테핑 모터", "DC 모터", "AC 모터", "기어드 모터", "모터 코어", "모터 컨트롤러", "권선 코일")
 ROWS_PER_BATCH = 380
@@ -221,6 +237,7 @@ def _read_round(work, problems: list[str]) -> dict[int, tuple[list, bool]]:
                         family = "모터"
                     elif family == "타이어 보강재":   # 제품 이름을 제품군 자리에 적은 한 줄
                         family = "타이어"
+                    family = MOVED.get((family, name), family)
                     if not name or family not in FAMILY_FIELD:
                         problems.append(f"{path.name}: {number} 의 제품군 {family!r} 이 목록에 없습니다 ({part.strip()[:40]})")
                         continue
@@ -305,6 +322,7 @@ def apply(named_by: str):
                 if len(parts) != 3:
                     continue
                 family, name, code = parts[0], parts[1], parts[2].replace("?", "").strip()
+                family = MOVED.get((family, name), family)   # 코드를 붙인 뒤에 제품군을 옮긴 이름
                 if (family, name) in used and (family, name) not in coded and len(code) == 5 and ksic.valid(code):
                     coded.add((family, name))
                     db.add(ProductCode(family=family, name=name, ksic=code, unsure="?" in parts[2]))
