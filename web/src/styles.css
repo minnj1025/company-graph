@@ -2978,3 +2978,62 @@ body.resizing .drawer {
   left: auto;
   top: auto;
 }
+
+/* ---------- 버튼의 테두리를 걷어 낸다: 평소에는 바탕만, 눌린 것은 색을 채워 확실히 ---------- */
+.stage-bar button,
+.crumb,
+.timebar,
+.timebar .date,
+.examples-row button,
+.chip,
+.tabs {
+  border-color: transparent;
+}
+
+.stage-bar button:hover:not(:disabled),
+.examples-row button:hover:not(:disabled),
+.chip:hover:not(:disabled) {
+  border-color: transparent;
+  background: rgba(46, 58, 82, 0.95);
+  color: var(--text);
+  filter: none;
+}
+
+.stage-bar button:active:not(:disabled),
+.examples-row button:active:not(:disabled),
+.chip:active:not(:disabled) {
+  background: rgba(122, 162, 255, 0.4);
+}
+
+.stage-bar button.on,
+.stage-bar button.on:hover,
+.chip.on,
+.chip.on:hover {
+  border-color: transparent;
+  background: rgba(122, 162, 255, 0.3);
+  color: #fff;
+  font-weight: 600;
+}
+
+.chip {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.crumb.narrowed {
+  border-color: transparent;
+}
+
+.stage-bar button.primary,
+.stage-bar button.primary:hover {
+  border-color: transparent;
+  background: #3d5fb8;
+  color: #fff;
+}
+
+.stage-bar button.primary:hover {
+  background: #4a6fd0;
+}
+
+.stage-bar .timebar .icon {
+  background: rgba(255, 255, 255, 0.08);
+}
