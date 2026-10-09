@@ -52,7 +52,7 @@ export function App() {
   /** "화면 맞추기"를 누를 때마다 올린다. 그래프가 전체가 보이게 다시 맞춘다 */
   const [refit, setRefit] = useState(0);
   const [drawer, setDrawer] = useState<Drawer>(null);
-  const [drawerWidth, setDrawerWidth] = useState(460);
+  const [drawerWidth, setDrawerWidth] = useState(520);
   /** 가장자리를 눌러 다시 열 때 보여 줄 것. 마지막에 보던 것 */
   const lastDrawer = useRef<Exclude<Drawer, null>>("feed");
   if (drawer) lastDrawer.current = drawer;
