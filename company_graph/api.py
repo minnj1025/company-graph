@@ -571,7 +571,8 @@ class _Found:
                 links.append({"source": company_id, "target": -number, "type": "business", "count": count, "value": None,
                               "label": f"보고서의 사업 내용에 '{word}' {count}번"})
                 degree[company_id] += 1
-        nodes = [{**company_json(c), "degree": degree[c.company_id], "focus": c.company_id in focus}
+        nodes = [{**company_json(c), "degree": degree[c.company_id], "focus": c.company_id in focus,
+                  "mentioned": c.company_id in mentioned}
                  for c in db.scalars(select(Company).where(Company.company_id.in_(ids)))] if ids else []
         return {"nodes": nodes + extra, "links": links}
 

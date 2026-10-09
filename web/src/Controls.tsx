@@ -126,6 +126,8 @@ interface Props extends TimeProps {
   onFilters: (filters: Filters) => void;
   /** 지금 그려진 기업과 선의 수 (조건을 건 뒤) */
   shown: { nodes: number; links: number };
+  /** 질문으로 찾은 그래프를 보는 중. 그 그래프는 Agent가 조회한 결과라서 아래 조건으로 바뀌지 않는다 */
+  locked: boolean;
 }
 
 function Steps({ label, steps, value, onChange }: { label: string; steps: [number, string][]; value: number; onChange: (value: number) => void }) {
@@ -150,6 +152,13 @@ export function Settings(props: Props) {
 
   return (
     <div className="controls">
+      {props.locked && (
+        <p className="locked-note">
+          지금은 질문으로 찾은 그래프를 보고 있습니다. 관계·솎아 보기·보는 범위는 이 그래프에 적용되지 않습니다. 기업을 눌러 "이 기업 중심으로 보기"로
+          가거나 전체 그래프로 돌아가면 적용됩니다.
+        </p>
+      )}
+      <fieldset disabled={props.locked}>
       <div className="block">
         <div className="block-head">
           <span>관계</span>
@@ -262,6 +271,8 @@ export function Settings(props: Props) {
           </>
         )}
       </div>
+
+      </fieldset>
 
       <div className="block">
         <div className="block-head">

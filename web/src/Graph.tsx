@@ -23,6 +23,8 @@ import type { GraphData, GraphLink, GraphNode } from "./types";
 
 const DIM_NODE = "#273140";
 const DIM_LINK = "#18202b";
+/** 답에 나온 기업의 이름표 바탕. 그래프의 다른 기업과 한눈에 갈리게 한다 */
+export const MENTIONED = "#ffd666";
 const MAX_LABELS = 45;
 const REL_SIZE = 4;
 const ARROW = 3;
@@ -264,11 +266,17 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
   const nodeObject = useCallback(
     (node: GraphNode) => {
       const hit = new Mesh(hitShape(nodeRadius(node)), HIT);
-      const chosen = node.focus || node.id === selectedId;
+      const chosen = node.focus || node.mentioned || node.id === selectedId;
       const show = chosen || (lit === null ? labeled.has(node.id) : lit.has(node.id));
       if (!show) return hit;
       const label = new SpriteText(node.kind === "topic" ? `# ${node.name}` : shortName(node.name));
       label.color = node.kind === "topic" ? TOPIC_COLOR : node.kind === "product" ? PRODUCT_COLOR : "#e8edf5";
+      if (node.mentioned) {
+        label.color = "#201600";
+        label.backgroundColor = MENTIONED;
+        label.padding = 1.5;
+        label.borderRadius = 2.5;
+      }
       label.textHeight = chosen ? 9 : 6;
       label.fontFace = "Pretendard, 'Malgun Gothic', sans-serif";
       label.fontWeight = "600";

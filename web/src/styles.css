@@ -2581,3 +2581,52 @@ select:focus-visible {
     right: 0;
   }
 }
+
+/* 앞서 보던 그래프로 오가는 버튼 */
+.history {
+  display: flex;
+  gap: 4px;
+}
+
+.stage-bar .history button {
+  width: 32px;
+  padding: 7px 0;
+}
+
+.stage-bar .history button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  filter: none;
+}
+
+.legend .tag {
+  width: 16px;
+  height: 9px;
+  border-radius: 3px;
+}
+
+.examples-row .reopen {
+  border-color: rgba(143, 178, 255, 0.6);
+  color: var(--accent);
+}
+
+.controls fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.controls fieldset:disabled {
+  opacity: 0.4;
+}
+
+.locked-note {
+  margin: 0 0 12px;
+  padding: 9px 11px;
+  border-radius: 9px;
+  background: rgba(122, 162, 255, 0.12);
+  color: #c9d2e0;
+  font-size: 12px;
+  line-height: 1.55;
+}

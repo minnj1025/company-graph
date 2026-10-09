@@ -23,6 +23,8 @@ export interface GraphNode extends Company {
   kind?: "topic" | "product";
   degree: number;
   focus: boolean;
+  /** 질문 결과 그래프에서, Agent의 답에 이름이 나온 기업 */
+  mentioned?: boolean;
   x?: number;
   y?: number;
   z?: number;

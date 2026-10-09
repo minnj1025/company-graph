@@ -153,10 +153,12 @@ interface ComposerProps {
   onAsk: () => void;
   /** 예시 질문을 보일지 (처음 화면에서만) */
   examples: boolean;
+  /** 답이 보이는 칸이 닫혀 있을 때, 다시 여는 버튼을 입력 칸 위에 둔다 */
+  onReopen: (() => void) | null;
 }
 
 /** 그래프 아래의 입력 칸 하나. 기업 이름을 적으면 DB에서 바로 찾고, 문장을 적으면 Agent에게 묻는다 */
-export function Composer({ chat, onPick, onAsk, examples }: ComposerProps) {
+export function Composer({ chat, onPick, onAsk, examples, onReopen }: ComposerProps) {
   const [text, setText] = useState("");
   const [results, setResults] = useState<Company[]>([]);
   const [hint, setHint] = useState(0);
@@ -224,6 +226,13 @@ export function Composer({ chat, onPick, onAsk, examples }: ComposerProps) {
               {q}
             </button>
           ))}
+        </div>
+      )}
+      {onReopen && results.length === 0 && (
+        <div className="examples-row">
+          <button className="reopen" onClick={onReopen}>
+            {chat.busy ? "답하는 중… 보기" : `지난 질문과 답 ${chat.turns.length}개 다시 보기`} ↗
+          </button>
         </div>
       )}
       {results.length > 0 && (

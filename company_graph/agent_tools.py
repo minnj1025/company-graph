@@ -408,6 +408,12 @@ def search_business(db, keywords, as_of, listed_only: bool = True) -> dict:
             entry["snippets"].append((weight, {"section": row.title, "keyword": word,
                                                "text": " ".join(row.text[max(0, at - 90):at + 130].split())}))
     companies = {c.company_id: c for c in db.scalars(select(Company).where(Company.company_id.in_(list(found))))} if found else {}
+    # 낱말이 많이 나온 것만 보면 그 말을 자주 쓰는 장비·부품 회사가 앞에 오고 정작 그것을 파는 회사가 밀린다.
+    # 제품 표에서 그 낱말이 걸린 줄의 매출 비중을 점수에 더한다(비중 100%면 글에서 한 낱말이 낼 수 있는 가장 큰 점수만큼)
+    shares = _product_shares(db, when, words) if found else {}
+    for company_id, entry in found.items():
+        entry["share"] = shares.get(company_id, 0.0)
+        entry["score"] += entry["share"] * 0.6
     ranked = sorted(((i, e) for i, e in found.items()
                      if not listed_only or MARKETS.get(companies[i].corp_cls) in ("유가증권", "코스닥", "코넥스")),
                     key=lambda x: (-len(x[1]["matched"]), -x[1]["score"], companies[x[0]].name))
@@ -418,12 +424,14 @@ def search_business(db, keywords, as_of, listed_only: bool = True) -> dict:
             if (snippet["section"], snippet["keyword"]) not in seen and len(snippets) < 3:
                 seen.add((snippet["section"], snippet["keyword"]))
                 snippets.append(snippet)
-        out.append({**_brief(companies[company_id]), "matched": entry["matched"], "snippets": snippets,
+        out.append({**_brief(companies[company_id]), "matched": entry["matched"],
+                    "product_share_pct": entry["share"] or None, "snippets": snippets,
                     "report": _report_name(db, entry["rcept_no"]), "rcept_no": entry["rcept_no"]})
     return {"as_of": when.isoformat(), "keywords": words, "total": len(ranked), "truncated": len(ranked) > 30, "companies": out,
             # 화면의 그래프가 쓴다. Agent에게는 보내지 않는다(이름이 _ 로 시작하는 값): 30곳 너머까지, 기업마다 많이 나온 낱말 둘
             "_graph": [(i, sorted(e["matched"].items(), key=lambda x: -x[1])[:2]) for i, e in ranked[:GRAPH_MENTIONS]],
             "note": "보고서 글에 낱말이 나온 회사입니다. matched 는 낱말별로 나온 횟수이고, 낱말이 나왔다고 그 사업이 주력이라는 뜻은 아닙니다. "
+                    "product_share_pct 는 제품 표에서 이 낱말이 걸린 줄의 매출 비중(%)이고, 없으면 제품 표에서는 걸리지 않은 것입니다. "
                     "주력인지는 get_business 의 매출 비중 표로 확인하고, 확인하지 않은 회사는 '보고서에 언급이 있다'고만 말하세요"
                     if out else "이 낱말이 나온 사업보고서가 없습니다. 다른 이름(제품명, 원재료명)으로 다시 찾아 보세요"}
 
@@ -462,6 +470,20 @@ def _product_row(row: Product) -> dict:
 _PRODUCT_NOTE = ("name 과 segment 는 보고서 표에 적힌 그대로, share_pct 는 그 줄이 매출에서 차지하는 비중(%)입니다. "
                  "std_names 는 모델이 붙인 표준 이름이라 틀릴 수 있으니 답에는 표에 적힌 이름을 옮기세요. "
                  "한 줄에 여러 제품이 함께 적혀 있으면 share_pct 는 그 줄 전체의 비중이지 그 제품만의 비중이 아닙니다")
+
+
+_squeeze = lambda text: re.sub(r"\s", "", text or "").lower()
+
+
+def _product_shares(db, when: date, words: list[str]) -> dict[int, float]:
+    """기업 → 제품 표에서 이 낱말들이 걸린 줄의 매출 비중 합(%). 표준 이름, 품목, 사업부문 어디에 걸려도 센다."""
+    keys = [_squeeze(w) for w in words]
+    latest = _latest_products(db, when)
+    shares: dict[int, float] = {}
+    for row in db.scalars(select(Product).join(latest, Product.rcept_no == latest.c.rcept_no)):
+        if row.share_pct > 0 and any(key in _squeeze(text) for key in keys for text in (*(row.std_names or ()), row.name, row.segment)):
+            shares[row.company_id] = round(min(100.0, shares.get(row.company_id, 0.0) + float(row.share_pct)), 2)
+    return shares
 
 
 def find_by_product(db, keywords, as_of, min_share=None, listed_only: bool = True) -> dict:
