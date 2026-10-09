@@ -479,13 +479,14 @@ def _latest_products(db, when: date, company_id: int | None = None):
 def _product_row(row: Product, codes: dict | None = None) -> dict:
     families = row.std_families or [None] * len(row.std_names or [])
     code = lambda name, family: (codes or {}).get((family, name))
-    return {"segment": row.segment, "name": row.name, "share_pct": float(row.share_pct),
+    return {"segment": row.segment, "name": row.name, "share_pct": None if row.share_pct is None else float(row.share_pct),
             "products": [{"name": name, "family": family, **({"ksic": code(name, family)} if code(name, family) else {})}
                          for name, family in zip(row.std_names or [], families)],
             **({"unsure": True} if row.unsure else {})}
 
 
 _PRODUCT_NOTE = ("name 과 segment 는 보고서 표에 적힌 그대로, share_pct 는 그 줄이 매출에서 차지하는 비중(%)입니다. "
+                 "share_pct 가 null 이면 보고서가 그 제품의 비중을 밝히지 않은 것이니 비중을 지어내지 말고 '비중은 공시에 없다'고 적으세요. "
                  "products 는 그 줄에 붙인 표준 이름과 제품군(그리고 한국표준산업분류 세세분류 코드 ksic)으로, 회사의 표 전체와 사업 개요를 보고 붙였지만 사람이 전부 확인한 것은 아닙니다. "
                  "답에는 표에 적힌 이름을 옮기세요. 한 줄에 여러 제품이 함께 적혀 있으면 share_pct 는 그 줄 전체의 비중이지 그 제품만의 비중이 아닙니다")
 
@@ -499,7 +500,7 @@ def _product_shares(db, when: date, words: list[str]) -> dict[int, float]:
     latest = _latest_products(db, when)
     shares: dict[int, float] = {}
     for row in db.scalars(select(Product).join(latest, Product.rcept_no == latest.c.rcept_no)):
-        if row.share_pct > 0 and any(key in _squeeze(text) for key in keys for text in (*(row.std_names or ()), row.name, row.segment)):
+        if (row.share_pct or 0) > 0 and any(key in _squeeze(text) for key in keys for text in (*(row.std_names or ()), row.name, row.segment)):
             shares[row.company_id] = round(min(100.0, shares.get(row.company_id, 0.0) + float(row.share_pct)), 2)
     return shares
 
@@ -523,7 +524,7 @@ def find_by_product(db, as_of, families=None, keywords=None, ksic=None, min_shar
     latest = _latest_products(db, when)
     found: dict[int, dict] = {}
     for row in db.scalars(select(Product).join(latest, Product.rcept_no == latest.c.rcept_no).order_by(Product.rcept_no, Product.row_no)):
-        if row.share_pct <= 0:
+        if row.share_pct is not None and row.share_pct <= 0:
             continue
         pairs = list(zip(row.std_names or [], row.std_families or [None] * len(row.std_names or [])))
         in_family = [(name, family) for name, family in pairs if family in wanted]
@@ -544,7 +545,7 @@ def find_by_product(db, as_of, families=None, keywords=None, ksic=None, min_shar
         hit = set(in_family if wanted else pairs) & set(by_word if keys and by_word else pairs)
         part = len(hit) / len(pairs) if pairs and hit else 1.0
         entry["split"] = entry["split"] or part < 1
-        entry["share_pct"] = round(min(100.0, entry["share_pct"] + float(row.share_pct) * part), 2)
+        entry["share_pct"] = round(min(100.0, entry["share_pct"] + float(row.share_pct or 0) * part), 2)
         entry["rows"].append(_product_row(row, codes))
         # 그래프에 그릴 점: 제품군으로 찾았으면 그 제품군, 낱말로 찾았으면 걸린 제품 이름(없으면 찾은 낱말)
         if wanted and not keys:
@@ -567,7 +568,8 @@ def find_by_product(db, as_of, families=None, keywords=None, ksic=None, min_shar
             for product in row["products"]:
                 if product["family"]:
                     spread.setdefault(product["family"], set()).add(company_id)
-    out = [{**_brief(companies[i]), "share_pct": e["share_pct"], **({"share_is_estimate": True} if e["split"] else {}), "rows": e["rows"][:5],
+    out = [{**_brief(companies[i]), "share_pct": e["share_pct"] or None, **({"share_is_estimate": True} if e["split"] and e["share_pct"] else {}),
+            **({} if e["share_pct"] else {"share_not_disclosed": True}), "rows": e["rows"][:5],
             "report": _report_name(db, e["rcept_no"]), "rcept_no": e["rcept_no"]} for i, e in ranked[:LIMIT]]
     return {"as_of": when.isoformat(), "families": wanted, "keywords": words, "total": len(ranked), "truncated": len(ranked) > LIMIT,
             "companies": out,
@@ -575,7 +577,8 @@ def find_by_product(db, as_of, families=None, keywords=None, ksic=None, min_shar
             "family_spread": sorted(({"family": f, "companies": len(ids)} for f, ids in spread.items()), key=lambda x: -x["companies"])[:15],
             # 화면의 그래프가 쓴다. Agent에게는 보내지 않는다: 찾은 회사 전부의 (기업, 매출 비중, 그래프에 그릴 점들)
             "_graph": [(i, e["share_pct"], e["labels"][:4]) for i, e in ranked],
-            "fields": "회사의 share_pct 는 찾는 제품의 몫을 더한 값입니다. 표의 한 줄에 제품이 여럿 적혀 있으면 그 줄의 비중을 제품 수로 고르게 나눈 어림값이고 "
+            "fields": "share_not_disclosed 인 회사는 그 제품을 판다고 보고서에 적혀 있지만 비중은 밝히지 않은 곳입니다(share_pct 는 null). 목록의 뒤쪽에 옵니다. "
+                      "회사의 share_pct 는 찾는 제품의 몫을 더한 값입니다. 표의 한 줄에 제품이 여럿 적혀 있으면 그 줄의 비중을 제품 수로 고르게 나눈 어림값이고 "
                       "(share_is_estimate), 이때는 답에 '약'을 붙이고 표에 적힌 줄의 이름과 비중을 함께 적으세요. " + _PRODUCT_NOTE,
             "note": "제품 표를 읽을 수 있었던 회사만 나옵니다. 표를 읽지 못한 회사, 제품 표가 없는 회사(금융업 등)는 빠져 있으니 "
                     "빠짐없이 찾아야 하면 search_business 로도 찾으세요" if out else

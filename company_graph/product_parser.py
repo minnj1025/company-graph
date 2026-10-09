@@ -55,7 +55,8 @@ def _share(cell: str) -> float | None:
 
 def _is_total(name: str) -> bool:
     """합계 줄의 이름인가. "합 계(주1)", "단순합계", "매출 총계"도 합계다."""
-    return _TOTAL.match(_PAREN_NOTE.sub("", name).replace(" ", "")) is not None
+    squeezed = _PAREN_NOTE.sub("", name).replace(" ", "")
+    return _TOTAL.match(squeezed) is not None or re.search(r"(소계|합계|총계)$", squeezed) is not None
 
 
 def _in_range(rows) -> bool:
@@ -104,17 +105,34 @@ def _amount(cell: str) -> float | None:
 _SUBTOTAL = re.compile(r"소계|subtotal", re.I)
 
 
-def _column(table, body, width: int, from_end: int, value):
-    """뒤에서 from_end 번째 칸을 값으로 보고 줄을 차례대로 읽는다.
+def _nth_value(row: list[str], nth: int, value) -> int | None:
+    """그 줄에서 nth 번째로 값이 읽히는 칸의 자리."""
+    seen = 0
+    for at, cell in enumerate(row):
+        if value(cell) is not None:
+            seen += 1
+            if seen == nth:
+                return at
+    return None
+
+
+def _column(table, body, width: int, from_end: int, value, nth: int = 0):
+    """뒤에서 from_end 번째 칸을 값으로 보고 줄을 차례대로 읽는다. nth 를 주면 자리 대신 그 줄에서 nth 번째로 값이 읽히는 칸을 쓴다
+    (줄마다 뒤에 붙는 칸 수가 달라 자리가 어긋나는 표: "… | 90.6 | 주요 거래처", "… | 0.1").
 
     돌려주는 것은 (종류, 값)의 목록이다. row 는 제품 줄(Product), total 은 합계 줄(수), subtotal 은 소계 줄(수),
     mixed 는 합계라는 말과 다른 이름이 함께 있는 줄(Product. "기타 | 기타 | 소계 | 3.3"처럼 줄이 하나뿐인 묶음의 소계).
     """
     seq, segment = [], None
     for row in body:
-        if len(row) < from_end:
+        if nth:
+            at = _nth_value(row, nth, value)
+            if at is None:
+                continue
+        elif len(row) < from_end:
             continue
-        at = len(row) - from_end
+        else:
+            at = len(row) - from_end
         number = value(row[at])
         names = [cell for cell in row[:at] if cell and not _NUMBER.match(cell.replace(" ", "")) and not _NOT_NAME.search(cell)
                  and not _INLINE.search(cell) and re.search(r"[A-Za-z가-힣]", cell)]
@@ -199,6 +217,13 @@ def _read(table: list[list[str]]) -> list[Product] | None:
             if len(rows) < 2 or marked * 2 < len(cells) or not 99.5 <= sum(r.share for r in rows) <= 100.5:
                 continue
         found.append((_period(table, body, width, from_end), rows))
+    if not found and headed:
+        # 자리로는 못 읽은 표: 줄마다 첫 번째(당기) 비중 칸을 읽는다. 값에 %나 소수점이 있는 표만
+        cells = [row[at] for row in body if (at := _nth_value(row, 1, _share)) is not None]
+        if cells and sum("%" in cell or "." in cell for cell in cells) * 2 >= len(cells):
+            rows = _pick_shares(_column(table, body, width, 0, _share, nth=1))
+            if rows and len(rows) >= 2:
+                return rows
     if not found:
         return None
     return max(found, key=lambda pair: pair[0])[1] if len({period for period, _ in found}) > 1 else found[0][1]

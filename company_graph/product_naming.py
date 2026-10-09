@@ -156,7 +156,7 @@ def collect(db) -> list[dict]:
         overview[row.company_id] = text[:260]
     tables: dict[int, dict[tuple, float]] = defaultdict(dict)
     for row in db.scalars(select(Product).order_by(Product.rcept_no.desc(), Product.row_no)):
-        tables[row.company_id].setdefault((row.segment, row.name), float(row.share_pct))
+        tables[row.company_id].setdefault((row.segment, row.name), None if row.share_pct is None else float(row.share_pct))
     companies = {c.company_id: c for c in db.scalars(select(Company).where(Company.company_id.in_(list(tables))))}
     out = []
     for company_id in sorted(tables):
@@ -190,7 +190,8 @@ def export(add: bool = False):
         lines = [f"## {company['name']} | 업종: {company['sector']} | 개요: {company['overview'] or '(없음)'}"]
         for row in company["rows"]:
             index.append([company["company_id"], row["segment"], row["name"]])
-            lines.append(f"{len(index) - 1} | {row['segment'] or '-'} | {row['name']} | {row['share']:g}")
+            share = "비중 없음" if row["share"] is None else f"{row['share']:g}"
+            lines.append(f"{len(index) - 1} | {row['segment'] or '-'} | {row['name']} | {share}")
         current.append("\n".join(lines))
         count += len(company["rows"])
     batches.append(current)

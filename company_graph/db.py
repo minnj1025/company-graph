@@ -140,7 +140,8 @@ class Product(Base):
     row_no: Mapped[int] = mapped_column(SmallInteger)                 # 표에서 몇째 줄인가
     segment: Mapped[str | None] = mapped_column(String(100))          # 사업부문 칸이 따로 있으면 그 값
     name: Mapped[str] = mapped_column(String(100))                    # 표에 적힌 품목 이름 그대로
-    share_pct: Mapped[Decimal] = mapped_column(Numeric(7, 2))         # 매출 비중(%)
+    share_pct: Mapped[Decimal | None] = mapped_column(Numeric(7, 2))  # 매출 비중(%). 보고서가 비중을 밝히지 않았으면 비어 있다
+    read_by: Mapped[str | None] = mapped_column(String(10))           # 표를 읽은 것: rule(규칙) 또는 model(모델이 글을 읽고 옮김). 없으면 rule
     std_names: Mapped[list | None] = mapped_column(JSON)              # 표준 이름. 비어 있으면 제품이라 할 것이 없는 줄("기타", "상품")
     std_families: Mapped[list | None] = mapped_column(JSON)           # std_names 와 같은 순서로, 제품마다의 제품군 (product_families 의 이름)
     named_by: Mapped[str | None] = mapped_column(String(40))          # 표준 이름을 붙인 것: rule 또는 모델 이름. 없으면 아직 안 붙임

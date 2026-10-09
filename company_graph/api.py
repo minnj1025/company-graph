@@ -146,14 +146,15 @@ def product_index(db, as_of: date) -> dict[int, dict[str, dict]]:
     index: dict[int, dict[str, dict]] = defaultdict(dict)
     codes = {(c.family, c.name): c.ksic for c in db.scalars(select(ProductCode))}
     for row in db.scalars(select(Product).join(latest, Product.rcept_no == latest.c.rcept_no)):
-        if row.share_pct <= 0:
+        if row.share_pct is not None and row.share_pct <= 0:
             continue
         families = row.std_families or [None] * len(row.std_names or [])
         count = len(row.std_names or ())
         for name, family in zip(row.std_names or (), families):
             item = index[row.company_id].setdefault(name, {"share": 0.0, "raw": [], "family": family, "split": False,
                                                            "ksic": codes.get((family, name))})
-            item["share"] = min(100.0, item["share"] + float(row.share_pct) / count)
+            # 비중이 없는 줄(보고서가 밝히지 않음)은 0으로 둔다. 0 이하인 줄은 위에서 걸렀으므로, 0은 "비중을 모름"만 뜻한다
+            item["share"] = min(100.0, item["share"] + float(row.share_pct or 0) / count)
             item["split"] = item["split"] or count > 1
             if row.name not in item["raw"]:
                 item["raw"].append(row.name)
@@ -205,7 +206,8 @@ def add_products(db, graph: dict, as_of: date, company_ids, center: int | None =
     links, family_members, product_family = graph["links"], defaultdict(set), {}
     for company_id, items in members.items():
         direct: dict[str, dict] = {}   # 혼자 파는 제품은 제품군에 바로: 제품군 → {share, 이름들}
-        about = lambda item: (f"매출의 약 {item['share']:.1f}% (여러 제품이 적힌 줄의 비중을 제품 수로 나눈 어림값)" if item["split"]
+        about = lambda item: (NO_SHARE if item["share"] <= 0 else
+                              f"매출의 약 {item['share']:.1f}% (여러 제품이 적힌 줄의 비중을 제품 수로 나눈 어림값)" if item["split"]
                               else f"매출의 {item['share']:.1f}%")
         for name, item in items.items():
             family = item["family"] if item["family"] and item["family"] != "기타" else None
@@ -299,7 +301,8 @@ def add_groups(db, graph: dict, as_of: date, company_ids, level: str, center: in
         for number, slot in slots.items():
             if number not in shown:
                 continue
-            about = f"매출의 {'약 ' if slot['split'] else ''}{slot['share']:.1f}%" + (" (나눈 어림값 포함)" if slot["split"] else "")
+            about = NO_SHARE if slot["share"] <= 0 else (
+                f"매출의 {'약 ' if slot['split'] else ''}{slot['share']:.1f}%" + (" (나눈 어림값 포함)" if slot["split"] else ""))
             graph["links"].append({"source": company_id, "target": number, "type": "product", "count": len(slot["names"]),
                                    "value": round(slot["share"], 2), "label": f"{about} · {', '.join(slot['names'][:4])}"})
             known[company_id]["degree"] += 1
@@ -413,7 +416,8 @@ def pick(kind: str, key: str, as_of: date, db=Depends(get_db)):
     else:
         point = _point(number, ksic.short(key), "class", len(members), f"한국표준산업분류 {key} · {ksic.name(key)}", focus=True)
     links = [{"source": company_id, "target": number, "type": "product", "count": len(m["names"]), "value": round(m["share"], 2),
-              "label": f"매출의 {'약 ' if m['split'] else ''}{m['share']:.1f}% · {', '.join(m['names'][:4])}"} for company_id, m in members.items()]
+              "label": (NO_SHARE if m["share"] <= 0 else f"매출의 {'약 ' if m['split'] else ''}{m['share']:.1f}%") + f" · {', '.join(m['names'][:4])}"}
+             for company_id, m in members.items()]
     if kind == "product" and point["sector"] != "제품":
         # 그 제품이 속한 제품군을 한 단계 위에 둔다. 같은 제품군의 다른 제품은 제품군을 눌러 넘어가서 본다
         family = point["sector"]
@@ -436,7 +440,8 @@ def products_json(db, company_id: int, as_of: date) -> dict | None:
     codes = {(c.family, c.name): c.ksic for c in db.scalars(select(ProductCode))}
     code_of = lambda r: [codes.get((family, name)) for name, family in zip(r.std_names or [], r.std_families or [])]
     return {"read": True, "rcept_no": latest, "url": query.DART_VIEWER + latest, "report": doc.report_nm.strip() if doc else None,
-            "rows": [{"segment": r.segment, "name": r.name, "share": float(r.share_pct), "std_names": r.std_names or [],
+            "read_by": "model" if any(r.read_by == "model" for r in rows) else "rule",
+            "rows": [{"segment": r.segment, "name": r.name, "share": None if r.share_pct is None else float(r.share_pct), "std_names": r.std_names or [],
                       "families": r.std_families or [], "unsure": bool(r.unsure),
                       "ksic": [code and {"code": code, "name": ksic.name(code)} for code in code_of(r)]} for r in rows]}
 
@@ -686,6 +691,7 @@ def _prepare_ask():
         _ask_ready = True
 
 
+NO_SHARE = "매출 비중은 보고서에 없음"
 GRAPH_COMPANIES = 500  # 질문 결과 그래프에 그리는 기업 수의 상한
 AROUND_COMPANIES = 24   # 한 기업만 물었을 때 함께 그리는 상대의 수
 
@@ -779,12 +785,12 @@ class _Found:
             if name == "get_filings":
                 self.receipts.update(f["rcept_no"] for f in result.get("filings", []) if f.get("contents"))
             # 제품 표를 읽었으면 그 회사의 제품을 점으로 그린다 (한 줄에 여럿이면 줄의 비중을 나눈다. 비중이 큰 8개까지)
-            rows = sorted(result.get("products") or [], key=lambda row: -row["share_pct"]) if name == "get_products" else []
+            rows = sorted(result.get("products") or [], key=lambda row: -(row["share_pct"] or 0)) if name == "get_products" else []
             shown = 0
             for row in rows:
                 for product in row["products"] if shown < 8 else []:
                     shares = self.products.setdefault(product["name"], {})
-                    shares[company_id] = max(shares.get(company_id, 0.0), round(row["share_pct"] / len(row["products"]), 2))
+                    shares[company_id] = max(shares.get(company_id, 0.0), round((row["share_pct"] or 0) / len(row["products"]), 2))
                     shown += 1
         elif name == "list_companies":
             self.companies.update(c["company_id"] for c in result["companies"][:80])
@@ -901,7 +907,7 @@ class _Found:
                                 FAMILY_FIELD.get(name, "제품군") if is_family else "제품", focus=True))
             for company_id, share in members.items():
                 links.append({"source": company_id, "target": number, "type": "product", "count": 1, "value": share,
-                              "label": f"매출의 {share:.1f}%"})
+                              "label": NO_SHARE if share <= 0 else f"매출의 {share:.1f}%"})
                 degree[company_id] += 1
             for company_id, count in mentions.items():
                 links.append({"source": company_id, "target": number, "type": "business", "count": count, "value": None,

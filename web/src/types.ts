@@ -95,7 +95,8 @@ export interface ProductRow {
   /** 표에 적힌 이름 그대로 */
   name: string;
   /** 매출 비중(%) */
-  share: number;
+  /** 매출 비중(%). 보고서가 비중을 밝히지 않았으면 null */
+  share: number | null;
   /** 다른 회사의 같은 제품과 묶는 표준 이름. 비어 있으면 묶을 것이 없는 줄("기타", "임대")이다 */
   std_names: string[];
   /** std_names 와 같은 순서로, 제품마다의 제품군 */

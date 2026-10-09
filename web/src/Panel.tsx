@@ -112,7 +112,7 @@ function ProductSection({ products }: { products: ProductTable }) {
         <p className="row-meta">보고서에 제품 절은 있지만 표의 매출 비중을 읽지 못했습니다. 사업 내용의 원문에서 볼 수 있습니다.</p>
       </section>
     );
-  const rows = [...products.rows].sort((a, b) => b.share - a.share);
+  const rows = [...products.rows].sort((a, b) => (b.share ?? -1) - (a.share ?? -1));
   const shown = expanded ? rows : rows.slice(0, 8);
   return (
     <section>
@@ -127,7 +127,9 @@ function ProductSection({ products }: { products: ProductTable }) {
           <li key={i}>
             <div className="row-head">
               <span>{row.name}</span>
-              <strong>{row.share.toFixed(1)}%</strong>
+              <strong title={row.share === null ? "보고서가 이 제품의 매출 비중을 밝히지 않았습니다" : undefined}>
+                {row.share === null ? "비중 없음" : `${row.share.toFixed(1)}%`}
+              </strong>
             </div>
             <div className="row-meta">
               {row.segment ? `${row.segment} · ` : ""}
