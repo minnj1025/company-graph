@@ -2915,3 +2915,7 @@ body.resizing .drawer {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
 }
+
+.bar-right .settings-anchor {
+  order: -1;
+}
