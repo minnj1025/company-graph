@@ -15,6 +15,7 @@ from sqlalchemy.orm import aliased
 
 from . import query
 from .db import BusinessSection, Company, Document, Product, Relation
+from .product_families import FAMILIES, FAMILY_FIELD
 
 LIMIT = 50
 GRAPH_MENTIONS = 150   # 글 검색으로만 걸린 회사는 낱말이 많이 나온 순으로 이만큼까지 그래프에 그린다
@@ -31,6 +32,9 @@ FIELDS = ("as_of_date: 계약일·결의일·해지일·보고서 기준일. per
           "shares: 취득·처분 주식수, shares_after·pct_after: 거래 뒤 소유주식수·지분율. "
           "changes: 정정 공시의 [항목, 정정 전, 정정 후]. reason: 해지·철회 사유. correction_reason: 정정 사유")
 
+# 제품군 목록을 도구 설명에 싣는다. Agent가 질문의 뜻에 맞는 제품군을 여기서 골라 넘긴다
+_FAMILY_LIST = "; ".join(f"[{field}] " + ", ".join(family for f, family, _ in FAMILIES if f == field)
+                         for field in dict.fromkeys(f for f, _, _ in FAMILIES) if field != "기타")
 _AS_OF = {"type": "string", "description": "조회 시점 (YYYY-MM-DD). 이 날짜까지 공시된 것만 본다. 질문에 시점이 없으면 오늘 날짜"}
 _COMPANY = {"type": "integer", "description": "find_company 가 돌려준 company_id"}
 TOOLS = [
@@ -120,19 +124,24 @@ TOOLS = [
                                      "6 주요계약 및 연구개발활동, 7 기타 참고사항. 기본 [1, 2]"}},
          "required": ["company_id", "as_of"]}},
     {"name": "find_by_product",
-     "description": "제품 이름으로 그것을 파는 회사를 찾는다. 정기보고서의 '주요 제품 및 서비스' 매출 비중 표에서 읽은 줄을 찾으므로 "
-                    "회사마다 그 제품이 매출에서 차지하는 비중(share_pct)이 바로 나온다. 비중이 큰 회사가 앞에 온다. "
-                    "keywords 에는 제품 이름을 여러 표기로 넣는다 (예: [\"분리막\", \"LiBS\"], [\"인쇄회로기판\", \"PCB\"]). "
-                    "줄마다 name 과 segment 는 보고서 표에 적힌 그대로이고, std_names 는 여러 회사의 같은 제품을 묶으려고 모델이 붙인 표준 이름이라 "
-                    "틀릴 수 있다. 답에는 표에 적힌 이름과 비중을 옮긴다. "
-                    "표를 읽지 못한 회사와 제품 표가 없는 회사(금융업 등)는 여기에 나오지 않으므로, 빠짐없이 찾아야 하면 search_business 도 함께 쓴다.",
+     "description": "무엇을 파는 회사인지로 회사를 찾는다. 정기보고서의 '주요 제품 및 서비스' 매출 비중 표에서 읽은 줄을 찾으므로 "
+                    "회사마다 매출에서 차지하는 비중(share_pct)이 바로 나온다. 비중이 큰 회사가 앞에 온다. 찾는 길은 둘이다. "
+                    "(1) families: 아래 제품군 목록에서 질문의 뜻에 맞는 것을 골라 글자 그대로 넘긴다. 가장 정확하다. "
+                    "제품군은 '서로 경쟁하는 회사끼리'로 나뉘어 있다. 예: 반도체를 만드는 회사는 메모리 반도체·시스템 반도체이고, "
+                    "반도체 전공정 장비·반도체 소재는 반도체를 만드는 회사가 아니다. 질문이 넓으면 여러 제품군을 함께 넘긴다. "
+                    "(2) keywords: 제품 이름을 여러 표기로 넘긴다 (예: [\"분리막\", \"LiBS\"]). 제품군보다 좁은 것을 찾을 때 쓴다. 둘을 함께 주면 둘 다 맞는 줄만 찾는다. "
+                    "줄마다 name 과 segment 는 보고서 표에 적힌 그대로이고, products 는 그 줄에 붙인 표준 이름과 제품군이다(사람이 전부 확인한 것은 아니며 "
+                    "unsure 가 true 면 짐작이 섞였다). 답에는 표에 적힌 이름과 비중을 옮긴다. "
+                    "표를 읽지 못한 회사와 제품 표가 없는 회사(금융업 등)는 여기에 나오지 않으므로, 빠짐없이 찾아야 하면 search_business 도 함께 쓴다. "
+                    f"제품군 목록 — {_FAMILY_LIST}",
      "input_schema": {"type": "object", "properties": {
-         "keywords": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 8,
+         "families": {"type": "array", "items": {"type": "string"}, "maxItems": 8, "description": "제품군 이름들. 목록에 있는 것을 글자 그대로"},
+         "keywords": {"type": "array", "items": {"type": "string"}, "maxItems": 8,
                       "description": "제품 이름들. 낱말 하나는 2~20자. 띄어쓰기는 무시하고 찾는다"},
          "as_of": _AS_OF,
          "min_share": {"type": "number", "description": "매출 비중이 이 값(%) 이상인 회사만. 주력인 회사만 볼 때 쓴다"},
          "listed_only": {"type": "boolean", "description": "상장사만 (기본 true)"}},
-         "required": ["keywords", "as_of"]}},
+         "required": ["as_of"]}},
     {"name": "get_products",
      "description": "한 회사의 제품과 매출 비중을 표로 읽은 그대로 준다 (가장 나중 정기보고서의 '주요 제품 및 서비스' 표). "
                     "읽지 못한 회사는 read=false 로 나오고, 그때는 get_business 로 표의 글을 직접 읽는다.",
@@ -464,12 +473,15 @@ def _latest_products(db, when: date, company_id: int | None = None):
 
 
 def _product_row(row: Product) -> dict:
-    return {"segment": row.segment, "name": row.name, "share_pct": float(row.share_pct), "std_names": row.std_names or []}
+    families = row.std_families or [None] * len(row.std_names or [])
+    return {"segment": row.segment, "name": row.name, "share_pct": float(row.share_pct),
+            "products": [{"name": name, "family": family} for name, family in zip(row.std_names or [], families)],
+            **({"unsure": True} if row.unsure else {})}
 
 
 _PRODUCT_NOTE = ("name 과 segment 는 보고서 표에 적힌 그대로, share_pct 는 그 줄이 매출에서 차지하는 비중(%)입니다. "
-                 "std_names 는 모델이 붙인 표준 이름이라 틀릴 수 있으니 답에는 표에 적힌 이름을 옮기세요. "
-                 "한 줄에 여러 제품이 함께 적혀 있으면 share_pct 는 그 줄 전체의 비중이지 그 제품만의 비중이 아닙니다")
+                 "products 는 그 줄에 붙인 표준 이름과 제품군으로, 회사의 표 전체와 사업 개요를 보고 붙였지만 사람이 전부 확인한 것은 아닙니다. "
+                 "답에는 표에 적힌 이름을 옮기세요. 한 줄에 여러 제품이 함께 적혀 있으면 share_pct 는 그 줄 전체의 비중이지 그 제품만의 비중이 아닙니다")
 
 
 _squeeze = lambda text: re.sub(r"\s", "", text or "").lower()
@@ -486,46 +498,63 @@ def _product_shares(db, when: date, words: list[str]) -> dict[int, float]:
     return shares
 
 
-def find_by_product(db, keywords, as_of, min_share=None, listed_only: bool = True) -> dict:
+def find_by_product(db, as_of, families=None, keywords=None, min_share=None, listed_only: bool = True) -> dict:
     when = _date(as_of, "as_of", required=True)
-    words = list(dict.fromkeys(str(w).strip() for w in (keywords if isinstance(keywords, list) else [keywords]) if str(w).strip()))
-    if not words or any(not 2 <= len(w) <= 20 for w in words):
+    wanted = list(dict.fromkeys(str(f).strip() for f in (families or []) if str(f).strip()))
+    unknown = [f for f in wanted if f not in FAMILY_FIELD]
+    if unknown:
+        raise ToolError(f"제품군 {unknown} 은 목록에 없습니다. 도구 설명의 제품군 목록에 있는 이름을 글자 그대로 쓰세요")
+    words = list(dict.fromkeys(str(w).strip() for w in (keywords or []) if str(w).strip()))[:8]
+    if not wanted and not words:
+        raise ToolError("families 나 keywords 중 하나는 주어야 합니다")
+    if any(not 2 <= len(w) <= 20 for w in words):
         raise ToolError("keywords 는 2~20자인 제품 이름의 목록입니다")
-    squeeze = lambda text: re.sub(r"\s", "", text or "").lower()
-    keys = [squeeze(w) for w in words[:8]]
+    keys = [_squeeze(w) for w in words]
     latest = _latest_products(db, when)
     found: dict[int, dict] = {}
-    names: dict[str, set] = {}
     for row in db.scalars(select(Product).join(latest, Product.rcept_no == latest.c.rcept_no).order_by(Product.rcept_no, Product.row_no)):
         if row.share_pct <= 0:
             continue
-        matched = [name for name in row.std_names or () if any(key in squeeze(name) for key in keys)]
-        if not matched and not any(key in squeeze(row.name) or key in squeeze(row.segment) for key in keys):
+        pairs = list(zip(row.std_names or [], row.std_families or [None] * len(row.std_names or [])))
+        in_family = [(name, family) for name, family in pairs if family in wanted]
+        by_word = [(name, family) for name, family in pairs if any(key in _squeeze(name) for key in keys)]
+        raw_hit = any(key in _squeeze(row.name) or key in _squeeze(row.segment) for key in keys)
+        if wanted and not in_family:
             continue
-        entry = found.setdefault(row.company_id, {"share_pct": 0.0, "rows": [], "rcept_no": row.rcept_no, "matched_products": []})
+        if keys and not by_word and not raw_hit:
+            continue
+        entry = found.setdefault(row.company_id, {"share_pct": 0.0, "rows": [], "rcept_no": row.rcept_no, "labels": []})
         entry["share_pct"] = round(min(100.0, entry["share_pct"] + float(row.share_pct)), 2)
         entry["rows"].append(_product_row(row))
-        for name in matched:
-            names.setdefault(name, set()).add(row.company_id)
-            if name not in entry["matched_products"]:
-                entry["matched_products"].append(name)
+        # 그래프에 그릴 점: 제품군으로 찾았으면 그 제품군, 낱말로 찾았으면 걸린 제품 이름(없으면 찾은 낱말)
+        labels = [(family, "family") for _, family in in_family] if wanted and not keys else \
+            [(name, "product") for name, _ in by_word] or [(words[0], "product")]
+        for label in labels:
+            if label not in entry["labels"]:
+                entry["labels"].append(label)
     companies = {c.company_id: c for c in db.scalars(select(Company).where(Company.company_id.in_(list(found))))} if found else {}
     floor = float(min_share) if min_share is not None else 0.0
     ranked = sorted(((i, e) for i, e in found.items() if e["share_pct"] >= floor
                      and (not listed_only or MARKETS.get(companies[i].corp_cls) in ("유가증권", "코스닥", "코넥스"))),
                     key=lambda x: (-x[1]["share_pct"], companies[x[0]].name))
-    shown = {i for i, _ in ranked}
-    out = [{**_brief(companies[i]), "share_pct": e["share_pct"], "rows": e["rows"][:5], "matched_products": e["matched_products"],
+    spread: dict[str, set] = {}
+    for company_id, entry in ranked:
+        for row in entry["rows"]:
+            for product in row["products"]:
+                if product["family"]:
+                    spread.setdefault(product["family"], set()).add(company_id)
+    out = [{**_brief(companies[i]), "share_pct": e["share_pct"], "rows": e["rows"][:5],
             "report": _report_name(db, e["rcept_no"]), "rcept_no": e["rcept_no"]} for i, e in ranked[:LIMIT]]
-    return {"as_of": when.isoformat(), "keywords": words[:8], "total": len(ranked), "truncated": len(ranked) > LIMIT, "companies": out,
-            # 화면의 그래프가 쓴다. Agent에게는 보내지 않는다: 찾은 회사 전부의 (기업, 매출 비중, 걸린 표준 이름)
-            "_graph": [(i, e["share_pct"], e["matched_products"][:3]) for i, e in ranked],
-            "standard_names": sorted(({"name": name, "companies": len(ids & shown)} for name, ids in names.items() if ids & shown),
-                                     key=lambda x: (-x["companies"], x["name"]))[:20],
+    return {"as_of": when.isoformat(), "families": wanted, "keywords": words, "total": len(ranked), "truncated": len(ranked) > LIMIT,
+            "companies": out,
+            # 찾은 회사들이 어느 제품군에 걸쳐 있는지. 낱말로 찾았을 때 뜻이 다른 것이 섞였는지(예: 반도체와 반도체 장비) 가리는 데 쓴다
+            "family_spread": sorted(({"family": f, "companies": len(ids)} for f, ids in spread.items()), key=lambda x: -x["companies"])[:15],
+            # 화면의 그래프가 쓴다. Agent에게는 보내지 않는다: 찾은 회사 전부의 (기업, 매출 비중, 그래프에 그릴 점들)
+            "_graph": [(i, e["share_pct"], e["labels"][:4]) for i, e in ranked],
             "fields": "회사의 share_pct 는 걸린 줄의 비중을 더한 값입니다. " + _PRODUCT_NOTE,
             "note": "제품 표를 읽을 수 있었던 회사만 나옵니다. 표를 읽지 못한 회사, 제품 표가 없는 회사(금융업 등)는 빠져 있으니 "
                     "빠짐없이 찾아야 하면 search_business 로도 찾으세요" if out else
-                    "이 이름이 제품 표에 나온 회사가 없습니다. 다른 표기(영문 약어, 상위 제품 이름)로 다시 찾거나 search_business 로 보고서 글에서 찾으세요"}
+                    "조건에 맞는 회사가 없습니다. 다른 제품군이나 다른 표기(영문 약어, 상위 제품 이름)로 다시 찾거나 search_business 로 보고서 글에서 찾으세요"}
 
 
 def get_products(db, company_id, as_of) -> dict:

@@ -174,7 +174,7 @@ export function Settings(props: Props) {
                 type === "affiliate" && props.centerName === null
                   ? "기업 하나를 중심으로 볼 때만 그립니다"
                   : type === "product"
-                    ? "보고서의 제품 표에서 읽은 것입니다. 전체 화면에서는 두 곳 이상이 함께 파는 제품만 점으로 그리고, 선의 굵기는 매출 비중입니다"
+                    ? "보고서의 제품 표에서 읽은 것입니다. 기업 → 제품 → 제품군으로 이어지고, 선의 굵기는 매출 비중입니다. 전체 화면에서는 두 곳 이상이 함께 파는 제품만 점으로 그립니다"
                     : undefined
               }
             >

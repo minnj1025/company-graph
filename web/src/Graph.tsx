@@ -18,7 +18,7 @@ import {
   Vector3,
 } from "three";
 import SpriteText from "three-spritetext";
-import { LINK_COLORS, nodeColor, PRODUCT_COLOR, TOPIC_COLOR, type ColorBy } from "./colors";
+import { FAMILY_COLOR, LINK_COLORS, nodeColor, PRODUCT_COLOR, TOPIC_COLOR, type ColorBy } from "./colors";
 import type { GraphData, GraphLink, GraphNode } from "./types";
 
 // 기업을 골랐을 때 그 기업과 이어지지 않은 것들. 어둡게 칠하는 대신 비쳐 보이게 해서, 고른 것만 남고 나머지는 배경으로 물러난다
@@ -38,7 +38,8 @@ export const shortName = (name: string) =>
   name.replace(/\(주\)|㈜|주식회사|유한회사/g, "").trim();
 
 const endId = (end: number | GraphNode) => (typeof end === "number" ? end : end.id);
-const nodeVal = (node: GraphNode) => (node.focus ? 12 : 1.2 + node.degree * 0.45);
+// 제품군 점은 기업이 수십 곳씩 달려서, 연결 수 그대로 키우면 화면을 덮는다
+const nodeVal = (node: GraphNode) => (node.focus ? 12 : node.kind === "family" ? 6 + Math.sqrt(node.degree) * 3 : 1.2 + Math.min(node.degree, 60) * 0.45);
 const nodeRadius = (node: GraphNode) => Math.cbrt(nodeVal(node)) * REL_SIZE;
 
 // 점마다 물체를 하나씩 그리면 기업 1,800곳에서 그리기 명령이 수천 번이 된다.
@@ -133,7 +134,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     const charge = graph.current?.d3Force("charge") as { strength?: (v: number) => void } | undefined;
     const link = graph.current?.d3Force("link") as { distance?: (fn: (l: GraphLink) => number) => void } | undefined;
     charge?.strength?.(-320);
-    link?.distance?.((l) => (l.type === "affiliate" ? 130 : l.type === "equity" ? 85 : l.type === "product" ? 70 : 100));
+    link?.distance?.((l) => (l.type === "affiliate" ? 130 : l.type === "equity" ? 85 : l.type === "product" ? 70 : l.type === "family" ? 45 : 100));
     // 다른 기업과 이어지지 않은 작은 무리가 멀리 날아가지 않게 가운데로 살짝 당긴다
     graph.current?.d3Force("x", forceX(0).strength(0.09) as never);
     graph.current?.d3Force("y", forceY(0).strength(0.09) as never);
@@ -225,7 +226,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
       from.toArray(points, i * 6);
       to.toArray(points, i * 6 + 3);
       const gap = from.distanceTo(to);
-      if (link.type === "affiliate" || link.type === "product" || gap < 1e-6) return arrows.setMatrixAt(i, NOTHING);
+      if (link.type === "affiliate" || link.type === "product" || link.type === "family" || gap < 1e-6) return arrows.setMatrixAt(i, NOTHING);
       from.subVectors(to, from).divideScalar(gap);
       turn.setFromUnitVectors(UP, from);
       to.addScaledVector(from, -(nodeRadius(target) + ARROW / 2));
@@ -307,7 +308,9 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
       node.kind === "topic"
         ? `사업 낱말 "${node.name}" · 보고서에 이 말이 나온 기업 ${node.degree}곳`
         : node.kind === "product"
-          ? `제품 "${node.name}" · 보고서의 제품 표에 이것을 적은 기업 ${node.degree}곳`
+          ? `제품 "${node.name}"${node.sector !== "제품" ? ` · 제품군 ${node.sector}` : ""} · 이것을 파는 기업 ${node.degree}곳`
+          : node.kind === "family"
+            ? `제품군 "${node.name}" · 분야 ${node.sector} · 이 제품군의 것을 파는 기업 ${node.degree}곳`
           : `${node.name}${node.group ? ` · ${node.group}` : ""} · ${node.sector}`,
     [],
   );
@@ -320,7 +323,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
       const show = chosen || (lit === null ? labeled.has(node.id) : lit.has(node.id));
       if (!show) return hit;
       const label = new SpriteText(node.kind === "topic" ? `# ${node.name}` : shortName(node.name));
-      label.color = node.kind === "topic" ? TOPIC_COLOR : node.kind === "product" ? PRODUCT_COLOR : "#e8edf5";
+      label.color = node.kind === "topic" ? TOPIC_COLOR : node.kind === "product" ? PRODUCT_COLOR : node.kind === "family" ? FAMILY_COLOR : "#e8edf5";
       if (node.mentioned) {
         label.color = "#201600";
         label.backgroundColor = MENTIONED;
@@ -364,7 +367,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     (link: GraphLink) => `${shortName((link.source as GraphNode).name)} → ${shortName((link.target as GraphNode).name)} · ${link.label}`,
     [],
   );
-  const arrowLength = useCallback((link: GraphLink) => (link.type === "affiliate" || link.type === "product" ? 0 : ARROW), []);
+  const arrowLength = useCallback((link: GraphLink) => (["affiliate", "product", "family"].includes(link.type) ? 0 : ARROW), []);
   const particles = useCallback((link: GraphLink) => (link.type === "supply_contract" && linkLit(link) ? 2 : 0), [linkLit]);
   const onNodeClick = useCallback(
     (node: GraphNode) => {

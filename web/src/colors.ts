@@ -14,6 +14,7 @@ export const LINK_COLORS: Record<LinkType, string> = {
   business_transfer: "#b48cff",
   business: "#5ad1c9",
   product: "#d8c75a",
+  family: "#8a7f4a",
 };
 
 export const LINK_LABELS: Record<LinkType, string> = {
@@ -28,6 +29,7 @@ export const LINK_LABELS: Record<LinkType, string> = {
   business_transfer: "영업양수도",
   business: "사업 내용에 언급",
   product: "제품",
+  family: "제품군에 속함",
 };
 
 const GROUP_PALETTE = ["#7aa2ff", "#ffb454", "#6fd08c", "#f48fb1", "#b48cff", "#5ad1c9", "#ff6b6b", "#c9a26b"];
@@ -51,9 +53,10 @@ export function categoryColors(nodes: GraphNode[], colorBy: ColorBy): Map<string
 
 export const TOPIC_COLOR = "#5ad1c9";
 export const PRODUCT_COLOR = "#d8c75a";
+export const FAMILY_COLOR = "#ff9f5a";
 
 export function nodeColor(node: GraphNode, colorBy: ColorBy, colors: Map<string, string>): string {
-  if (node.kind) return node.kind === "topic" ? TOPIC_COLOR : PRODUCT_COLOR;
+  if (node.kind) return node.kind === "topic" ? TOPIC_COLOR : node.kind === "family" ? FAMILY_COLOR : PRODUCT_COLOR;
   const key = keyOf(node, colorBy);
   return key ? (colors.get(key) ?? NO_GROUP) : NO_GROUP;
 }

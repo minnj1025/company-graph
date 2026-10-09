@@ -21,6 +21,28 @@ from .product_families import FAMILIES, FAMILY_FIELD
 from .stages import sector
 
 WORK = DATA_DIR / "product_naming"
+# 이름을 붙일 때 맞는 제품군이 없어 "기타"로 둔 제품을, 나중에 제품군 목록을 고치면서 옮겨 준 것. 제품 이름 → 제품군
+REFILE = {
+    **dict.fromkeys(("전시회 개최", "전시장 운영", "전시 부스 디자인·설치"), "전시·컨벤션"),
+    **dict.fromkeys(("소화기", "자동식 소화기", "소화 기구"), "소방 제품"),
+    **dict.fromkeys(("전동공구", "톱", "줄자", "커터칼"), "전동공구·수공구"),
+    **dict.fromkeys(("광물 자원", "광산물", "원유·가스 개발"), "자원 개발"),
+    **dict.fromkeys(("우드칩", "바이오매스 연료"), "목재·목질 보드"),
+    **dict.fromkeys(("점자 정보 단말기", "전자 독서 확대기", "음성 독서기", "시각장애인 보조공학 기기"), "치료·수술 기기"),
+    **dict.fromkeys(("건설장비 렌탈", "사무기기 렌탈", "계측기 렌탈", "건설 장비 임대"), "장비 렌탈"),
+    **dict.fromkeys(("미술품 판매", "미술품 경매", "미술품 중개"), "미술품 경매"),
+    **dict.fromkeys(("태양전지 제조 장비", "태양광 제조 장비"), "태양광"),
+    **dict.fromkeys(("전자가속기", "전자가속기 유지보수", "전자선 조사 서비스", "가속기 부품"), "계측·검사·레이저 장비"),
+    **dict.fromkeys(("철강 부원료",), "철강"),
+    **dict.fromkeys(("철강 제품 포장", "무인 주차 운영", "공공자전거 무인대여 시스템"), "사업지원 서비스"),
+    "제대혈 보관": "세포·제대혈 보관", "탄소배출권": "전력·가스·열 공급", "스마트홈 시스템": "영상감시·출입보안 장비",
+    "카메라 모듈 장비": "전자부품 제조 장비", "초전도 선재 제조 장비": "일반 산업기계", "마이크로그리드 솔루션": "에너지저장장치",
+    "투자 정보 서비스": "금융 서비스", "블록체인 플랫폼": "인터넷 플랫폼·이커머스", "유해동물 기피제": "생활용품", "우모": "섬유 소재",
+    "새싹 재배기": "생활 가전", "소독기": "생활 가전", "피아노": "스포츠·레저 용품", "응원봉": "음악·공연·매니지먼트",
+    "분리막 모듈": "환경·폐기물",
+}
+# 처음에는 "기타 전자부품"에 들어 있던 모터류. 제품군을 따로 세웠다
+MOTORS = ("모터", "소형 모터", "BLDC 모터", "스테핑 모터", "DC 모터", "AC 모터", "기어드 모터", "모터 코어", "모터 컨트롤러", "권선 코일")
 ROWS_PER_BATCH = 380
 MAX_PRODUCTS = 8
 
@@ -170,7 +192,13 @@ def read_results() -> tuple[dict[int, tuple[list, bool]], list[str]]:
                 for part in body.split(";"):
                     name, _, family = part.strip().rpartition("=")
                     name, family = " ".join(name.split()), " ".join(family.split())
-                    if not name or (family not in FAMILY_FIELD and family != "기타"):
+                    if family == "기타":
+                        family = REFILE.get(name, family)
+                    elif family == "기타 전자부품" and name in MOTORS:
+                        family = "모터"
+                    elif family == "타이어 보강재":   # 제품 이름을 제품군 자리에 적은 한 줄
+                        family = "타이어"
+                    if not name or family not in FAMILY_FIELD:
                         problems.append(f"{path.name}: {number} 의 제품군 {family!r} 이 목록에 없습니다 ({part.strip()[:40]})")
                         continue
                     if (name, family) not in pairs:
@@ -178,6 +206,14 @@ def read_results() -> tuple[dict[int, tuple[list, bool]], list[str]]:
             if number in results:
                 problems.append(f"{path.name}: {number} 이 두 번 나옵니다")
             results[number] = (pairs[:MAX_PRODUCTS], unsure)
+    # 같은 제품군 안에서 띄어쓰기만 다른 이름("실리콘카바이드 부품", "실리콘 카바이드 부품")은 더 많이 쓰인 표기로 모은다
+    spellings: dict[tuple, Counter] = defaultdict(Counter)
+    for pairs, _ in results.values():
+        for name, family in pairs:
+            spellings[(family, name.replace(" ", "").lower())][name] += 1
+    best = {key: max(names, key=lambda n: (names[n], " " in n, n)) for key, names in spellings.items()}
+    for number, (pairs, unsure) in results.items():
+        results[number] = (list(dict.fromkeys((best[(family, name.replace(" ", "").lower())], family) for name, family in pairs)), unsure)
     missing = [n for n in range(len(index)) if n not in results]
     if missing:
         problems.append(f"빠진 줄 {len(missing):,}개 (예: {missing[:8]})")

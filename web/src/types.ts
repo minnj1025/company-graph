@@ -2,7 +2,7 @@ export type RelType = "equity" | "supply_contract" | "affiliate" | "stake_acquis
 /** 사건형 관계. 첫 화면의 그래프에는 그리지 않고, 기업 상세와 Agent가 찾은 결과에 나온다 */
 export type EventType = "supply_termination" | "merger" | "split" | "business_transfer";
 /** 기업과 사업 낱말을 잇는 선. 질문으로 찾은 결과에만 나온다 */
-export type TopicLink = "business";
+export type TopicLink = "business" | "family";
 export type LinkType = RelType | EventType | TopicLink;
 
 export interface Company {
@@ -20,7 +20,7 @@ export interface Company {
 
 export interface GraphNode extends Company {
   /** 기업이 아닌 점 (번호가 음수). "topic" 은 질문으로 찾은 사업 낱말, "product" 는 여러 기업이 함께 파는 제품이다 */
-  kind?: "topic" | "product";
+  kind?: "topic" | "product" | "family";
   degree: number;
   focus: boolean;
   /** 질문 결과 그래프에서, Agent의 답에 이름이 나온 기업 */
@@ -95,6 +95,10 @@ export interface ProductRow {
   share: number;
   /** 다른 회사의 같은 제품과 묶는 표준 이름. 비어 있으면 묶을 것이 없는 줄("기타", "임대")이다 */
   std_names: string[];
+  /** std_names 와 같은 순서로, 제품마다의 제품군 */
+  families: string[];
+  /** 이름을 붙일 때 짐작이 섞였다 */
+  unsure: boolean;
 }
 
 /** read 가 false 면 보고서에 제품 절은 있지만 표를 읽지 못한 것이다 */

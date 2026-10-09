@@ -133,7 +133,7 @@ export function App() {
     let links = data.links.filter((link) =>
       link.type === "equity"
         ? (link.value ?? 0) >= filters.minPct
-        : link.type === "affiliate" || link.type === "product" || (link.value ?? 0) >= filters.minAmount,
+        : link.type === "affiliate" || link.type === "product" || link.type === "family" || (link.value ?? 0) >= filters.minAmount,
     );
     const degree = new Map<number, number>();
     for (const link of links) for (const id of [end(link.source), end(link.target)]) degree.set(id, (degree.get(id) ?? 0) + 1);
@@ -198,6 +198,7 @@ export function App() {
 
   const companies = shownData.nodes.filter((node) => !node.kind).length;
   const products = shownData.nodes.filter((node) => node.kind === "product").length;
+  const families = shownData.nodes.filter((node) => node.kind === "family").length;
   const drawerTabs = (["answer", "company", "feed"] as const).filter(
     (kind) => kind === "feed" || kind === drawer || (kind === "answer" ? chat.turns.length > 0 : detail !== null),
   );
@@ -331,7 +332,8 @@ export function App() {
                 </div>
               )}
               <div className="stat">
-                기업 {companies}곳{products > 0 && ` · 제품 ${products}개`} · 선 {shownData.links.length}개
+                기업 {companies}곳{families > 0 && ` · 제품군 ${families}개`}
+                {products > 0 && ` · 제품 ${products}개`} · 선 {shownData.links.length}개
               </div>
             </div>
           </div>

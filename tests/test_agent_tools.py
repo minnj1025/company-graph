@@ -77,25 +77,35 @@ def test_find_disclosers_counts_new_and_corrected_filings(db):
     assert "industry" in agent_tools.call(db, "list_companies", {})["error"]
 
 
-def test_find_by_product_ranks_by_share_and_keeps_the_reported_name(db):
+def test_find_by_product_by_family_and_by_keyword(db):
     from datetime import date
     from decimal import Decimal
     from company_graph.db import Product
-    row = lambda company, no, segment, name, share, std: Product(
+    row = lambda company, no, segment, name, share, std, families: Product(
         company_id=company, rcept_no=f"2026031500000{company}", bsns_year=2025, disclosed_date=date(2026, 3, 15), row_no=no,
-        segment=segment, name=name, share_pct=Decimal(share), std_names=std, named_by="test")
-    db.add_all([row(SUPPLIER, 1, "LiBS", "분리막 등", "90", ["이차전지 분리막"]), row(SUPPLIER, 2, None, "기타", "10", []),
-                row(MOBIS, 1, "제품", "분리막", "30", ["이차전지 분리막"]), row(MOBIS, 2, "제품", "모듈", "70", ["자동차 모듈"])])
+        segment=segment, name=name, share_pct=Decimal(share), std_names=std, std_families=families, named_by="test")
+    db.add_all([row(SUPPLIER, 1, "LiBS", "분리막 등", "90", ["이차전지 분리막"], ["이차전지 소재"]),
+                row(SUPPLIER, 2, None, "기타", "10", [], []),
+                row(MOBIS, 1, "제품", "분리막", "30", ["이차전지 분리막"], ["이차전지 소재"]),
+                row(MOBIS, 2, "제품", "모듈", "70", ["자동차 모듈"], ["기타 자동차 부품"])])
     db.commit()
-    ask = lambda **more: agent_tools.call(db, "find_by_product", {"keywords": ["분리 막"], "as_of": "2026-06-30", **more})
-    out = ask(listed_only=False)
+    ask = lambda **more: agent_tools.call(db, "find_by_product", {"as_of": "2026-06-30", "listed_only": False, **more})
+    out = ask(keywords=["분리 막"])
     assert [(c["company_id"], c["share_pct"], c["rows"][0]["name"]) for c in out["companies"]] == [(SUPPLIER, 90.0, "분리막 등"), (MOBIS, 30.0, "분리막")]
-    assert out["standard_names"] == [{"name": "이차전지 분리막", "companies": 2}]
-    assert [c["company_id"] for c in ask(listed_only=False, min_share=50)["companies"]] == [SUPPLIER]
-    assert ask(as_of="2026-01-01", listed_only=False)["total"] == 0   # 보고서가 나오기 전 시점
+    assert out["family_spread"] == [{"family": "이차전지 소재", "companies": 2}]
+    assert out["_graph"][0] == (SUPPLIER, 90.0, [("이차전지 분리막", "product")])
+    # 제품군으로 찾으면 그 제품군의 줄만 걸리고, 그래프에는 제품군 점으로 그린다
+    cars = ask(families=["기타 자동차 부품"])
+    assert [(c["company_id"], c["share_pct"]) for c in cars["companies"]] == [(MOBIS, 70.0)]
+    assert cars["_graph"] == [(MOBIS, 70.0, [("기타 자동차 부품", "family")])]
+    assert [c["company_id"] for c in ask(keywords=["분리막"], min_share=50)["companies"]] == [SUPPLIER]
+    assert ask(keywords=["분리막"], as_of="2026-01-01")["total"] == 0   # 보고서가 나오기 전 시점
+    assert "목록에 없습니다" in ask(families=["반도체"])["error"]
+    assert "error" in ask()
     # 상표나 약어로 사업부문 칸에만 적힌 것도 찾는다
-    assert agent_tools.call(db, "find_by_product", {"keywords": ["LiBS"], "as_of": "2026-06-30", "listed_only": False})["total"] == 1
+    assert ask(keywords=["LiBS"])["total"] == 1
     products = agent_tools.call(db, "get_products", {"company_id": MOBIS, "as_of": "2026-06-30"})
     assert products["read"] and [p["share_pct"] for p in products["products"]] == [30.0, 70.0]
+    assert products["products"][1]["products"] == [{"name": "자동차 모듈", "family": "기타 자동차 부품"}]
     assert agent_tools.call(db, "get_products", {"company_id": KIA, "as_of": "2026-06-30"})["read"] is False
-    json.dumps(out, ensure_ascii=False)
+    json.dumps({k: v for k, v in out.items() if not k.startswith("_")}, ensure_ascii=False)
