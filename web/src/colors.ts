@@ -38,8 +38,13 @@ const NO_SECTOR = "업종 정보 없음";
 
 const keyOf = (node: GraphNode, colorBy: ColorBy) => (colorBy === "sector" ? node.sector : node.group);
 
-/** 분류 이름 → 색. 화면에 많이 나온 것부터 색을 주고, 색이 모자라면 나머지는 회색이다. */
-export function categoryColors(nodes: GraphNode[], colorBy: ColorBy): Map<string, string> {
+const hash = (text: string) => [...text].reduce((sum, ch) => (sum * 31 + ch.charCodeAt(0)) >>> 0, 7);
+
+/** 분류 이름 → 색. 화면에 많이 나온 것부터 색을 주고, 색이 모자라면 나머지는 회색이다.
+ *
+ * 같은 분류는 화면이 바뀌어도 같은 색이다. order(전체에서 기업 수가 많은 순서)의 앞쪽 분류에는 색을 하나씩 맡겨 두고,
+ * 나머지는 이름으로 정한 자리에서 시작해 이 화면에서 아직 안 쓴 색을 찾는다. */
+export function categoryColors(nodes: GraphNode[], colorBy: ColorBy, order: string[] = []): Map<string, string> {
   const counts = new Map<string, number>();
   for (const node of nodes) {
     if (node.kind) continue;
@@ -47,8 +52,26 @@ export function categoryColors(nodes: GraphNode[], colorBy: ColorBy): Map<string
     // 비상장 계열사는 업종 정보가 없다. 색을 주지 않고 회색으로 둔다
     if (key && key !== NO_SECTOR) counts.set(key, (counts.get(key) ?? 0) + 1);
   }
-  const ordered = [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([name]) => name);
-  return new Map(ordered.slice(0, GROUP_PALETTE.length).map((name, i) => [name, GROUP_PALETTE[i]]));
+  const shown = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, GROUP_PALETTE.length).map(([name]) => name);
+  const reserved = new Map(order.slice(0, GROUP_PALETTE.length).map((name, i) => [name, GROUP_PALETTE[i]]));
+  const colors = new Map<string, string>();
+  const used = new Set<string>();
+  for (const name of shown) {
+    const color = reserved.get(name);
+    if (color) {
+      colors.set(name, color);
+      used.add(color);
+    }
+  }
+  for (const name of shown) {
+    if (colors.has(name)) continue;
+    let at = hash(name) % GROUP_PALETTE.length;
+    while (used.has(GROUP_PALETTE[at])) at = (at + 1) % GROUP_PALETTE.length;
+    colors.set(name, GROUP_PALETTE[at]);
+    used.add(GROUP_PALETTE[at]);
+  }
+  // 범례는 많이 나온 순서로
+  return new Map(shown.map((name) => [name, colors.get(name)!]));
 }
 
 export const TOPIC_COLOR = "#5ad1c9";

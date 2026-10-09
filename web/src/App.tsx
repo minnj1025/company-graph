@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, fetchPick, fetchTaxonomy, type Level, type Scope } from "./api";
-import { categoryColors, legend, LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
+import { categoryColors, CLASS_COLOR, FAMILY_COLOR, legend, LINK_COLORS, LINK_LABELS, PRODUCT_COLOR, TOPIC_COLOR, type ColorBy } from "./colors";
 import { Cards } from "./Cards";
 import { ChatLog, Composer, useChat } from "./Chat";
 import { LevelList, NO_FILTER, Settings, TimeBar, type Filters } from "./Controls";
@@ -28,6 +28,14 @@ interface View {
   selected: number | null;
 }
 const HOME: View = { center: null, hops: 1, scope: "listed", found: null, selected: null };
+
+/** 기업이 아닌 점의 색. 화면에 그 점이 있을 때만 범례에 나온다 */
+const KIND_LEGEND: [NonNullable<GraphNode["kind"]>, string, string][] = [
+  ["class", "공식 분류", CLASS_COLOR],
+  ["family", "제품군", FAMILY_COLOR],
+  ["product", "제품", PRODUCT_COLOR],
+  ["topic", "사업 낱말", TOPIC_COLOR],
+];
 
 const DRAWER_TITLES: Record<Exclude<Drawer, null>, string> = { answer: "채팅", company: "기업 상세", feed: "최근 공시" };
 
@@ -214,7 +222,9 @@ export function App() {
     return { nodes: data.nodes.filter((node) => node.focus || linked.has(node.id)).map((node) => ({ ...node, degree: degree.get(node.id) ?? 0 })), links };
   }, [data, filters]);
   const shownData = found ? found.graph : filtered;
-  const groups = useMemo(() => categoryColors(shownData.nodes, colorBy), [shownData, colorBy]);
+  // 전체에서 기업 수가 많은 순서. 이 순서의 앞쪽 분류는 어느 화면에서나 같은 색을 받는다
+  const colorOrder = useMemo(() => (meta ? meta.categories[colorBy === "sector" ? "sector" : "group"].map((c) => c.name) : []), [meta, colorBy]);
+  const groups = useMemo(() => categoryColors(shownData.nodes, colorBy, colorOrder), [shownData, colorBy, colorOrder]);
   const filtering = filters !== NO_FILTER && (filters.minPct > 0 || filters.minAmount > 0 || filters.minDegree > 1);
   /** 전체 그래프가 아니라 좁혀서 보고 있는가 */
   const narrowed = Boolean(found || center || filtering);
@@ -445,6 +455,16 @@ export function App() {
                   </span>
                 ))}
               </div>
+              {shownData.nodes.some((node) => node.kind) && (
+                <div>
+                  {KIND_LEGEND.filter(([kind]) => shownData.nodes.some((node) => node.kind === kind)).map(([kind, name, color]) => (
+                    <span key={kind}>
+                      <i className="dot" style={{ background: color }} />
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              )}
               {shownData.nodes.some((node) => node.mentioned) && (
                 <div>
                   <span>
