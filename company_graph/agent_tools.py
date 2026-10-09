@@ -523,8 +523,12 @@ def find_by_product(db, as_of, families=None, keywords=None, min_share=None, lis
             continue
         if keys and not by_word and not raw_hit:
             continue
-        entry = found.setdefault(row.company_id, {"share_pct": 0.0, "rows": [], "rcept_no": row.rcept_no, "labels": []})
-        entry["share_pct"] = round(min(100.0, entry["share_pct"] + float(row.share_pct)), 2)
+        entry = found.setdefault(row.company_id, {"share_pct": 0.0, "rows": [], "rcept_no": row.rcept_no, "labels": [], "split": False})
+        # 한 줄에 제품이 여럿이면 줄의 비중을 제품 수로 나눠, 찾는 제품의 몫만 더한다. 품목 칸의 글자로만 걸린 줄은 줄 전체를 센다
+        hit = set(in_family if wanted else pairs) & set(by_word if keys and by_word else pairs)
+        part = len(hit) / len(pairs) if pairs and hit else 1.0
+        entry["split"] = entry["split"] or part < 1
+        entry["share_pct"] = round(min(100.0, entry["share_pct"] + float(row.share_pct) * part), 2)
         entry["rows"].append(_product_row(row))
         # 그래프에 그릴 점: 제품군으로 찾았으면 그 제품군, 낱말로 찾았으면 걸린 제품 이름(없으면 찾은 낱말)
         labels = [(family, "family") for _, family in in_family] if wanted and not keys else \
@@ -543,7 +547,7 @@ def find_by_product(db, as_of, families=None, keywords=None, min_share=None, lis
             for product in row["products"]:
                 if product["family"]:
                     spread.setdefault(product["family"], set()).add(company_id)
-    out = [{**_brief(companies[i]), "share_pct": e["share_pct"], "rows": e["rows"][:5],
+    out = [{**_brief(companies[i]), "share_pct": e["share_pct"], **({"share_is_estimate": True} if e["split"] else {}), "rows": e["rows"][:5],
             "report": _report_name(db, e["rcept_no"]), "rcept_no": e["rcept_no"]} for i, e in ranked[:LIMIT]]
     return {"as_of": when.isoformat(), "families": wanted, "keywords": words, "total": len(ranked), "truncated": len(ranked) > LIMIT,
             "companies": out,
@@ -551,7 +555,8 @@ def find_by_product(db, as_of, families=None, keywords=None, min_share=None, lis
             "family_spread": sorted(({"family": f, "companies": len(ids)} for f, ids in spread.items()), key=lambda x: -x["companies"])[:15],
             # 화면의 그래프가 쓴다. Agent에게는 보내지 않는다: 찾은 회사 전부의 (기업, 매출 비중, 그래프에 그릴 점들)
             "_graph": [(i, e["share_pct"], e["labels"][:4]) for i, e in ranked],
-            "fields": "회사의 share_pct 는 걸린 줄의 비중을 더한 값입니다. " + _PRODUCT_NOTE,
+            "fields": "회사의 share_pct 는 찾는 제품의 몫을 더한 값입니다. 표의 한 줄에 제품이 여럿 적혀 있으면 그 줄의 비중을 제품 수로 고르게 나눈 어림값이고 "
+                      "(share_is_estimate), 이때는 답에 '약'을 붙이고 표에 적힌 줄의 이름과 비중을 함께 적으세요. " + _PRODUCT_NOTE,
             "note": "제품 표를 읽을 수 있었던 회사만 나옵니다. 표를 읽지 못한 회사, 제품 표가 없는 회사(금융업 등)는 빠져 있으니 "
                     "빠짐없이 찾아야 하면 search_business 로도 찾으세요" if out else
                     "조건에 맞는 회사가 없습니다. 다른 제품군이나 다른 표기(영문 약어, 상위 제품 이름)로 다시 찾거나 search_business 로 보고서 글에서 찾으세요"}

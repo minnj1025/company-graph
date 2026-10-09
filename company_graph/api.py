@@ -130,7 +130,11 @@ def family_id(name: str) -> int:
 
 
 def product_index(db, as_of: date) -> dict[int, dict[str, dict]]:
-    """기업 → {제품 이름: {share 매출 비중 합, raw 표에 적힌 이름들, family 제품군}}. 기업마다 그 시점까지 나온 가장 나중 보고서의 표만 쓴다."""
+    """기업 → {제품 이름: {share 매출 비중, raw 표에 적힌 이름들, family 제품군, split 나눈 값인가}}. 기업마다 그 시점까지 나온 가장 나중 보고서의 표만 쓴다.
+
+    표의 한 줄에 제품이 여럿 적혀 있으면 보고서에는 줄 전체의 비중만 있다. 그 비중을 제품 수로 고르게 나눠 제품마다의 몫으로 삼는다.
+    실제 몫은 알 수 없으므로 어림값이고(split), 화면에는 그렇게 표시한다. 나누지 않으면 한 줄의 여덟 제품이 모두 33%로 그려진다.
+    """
     hit = _product_cache.get(as_of)
     if hit and time.time() - hit[0] < META_TTL:
         return hit[1]
@@ -141,9 +145,11 @@ def product_index(db, as_of: date) -> dict[int, dict[str, dict]]:
         if row.share_pct <= 0:
             continue
         families = row.std_families or [None] * len(row.std_names or [])
+        count = len(row.std_names or ())
         for name, family in zip(row.std_names or (), families):
-            item = index[row.company_id].setdefault(name, {"share": 0.0, "raw": [], "family": family})
-            item["share"] = min(100.0, item["share"] + float(row.share_pct))
+            item = index[row.company_id].setdefault(name, {"share": 0.0, "raw": [], "family": family, "split": False})
+            item["share"] = min(100.0, item["share"] + float(row.share_pct) / count)
+            item["split"] = item["split"] or count > 1
             if row.name not in item["raw"]:
                 item["raw"].append(row.name)
     _product_cache[as_of] = (time.time(), index)
@@ -194,6 +200,8 @@ def add_products(db, graph: dict, as_of: date, company_ids, center: int | None =
     links, family_members, product_family = graph["links"], defaultdict(set), {}
     for company_id, items in members.items():
         direct: dict[str, dict] = {}   # 혼자 파는 제품은 제품군에 바로: 제품군 → {share, 이름들}
+        about = lambda item: (f"매출의 약 {item['share']:.1f}% (여러 제품이 적힌 줄의 비중을 제품 수로 나눈 어림값)" if item["split"]
+                              else f"매출의 {item['share']:.1f}%")
         for name, item in items.items():
             family = item["family"] if item["family"] and item["family"] != "기타" else None
             if family:
@@ -202,15 +210,16 @@ def add_products(db, graph: dict, as_of: date, company_ids, center: int | None =
             if name in shown:
                 product_family[name] = family
                 links.append({"source": company_id, "target": product_id(name), "type": "product", "count": 1,
-                              "value": round(item["share"], 2), "label": f"매출의 {item['share']:.1f}% · 보고서에 적힌 이름: {raw}"})
+                              "value": round(item["share"], 2), "label": f"{about(item)} · 보고서에 적힌 이름: {raw}"})
                 known[company_id]["degree"] += 1
             elif family:
-                slot = direct.setdefault(family, {"share": 0.0, "names": []})
+                slot = direct.setdefault(family, {"share": 0.0, "names": [], "split": False})
                 slot["share"] = min(100.0, slot["share"] + item["share"])
+                slot["split"] = slot["split"] or item["split"]
                 slot["names"].append(name)
         for family, slot in direct.items():
             links.append({"source": company_id, "target": family_id(family), "type": "product", "count": len(slot["names"]),
-                          "value": round(slot["share"], 2), "label": f"매출의 {slot['share']:.1f}% · {', '.join(slot['names'][:4])}"})
+                          "value": round(slot["share"], 2), "label": f"{about(slot)} · {', '.join(slot['names'][:4])}"})
             known[company_id]["degree"] += 1
     for name in sorted(shown):
         family = product_family.get(name)
