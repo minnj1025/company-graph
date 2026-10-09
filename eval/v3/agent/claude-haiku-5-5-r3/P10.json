@@ -1,0 +1,93 @@
+{
+ "question": "콘택트렌즈를 직접 만들어 파는 상장사는 어디이고, 국내와 해외에서 각각 어떤 방식으로 파나요?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "인터로조(코스닥, 119610)가 콘택트렌즈를 직접 만들어 파는 상장사로 확인됩니다. 국내는 자체 브랜드 '클라렌(Clalen)' 판매, 해외는 OEM/ODM 판매가 주력입니다.\n\n| 구분 | 판매 경로 (보고서 표 그대로) | 매출액(백만원) · 비중 |\n|---|---|---|\n| 국내 | 본사 → 안경원 → 소비자 / 본사 → 대리점 → 안경원 → 소비자 | 12,661 (21.3%) |\n| 해외 | 본사 → Distributor → 안경원 → 소비자 / 본사 → 해외현지법인 → 온·오프라인매장 → 소비자 | 46,738 (78.7%) |\n\n- 출처: 인터로조 반기보고서(2026.06), 접수번호 20260814001914. 별도 기준이며 합계는 59,399백만원입니다.\n- 제품 구성은 Hydrogel 1-Day, FRP, Silicone Hydrogel 등입니다. 같은 보고서 제품 표에서 Hydrogel 1-Day가 59.72%, FRP가 22.02%, Silicone Hydrogel 1-Day가 6.54%, FRP가 11.64%입니다.\n- 해외 판매 법인으로는 Shanghai Interojo Optical Products Co.,Ltd.(지분 100%)가 있습니다. 지분 값은 2025-12-31 기준이며 2026-06-15 공시된 것입니다(접수번호 20260615000326).\n\n확인이 어려운 곳: 마이크로엔엑스(코넥스, 448780)는 사업보고서(2025.12, 접수번호 20260323000619) 개요에 '매일착용소프트콘택트렌즈'라는 항목이 있지만, 제품 비중 표에서는 이 제품이 확인되지 않아 직접 판매 여부를 단정하지 않습니다. 콘택트렌즈 소재를 언급한 곳(KBG, 송원산업 등)은 렌즈를 만들어 파는 회사가 아니라 소재·원료 쪽입니다.",
+ "followups": [
+  "인터로조의 최대주주와 특수관계인은 누구인가요?",
+  "인터로조의 최근 공급계약 공시를 보여주세요.",
+  "마이크로엔엑스의 사업 개요와 주요 제품 비중을 자세히 보여주세요."
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_by_product",
+   "input": {
+    "as_of": "2026-10-08",
+    "keywords": [
+     "콘택트렌즈",
+     "컬러렌즈",
+     "렌즈"
+    ]
+   },
+   "error": null,
+   "total": 15,
+   "chars": 8130
+  },
+  {
+   "tool": "search_business",
+   "input": {
+    "keywords": [
+     "콘택트렌즈",
+     "컬러렌즈",
+     "소프트렌즈"
+    ],
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 9,
+   "chars": 5325
+  },
+  {
+   "tool": "get_business",
+   "input": {
+    "company_id": 1555,
+    "as_of": "2026-10-08",
+    "sections": [
+     1,
+     2,
+     4
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 2983
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1555,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 3128
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 2871,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 1083
+  }
+ ],
+ "cited": [
+  "20260323000619",
+  "20260615000326",
+  "20260814001914"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 2521,
+  "cache_read_input_tokens": 31867,
+  "cache_creation_input_tokens": 26080
+ },
+ "seconds": 19.1,
+ "number": "P10"
+}

@@ -476,13 +476,27 @@ def _latest_products(db, when: date, company_id: int | None = None):
     return latest.group_by(Product.company_id).subquery()
 
 
+# 보고서는 직접 만든 것을 "제품", 다른 회사가 만든 것을 사서 파는 것을 "상품"이라고 나눠 적는다
+_GOODS = re.compile(r"^\s*상\s*품|[(\[]\s*상\s*품\s*[)\]]|상품\s*매출")
+_MADE = re.compile(r"제\s*품|제\s*/?\s*상\s*품|제조|금융\s*상품|파생\s*상품")
+
+
+def _resale(row: Product) -> bool:
+    """그 줄이 받아서 파는 것인가. 표가 '상품'이라고 적었거나, 붙인 표준 이름이 모두 유통이다."""
+    wording = [row.segment or "", row.name or ""]
+    if any(_GOODS.search(text) for text in wording) and not any(_MADE.search(text) for text in wording):
+        return True
+    names = row.std_names or []
+    return bool(names) and all(name.endswith(("유통", "도소매", "도매", "소매")) for name in names)
+
+
 def _product_row(row: Product, codes: dict | None = None) -> dict:
     families = row.std_families or [None] * len(row.std_names or [])
     code = lambda name, family: (codes or {}).get((family, name))
     return {"segment": row.segment, "name": row.name, "share_pct": None if row.share_pct is None else float(row.share_pct),
             "products": [{"name": name, "family": family, **({"ksic": code(name, family)} if code(name, family) else {})}
                          for name, family in zip(row.std_names or [], families)],
-            **({"unsure": True} if row.unsure else {})}
+            **({"unsure": True} if row.unsure else {}), **({"resale": True} if _resale(row) else {})}
 
 
 _PRODUCT_NOTE = ("name 과 segment 는 보고서 표에 적힌 그대로, share_pct 는 그 줄이 매출에서 차지하는 비중(%)입니다. "
@@ -540,7 +554,8 @@ def find_by_product(db, as_of, families=None, keywords=None, ksic=None, min_shar
                 continue
         if keys and not by_word and not raw_hit:
             continue
-        entry = found.setdefault(row.company_id, {"share_pct": 0.0, "line": 0.0, "rows": [], "rcept_no": row.rcept_no, "labels": [], "split": False})
+        entry = found.setdefault(row.company_id, {"share_pct": 0.0, "line": 0.0, "rows": [], "rcept_no": row.rcept_no, "labels": [], "split": False, "made": False})
+        entry["made"] = entry["made"] or not _resale(row)
         # 한 줄에 제품이 여럿이면 줄의 비중을 제품 수로 나눠, 찾는 제품의 몫만 더한다. 품목 칸의 글자로만 걸린 줄은 줄 전체를 센다
         hit = set(in_family if wanted else pairs) & set(by_word if keys and by_word else pairs)
         part = len(hit) / len(pairs) if pairs and hit else 1.0
@@ -571,7 +586,7 @@ def find_by_product(db, as_of, families=None, keywords=None, ksic=None, min_shar
                     spread.setdefault(product["family"], set()).add(company_id)
     out = [{**_brief(companies[i]), "share_pct": e["share_pct"] or None,
             **({"share_is_estimate": True, "line_share_pct": e["line"]} if e["split"] and e["share_pct"] else {}),
-            **({} if e["share_pct"] else {"share_not_disclosed": True}), "rows": e["rows"][:5],
+            **({} if e["share_pct"] else {"share_not_disclosed": True}), **({} if e["made"] else {"resale_only": True}), "rows": e["rows"][:5],
             "report": _report_name(db, e["rcept_no"]), "rcept_no": e["rcept_no"]} for i, e in ranked[:LIMIT]]
     return {"as_of": when.isoformat(), "families": wanted, "keywords": words, "total": len(ranked), "truncated": len(ranked) > LIMIT,
             "companies": out,
@@ -579,7 +594,9 @@ def find_by_product(db, as_of, families=None, keywords=None, ksic=None, min_shar
             "family_spread": sorted(({"family": f, "companies": len(ids)} for f, ids in spread.items()), key=lambda x: -x["companies"])[:15],
             # 화면의 그래프가 쓴다. Agent에게는 보내지 않는다: 찾은 회사 전부의 (기업, 매출 비중, 그래프에 그릴 점들)
             "_graph": [(i, e["share_pct"], e["labels"][:4]) for i, e in ranked],
-            "fields": "line_share_pct 가 있는 회사는 찾는 제품이 다른 제품과 한 줄에 함께 적힌 곳입니다. 그 제품만의 비중은 공시에 없고, "
+            "fields": "resale_only 인 회사는 걸린 줄이 모두 '상품'(다른 회사가 만든 것을 사서 파는 것)이거나 유통입니다. 만드는 회사를 묻는 질문의 답에는 "
+                      "넣지 말고, 물었을 때만 '받아서 파는 회사'로 따로 적으세요. 줄마다의 resale 도 같은 뜻입니다. "
+                      "line_share_pct 가 있는 회사는 찾는 제품이 다른 제품과 한 줄에 함께 적힌 곳입니다. 그 제품만의 비중은 공시에 없고, "
                       "share_pct(줄의 비중을 제품 수로 나눈 어림값)와 line_share_pct(그 줄 전체의 비중) 사이 어딘가입니다. "
                       "답에는 '○○ 등이 함께 적힌 줄이 매출의 line_share_pct%'라고 줄 전체의 값으로 적으세요. 목록은 line_share_pct 가 큰 순서입니다. "
                       "share_not_disclosed 인 회사는 그 제품을 판다고 보고서에 적혀 있지만 비중은 밝히지 않은 곳입니다(share_pct 는 null). 목록의 뒤쪽에 옵니다. "

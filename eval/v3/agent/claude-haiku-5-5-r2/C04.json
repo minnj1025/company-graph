@@ -1,0 +1,45 @@
+{
+ "question": "넷마블의 가장 큰 매출원은 무엇이고 전체 매출에서 차지하는 비중은 얼마인가요?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "넷마블의 가장 큰 매출원은 **게임 부문의 모바일**이며, 전체 매출의 **81.43%**입니다.\n\n보고서 표의 매출 비중은 다음과 같습니다.\n\n- 게임 / 모바일: 81.43%\n- 게임 / PC/콘솔: 13.69%\n- 게임 / 기타: 4.88%\n\n이 수치는 2026년 6월 기준 반기보고서에 실린 값입니다(접수번호 20260814002548, 공시일 2026-08-14).",
+ "followups": [
+  "넷마블의 최대주주와 주요 계열사는 무엇인가요?",
+  "넷마블이 최근 공시한 공급계약이나 취득·처분 결정은 무엇인가요?",
+  "모바일 게임을 주력으로 하는 다른 회사는 어디인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "넷마블"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 4011,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 990
+  }
+ ],
+ "cited": [
+  "20260814002548"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 578,
+  "cache_read_input_tokens": 21943,
+  "cache_creation_input_tokens": 11809
+ },
+ "seconds": 5.7,
+ "number": "C04"
+}

@@ -1,0 +1,109 @@
+{
+ "question": "그중 지분율이 가장 높은 곳은 어디고 몇 %야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "카지분율이 가장 높은 상장사는 **카카오페이로, 46.14%**입니다. 이 지분을 카카오가 최대주주로서 보유하고 있으며, 목적은 경영참여입니다.\n\n- 기준: 2025-12-31 기준 사업보고서 값입니다. 조회 시점을 2026-10-08로 바꿔도 같은 값이 나왔습니다.\n- 근거 접수번호: 20260312001366, 20260318001423\n- 2위는 카카오게임즈 37.93%(접수번호 20260318001423, 20260318001659)입니다.",
+ "followups": [
+  "카카오페이의 최대주주와 특수관계인은 누구인가요?",
+  "카카오페이가 지분을 가진 회사는 어디인가요?",
+  "카카오페이 최근 공급계약 공시를 보여 주세요."
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 64,
+   "chars": 23832
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 7,
+   "chars": 4395
+  }
+ ],
+ "cited": [
+  "20260312001366",
+  "20260318001423",
+  "20260318001659"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1308,
+  "cache_read_input_tokens": 48814,
+  "cache_creation_input_tokens": 27716
+ },
+ "seconds": 10.2,
+ "number": "F02",
+ "first": {
+  "question": "카카오가 지분을 가진 상장사는?",
+  "answer": "카카오가 지분을 가진 상장사는 **7곳**입니다. 카카오페이(46.14%)와 카카오게임즈(37.93%)는 경영참여 목적이고, 나머지 5곳은 단순투자 목적으로 적혀 있습니다. 지분율은 2025-12-31 기준 사업보고서 값입니다.\n\n| 기업 | 지분율 | 목적 | 근거 접수번호 |\n|---|---|---|---|\n| 카카오페이 | 46.14% | 경영참여 | 20260318001423 |\n| 카카오게임즈 | 37.93% | 경영참여 | 20260318001659 |\n| 카카오뱅크 | 27.19% | 경영참여 | 20260318000884 |\n| 에스엠 | 21.61% | 경영참여 | 20260317000781 |\n| 바이브컴퍼니 | 7.6% | 단순투자 | 20260318001423 |\n| 차바이오텍 | 2.94% | 단순투자 | 20260318001423 |\n| 아이톡시 | 0.06% | 단순투자 | 20260318001423 |\n\n- 이 목록은 카카오가 사업보고서 타법인 출자현황에 적은 지분입니다. 반기·분기보고서는 아직 반영되지 않았습니다.\n- 카카오는 SM C&C, SM Life Design, 디어유, 키이스트를 계열회사로 적었지만, 이 4곳은 지분 목록에 없어 지분 보유 여부는 이 DB로 확인되지 않습니다 (접수번호 20260318001423).\n- 카카오 계열 상장사 전체를 보면 계열회사 표에 자신을 뺀 9곳이 있습니다.",
+  "tool_calls": [
+   {
+    "tool": "find_company",
+    "input": {
+     "name": "카카오"
+    },
+    "error": null,
+    "total": null,
+    "chars": 192
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 2254,
+     "as_of": "2026-10-08",
+     "rel_type": "equity",
+     "direction": "out",
+     "listed_only": true
+    },
+    "error": null,
+    "total": 7,
+    "chars": 4395
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 2254,
+     "as_of": "2026-10-08",
+     "rel_type": "affiliate",
+     "direction": "out",
+     "listed_only": true
+    },
+    "error": null,
+    "total": 9,
+    "chars": 4965
+   }
+  ],
+  "usage": {
+   "input_tokens": 8,
+   "output_tokens": 1770,
+   "cache_read_input_tokens": 22502,
+   "cache_creation_input_tokens": 16709
+  }
+ }
+}

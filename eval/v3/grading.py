@@ -1,6 +1,6 @@
 """평가 3판의 Agent 실행과 채점 묶음.
 
-실행: python -m eval.v3.grading run [--model claude-haiku-5-5]   → eval/v3/agent/<모델>/<id>.json (P, I, C 문항. Claude API, 유료)
+실행: python -m eval.v3.grading run [--model claude-haiku-5-5] [--tag=-r2]   → eval/v3/agent/<모델><꼬리말>/<id>.json (P, I, C 문항. Claude API, 유료)
       python -m eval.v3.grading bundle                           → eval/v3/grading/b01.json … (어느 문항인지 가린 열쇠만 붙인다)
       python -m eval.v3.grading collect                          → eval/v3/grades.json
 이어지는 대화(F) 문항의 답은 `python -m eval.v3.followups` 가 만든다.
@@ -27,10 +27,10 @@ def golds() -> list[dict]:
     return [g for g in (read(p) for p in sorted((ROOT / "gold").glob("*.json"))) if not g.get("skip")]
 
 
-def run(model: str):
+def run(model: str, tag: str = ""):
     from company_graph import agent
 
-    out = ROOT / "agent" / model
+    out = ROOT / "agent" / (model + tag)
     out.mkdir(parents=True, exist_ok=True)
 
     def one(gold: dict) -> str:
@@ -84,4 +84,5 @@ def collect(tag: str = ""):
 
 if __name__ == "__main__":
     model = sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else MODEL
-    {"run": lambda: run(model), "bundle": lambda: bundle(model), "collect": lambda: collect(model[len(MODEL):])}[sys.argv[1]]()
+    tag = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--tag=")), "")
+    {"run": lambda: run(model, tag), "bundle": lambda: bundle(model), "collect": lambda: collect(model[len(MODEL):])}[sys.argv[1]]()

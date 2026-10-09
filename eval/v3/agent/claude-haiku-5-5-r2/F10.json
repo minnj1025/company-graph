@@ -1,0 +1,167 @@
+{
+ "question": "그중 카카오가 가진 지분율이 가장 낮은 곳은 어디고 몇 %야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "카카오가 가진 지분율이 가장 낮은 곳은 **에스엠으로, 21.61%**입니다. 다만 상장 계열사 8곳 중 4곳(SM C&C, SM Life Design, 디어유, 키이스트)은 카카오 지분 공시가 DB에 없어서 지분율이 없습니다.\n\n| 기업 | 카카오 지분율 | 근거 접수번호 |\n|---|---|---|\n| 에스엠 | 21.61% | 20260317000781, 20260318001423 |\n| 카카오뱅크 | 27.19% | 20260318000884, 20260318001423 |\n| 카카오게임즈 | 37.93% | 20260318001423, 20260318001659 |\n| 카카오페이 | 46.14% | 20260312001366, 20260318001423 |\n| SM C&C | 지분 공시 없음 | - |\n| SM Life Design | 지분 공시 없음 | - |\n| 디어유 | 지분 공시 없음 | - |\n| 키이스트 | 지분 공시 없음 | - |\n\n- 지분율은 2025년 말 기준(as_of_date 2025-12-31) 사업보고서의 타법인 출자현황 값입니다. 조회 시점 2026-10-08 이전에 나온 가장 최근 값입니다.\n- 이 표의 지분율은 회사에 따라 우선주를 포함한 발행주식총수 기준이라, 보통주 기준 지분율과 다를 수 있습니다.\n- 카카오 자신이 가진 지분 목록은 일부만 조회됐으므로(총 64건 중 일부), 나머지 4곳은 각 회사를 상대로 따로 조회해 지분 공시가 없다는 것을 확인했습니다.",
+ "followups": [
+  "에스엠의 최대주주와 특수관계인은 누구인지",
+  "카카오뱅크가 낸 최근 공급계약이나 취득·처분 결정이 있는지",
+  "카카오가 가진 지분 중 비상장 계열사 가운데 지분율이 가장 높은 곳은 어디인지"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 64,
+   "chars": 23832
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 157,
+   "chars": 22795
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "디어유"
+   },
+   "error": null,
+   "total": null,
+   "chars": 191
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "키이스트"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 2198
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 2676
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 3711
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 1793
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  }
+ ],
+ "cited": [
+  "20260312001366",
+  "20260317000781",
+  "20260318000884",
+  "20260318001423",
+  "20260318001659"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2880,
+  "cache_read_input_tokens": 99913,
+  "cache_creation_input_tokens": 40851
+ },
+ "seconds": 16.6,
+ "number": "F10",
+ "first": {
+  "question": "카카오의 계열회사 가운데 상장사는 어디야?",
+  "answer": "카카오의 계열회사 중 상장사는 자신을 뺀 기준으로 9곳이 조회됩니다. 다만 그중 1곳(SM ENTERTAINMENT JAPAN)은 DB에 원장 항목이 없고 이름만 있어서, 상장 여부를 이 DB로 확인할 수 없습니다. 원장에 종목코드가 있는 상장사는 8곳입니다.\n\n| 기업 | 종목코드 | 시장 | 근거 |\n|---|---|---|---|\n| SM C&C | 048550 | 코스닥 | 20260318001423 |\n| SM Life Design | 063440 | 코스닥 | 20260318001423 |\n| 디어유 | 376300 | 코스닥 | 20260318001423 |\n| 에스엠 | 041510 | 코스닥 | 20260318001423 |\n| 카카오게임즈 | 293490 | 코스닥 | 20260318001423 |\n| 카카오뱅크 | 323410 | 유가증권 | 20260318001423 |\n| 카카오페이 | 377300 | 유가증권 | 20260318001423 |\n| 키이스트 | 054780 | 코스닥 | 20260318001423 |\n\n- 출처는 2025년 말 기준 사업보고서의 계열회사 현황 표이고, 2026-03-18에 공시되었습니다.\n- SM ENTERTAINMENT JAPAN은 상장으로 표시되어 있으나 원장에 없는 이름뿐인 항목이라 제외했습니다.\n- 카카오(035720, 유가증권) 자신을 넣으면 상장사는 10곳입니다.",
+  "tool_calls": [
+   {
+    "tool": "find_company",
+    "input": {
+     "name": "카카오"
+    },
+    "error": null,
+    "total": null,
+    "chars": 192
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 2254,
+     "as_of": "2026-10-08",
+     "rel_type": "affiliate",
+     "direction": "out",
+     "listed_only": true
+    },
+    "error": null,
+    "total": 9,
+    "chars": 4965
+   }
+  ],
+  "usage": {
+   "input_tokens": 8,
+   "output_tokens": 1274,
+   "cache_read_input_tokens": 22500,
+   "cache_creation_input_tokens": 14101
+  }
+ }
+}

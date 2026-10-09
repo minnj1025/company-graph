@@ -1,0 +1,131 @@
+{
+ "question": "그 회사의 최대주주가 지분을 가진 다른 상장사는 어디야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "에코프로가 지분을 가진 상장사는 DB 기준으로 에코프로비엠을 빼고 2곳입니다. 에코프로비엠 자신을 제외하면 **에코프로머티**(43.0%)와 **에코프로에이치엔**(31.0%)입니다.\n\n- **에코프로머티**(유가증권, 450080): 지분 43.0%, 목적은 경영참여입니다. (2025-12-31 기준, 접수번호 20260318001612, 20260320000475)\n- **에코프로에이치엔**(코스닥, 383310): 지분 31.0%, 목적은 경영참여입니다. (2025-12-31 기준, 접수번호 20260316001329, 20260318001612)\n\n이 값은 2025-12-31 기준 사업보고서의 출자현황에서 왔습니다. 반기·분기보고서는 아직 DB에 없습니다. 또 원장에 없는 상대 14곳은 상장 여부를 알 수 없어 목록에서 뺐습니다. 해외 상장사일 수 있어서, 이 14곳까지 보려면 상장 여부 조건 없이 다시 조회해야 합니다.",
+ "followups": [
+  "에코프로머티의 최대주주와 주요 출자 회사는 어디인가요?",
+  "에코프로에이치엔은 어떤 사업을 하는 회사인가요?",
+  "에코프로의 최근 1년 공급계약이나 취득·처분 결정 공시가 있나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에코프로"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2345,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 3,
+   "chars": 2497
+  }
+ ],
+ "cited": [
+  "20260316001329",
+  "20260318001612",
+  "20260320000475"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1422,
+  "cache_read_input_tokens": 24541,
+  "cache_creation_input_tokens": 14127
+ },
+ "seconds": 8.7,
+ "number": "F07",
+ "first": {
+  "question": "에코프로비엠은 어떤 회사야?",
+  "answer": "**에코프로비엠(코스닥, 247540)**은 리튬이온 이차전지의 핵심 소재인 양극재(하이니켈 NCA·NCM)를 만드는 회사입니다. 그룹은 에코프로 집단에 속합니다.\n\n- **주력 제품:** 2026년 반기보고서 기준 양극재가 매출의 100.3%를 차지합니다. 기타(임대수익, 스크랩 등)는 -0.3%입니다. 반기 연결 매출은 1,182,073 백만원입니다. (접수번호 20260814002535)\n- **사업 설명:** 니켈 함량을 80% 이상으로 높여 에너지 밀도를 키우고 코발트 사용을 줄인 양극소재를 생산합니다. NCA는 전동공구와 고성능 전기차에, NCM은 전기차와 ESS 등 중대형 전지에 쓰입니다. 원소재와 전지재료 계열사를 묶은 업스트림 밸류체인도 확대하고 있다고 적혀 있습니다. (사업보고서 2025, 접수번호 20260318001622)\n- **주주:** 최대주주는 에코프로로 41%입니다(2025-12-31 기준, 접수번호 20260318001612). 특수관계법인 데이지파트너스가 3.99%를 보유합니다. 임원 등 개인 주주의 지분은 모두 1% 미만입니다.\n\n**주요 출자 회사** (사업보고서 2025 기준, 접수번호 20260318001622)\n\n| 출자 회사 | 지분율 | 목적 |\n|---|---|---|\n| EcoCam Canada | 100.0% | 경영참가 |\n| EcoPro BM America, INC. | 100.0% | 경영참가 |\n| EcoPro BM Hungary Zrt. | 100.0% | 경영참여 |\n| 에코프로이엠 | 60.0% | 경영참가 |\n| PT ECOPRO ESG INVESTMENT | 51.0% | 경영참여 |\n| 데카머티리얼 | 20.0% | 단순투자 |\n\n이 밖에 단순투자 목적으로 조합과 펀드에 소액 출자한 곳이 있습니다.\n\n**최근 1년 공시:** 2025-10-08부터 2026-10-08까지 공급계약과 취득·처분 결정 공시는 찾지 못했습니다.",
+  "tool_calls": [
+   {
+    "tool": "find_company",
+    "input": {
+     "name": "에코프로비엠"
+    },
+    "error": null,
+    "total": null,
+    "chars": 195
+   },
+   {
+    "tool": "get_products",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08"
+    },
+    "error": null,
+    "total": 2,
+    "chars": 935
+   },
+   {
+    "tool": "get_business",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08",
+     "sections": [
+      1,
+      2
+     ]
+    },
+    "error": null,
+    "total": null,
+    "chars": 2734
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08",
+     "rel_type": "equity",
+     "direction": "both"
+    },
+    "error": null,
+    "total": 18,
+    "chars": 9289
+   },
+   {
+    "tool": "get_filings",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08",
+     "doc_type": "supply_contract",
+     "filed_from": "2025-10-08"
+    },
+    "error": null,
+    "total": 0,
+    "chars": 554
+   },
+   {
+    "tool": "get_filings",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08",
+     "doc_type": "event",
+     "filed_from": "2025-10-08"
+    },
+    "error": null,
+    "total": 0,
+    "chars": 554
+   }
+  ],
+  "usage": {
+   "input_tokens": 8,
+   "output_tokens": 2203,
+   "cache_read_input_tokens": 22507,
+   "cache_creation_input_tokens": 20904
+  }
+ }
+}

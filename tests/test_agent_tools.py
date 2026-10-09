@@ -109,3 +109,14 @@ def test_find_by_product_by_family_and_by_keyword(db):
     assert products["products"][1]["products"] == [{"name": "자동차 모듈", "family": "기타 자동차 부품"}]
     assert agent_tools.call(db, "get_products", {"company_id": KIA, "as_of": "2026-06-30"})["read"] is False
     json.dumps({k: v for k, v in out.items() if not k.startswith("_")}, ensure_ascii=False)
+
+
+def test_resale_rows_are_marked():
+    from types import SimpleNamespace as Row
+    from company_graph.agent_tools import _resale
+
+    assert _resale(Row(segment="상품", name="면류", std_names=["파스타"]))
+    assert _resale(Row(segment=None, name="MLCC", std_names=["전자부품 유통"]))
+    assert not _resale(Row(segment="제품", name="라면", std_names=["라면"]))
+    assert not _resale(Row(segment="제/상품", name="음료", std_names=["음료"]))
+    assert not _resale(Row(segment="금융상품 판매", name="펀드", std_names=["펀드 판매"]))

@@ -1,0 +1,92 @@
+{
+ "question": "콘택트렌즈를 직접 만들어 파는 상장사는 어디이고, 국내와 해외에서 각각 어떤 방식으로 파나요?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "인터로조(코스닥, 119610)가 유일하게 확인됩니다. 제품 표에 콘택트렌즈가 99.92%로 잡혀 있고, 국내는 자체 브랜드 판매, 해외는 주로 OEM/ODM 판매를 합니다(반기보고서, 접수번호 20260814001914).\n\n| 구분 | 판매 경로 (보고서 표 그대로) | 2026 반기 매출 (백만원, 별도) | 비중 |\n|---|---|---|---|\n| 국내 | 본사 → 안경원 → 소비자 / 본사 → 대리점 → 안경원 → 소비자 | 12,661 | 21.3% |\n| 해외 | 본사 → Distributor → 안경원 → 소비자 / 본사 → 해외현지법인 → 온·오프라인매장 → 소비자 | 46,738 | 78.7% |\n\n- 국내는 자체 브랜드 Clalen(클라렌) 시리즈 판매가 주력입니다.\n- 해외는 OEM/ODM 판매가 주력입니다. 보고서는 제품 표에 Hydrogel, FRP, Silicone Hydrogel 등을 적고 있으며, 해외 매출 비중이 78.7%로 큽니다.\n- 판매 경로 표의 합계는 59,399백만원이고, 이 값은 2026년 반기말 기준입니다(접수번호 20260814001914).\n\n참고로 마이크로엔엑스(코넥스)는 보고서 본문에 '매일착용소프트콘택트렌즈'가 있으나, 이는 업계 생산 실적 순위표에 실린 품목이고 회사 자신의 제품 표에는 치과·기공용 모터 등만 있어 콘택트렌즈 제조사로 보지 않았습니다. 이스트소프트는 아이웨어 커머스 사업에서 콘택트렌즈를 다루지만 직접 만드는 회사로는 적혀 있지 않습니다.",
+ "followups": [
+  "인터로조의 최대주주와 계열 관계는 어떻게 되나요?",
+  "인터로조가 낸 공급계약 공시가 있나요?",
+  "콘택트렌즈 소재(하이드로겔·실리콘 하이드로겔)를 만드는 회사는 어디인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_by_product",
+   "input": {
+    "as_of": "2026-10-08",
+    "keywords": [
+     "콘택트렌즈"
+    ],
+    "listed_only": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1806
+  },
+  {
+   "tool": "search_business",
+   "input": {
+    "keywords": [
+     "콘택트렌즈",
+     "컨택트렌즈"
+    ],
+    "as_of": "2026-10-08",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 9,
+   "chars": 5294
+  },
+  {
+   "tool": "get_business",
+   "input": {
+    "company_id": 1555,
+    "as_of": "2026-10-08",
+    "sections": [
+     1,
+     2,
+     4
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 2983
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 2871,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 1083
+  },
+  {
+   "tool": "get_business",
+   "input": {
+    "company_id": 2871,
+    "as_of": "2026-10-08",
+    "sections": [
+     1,
+     2
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 7948
+  }
+ ],
+ "cited": [
+  "20260814001914"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2342,
+  "cache_read_input_tokens": 47525,
+  "cache_creation_input_tokens": 26949
+ },
+ "seconds": 19.1,
+ "number": "P10"
+}
