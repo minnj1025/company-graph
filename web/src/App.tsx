@@ -45,6 +45,8 @@ export function App() {
   const [detail, setDetail] = useState<CompanyDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const positions = useRef(new Map<number, { x: number; y: number; z: number }>());
+  const picked = useRef(selectedId);
+  picked.current = selectedId;
   /** 그래프가 그리는 것을 바꾼다. replace 면 지금 자리를 고치고(단계 수처럼 작은 변화), 아니면 새 자리를 쌓는다 */
   const go = useCallback((patch: Partial<View>, replace = false) => {
     setViews((now) => {
@@ -103,6 +105,8 @@ export function App() {
   // 그려진 점의 위치를 기억해 둔다 (라이브러리가 점 객체에 x, y, z를 직접 적는다)
   useEffect(() => {
     const timer = setInterval(() => {
+      // 기업을 고른 동안에는 이어진 점들이 한곳에 모여 있다. 그 자리를 원래 자리로 기억하면 안 된다
+      if (picked.current !== null) return;
       for (const node of data.nodes) {
         if (node.x !== undefined) positions.current.set(node.id, { x: node.x, y: node.y ?? 0, z: node.z ?? 0 });
       }

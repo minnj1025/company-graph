@@ -94,6 +94,12 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
   const selected = useRef(selectedId);
   selected.current = selectedId;
   const litNow = useRef<Set<number> | null>(null);
+  // 기업을 고르면 그 기업과 이어진 점을 한곳에 모은다. 그동안 나머지 점이 움직이지 않게 전부 제자리에 고정해 둔다
+  const pinnedAll = useRef(false);
+  const userPinned = useRef(new Set<number>());   // 사용자가 끌어다 놓아 고정한 점. 풀 때 이것은 남긴다
+  const wantUnpin = useRef(false);
+  const moving = useRef<{ finish: () => void } | null>(null);
+  const home = useRef<{ position: Vector3; target: Vector3 } | null>(null);   // 모으기 전에 보던 자리
   const batch = data.links.length > BATCH_LINKS;
   // 처음 자리를 잡을 때만 화면에 그리기 전에 미리 계산한다. 앞선 화면의 위치를 이어받았으면 건너뛰어 멈칫하지 않게 한다
   const warmup = useMemo(() => (data.nodes.filter((n) => n.x === undefined).length * 2 > data.nodes.length ? 80 : 0), [data]);
@@ -133,6 +139,10 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     graph.current?.d3Force("y", forceY(0).strength(0.09) as never);
     graph.current?.d3Force("z", forceZ(0).strength(0.09) as never);
     graph.current?.d3ReheatSimulation();
+    // 새 자료의 점은 고정돼 있지 않다
+    pinnedAll.current = false;
+    wantUnpin.current = false;
+    userPinned.current = new Set();
     // 보는 범위와 자료가 한 번에 바뀌는 경우(질문 결과로 바꿀 때)에도 맞추도록 여기서도 확인한다
     if (fitted.current !== fitKey) {
       fitted.current = fitKey;
@@ -203,9 +213,9 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
         typeof target === "number" ||
         source.x === undefined ||
         target.x === undefined ||
-        // 고른 기업에 닿은 선은 라이브러리가 굵기와 화살표를 갖춰 따로 그린다
-        source.id === selected.current ||
-        target.id === selected.current
+        // 고른 기업에 닿은 선은 라이브러리가 굵기와 화살표를 갖춰 따로 그린다.
+        // 고른 기업과 이어진 점들은 한곳에 모여 있어서, 거기서 다른 곳으로 가는 흐린 선도 그리지 않는다
+        (litNow.current !== null && (litNow.current.has(source.id) || litNow.current.has(target.id)))
       ) {
         points.fill(0, i * 6, i * 6 + 6);
         return arrows.setMatrixAt(i, NOTHING);
@@ -304,6 +314,8 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
   const nodeObject = useCallback(
     (node: GraphNode) => {
       const hit = new Mesh(hitShape(nodeRadius(node)), HIT);
+      // 흐려진 점은 눌리지 않는다. 눌리면 화면을 돌리려고 끄는 것이 점을 끄는 것이 된다
+      if (lit !== null && !lit.has(node.id)) hit.raycast = () => {};
       const chosen = node.focus || node.mentioned || node.id === selectedId;
       const show = chosen || (lit === null ? labeled.has(node.id) : lit.has(node.id));
       if (!show) return hit;
@@ -328,7 +340,15 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     (link: GraphLink) => selectedId === null || endId(link.source) === selectedId || endId(link.target) === selectedId,
     [selectedId],
   );
-  const linkShown = useCallback((link: GraphLink) => !batch || (selectedId !== null && linkLit(link)), [batch, selectedId, linkLit]);
+  const linkShown = useCallback(
+    (link: GraphLink) => {
+      if (selectedId === null || lit === null) return !batch;
+      if (linkLit(link)) return true;
+      // 고른 기업과 이어진 점에서 다른 곳으로 가는 선은 감춘다
+      return !batch && !lit.has(endId(link.source)) && !lit.has(endId(link.target));
+    },
+    [batch, selectedId, lit, linkLit],
+  );
   const linkColor = useCallback((link: GraphLink) => (linkLit(link) ? LINK_COLORS[link.type] : DIM_LINK), [linkLit]);
   const linkWidth = useCallback(
     (link: GraphLink) => {
@@ -348,11 +368,8 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
   const particles = useCallback((link: GraphLink) => (link.type === "supply_contract" && linkLit(link) ? 2 : 0), [linkLit]);
   const onNodeClick = useCallback(
     (node: GraphNode) => {
-      // 낱말 점은 기업이 아니라서 상세를 열지 않고, 이어진 기업만 밝힌다
-      onSelect(node);
-      const [x, y, z] = [node.x ?? 0, node.y ?? 0, node.z ?? 0];
-      const ratio = 1 + 150 / Math.max(Math.hypot(x, y, z), 1);
-      graph.current?.cameraPosition({ x: x * ratio, y: y * ratio, z: z * ratio }, { x, y, z }, 900);
+      // 고른 점을 다시 누르면 푼다. 낱말 점과 제품 점은 기업이 아니라서 상세를 열지 않고, 이어진 기업만 밝힌다
+      onSelect(node.id === selected.current ? null : node);
     },
     [onSelect],
   );
@@ -361,6 +378,104 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     node.fx = node.x;
     node.fy = node.y;
     node.fz = node.z;
+    userPinned.current.add(node.id);
+  }, []);
+
+  /** 점들을 from 에서 to 로 부드럽게 옮긴다. 옮기는 동안 배치 계산이 돌아야 선이 따라오므로 다시 깨운다 */
+  const glide = useCallback((moves: { node: GraphNode; to: [number, number, number] }[], ms = 520) => {
+    moving.current?.finish();
+    if (moves.length === 0) return;
+    const starts = moves.map(({ node }) => [node.x ?? 0, node.y ?? 0, node.z ?? 0]);
+    const put = (k: number) =>
+      moves.forEach(({ node, to }, i) => {
+        node.fx = starts[i][0] + (to[0] - starts[i][0]) * k;
+        node.fy = starts[i][1] + (to[1] - starts[i][1]) * k;
+        node.fz = starts[i][2] + (to[2] - starts[i][2]) * k;
+      });
+    const began = performance.now();
+    let frame = 0;
+    const step = () => {
+      const t = Math.min((performance.now() - began) / ms, 1);
+      put(1 - (1 - t) ** 3);
+      if (t < 1) frame = requestAnimationFrame(step);
+      else moving.current = null;
+    };
+    moving.current = {
+      finish: () => {
+        cancelAnimationFrame(frame);
+        put(1);
+        for (const { node, to } of moves) [node.x, node.y, node.z] = to;
+        moving.current = null;
+      },
+    };
+    graph.current?.d3ReheatSimulation();
+    frame = requestAnimationFrame(step);
+  }, []);
+
+  // 기업을 고르면: 그 기업과 이어진 점을 그 기업 둘레에 공 모양으로 모으고 카메라를 가까이 댄다. 풀면 원래 자리로 돌려보낸다
+  useEffect(() => {
+    if (lit === null || selectedId === null) return;
+    moving.current?.finish();   // 앞서 고른 것을 돌려보내는 중이었으면 바로 끝낸다
+    const center = data.nodes.find((n) => n.id === selectedId);
+    if (!center || center.x === undefined) return;
+    if (!pinnedAll.current) {
+      pinnedAll.current = true;
+      for (const node of data.nodes) if (node.fx !== undefined) userPinned.current.add(node.id);
+    }
+    for (const node of data.nodes) {
+      if (node.x === undefined) continue;
+      [node.fx, node.fy, node.fz] = [node.x, node.y, node.z];
+    }
+    wantUnpin.current = false;
+    const around = data.nodes.filter((n) => n.id !== selectedId && lit.has(n.id) && n.x !== undefined);
+    const origin: [number, number, number] = [center.x, center.y ?? 0, center.z ?? 0];
+    const radius = Math.min(Math.max(34 + 9 * Math.sqrt(around.length), 48), 230);
+    const back = around.map((node) => ({ node, to: [node.x!, node.y ?? 0, node.z ?? 0] as [number, number, number] }));
+    glide(
+      around.map((node, i) => {
+        // 공 겉면에 고르게 놓는다 (피보나치 격자)
+        const y = 1 - (2 * (i + 0.5)) / around.length;
+        const ring = Math.sqrt(1 - y * y);
+        const turn = i * Math.PI * (3 - Math.sqrt(5));
+        return { node, to: [origin[0] + Math.cos(turn) * ring * radius, origin[1] + y * radius, origin[2] + Math.sin(turn) * ring * radius] };
+      }),
+    );
+    const view = graph.current;
+    if (view) {
+      const eye = view.camera().position;
+      const target = (view.controls() as { target: Vector3 }).target;
+      if (!home.current) home.current = { position: eye.clone(), target: target.clone() };
+      const direction = new Vector3(eye.x - origin[0], eye.y - origin[1], eye.z - origin[2]);
+      if (direction.lengthSq() < 1) direction.set(0, 0, 1);
+      direction.normalize().multiplyScalar(radius * 2.5 + 90);
+      view.cameraPosition(
+        { x: origin[0] + direction.x, y: origin[1] + direction.y, z: origin[2] + direction.z },
+        { x: origin[0], y: origin[1], z: origin[2] },
+        700,
+      );
+    }
+    return () => {
+      glide(back);
+      wantUnpin.current = true;
+    };
+  }, [data, selectedId, lit, glide]);
+
+  // 고른 것을 다 풀었으면 모으기 전에 보던 자리로 카메라를 돌린다
+  useEffect(() => {
+    if (selectedId !== null || !home.current) return;
+    const { position, target } = home.current;
+    home.current = null;
+    graph.current?.cameraPosition(position, target, 700);
+  }, [selectedId]);
+
+  // 점을 다 돌려보내고 배치 계산이 멈춘 뒤에 고정을 푼다. 계산이 도는 중에 풀면 자리 잡았던 그래프가 다시 출렁인다
+  const onEngineStop = useCallback(() => {
+    if (!wantUnpin.current || selected.current !== null) return;
+    wantUnpin.current = false;
+    pinnedAll.current = false;
+    for (const node of shown.current.nodes) {
+      if (!userPinned.current.has(node.id)) [node.fx, node.fy, node.fz] = [undefined, undefined, undefined];
+    }
   }, []);
   const onBackgroundClick = useCallback(() => onSelect(null), [onSelect]);
 
@@ -393,6 +508,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
         onNodeDragEnd={onNodeDragEnd}
         onBackgroundClick={onBackgroundClick}
         onEngineTick={place}
+        onEngineStop={onEngineStop}
         warmupTicks={warmup}
         cooldownTime={7000}
       />

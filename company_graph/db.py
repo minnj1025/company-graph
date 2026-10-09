@@ -136,7 +136,9 @@ class Product(Base):
     name: Mapped[str] = mapped_column(String(100))                    # 표에 적힌 품목 이름 그대로
     share_pct: Mapped[Decimal] = mapped_column(Numeric(7, 2))         # 매출 비중(%)
     std_names: Mapped[list | None] = mapped_column(JSON)              # 표준 이름. 비어 있으면 제품이라 할 것이 없는 줄("기타", "상품")
+    std_families: Mapped[list | None] = mapped_column(JSON)           # std_names 와 같은 순서로, 제품마다의 제품군 (product_families 의 이름)
     named_by: Mapped[str | None] = mapped_column(String(40))          # 표준 이름을 붙인 것: rule 또는 모델 이름. 없으면 아직 안 붙임
+    unsure: Mapped[bool] = mapped_column(Boolean, default=False)      # 이름을 붙일 때 짐작이 섞였다는 표시
 
 
 class AskLog(Base):

@@ -122,7 +122,9 @@ CREATE TABLE product (
   name           VARCHAR(100)  NOT NULL COMMENT '표에 적힌 품목 이름 그대로',
   share_pct      DECIMAL(7, 2) NOT NULL COMMENT '매출 비중(%)',
   std_names      JSON          NULL COMMENT '여러 회사의 같은 제품을 묶는 표준 이름. 빈 목록이면 묶을 것이 없는 줄(기타, 임대)',
+  std_families   JSON          NULL COMMENT 'std_names 와 같은 순서로, 제품마다의 제품군',
   named_by       VARCHAR(40)   NULL COMMENT '표준 이름을 붙인 것: rule 또는 모델 이름. NULL이면 아직 안 붙임',
+  unsure         BOOLEAN       NOT NULL DEFAULT FALSE COMMENT '이름을 붙일 때 짐작이 섞였다는 표시',
   UNIQUE KEY uq_product_row (rcept_no, row_no),
   KEY ix_product_company (company_id, disclosed_date),
   FOREIGN KEY (company_id) REFERENCES company (company_id)
