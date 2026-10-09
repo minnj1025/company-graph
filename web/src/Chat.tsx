@@ -168,10 +168,18 @@ export function ChatLog({ chat, shown, onShow }: LogProps) {
                 ))}
               </div>
               <div className="a-foot">
-                <span>
-                  {turn.result.seconds}초 · {turn.result.tokens.toLocaleString()}토큰 · 조회 시점 {turn.result.as_of}
-                  {turn.result.graph.nodes.length > 0 &&
-                    ` · 그래프에 기업 ${turn.result.graph.nodes.filter((node) => !node.kind).length}곳 (답은 그 일부입니다)`}
+                <span className="facts">
+                  <span>{turn.result.seconds}초</span>
+                  {" · "}
+                  <span>{turn.result.tokens.toLocaleString()}토큰</span>
+                  {" · "}
+                  <span>조회 시점 {turn.result.as_of}</span>
+                  {turn.result.graph.nodes.length > 0 && (
+                    <>
+                      {" · "}
+                      <span>그래프에 기업 {turn.result.graph.nodes.filter((node) => !node.kind).length}곳 (답은 그 일부)</span>
+                    </>
+                  )}
                 </span>
                 {turn.result.graph.nodes.length > 0 && turn.result !== shown && <button onClick={() => onShow(turn.result!)}>그래프에 보기</button>}
               </div>
@@ -312,16 +320,20 @@ export function Composer({ chat, onPick, onAsk, examples, onReopen }: ComposerPr
         <input value={text} onChange={(event) => setText(event.target.value)} maxLength={300} placeholder={HINTS[hint]} aria-label="기업 찾기 또는 질문" />
         <button disabled={typed.length < 1}>{chat.busy ? "답하는 중…" : "보내기"}</button>
       </form>
-      <div className="composer-status">
-        기업 이름·종목코드는 바로 찾고 횟수를 쓰지 않습니다 ·{" "}
-        {chat.status === null
-          ? "Agent 상태를 확인하지 못했습니다"
-          : !chat.status.enabled
-            ? "Agent가 아직 연결되지 않았습니다"
-            : chat.left === 0
-              ? "오늘 물을 수 있는 횟수를 다 썼습니다. '평가 문항'에서 미리 돌려 둔 답을 볼 수 있습니다"
-              : `질문은 오늘 ${chat.left}번 더 할 수 있습니다 (${chat.status.model})`}{" "}
-        · 매수·매도 판단은 답하지 않습니다
+      <div className="composer-status" title={chat.status?.enabled ? `답하는 모델: ${chat.status.model}` : undefined}>
+        <span>기업 이름·종목코드는 횟수 없이 바로 찾습니다</span>
+        {" · "}
+        <span>
+          {chat.status === null
+            ? "Agent 상태를 확인하지 못했습니다"
+            : !chat.status.enabled
+              ? "Agent가 아직 연결되지 않았습니다"
+              : chat.left === 0
+                ? "오늘 물을 수 있는 횟수를 다 썼습니다"
+                : `질문은 오늘 ${chat.left}번 남았습니다`}
+        </span>
+        {" · "}
+        <span>매수·매도 판단은 답하지 않습니다</span>
       </div>
     </div>
   );

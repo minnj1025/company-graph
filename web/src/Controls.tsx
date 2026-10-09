@@ -154,8 +154,7 @@ export function Settings(props: Props) {
     <div className="controls">
       {props.locked && (
         <p className="locked-note">
-          지금은 질문으로 찾은 그래프를 보고 있습니다. 관계·솎아 보기·보는 범위는 이 그래프에 적용되지 않습니다. 기업을 눌러 "이 기업 중심으로 보기"로
-          가거나 전체 그래프로 돌아가면 적용됩니다.
+          질문으로 찾은 그래프에는 아래 세 가지가 적용되지 않습니다. 전체 그래프로 돌아가거나 한 기업 중심으로 보면 적용됩니다.
         </p>
       )}
       <fieldset disabled={props.locked}>

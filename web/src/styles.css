@@ -2678,3 +2678,79 @@ select:focus-visible {
     opacity: 0;
   }
 }
+
+/* ---------- 줄바꿈 ---------- */
+/* 한글은 낱말 가운데에서 끊지 않는다. 주소처럼 띄어쓰기 없이 긴 글만 넘치지 않게 끊는다 */
+:root {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* 여러 줄이 되면 마지막 줄에 한두 낱말만 남지 않게 한다 */
+p,
+li,
+dd,
+td,
+.answer,
+.row-meta,
+.row-title {
+  text-wrap: pretty;
+}
+
+/* 짧은 안내 글은 줄 길이를 고르게 나눈다 */
+h1,
+h2,
+h3,
+h4,
+.hint,
+.fine,
+.locked-note,
+.composer-status,
+.facts,
+.stage-note,
+.legend,
+.credit,
+.empty,
+.waiting,
+.page .lead {
+  text-wrap: balance;
+}
+
+/* "·"로 이은 글은 항목 가운데가 아니라 항목 사이에서만 줄이 바뀐다 */
+.composer-status > span,
+.facts > span {
+  white-space: nowrap;
+}
+
+.a-foot {
+  align-items: flex-end;
+}
+
+.tool code {
+  word-break: break-all;
+}
+
+@media (max-width: 900px) {
+  .composer-status > span,
+  .facts > span {
+    white-space: normal;
+  }
+}
+
+.row-meta,
+.rel em,
+.check p,
+.check span,
+.notes li,
+.steps-done li,
+.sources span {
+  text-wrap: balance;
+}
+
+.check span {
+  display: block;
+}
+
+.q-text {
+  text-wrap: balance;
+}
