@@ -86,7 +86,7 @@ function describe(event: Extract<AskEvent, { kind: "tool" }>): string {
 
 const CHATS_KEY = "chats";
 const OLD_KEY = "chat-turns";   // 대화로 묶기 전에 쓰던 자리
-const CHATS_MAX = 10;
+const CHATS_MAX = 50;
 const TURNS_MAX = 20;
 /** 이어지는 질문에 같이 보내는 앞선 질문의 수 */
 const CONTEXT_TURNS = 4;
@@ -122,9 +122,17 @@ function saveChats(chats: Conversation[], current: string) {
           },
         }));
     const kept = chats.map((chat) => ({ id: chat.id, turns: plainTurns(chat.turns) })).filter((chat) => chat.turns.length > 0).slice(-CHATS_MAX);
-    localStorage.setItem(CHATS_KEY, JSON.stringify({ current, chats: kept }));
+    try {
+      localStorage.setItem(CHATS_KEY, JSON.stringify({ current, chats: kept }));
+    } catch {
+      // 자리가 모자라면 대화는 지우지 않고, 오래된 대화의 그래프만 덜어 낸다 (질문과 답의 글은 남는다)
+      const light = kept.map((chat, i) =>
+        i >= kept.length - 3 ? chat : { ...chat, turns: chat.turns.map((turn) => (turn.result ? { ...turn, result: { ...turn.result, graph: { nodes: [], links: [] } } } : turn)) },
+      );
+      localStorage.setItem(CHATS_KEY, JSON.stringify({ current, chats: light }));
+    }
   } catch {
-    // 저장 공간이 없거나 막혀 있으면 기록 없이 쓴다
+    // 저장이 막혀 있으면 기록 없이 쓴다
   }
 }
 
