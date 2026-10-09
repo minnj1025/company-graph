@@ -1470,27 +1470,27 @@ h1 span {
   line-height: 1.5;
 }
 
-.strip {
+.time-strip {
   width: 100%;
   max-width: 720px;
   display: block;
 }
 
-.strip line {
+.time-strip line {
   stroke: rgba(255, 255, 255, 0.1);
 }
 
-.strip text {
+.time-strip text {
   fill: var(--muted);
   font-size: 11px;
 }
 
-.strip .strip-label {
+.time-strip .strip-label {
   fill: var(--text, #e8edf5);
   font-size: 13px;
 }
 
-.strip circle {
+.time-strip circle {
   opacity: 0.75;
 }
 

@@ -153,7 +153,7 @@ function Strip({ rows }: { rows: [string, number[], string][] }) {
   const ticks = [3, 10, 30, 100, 300];
   const x = (seconds: number) => 110 + ((Math.log10(Math.max(seconds, 2)) - Math.log10(2)) / (Math.log10(400) - Math.log10(2))) * 560;
   return (
-    <svg className="strip" viewBox="0 0 690 118" role="img" aria-label="문항마다 걸린 시간">
+    <svg className="time-strip" viewBox="0 0 690 118" role="img" aria-label="문항마다 걸린 시간">
       {ticks.map((tick) => (
         <g key={tick}>
           <line x1={x(tick)} x2={x(tick)} y1={8} y2={88} />
