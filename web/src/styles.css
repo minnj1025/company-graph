@@ -2897,3 +2897,21 @@ body.resizing .drawer {
   font-style: normal;
   color: var(--muted);
 }
+
+/* 조작(조회 시점, 보기 설정, 최근 공시, 화면 맞추기)은 왼쪽 위 첫 줄에, 뒤로·앞으로와 보는 범위는 그 아랫줄에 */
+.stage-bar .bar-right {
+  order: -1;
+  flex-basis: 100%;
+  margin-left: 0;
+  justify-content: flex-start;
+}
+
+.settings-anchor .settings {
+  left: 0;
+  right: auto;
+}
+
+.settings {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
