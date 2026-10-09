@@ -21,8 +21,11 @@ import SpriteText from "three-spritetext";
 import { LINK_COLORS, nodeColor, PRODUCT_COLOR, TOPIC_COLOR, type ColorBy } from "./colors";
 import type { GraphData, GraphLink, GraphNode } from "./types";
 
-const DIM_NODE = "#273140";
-const DIM_LINK = "#18202b";
+// 기업을 골랐을 때 그 기업과 이어지지 않은 것들. 어둡게 칠하는 대신 비쳐 보이게 해서, 고른 것만 남고 나머지는 배경으로 물러난다
+const DIM = "#6b7890";
+const DIM_NODE_OPACITY = 0.13;
+const DIM_LINK_OPACITY = 0.07;
+const DIM_LINK = `rgba(107, 120, 144, ${DIM_LINK_OPACITY / 0.55})`;   // 라이브러리가 그리는 선은 linkOpacity(0.55)가 곱해진다
 /** 답에 나온 기업의 이름표 바탕. 그래프의 다른 기업과 한눈에 갈리게 한다 */
 export const MENTIONED = "#ffd666";
 const MAX_LABELS = 45;
@@ -63,6 +66,8 @@ const paint = new Color();
 interface Layer {
   data: GraphData;
   balls: InstancedMesh;
+  /** 고른 기업과 이어지지 않아 흐리게 그리는 공. 같은 점이 balls 와 faint 가운데 한쪽에만 그려진다 */
+  faint: InstancedMesh;
   lines?: LineSegments<BufferGeometry, LineBasicMaterial>;
   arrows?: InstancedMesh;
 }
@@ -88,6 +93,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
   const layer = useRef<Layer | null>(null);
   const selected = useRef(selectedId);
   selected.current = selectedId;
+  const litNow = useRef<Set<number> | null>(null);
   const batch = data.links.length > BATCH_LINKS;
   // 처음 자리를 잡을 때만 화면에 그리기 전에 미리 계산한다. 앞선 화면의 위치를 이어받았으면 건너뛰어 멈칫하지 않게 한다
   const warmup = useMemo(() => (data.nodes.filter((n) => n.x === undefined).length * 2 > data.nodes.length ? 80 : 0), [data]);
@@ -177,11 +183,15 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     const made = layer.current;
     if (!made) return;
     made.data.nodes.forEach((node, i) => {
-      if (node.x === undefined) return made.balls.setMatrixAt(i, NOTHING);
+      const bright = litNow.current === null || litNow.current.has(node.id);
+      const [shown, hidden] = bright ? [made.balls, made.faint] : [made.faint, made.balls];
+      hidden.setMatrixAt(i, NOTHING);
+      if (node.x === undefined) return shown.setMatrixAt(i, NOTHING);
       const radius = nodeRadius(node);
-      made.balls.setMatrixAt(i, matrix.makeScale(radius, radius, radius).setPosition(node.x, node.y ?? 0, node.z ?? 0));
+      shown.setMatrixAt(i, matrix.makeScale(radius, radius, radius).setPosition(node.x, node.y ?? 0, node.z ?? 0));
     });
     made.balls.instanceMatrix.needsUpdate = true;
+    made.faint.instanceMatrix.needsUpdate = true;
     const { lines, arrows } = made;
     if (!lines || !arrows) return;
     const at = lines.geometry.getAttribute("position") as BufferAttribute;
@@ -218,17 +228,26 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
   useEffect(() => {
     const scene = graph.current?.scene();
     if (!scene) return;
-    const balls = new InstancedMesh(BALL, new MeshLambertMaterial(), Math.max(data.nodes.length, 1));
+    // 그리는 순서: 흐린 것(공, 선) → 고른 기업의 선과 이름표(라이브러리) → 밝은 공. 흐린 것은 깊이를 적지 않으므로
+    // 밝은 것이 흐린 것 뒤에 있어도 가려지지 않는다. 순서를 지키려면 셋 다 "비치는 물체" 차례에 그려져야 해서 밝은 공도 그렇게 둔다
+    const balls = new InstancedMesh(BALL, new MeshLambertMaterial({ transparent: true }), Math.max(data.nodes.length, 1));
     balls.count = data.nodes.length;
-    const made: Layer = { data, balls };
+    balls.renderOrder = 1;
+    // 비쳐 보이는 공은 깊이를 적지 않는다. 적으면 뒤에 있는 밝은 공을 가린다
+    const faint = new InstancedMesh(BALL, new MeshLambertMaterial({ color: DIM, transparent: true, opacity: DIM_NODE_OPACITY, depthWrite: false }),
+                                    Math.max(data.nodes.length, 1));
+    faint.count = data.nodes.length;
+    faint.renderOrder = -1;
+    const made: Layer = { data, balls, faint };
     if (batch) {
       const shape = new BufferGeometry();
       shape.setAttribute("position", new BufferAttribute(new Float32Array(data.links.length * 6), 3));
       shape.setAttribute("color", new BufferAttribute(new Float32Array(data.links.length * 6), 3));
       made.lines = new LineSegments(shape, new LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.55 }));
+      made.lines.renderOrder = -1;
       made.arrows = new InstancedMesh(CONE, new MeshLambertMaterial(), data.links.length);
     }
-    const parts = [made.balls, made.lines, made.arrows].filter((part) => part !== undefined);
+    const parts = [made.balls, made.faint, made.lines, made.arrows].filter((part) => part !== undefined);
     // 점이 움직여도 물체의 테두리 계산은 처음 것이라, 화면 밖이라고 잘못 걸러지지 않게 한다
     for (const part of parts) part.frustumCulled = false;
     scene.add(...parts);
@@ -238,6 +257,8 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
       scene.remove(...parts);
       balls.material.dispose();
       balls.dispose();
+      faint.material.dispose();
+      faint.dispose();
       made.lines?.geometry.dispose();
       made.lines?.material.dispose();
       (made.arrows?.material as MeshLambertMaterial | undefined)?.dispose();
@@ -248,19 +269,22 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
   useEffect(() => {
     const made = layer.current;
     if (!made) return;
-    made.data.nodes.forEach((node, i) =>
-      made.balls.setColorAt(i, paint.set(lit === null || lit.has(node.id) ? nodeColor(node, colorBy, groups) : DIM_NODE)),
-    );
+    litNow.current = lit;
+    made.data.nodes.forEach((node, i) => made.balls.setColorAt(i, paint.set(nodeColor(node, colorBy, groups))));
     if (made.balls.instanceColor) made.balls.instanceColor.needsUpdate = true;
     const { lines, arrows } = made;
     if (lines && arrows) {
       const colors = lines.geometry.getAttribute("color") as BufferAttribute;
       made.data.links.forEach((link, i) => {
-        paint.set(selectedId === null ? LINK_COLORS[link.type] : DIM_LINK);
+        paint.set(selectedId === null ? LINK_COLORS[link.type] : DIM);
         paint.toArray(colors.array, i * 6);
         paint.toArray(colors.array, i * 6 + 3);
         arrows.setColorAt(i, paint);
       });
+      // 기업을 고르면 묶어 그리는 선은 전부 이어지지 않은 선이다. 아주 옅게 두고 화살표는 뺀다
+      lines.material.opacity = selectedId === null ? 0.55 : DIM_LINK_OPACITY;
+      lines.material.depthWrite = selectedId === null;
+      arrows.visible = selectedId === null;
       colors.needsUpdate = true;
       if (arrows.instanceColor) arrows.instanceColor.needsUpdate = true;
     }
