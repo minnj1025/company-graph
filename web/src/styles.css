@@ -3457,3 +3457,27 @@ input[type="range"] {
 .clear-history:hover {
   color: var(--text);
 }
+
+/* 지난 질문을 누르면 그 질문의 그래프가 뜬다. 지금 떠 있는 질문은 밝은 금으로 표시 */
+button.q {
+  display: block;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+button.q:hover {
+  background: #303137;
+}
+
+.turn .q.shown {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+/* 예시 질문은 한 줄만. 들어가지 않는 것은 보이지 않는다 */
+.examples-row {
+  height: 34px;
+  overflow: hidden;
+}

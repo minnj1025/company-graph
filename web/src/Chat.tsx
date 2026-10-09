@@ -258,7 +258,17 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
       {chat.turns.length === 0 && <p className="empty">아래 입력 칸에 궁금한 것을 적으면 답이 여기에 쌓입니다.</p>}
       {chat.turns.map((turn, i) => (
         <div key={i} className="turn">
-          <div className="q">{turn.question}</div>
+          {turn.result && turn.result.graph.nodes.length > 0 ? (
+            <button
+              className={turn.result === shown ? "q shown" : "q"}
+              onClick={() => onShow(turn.result!)}
+              title="이 질문으로 찾은 그래프를 봅니다"
+            >
+              {turn.question}
+            </button>
+          ) : (
+            <div className="q">{turn.question}</div>
+          )}
           {turn.error && <div className="a error">{turn.error}</div>}
           {turn.result && (
             <div className={turn.result === shown ? "a shown" : "a"}>

@@ -29,6 +29,8 @@ const DIM_LINK = `rgba(107, 120, 144, ${DIM_LINK_OPACITY / 0.55})`;   // 라이�
 /** 답에 나온 기업의 이름표 바탕. 그래프의 다른 기업과 한눈에 갈리게 한다 */
 export const MENTIONED = "#ffd666";
 const MAX_LABELS = 45;
+/** 한꺼번에 그리는 선의 진하기. 선이 수천 개라 옅게 겹쳐야 점이 묻히지 않는다 */
+const LINK_OPACITY = 0.42;
 const REL_SIZE = 4;
 const ARROW = 3;
 /** 선이 이보다 많으면 선과 화살표를 하나로 묶어 그린다. 굵기·흐르는 점·선 설명은 기업을 골랐을 때 그 기업의 선에만 남는다 */
@@ -264,7 +266,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
       const shape = new BufferGeometry();
       shape.setAttribute("position", new BufferAttribute(new Float32Array(data.links.length * 6), 3));
       shape.setAttribute("color", new BufferAttribute(new Float32Array(data.links.length * 6), 3));
-      made.lines = new LineSegments(shape, new LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.55 }));
+      made.lines = new LineSegments(shape, new LineBasicMaterial({ vertexColors: true, transparent: true, opacity: LINK_OPACITY }));
       made.lines.renderOrder = -1;
       made.arrows = new InstancedMesh(CONE, new MeshLambertMaterial(), data.links.length);
     }
@@ -303,7 +305,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
         arrows.setColorAt(i, paint);
       });
       // 기업을 고르면 묶어 그리는 선은 전부 이어지지 않은 선이다. 아주 옅게 두고 화살표는 뺀다
-      lines.material.opacity = selectedId === null ? 0.55 : DIM_LINK_OPACITY;
+      lines.material.opacity = selectedId === null ? LINK_OPACITY : DIM_LINK_OPACITY;
       lines.material.depthWrite = selectedId === null;
       arrows.visible = selectedId === null;
       colors.needsUpdate = true;
