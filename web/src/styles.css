@@ -3404,3 +3404,40 @@ input[type="range"] {
   font-size: 20px;
   font-weight: 600;
 }
+
+/* ---------- 탭(화면이나 칸을 바꾸는 것)은 채운 면 대신 밑줄과 굵은 글자로 ---------- */
+.tabs {
+  gap: 18px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.tabs button,
+.drawer-head button:not(.close) {
+  padding: 8px 2px;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.tabs button:hover,
+.drawer-head button:not(.close):hover {
+  background: none;
+  color: var(--text);
+}
+
+.tabs button.on,
+.drawer-head button.on:not(.close) {
+  border-bottom-color: var(--text);
+  background: none;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.drawer-head {
+  gap: 16px;
+  padding: 2px 10px 0 14px;
+}
