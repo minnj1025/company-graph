@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, type Scope } from "./api";
 import { categoryColors, legend, LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { Cards } from "./Cards";
-import { Chat } from "./Chat";
-import { Controls, NO_FILTER, type Filters } from "./Controls";
+import { ChatLog, Composer, useChat } from "./Chat";
+import { NO_FILTER, Settings, TimeBar, type Filters } from "./Controls";
 import { Graph, shortName } from "./Graph";
 import { Credit, DataPage, QuestionsPage } from "./Pages";
 import { Panel } from "./Panel";
@@ -11,16 +11,9 @@ import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType,
 
 const EMPTY: GraphData = { nodes: [], links: [] };
 
-interface Layout {
-  left: number;
-  side: number;
-  cards: number;
-  leftOpen: boolean;
-  sideOpen: boolean;
-  cardsOpen: boolean;
-}
-const DEFAULT_LAYOUT: Layout = { left: 290, side: 400, cards: 216, leftOpen: true, sideOpen: true, cardsOpen: true };
-const STRIP = 34; // 접은 칸이 차지하는 너비(높이)
+/** 오른쪽에서 밀려 나오는 칸에 무엇을 보일지. 닫혀 있으면 그래프가 화면을 다 쓴다 */
+type Drawer = "answer" | "company" | "feed" | null;
+const DRAWER_TITLES: Record<Exclude<Drawer, null>, string> = { answer: "질문과 답", company: "기업 상세", feed: "최근 공시" };
 
 export function App() {
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -37,45 +30,14 @@ export function App() {
   const [loading, setLoading] = useState(false);
   /** "화면 맞추기"를 누를 때마다 올린다. 그래프가 전체가 보이게 다시 맞춘다 */
   const [refit, setRefit] = useState(0);
-  /** 칸의 크기와 접힘. 가장자리를 끌어 바꾸고, 다음에 와도 그대로 둔다 */
-  const [layout, setLayout] = useState<Layout>(() => {
-    try {
-      return { ...DEFAULT_LAYOUT, ...JSON.parse(localStorage.getItem("layout") ?? "{}") };
-    } catch {
-      return DEFAULT_LAYOUT;
-    }
-  });
-  const change = useCallback((patch: Partial<Layout>) => {
-    setLayout((now) => {
-      const next = { ...now, ...patch };
-      localStorage.setItem("layout", JSON.stringify(next));
-      return next;
-    });
-  }, []);
-  /** 가장자리를 끄는 동안 마우스 위치로 크기를 다시 정한다 */
-  const drag = useCallback(
-    (measure: (e: PointerEvent) => Partial<Layout>, vertical = false) =>
-      (event: React.PointerEvent) => {
-        event.preventDefault();
-        const kind = vertical ? "resizing-row" : "resizing";
-        const move = (e: PointerEvent) => change(measure(e));
-        const stop = () => {
-          window.removeEventListener("pointermove", move);
-          window.removeEventListener("pointerup", stop);
-          document.body.classList.remove(kind);
-        };
-        document.body.classList.add(kind);
-        window.addEventListener("pointermove", move);
-        window.addEventListener("pointerup", stop);
-      },
-    [change],
-  );
-  const clamp = (value: number, low: number, high: number) => Math.round(Math.min(Math.max(value, low), high));
+  const [drawer, setDrawer] = useState<Drawer>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [data, setData] = useState<GraphData>(EMPTY);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<CompanyDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const positions = useRef(new Map<number, { x: number; y: number; z: number }>());
+  const chat = useChat(setFound);
 
   useEffect(() => {
     fetchMeta()
@@ -162,25 +124,34 @@ export function App() {
     setFilters(NO_FILTER);
     setSelectedId(null);
   }, []);
-  // Esc: 열려 있는 기업 상세를 먼저 닫고, 없으면 전체 그래프로 돌아간다
+  const closeDrawer = useCallback(() => {
+    setDrawer(null);
+    setSelectedId(null);
+  }, []);
+  // Esc: 펼친 설정, 오른쪽 칸, 고른 기업 순으로 닫고, 다 닫혀 있으면 전체 그래프로 돌아간다
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || tab !== "graph") return;
       const target = event.target as HTMLElement | null;
       if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
-      if (selectedId !== null) setSelectedId(null);
+      if (settingsOpen) setSettingsOpen(false);
+      else if (drawer !== null) closeDrawer();
+      else if (selectedId !== null) setSelectedId(null);
       else if (narrowed) backToAll();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selectedId, narrowed, backToAll, tab]);
-  const onSelect = useCallback(
-    (node: GraphNode | null) => {
-      setSelectedId(node ? node.id : null);
-      if (node && !node.kind) change({ sideOpen: true });
-    },
-    [change],
-  );
+  }, [selectedId, narrowed, backToAll, tab, drawer, settingsOpen, closeDrawer]);
+  const openCompany = useCallback((id: number) => {
+    setSelectedId(id);
+    setDrawer("company");
+  }, []);
+  const onSelect = useCallback((node: GraphNode | null) => {
+    setSelectedId(node ? node.id : null);
+    // 낱말 점과 제품 점은 기업이 아니라서 상세를 열지 않고, 이어진 기업만 밝힌다
+    if (node && !node.kind) setDrawer("company");
+    else setDrawer((now) => (now === "company" ? null : now));
+  }, []);
   const drawnTypes = useMemo(() => {
     const present = new Set<LinkType>(shownData.links.map((link) => link.type));
     return (Object.keys(LINK_LABELS) as LinkType[]).filter((type) => present.has(type));
@@ -196,6 +167,12 @@ export function App() {
           : scope.split(":")[1];
 
   if (!meta || !asOf) return <div className="loading">{error ?? "불러오는 중…"}</div>;
+
+  const companies = shownData.nodes.filter((node) => !node.kind).length;
+  const products = shownData.nodes.filter((node) => node.kind === "product").length;
+  const drawerTabs = (["answer", "company", "feed"] as const).filter(
+    (kind) => kind === "feed" || kind === drawer || (kind === "answer" ? chat.turns.length > 0 : detail !== null),
+  );
 
   return (
     <div className="app">
@@ -219,66 +196,7 @@ export function App() {
         </div>
       </header>
 
-      <main
-        className="work"
-        style={{
-          gridTemplateColumns: `${layout.leftOpen ? layout.left : STRIP}px minmax(0, 1fr) ${layout.sideOpen ? layout.side : STRIP}px`,
-          gridTemplateRows: `minmax(0, 1fr) ${layout.cardsOpen ? layout.cards : STRIP}px`,
-        }}
-      >
-        <aside className={layout.leftOpen ? "leftcol" : "leftcol folded"}>
-          {layout.leftOpen ? (
-            <>
-              <div className="col-head">
-                <b>조건</b>
-                <span>
-                  {scopeLabel} · {asOf}
-                </span>
-                <button onClick={() => change({ leftOpen: false })} title="이 칸 접기">
-                  접기
-                </button>
-              </div>
-              <div className="col-body">
-                <Controls
-                  firstDate={meta.first_date}
-                  lastDate={meta.last_date}
-                  asOf={asOf}
-                  onAsOf={setAsOf}
-                  types={types}
-                  onTypes={setTypes}
-                  colorBy={colorBy}
-                  onColorBy={setColorBy}
-                  centerName={center ? shortName(center.name) : null}
-                  hops={hops}
-                  onHops={setHops}
-                  onOverview={() => setCenter(null)}
-                  scope={scope}
-                  categories={meta.categories}
-                  onScope={setScope}
-                  filters={filters}
-                  onFilters={setFilters}
-                  shown={{ nodes: filtered.nodes.length, links: filtered.links.length }}
-                  onPick={(company) => {
-                    setFound(null);
-                    setCenter(company);
-                    setSelectedId(company.id);
-                  }}
-                />
-              </div>
-              <div
-                className="grip grip-right"
-                onPointerDown={drag((e) => ({ left: clamp(e.clientX - 10, 230, 460) }))}
-                onDoubleClick={() => change({ left: DEFAULT_LAYOUT.left })}
-                title="끌어서 너비 바꾸기 (두 번 누르면 처음 크기)"
-              />
-            </>
-          ) : (
-            <button className="strip" onClick={() => change({ leftOpen: true })} title="조건 칸 펼치기">
-              조건
-            </button>
-          )}
-        </aside>
-
+      <main className={drawer ? "explore open" : "explore"}>
         <section className="stage">
           <Graph
             data={shownData}
@@ -289,21 +207,82 @@ export function App() {
             fitKey={`${found ? `ask-${found.question}` : `${center?.id ?? scope}-${hops}`}-${refit}`}
           />
 
-          <div className="stage-bar">
-            <div className={narrowed ? "crumb narrowed" : "crumb"}>
-              <em>{found ? "질문으로 찾은 것" : center ? "한 기업 중심" : filtering ? "솎아 보는 중" : "보는 범위"}</em>
-              <b>{found ? found.question : scopeLabel}</b>
-              {!found && filtering && center && <em>· 솎아 보는 중</em>}
-            </div>
-            {narrowed && (
-              <button className="primary" onClick={backToAll} title="질문 결과, 한 기업 중심 보기, 솎아 보기를 모두 풀고 전체 그래프로 돌아갑니다 (Esc)">
-                ← 전체 그래프로
+          <div className="stage-top">
+            <div className="stage-bar">
+              <div className={narrowed ? "crumb narrowed" : "crumb"}>
+                <em>{found ? "질문으로 찾은 것" : center ? "한 기업 중심" : filtering ? "솎아 보는 중" : "보는 범위"}</em>
+                <b>{found ? found.question : scopeLabel}</b>
+                {!found && filtering && center && <em>· 솎아 보는 중</em>}
+              </div>
+              {narrowed && (
+                <button className="primary" onClick={backToAll} title="질문 결과, 한 기업 중심 보기, 솎아 보기를 모두 풀고 전체 그래프로 돌아갑니다 (Esc)">
+                  ← 전체 그래프로
+                </button>
+              )}
+              <span className="spacer" />
+              <TimeBar firstDate={meta.first_date} lastDate={meta.last_date} asOf={asOf} onAsOf={setAsOf} />
+              <div className="settings-anchor">
+                <button
+                  className={settingsOpen ? "on" : ""}
+                  onClick={() => setSettingsOpen(!settingsOpen)}
+                  aria-expanded={settingsOpen}
+                  title="관계 종류, 솎아 보기, 보는 범위, 점 색"
+                >
+                  보기 설정 {settingsOpen ? "▴" : "▾"}
+                </button>
+                {settingsOpen && (
+                  <div className="settings">
+                    <Settings
+                      firstDate={meta.first_date}
+                      lastDate={meta.last_date}
+                      asOf={asOf}
+                      onAsOf={setAsOf}
+                      types={types}
+                      onTypes={setTypes}
+                      colorBy={colorBy}
+                      onColorBy={setColorBy}
+                      centerName={center ? shortName(center.name) : null}
+                      hops={hops}
+                      onHops={setHops}
+                      onOverview={() => setCenter(null)}
+                      scope={scope}
+                      categories={meta.categories}
+                      onScope={setScope}
+                      filters={filters}
+                      onFilters={setFilters}
+                      shown={{ nodes: filtered.nodes.length, links: filtered.links.length }}
+                    />
+                  </div>
+                )}
+              </div>
+              <button className={drawer === "feed" ? "on" : ""} onClick={() => setDrawer(drawer === "feed" ? null : "feed")}>
+                최근 공시
               </button>
-            )}
-            <span className="spacer" />
-            <button onClick={() => setRefit((n) => n + 1)} title="그래프 전체가 보이게 화면을 다시 맞춥니다">
-              화면 맞추기
-            </button>
+              <button onClick={() => setRefit((n) => n + 1)} title="그래프 전체가 보이게 화면을 다시 맞춥니다">
+                화면 맞추기
+              </button>
+            </div>
+            <div className="legend">
+              <div>
+                {drawnTypes.map((type) => (
+                  <span key={type}>
+                    <i className="line" style={{ background: LINK_COLORS[type] }} />
+                    {LINK_LABELS[type]}
+                  </span>
+                ))}
+              </div>
+              <div>
+                {legend(colorBy, groups).map(([name, color]) => (
+                  <span key={name}>
+                    <i className="dot" style={{ background: color }} />
+                    {name}
+                  </span>
+                ))}
+              </div>
+              <div className="stat">
+                기업 {companies}곳{products > 0 && ` · 제품 ${products}개`} · 선 {shownData.links.length}개
+              </div>
+            </div>
           </div>
           {loading && !found && <div className="busy">그래프를 불러오는 중…</div>}
           {!loading && shownData.nodes.length === 0 && (
@@ -318,87 +297,53 @@ export function App() {
             </div>
           )}
 
-          <div className="legend">
-            <div>
-              {drawnTypes.map((type) => (
-                <span key={type}>
-                  <i className="line" style={{ background: LINK_COLORS[type] }} />
-                  {LINK_LABELS[type]}
-                </span>
-              ))}
-            </div>
-            <div>
-              {legend(colorBy, groups).map(([name, color]) => (
-                <span key={name}>
-                  <i className="dot" style={{ background: color }} />
-                  {name}
-                </span>
-              ))}
-            </div>
-            <div className="stat">
-              기업 {shownData.nodes.filter((node) => !node.kind).length}곳
-              {shownData.nodes.some((node) => node.kind === "product") && ` · 제품 ${shownData.nodes.filter((node) => node.kind === "product").length}개`} · 선{" "}
-              {shownData.links.length}개 · 점을 끌어 옮기면 그 자리에 고정됩니다
-            </div>
-          </div>
           {error && <div className="toast">{error}</div>}
+
+          <Composer
+            chat={chat}
+            examples={chat.turns.length === 0 && drawer === null}
+            onAsk={() => setDrawer("answer")}
+            onPick={(company: Company) => {
+              setFound(null);
+              setCenter(company);
+              openCompany(company.id);
+            }}
+          />
         </section>
 
-        <div className={layout.cardsOpen ? "cards-wrap" : "cards-wrap folded"}>
-          {layout.cardsOpen ? (
-            <>
-              <div
-                className="grip grip-top"
-                onPointerDown={drag((e) => ({ cards: clamp(window.innerHeight - e.clientY - 34, 120, window.innerHeight * 0.55) }), true)}
-                onDoubleClick={() => change({ cards: DEFAULT_LAYOUT.cards })}
-                title="끌어서 높이 바꾸기 (두 번 누르면 처음 크기)"
-              />
-              <button className="fold-cards" onClick={() => change({ cardsOpen: false })} title="아래 칸 접기">
-                접기
-              </button>
-              <Cards asOf={asOf} data={shownData} scopeLabel={scopeLabel} onOpen={setSelectedId} />
-            </>
-          ) : (
-            <button className="strip wide" onClick={() => change({ cardsOpen: true })} title="아래 칸 펼치기">
-              최근 공시 · 최근에 바뀐 것 · 연결이 많은 기업
-            </button>
-          )}
-        </div>
-
-        <aside className={layout.sideOpen ? "side" : "side folded"}>
-          {!layout.sideOpen && (
-            <button className="strip" onClick={() => change({ sideOpen: true })} title="질문 칸 펼치기">
-              {detail ? "기업 상세" : "질문하기"}
-            </button>
-          )}
-          <div
-            className="grip grip-left"
-            onPointerDown={drag((e) => ({ side: clamp(window.innerWidth - e.clientX - 10, 320, window.innerWidth * 0.6) }))}
-            onDoubleClick={() => change({ side: DEFAULT_LAYOUT.side })}
-            title="끌어서 너비 바꾸기 (두 번 누르면 처음 크기)"
-          />
-          <div className={detail ? "side-pane hidden" : "side-pane"}>
-            <div className="side-head">
-              <b>질문하기</b>
-              <span>Agent가 공시 DB를 조회해 답합니다</span>
-              <button onClick={() => change({ sideOpen: false })} title="이 칸 접기">
-                접기
+        <aside className="drawer" aria-hidden={drawer === null}>
+          <div className="drawer-inner">
+            <div className="drawer-head">
+              {drawerTabs.map((kind) => (
+                <button key={kind} className={drawer === kind ? "on" : ""} onClick={() => setDrawer(kind)}>
+                  {DRAWER_TITLES[kind]}
+                </button>
+              ))}
+              <span className="spacer" />
+              <button className="close" onClick={closeDrawer} title="이 칸을 닫고 그래프를 넓게 봅니다 (Esc)" aria-label="닫기">
+                ×
               </button>
             </div>
-            <Chat shown={found} onShow={setFound} />
+            {drawer === "answer" && <ChatLog chat={chat} shown={found} onShow={setFound} />}
+            {drawer === "company" &&
+              (detail ? (
+                <Panel
+                  detail={detail}
+                  onOpen={openCompany}
+                  onCenter={(id) => {
+                    const node = shownData.nodes.find((n) => n.id === id) ?? detail.company;
+                    setFound(null);
+                    setCenter(node);
+                  }}
+                  onClose={closeDrawer}
+                />
+              ) : (
+                <p className="empty drawer-note">
+                  {selectedId === null ? "그래프에서 기업을 누르거나 아래 입력 칸에서 찾으면 여기에 나옵니다." : "불러오는 중…"}
+                </p>
+              ))}
+            {drawer === "feed" && <Cards asOf={asOf} data={shownData} scopeLabel={scopeLabel} onOpen={openCompany} />}
           </div>
-          {detail && (
-            <Panel
-              detail={detail}
-              onOpen={setSelectedId}
-              onCenter={(id) => {
-                const node = shownData.nodes.find((n) => n.id === id) ?? detail.company;
-                setFound(null);
-                setCenter(node);
-              }}
-              onClose={() => setSelectedId(null)}
-            />
-          )}
         </aside>
       </main>
       <Credit />

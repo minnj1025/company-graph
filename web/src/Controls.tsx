@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { searchCompanies, type Scope } from "./api";
+import type { Scope } from "./api";
 import { LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
-import { shortName } from "./Graph";
-import type { Company, Meta, RelType } from "./types";
+import type { Meta, RelType } from "./types";
 
 const ALL_TYPES: RelType[] = ["equity", "supply_contract", "stake_acquisition", "stake_disposal", "affiliate", "product"];
 
@@ -34,11 +33,84 @@ function monthEnds(first: string, last: string): string[] {
   return dates;
 }
 
-interface Props {
+/** 자주 쓰는 날짜: 연말들과 가장 최근 */
+function quickDates(first: string, last: string): [string, string][] {
+  const dates: [string, string][] = [];
+  for (let year = Number(first.slice(0, 4)); year < Number(last.slice(0, 4)); year++) {
+    const end = `${year}-12-31`;
+    if (end >= first) dates.push([`${year}년 말`, end]);
+  }
+  dates.push(["최근", last]);
+  return dates.slice(-4);
+}
+
+interface TimeProps {
   firstDate: string;
   lastDate: string;
   asOf: string;
   onAsOf: (date: string) => void;
+}
+
+/** 그래프 위에 작게 두는 조회 시점: 재생, 달 단위로 옮기기, 날짜 고르기 */
+export function TimeBar({ firstDate, lastDate, asOf, onAsOf }: TimeProps) {
+  const [playing, setPlaying] = useState(false);
+  const months = useMemo(() => monthEnds(firstDate, lastDate), [firstDate, lastDate]);
+  const index = Math.max(0, months.findLastIndex((m) => m <= asOf));
+
+  // 과거 날짜 재생: 한 달씩 앞으로
+  useEffect(() => {
+    if (!playing) return;
+    if (index >= months.length - 1) {
+      setPlaying(false);
+      return;
+    }
+    const timer = setTimeout(() => onAsOf(months[index + 1]), 1400);
+    return () => clearTimeout(timer);
+  }, [playing, index, months, onAsOf]);
+
+  return (
+    <div className="timebar" title="그날까지 공시로 알려진 관계만 보입니다">
+      <span>조회 시점</span>
+      <button
+        className="icon"
+        onClick={() => {
+          if (!playing && index >= months.length - 1) onAsOf(months[0]);
+          setPlaying(!playing);
+        }}
+        aria-label={playing ? "멈춤" : "재생"}
+      >
+        {playing ? "❚❚" : "▶"}
+      </button>
+      <input
+        type="range"
+        min={0}
+        max={months.length - 1}
+        value={index}
+        onChange={(e) => {
+          setPlaying(false);
+          onAsOf(months[Number(e.target.value)]);
+        }}
+        aria-label="조회 시점"
+      />
+      <input
+        type="date"
+        className="date"
+        value={asOf}
+        min={firstDate}
+        max={lastDate}
+        onChange={(e) => {
+          if (e.target.value >= firstDate && e.target.value <= lastDate) {
+            setPlaying(false);
+            onAsOf(e.target.value);
+          }
+        }}
+        aria-label="조회 시점을 날짜로 고르기"
+      />
+    </div>
+  );
+}
+
+interface Props extends TimeProps {
   types: RelType[];
   onTypes: (types: RelType[]) => void;
   colorBy: ColorBy;
@@ -50,22 +122,10 @@ interface Props {
   hops: number;
   onHops: (hops: number) => void;
   onOverview: () => void;
-  onPick: (company: Company) => void;
   filters: Filters;
   onFilters: (filters: Filters) => void;
   /** 지금 그려진 기업과 선의 수 (조건을 건 뒤) */
   shown: { nodes: number; links: number };
-}
-
-/** 자주 쓰는 날짜: 연말들과 가장 최근 */
-function quickDates(first: string, last: string): [string, string][] {
-  const dates: [string, string][] = [];
-  for (let year = Number(first.slice(0, 4)); year < Number(last.slice(0, 4)); year++) {
-    const end = `${year}-12-31`;
-    if (end >= first) dates.push([`${year}년 말`, end]);
-  }
-  dates.push(["최근", last]);
-  return dates.slice(-4);
 }
 
 function Steps({ label, steps, value, onChange }: { label: string; steps: [number, string][]; value: number; onChange: (value: number) => void }) {
@@ -83,186 +143,13 @@ function Steps({ label, steps, value, onChange }: { label: string; steps: [numbe
   );
 }
 
-export function Controls(props: Props) {
+/** 그래프 위의 "보기 설정"을 펼치면 나오는 칸: 관계, 솎아 보기, 보는 범위, 자주 쓰는 날짜, 점 색 */
+export function Settings(props: Props) {
   const { firstDate, lastDate, asOf, onAsOf, types, onTypes } = props;
-  const [text, setText] = useState("");
-  const [results, setResults] = useState<Company[]>([]);
-  const [playing, setPlaying] = useState(false);
-  const months = useMemo(() => monthEnds(firstDate, lastDate), [firstDate, lastDate]);
-  const index = Math.max(0, months.findLastIndex((m) => m <= asOf));
-
-  useEffect(() => {
-    if (text.trim().length < 1) {
-      setResults([]);
-      return;
-    }
-    const timer = setTimeout(() => searchCompanies(text.trim()).then(setResults).catch(() => setResults([])), 200);
-    return () => clearTimeout(timer);
-  }, [text]);
-
-  // 과거 날짜 재생: 한 달씩 앞으로
-  useEffect(() => {
-    if (!playing) return;
-    if (index >= months.length - 1) {
-      setPlaying(false);
-      return;
-    }
-    const timer = setTimeout(() => onAsOf(months[index + 1]), 1400);
-    return () => clearTimeout(timer);
-  }, [playing, index, months, onAsOf]);
-
-  const toggle = (type: RelType) =>
-    onTypes(types.includes(type) ? types.filter((t) => t !== type) : [...types, type]);
+  const toggle = (type: RelType) => onTypes(types.includes(type) ? types.filter((t) => t !== type) : [...types, type]);
 
   return (
     <div className="controls">
-      <div className="search">
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="기업 이름 또는 종목코드"
-          aria-label="기업 검색"
-        />
-        {results.length > 0 && (
-          <ul className="results">
-            {results.map((company) => (
-              <li key={company.id}>
-                <button
-                  onClick={() => {
-                    props.onPick(company);
-                    setText("");
-                    setResults([]);
-                  }}
-                >
-                  <span>{shortName(company.name)}</span>
-                  <span className="sub">
-                    {company.stock_code ?? "비상장"}
-                    {company.group ? ` · ${company.group}` : ""}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      <div className="block">
-        <div className="block-head">
-          <span>보는 범위</span>
-        </div>
-        {props.centerName === null ? (
-          <>
-            <select className="scope-select" value={props.scope} onChange={(e) => props.onScope(e.target.value)}>
-              <option value="listed">상장사 전체</option>
-              <optgroup label="시장">
-                {props.categories.market.map((c) => (
-                  <option key={c.name} value={`market:${c.name}`}>
-                    {c.name} ({c.count})
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="업종">
-                {props.categories.sector.map((c) => (
-                  <option key={c.name} value={`sector:${c.name}`}>
-                    {c.name} ({c.count})
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="기업집단">
-                {props.categories.group.map((c) => (
-                  <option key={c.name} value={`group:${c.name}`}>
-                    {c.name} ({c.count})
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="기타">
-                <option value="focus">자동차 가치사슬 (처음 수집한 범위)</option>
-              </optgroup>
-            </select>
-            <p className="hint">
-              {props.scope === "listed" || props.scope.startsWith("market:")
-                ? "상장사끼리의 관계만 그립니다. 비상장사와의 관계는 기업을 검색하거나 점을 눌러 한 기업 중심으로 보면 나옵니다."
-                : "고른 분류의 기업과, 그 기업들이 관계를 맺은 상대까지 그립니다. 괄호 안은 상장사 수입니다."}
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="scope">
-              <strong>{props.centerName}</strong> 중심
-            </p>
-            <div className="chips">
-              {[1, 2].map((n) => (
-                <button key={n} className={props.hops === n ? "chip on" : "chip"} onClick={() => props.onHops(n)}>
-                  {n}단계
-                </button>
-              ))}
-              <button className="chip" onClick={props.onOverview}>
-                전체로 돌아가기
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="block">
-        <div className="block-head">
-          <span>조회 시점</span>
-          <strong>{asOf}</strong>
-        </div>
-        <div className="timeline">
-          <button
-            className="icon"
-            onClick={() => {
-              if (!playing && index >= months.length - 1) onAsOf(months[0]);
-              setPlaying(!playing);
-            }}
-            aria-label={playing ? "멈춤" : "재생"}
-          >
-            {playing ? "❚❚" : "▶"}
-          </button>
-          <input
-            type="range"
-            min={0}
-            max={months.length - 1}
-            value={index}
-            onChange={(e) => {
-              setPlaying(false);
-              onAsOf(months[Number(e.target.value)]);
-            }}
-            aria-label="조회 시점"
-          />
-        </div>
-        <div className="chips">
-          {quickDates(firstDate, lastDate).map(([label, value]) => (
-            <button
-              key={label}
-              className={asOf === value ? "chip on" : "chip"}
-              onClick={() => {
-                setPlaying(false);
-                onAsOf(value);
-              }}
-            >
-              {label}
-            </button>
-          ))}
-          <input
-            type="date"
-            className="date"
-            value={asOf}
-            min={firstDate}
-            max={lastDate}
-            onChange={(e) => {
-              if (e.target.value >= firstDate && e.target.value <= lastDate) {
-                setPlaying(false);
-                onAsOf(e.target.value);
-              }
-            }}
-            aria-label="조회 시점을 날짜로 고르기"
-          />
-        </div>
-        <p className="hint">그날까지 공시로 알려진 관계만 보입니다.</p>
-      </div>
-
       <div className="block">
         <div className="block-head">
           <span>관계</span>
@@ -320,6 +207,78 @@ export function Controls(props: Props) {
 
       <div className="block">
         <div className="block-head">
+          <span>보는 범위</span>
+        </div>
+        {props.centerName === null ? (
+          <>
+            <select className="scope-select" value={props.scope} onChange={(e) => props.onScope(e.target.value)}>
+              <option value="listed">상장사 전체</option>
+              <optgroup label="시장">
+                {props.categories.market.map((c) => (
+                  <option key={c.name} value={`market:${c.name}`}>
+                    {c.name} ({c.count})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="업종">
+                {props.categories.sector.map((c) => (
+                  <option key={c.name} value={`sector:${c.name}`}>
+                    {c.name} ({c.count})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="기업집단">
+                {props.categories.group.map((c) => (
+                  <option key={c.name} value={`group:${c.name}`}>
+                    {c.name} ({c.count})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="기타">
+                <option value="focus">자동차 가치사슬 (처음 수집한 범위)</option>
+              </optgroup>
+            </select>
+            <p className="hint">
+              {props.scope === "listed" || props.scope.startsWith("market:")
+                ? "상장사끼리의 관계만 그립니다. 비상장사와의 관계는 아래 입력 칸에서 기업을 찾거나 점을 눌러 한 기업 중심으로 보면 나옵니다."
+                : "고른 분류의 기업과, 그 기업들이 관계를 맺은 상대까지 그립니다. 괄호 안은 상장사 수입니다."}
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="scope">
+              <strong>{props.centerName}</strong> 중심
+            </p>
+            <div className="chips">
+              {[1, 2].map((n) => (
+                <button key={n} className={props.hops === n ? "chip on" : "chip"} onClick={() => props.onHops(n)}>
+                  {n}단계
+                </button>
+              ))}
+              <button className="chip" onClick={props.onOverview}>
+                전체로 돌아가기
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="block">
+        <div className="block-head">
+          <span>자주 쓰는 날짜</span>
+          <strong>{asOf}</strong>
+        </div>
+        <div className="chips">
+          {quickDates(firstDate, lastDate).map(([label, value]) => (
+            <button key={label} className={asOf === value ? "chip on" : "chip"} onClick={() => onAsOf(value)}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="block">
+        <div className="block-head">
           <span>점 색</span>
         </div>
         <div className="chips">
@@ -331,7 +290,6 @@ export function Controls(props: Props) {
           </button>
         </div>
       </div>
-
     </div>
   );
 }
