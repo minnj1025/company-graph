@@ -4,6 +4,7 @@
 대상 DB의 같은 표는 비우고 다시 채운다. 다만 대상에서 날마다 채워지는 표(함께 오른 무리, 그 계산에 쓰는 최근 시세)는 비우지 않고 없는 날만 채운다. 대상 주소는 환경 변수 TARGET_DB_URL 로 준다 (명령줄에 적으면 기록에 남는다).
 
 실행: TARGET_DB_URL=postgresql+psycopg://... python -m company_graph.export_db
+      python -m company_graph.export_db daily   (함께 오른 종목군 결과와 최근 시세만 맞춘다)
 """
 import os
 import sys
@@ -26,8 +27,10 @@ def fill_missing_days(source, target):
         day = table.c.trade_date
         Base.metadata.create_all(target, tables=[table])
         with source.connect() as read, target.begin() as write:
-            have = set(write.execute(select(day).distinct()).scalars())
             query = select(table)
+            if not recent:   # 계산 결과는 원본에 있는 날이면 원본 것으로 바꾼다 (계산을 고쳐 다시 넣었을 수 있다). 대상에만 있는 날은 그대로 둔다
+                write.execute(table.delete().where(day.in_(list(read.execute(select(day)).scalars()))))
+            have = set(write.execute(select(day).distinct()).scalars())
             if recent:
                 query = query.where(day >= read.execute(select(func.max(day))).scalar() - timedelta(days=recent))
             rows = [dict(row) for row in read.execute(query).mappings() if row["trade_date"] not in have]
@@ -41,6 +44,8 @@ def main():
     if not target_url:
         sys.exit("환경 변수 TARGET_DB_URL 이 없습니다")
     source, target = get_engine(), create_engine(target_url)
+    if sys.argv[1:] == ["daily"]:   # 날마다 채워지는 표만 맞춘다. 다른 표는 건드리지 않아 사이트가 비지 않는다
+        return fill_missing_days(source, target)
     wanted = [model.__table__ for model in TABLES]
     Base.metadata.drop_all(target, tables=list(reversed(wanted)))
     Base.metadata.create_all(target, tables=wanted)

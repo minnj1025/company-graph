@@ -248,12 +248,14 @@ export interface HotGroup {
   n: number;
   of: number;
   members: { id: number; name: string; change: number }[];
+  /** 앞 거래일부터 며칠째 이어졌는지. 처음이면 1 */
+  streak?: number;
 }
 
 export interface HotDay {
   day: string;
-  /** 계산해 둔 거래일 전부. 최근 것부터 */
-  days: string[];
+  /** 계산해 둔 거래일 전부. 최근 것부터. strong, weak 는 그날 잡힌 종목군의 수 */
+  days: { day: string; market: number; strong: number; weak: number }[];
   market: number;
   watched: number;
   hot: number;

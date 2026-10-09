@@ -579,12 +579,14 @@ FEED_TYPES = ("supply_contract", "supply_termination", "stake_acquisition", "sta
 
 @app.get("/api/hot")
 def hot(day: date | None = None, db=Depends(get_db)):
-    """그날 함께 오른 무리 (hot.py 가 계산해 둔 것). day 가 없으면 가장 최근 날."""
-    stored = [d for d in db.scalars(select(HotDay.trade_date).order_by(HotDay.trade_date.desc()).limit(260))]
-    if not stored:
+    """그날 함께 오른 종목군 (hot.py 가 계산해 둔 것). day 가 없으면 가장 최근 날. days 는 날짜를 고르는 띠에 쓴다."""
+    rows = list(db.scalars(select(HotDay).order_by(HotDay.trade_date.desc()).limit(260)))
+    if not rows:
         raise HTTPException(404, "아직 계산한 날이 없습니다")
-    row = db.get(HotDay, day if day in stored else stored[0])
-    return {**row.payload, "days": [d.isoformat() for d in stored]}
+    row = next((r for r in rows if r.trade_date == day), rows[0])
+    return {**row.payload, "days": [{"day": r.trade_date.isoformat(), "market": r.payload["market"],
+                                     "strong": sum(1 for g in r.payload["groups"] if g["grade"] == "뚜렷함"),
+                                     "weak": sum(1 for g in r.payload["groups"] if g["grade"] != "뚜렷함")} for r in rows]}
 
 
 @app.get("/api/hot/graph")

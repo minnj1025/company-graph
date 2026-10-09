@@ -183,10 +183,17 @@ def day_result(days: list[date], prices: dict, k: int, links: Links) -> dict:
 def store(db, days: list[date], prices: dict, links: Links, start: date, end: date) -> int:
     """기간의 날마다 결과를 hot_day 에 넣는다. 혼자 오른 곳에는 그 무렵에 나온 공시를 붙인다."""
     count = 0
+    before = db.scalar(select(HotDay).where(HotDay.trade_date < start).order_by(HotDay.trade_date.desc()).limit(1))
+    previous = before.payload["groups"] if before and days.index(before.trade_date) + 1 < len(days) and days[days.index(before.trade_date) + 1] >= start else []
     for k, day in enumerate(days):
         if k < LIQUID_DAYS or not start <= day <= end:
             continue
         result = day_result(days, prices, k, links)
+        for group in result["groups"]:   # 앞 거래일에도 절반 이상 같은 구성으로 올랐으면 이어진 것으로 센다
+            ids = {member["id"] for member in group["members"]}
+            same = [g for g in previous if len(ids & {m["id"] for m in g["members"]}) * 2 >= len(ids)]
+            group["streak"] = 1 + max((g.get("streak", 1) for g in same), default=0)
+        previous = result["groups"]
         result["alone_total"] = len(result["alone"])
         result["alone"] = result["alone"][:ALONE_SHOWN]
         filings = collections.defaultdict(list)

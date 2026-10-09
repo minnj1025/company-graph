@@ -332,7 +332,7 @@ export function App() {
             탐색
           </button>
           <button className={tab === "hot" ? "on" : ""} onClick={() => setTab("hot")}>
-            함께 오른 무리
+            동반 상승
           </button>
           <button className={tab === "data" ? "on" : ""} onClick={() => setTab("data")}>
             데이터와 검증
