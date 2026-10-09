@@ -5,6 +5,7 @@ import { Cards } from "./Cards";
 import { ChatLog, Composer, useChat } from "./Chat";
 import { LevelList, NO_FILTER, Settings, TimeBar, type Filters } from "./Controls";
 import { Graph, MENTIONED, shortName } from "./Graph";
+import { HotPage } from "./Hot";
 import { Credit, DataPage, QuestionsPage } from "./Pages";
 import { Panel } from "./Panel";
 import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType, Suggestion, Taxonomy } from "./types";
@@ -46,7 +47,7 @@ export function App() {
   const [colorBy, setColorBy] = useState<ColorBy>("group");
   const [views, setViews] = useState<{ list: View[]; at: number }>({ list: [HOME], at: 0 });
   const { center, hops, scope, found, selected: selectedId } = views.list[views.at];
-  const [tab, setTab] = useState<"graph" | "data" | "agent">("graph");
+  const [tab, setTab] = useState<"graph" | "hot" | "data" | "agent">("graph");
   const [filters, setFilters] = useState<Filters>(NO_FILTER);
   const [loading, setLoading] = useState(false);
   /** "화면 맞추기"를 누를 때마다 올린다. 그래프가 전체가 보이게 다시 맞춘다 */
@@ -330,6 +331,9 @@ export function App() {
           <button className={tab === "graph" ? "on" : ""} onClick={() => setTab("graph")}>
             탐색
           </button>
+          <button className={tab === "hot" ? "on" : ""} onClick={() => setTab("hot")}>
+            함께 오른 무리
+          </button>
           <button className={tab === "data" ? "on" : ""} onClick={() => setTab("data")}>
             데이터와 검증
           </button>
@@ -564,7 +568,23 @@ export function App() {
       </main>
       <Credit />
 
-      {tab !== "graph" && <div className="overlay">{tab === "data" ? <DataPage meta={meta} /> : <QuestionsPage />}</div>}
+      {tab !== "graph" && (
+        <div className="overlay">
+          {tab === "hot" ? (
+            <HotPage
+              onShow={(title, graph) => {
+                seed(graph);
+                go({ found: { question: title, graph, picked: true } });
+                setTab("graph");
+              }}
+            />
+          ) : tab === "data" ? (
+            <DataPage meta={meta} />
+          ) : (
+            <QuestionsPage />
+          )}
+        </div>
+      )}
     </div>
   );
 }

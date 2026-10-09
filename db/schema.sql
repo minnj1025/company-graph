@@ -89,6 +89,13 @@ CREATE TABLE price_daily (
   KEY ix_price_date (trade_date)
 );
 
+-- 하루 치의 "함께 오른 무리" 계산 결과. 화면은 시세가 아니라 이 표만 읽는다
+CREATE TABLE hot_day (
+  trade_date  DATE PRIMARY KEY,
+  payload     JSON NOT NULL,
+  computed_at DATETIME NOT NULL
+);
+
 -- 품질 게이트에 걸린 건. 건수를 품질 지표로 쓴다
 CREATE TABLE quality_log (
   log_id     BIGINT AUTO_INCREMENT PRIMARY KEY,

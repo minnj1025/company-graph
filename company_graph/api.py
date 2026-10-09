@@ -20,7 +20,7 @@ from sqlalchemy import func, or_, select
 
 from . import ksic, query
 from .display_names import group_key, group_label
-from .db import AskLog, Base, BusinessSection, Company, Document, Product, ProductCode, Relation, get_engine, session
+from .db import AskLog, Base, BusinessSection, Company, Document, HotDay, Product, ProductCode, Relation, get_engine, session
 from .product_families import FAMILY_FIELD
 from .stages import sector, stage
 
@@ -575,6 +575,40 @@ def company(company_id: int, as_of: date, db=Depends(get_db)):
 
 _insight_cache: dict = {}
 FEED_TYPES = ("supply_contract", "supply_termination", "stake_acquisition", "stake_disposal")
+
+
+@app.get("/api/hot")
+def hot(day: date | None = None, db=Depends(get_db)):
+    """그날 함께 오른 무리 (hot.py 가 계산해 둔 것). day 가 없으면 가장 최근 날."""
+    stored = [d for d in db.scalars(select(HotDay.trade_date).order_by(HotDay.trade_date.desc()).limit(260))]
+    if not stored:
+        raise HTTPException(404, "아직 계산한 날이 없습니다")
+    row = db.get(HotDay, day if day in stored else stored[0])
+    return {**row.payload, "days": [d.isoformat() for d in stored]}
+
+
+@app.get("/api/hot/graph")
+def hot_graph(day: date, group: int = Query(ge=0), db=Depends(get_db)):
+    """무리 하나를 그래프로: 무리의 기업들, 그 사이의 관계 선, 무리를 묶은 제품 점."""
+    row = db.get(HotDay, day)
+    if row is None or group >= len(row.payload["groups"]):
+        raise HTTPException(404, "그런 무리가 없습니다")
+    found = row.payload["groups"][group]
+    ids = {member["id"] for member in found["members"]}
+    edges = [e for e in query.relations(db, day, company_ids=ids, rel_types=["equity", "affiliate", "supply_contract"])
+             if e["subject_id"] in ids and e["object_id"] in ids]
+    graph = build_graph(db, edges, focus=ids)
+    index = product_index(db, day)
+    for name in found["why"]:
+        holders = {i: index[i][name] for i in ids if name in index.get(i, {})}
+        if not holders:   # 관계 이름(계열, 지분)이거나 그날의 제품 표에 없다
+            continue
+        family = next((item["family"] for item in holders.values() if item["family"]), None)
+        graph["nodes"].append(_point(product_id(name), name, "product", found["of"], family or "제품", focus=True))
+        graph["links"] += [{"source": i, "target": product_id(name), "type": "product", "count": 1, "value": round(item["share"], 2),
+                            "label": NO_SHARE if item["share"] <= 0 else f"매출의 {'약 ' if item['split'] else ''}{item['share']:.1f}%"}
+                           for i, item in holders.items()]
+    return graph
 
 
 @app.get("/api/insights")

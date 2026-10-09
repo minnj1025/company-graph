@@ -237,3 +237,27 @@ export interface AskStatus {
   left_for_you: number | null;
   owner?: boolean;
 }
+
+/** 그날 함께 오른 종목들을 공통점 하나로 묶은 것 */
+export interface HotGroup {
+  grade: "뚜렷함" | "보통";
+  kind: "제품" | "관계" | "둘 다";
+  /** 묶은 공통점: 제품 이름이나 관계 종류(계열, 지분, 공급계약) */
+  why: string[];
+  /** 무리에 든 곳의 수와, 그 공통점을 가진 상장사 전부의 수 */
+  n: number;
+  of: number;
+  members: { id: number; name: string; change: number }[];
+}
+
+export interface HotDay {
+  day: string;
+  /** 계산해 둔 거래일 전부. 최근 것부터 */
+  days: string[];
+  market: number;
+  watched: number;
+  hot: number;
+  groups: HotGroup[];
+  alone: { id: number; name: string; change: number; filings: { title: string; rcept_no: string; date: string }[] }[];
+  alone_total: number;
+}

@@ -3789,3 +3789,148 @@ details.sources a {
   opacity: 0.5;
   cursor: default;
 }
+
+
+/* 함께 오른 무리 */
+.hot-day {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 26px 0 8px;
+  flex-wrap: wrap;
+}
+
+.hot-day select {
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.hot-day button {
+  padding: 6px 10px;
+}
+
+.hot-day .muted {
+  margin-left: 8px;
+  font-size: 13px;
+}
+
+.hot-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hot-group {
+  padding: 18px 0 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hot-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hot-head b {
+  font-size: 16px;
+}
+
+.hot-count {
+  color: var(--accent);
+  font-size: 13px;
+}
+
+.hot-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #c9d1dd;
+}
+
+.hot-members em {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  color: #e2857c;
+}
+
+.hot-actions {
+  display: flex;
+  gap: 18px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.hot button.text {
+  padding: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hot button.text:hover,
+.hot-actions a:hover {
+  color: var(--text);
+}
+
+.hot-actions a {
+  color: var(--muted);
+}
+
+.hot-none {
+  padding: 28px 0;
+  color: var(--muted);
+}
+
+.hot-fair {
+  margin-top: 22px;
+}
+
+.hot-fair summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.hot-fair > .muted {
+  margin: 8px 0 0;
+  font-size: 13px;
+}
+
+.hot-alone td {
+  vertical-align: top;
+}
+
+.hot-alone td:first-child {
+  white-space: nowrap;
+}
+
+.hot-alone .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #e2857c;
+  white-space: nowrap;
+}
+
+.hot-alone a {
+  display: block;
+  color: inherit;
+}
+
+.hot-alone a:hover {
+  text-decoration: underline;
+}
+
+.hot-note {
+  margin-top: 28px;
+  font-size: 13px;
+}

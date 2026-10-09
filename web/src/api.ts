@@ -1,4 +1,4 @@
-import type { AskResult, AskStatus, Company, CompanyDetail, GraphData, Insights, Meta, RelType, Suggestion, Taxonomy } from "./types";
+import type { AskResult, AskStatus, Company, CompanyDetail, GraphData, HotDay, Insights, Meta, RelType, Suggestion, Taxonomy } from "./types";
 
 /** 운영자 열쇠. 주소 끝에 #owner=열쇠 를 붙여 한 번 열면 이 브라우저에 적어 두고, 질문할 때 같이 보낸다 (횟수 한도를 받지 않는다) */
 function ownerKey(): string | null {
@@ -38,6 +38,9 @@ export const fetchGraph = (center: number, asOf: string, types: RelType[], hops:
 export const fetchSuggest = (q: string) => get<Suggestion[]>("/suggest", { q });
 /** 제품·제품군·분류 하나를 파는 기업 전부의 그래프 */
 export const fetchPick = (kind: Suggestion["kind"], key: string, asOf: string) => get<GraphData>("/pick", { kind, key, as_of: asOf });
+/** 그날 함께 오른 무리. day 가 없으면 가장 최근 거래일 */
+export const fetchHot = (day?: string) => get<HotDay>("/hot", day ? { day } : {});
+export const fetchHotGraph = (day: string, group: number) => get<GraphData>("/hot/graph", { day, group });
 export const fetchTaxonomy = () => get<Taxonomy>("/taxonomy");
 export const fetchCompany = (id: number, asOf: string) => get<CompanyDetail>(`/company/${id}`, { as_of: asOf });
 export const fetchInsights = (asOf: string) => get<Insights>("/insights", { as_of: asOf });

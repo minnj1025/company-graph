@@ -7,7 +7,8 @@
 규칙은 2026-01-02 ~ 10-07 의 시세를 보며 정했다. 그 기간의 숫자는 규칙을 고른 데이터에서 나온 것이므로,
 규칙이 맞는지는 `check` 로 다른 기간에 돌려 등락률을 섞은 결과와 견주어 본다.
 
-실행: python -m company_graph.hot 2026-10-07                 그날의 무리
+실행: python -m company_graph.hot store                      아직 계산하지 않은 날을 계산해 hot_day 에 넣는다 (store 시작 끝 으로 기간을 정할 수도 있다)
+      python -m company_graph.hot 2026-10-07                 그날의 무리를 찍어 본다
       python -m company_graph.hot check 2025-02-01 2025-12-30   기간 전체를 돌려 섞은 결과와 견줌 (--save 파일.json)
 """
 import collections
@@ -16,11 +17,11 @@ import random
 import statistics
 import sys
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime, timedelta
 
 from sqlalchemy import func, or_, select
 
-from .db import Company, PriceDaily, Product, Relation, session
+from .db import Company, Document, HotDay, PriceDaily, Product, Relation, session
 
 LIQUID_DAYS, LIQUID_VALUE = 20, 1e8   # 최근 20거래일 평균 거래대금이 1억 원은 되어야 본다 (그 가운데 15일은 거래가 있어야 한다)
 FLOOR, TOP = 3.0, 0.08                # 오른 곳: 시장 중앙값보다 3%p 이상이면서 그날 상위 8%
@@ -29,6 +30,8 @@ MIN_SHARE = 10                        # 그 제품이 매출의 10%는 되어야
 HUB = 10                              # 상장사끼리의 선이 이보다 많은 회사(여러 곳에 출자한 투자회사)를 거쳐서는 잇지 않는다
 STRONG = 5.0                          # 무리에서 셋째로 많이 오른 곳이 시장보다 5%p는 올라야 한다. 한 곳만 급등한 무리를 막는다
 SOLO = 10.0                           # 무리에 들지 못하고 이만큼 오른 곳은 "혼자 오른 곳"으로 따로 둔다
+ALONE_SHOWN = 20                      # 혼자 오른 곳은 많이 오른 순으로 이만큼만 남긴다
+FILING_DAYS = 4                       # 혼자 오른 곳에 붙이는 공시: 그날까지 나흘 사이에 나온 것
 REL_NAMES = {"affiliate": "계열", "equity": "지분", "supply_contract": "공급계약"}
 CLEAR, FAIR = "뚜렷함", "보통"
 
@@ -177,6 +180,33 @@ def day_result(days: list[date], prices: dict, k: int, links: Links) -> dict:
             "alone": [{"id": c, "name": links.names[c], "change": change[c]} for c in alone]}
 
 
+def store(db, days: list[date], prices: dict, links: Links, start: date, end: date) -> int:
+    """기간의 날마다 결과를 hot_day 에 넣는다. 혼자 오른 곳에는 그 무렵에 나온 공시를 붙인다."""
+    count = 0
+    for k, day in enumerate(days):
+        if k < LIQUID_DAYS or not start <= day <= end:
+            continue
+        result = day_result(days, prices, k, links)
+        result["alone_total"] = len(result["alone"])
+        result["alone"] = result["alone"][:ALONE_SHOWN]
+        filings = collections.defaultdict(list)
+        ids = [item["id"] for item in result["alone"]]
+        if ids:
+            for doc in db.scalars(select(Document).where(Document.company_id.in_(ids), Document.rcept_dt <= day,
+                                                         Document.rcept_dt > day - timedelta(days=FILING_DAYS)).order_by(Document.rcept_no.desc())):
+                filings[doc.company_id].append({"title": doc.report_nm.strip(), "rcept_no": doc.rcept_no, "date": doc.rcept_dt.isoformat()})
+        for item in result["alone"]:
+            item["filings"] = filings[item["id"]][:3]
+        row = db.get(HotDay, day)
+        if row is None:
+            db.add(HotDay(trade_date=day, payload=result, computed_at=datetime.now()))
+        else:
+            row.payload, row.computed_at = result, datetime.now()
+        count += 1
+    db.commit()
+    return count
+
+
 def check(days: list[date], prices: dict, links: Links, start: date, end: date, shuffles: int = 8, seed: int = 5) -> dict:
     """기간 전체를 돌리고, 등락률은 그대로 둔 채 어느 회사의 것인지만 섞었을 때 나오는 무리 수와 견준다."""
     rnd = random.Random(seed)
@@ -223,6 +253,11 @@ def main():
     with session() as db:
         links = load_links(db)
         days, prices = load_prices(db)
+        if args and args[0] == "store":
+            last = db.scalar(select(func.max(HotDay.trade_date)))
+            start, end = (date.fromisoformat(a) for a in args[1:3]) if len(args) >= 3 else ((last + timedelta(days=1)) if last else days[0], days[-1])
+            print(f"{start} ~ {end}: {store(db, days, prices, links, start, end)}일")
+            return
     if args and args[0] == "check":
         start, end = (date.fromisoformat(a) for a in args[1:3])
         outcome = check(days, prices, links, start, end)

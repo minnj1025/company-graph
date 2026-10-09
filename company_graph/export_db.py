@@ -10,9 +10,9 @@ import sys
 
 from sqlalchemy import create_engine, func, select, text
 
-from .db import Base, BusinessSection, Company, CompanyAlias, Document, Product, ProductCode, Relation, get_engine
+from .db import Base, BusinessSection, Company, CompanyAlias, Document, HotDay, Product, ProductCode, Relation, get_engine
 
-TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection, Product, ProductCode)
+TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection, Product, ProductCode, HotDay)   # 시세(price_daily)는 올리지 않는다
 CHUNK = 5000
 
 

@@ -106,6 +106,14 @@ class PriceDaily(Base):
     market_cap: Mapped[int | None] = mapped_column(BigInteger)          # 시가총액(원)
 
 
+class HotDay(Base):
+    """하루 치의 "함께 오른 무리" 계산 결과 (hot.py). 화면은 시세가 아니라 이 표만 읽는다."""
+    __tablename__ = "hot_day"
+    trade_date: Mapped[date] = mapped_column(Date, primary_key=True)
+    payload: Mapped[dict] = mapped_column(JSON)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+
+
 class QualityLog(Base):
     __tablename__ = "quality_log"
     log_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True,
