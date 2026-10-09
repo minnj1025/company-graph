@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, type Scope } from "./api";
+import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, fetchPick, type Level, type Scope } from "./api";
 import { categoryColors, legend, LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { Cards } from "./Cards";
 import { ChatLog, Composer, useChat } from "./Chat";
@@ -7,7 +7,10 @@ import { NO_FILTER, Settings, TimeBar, type Filters } from "./Controls";
 import { Graph, MENTIONED, shortName } from "./Graph";
 import { Credit, DataPage, QuestionsPage } from "./Pages";
 import { Panel } from "./Panel";
-import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType } from "./types";
+import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType, Suggestion } from "./types";
+
+/** 그래프에 따로 띄운 것: Agent의 답이 찾은 결과이거나, 입력 칸에서 고른 제품·제품군·분류 */
+type Shown = Pick<AskResult, "question" | "graph"> & { picked?: boolean };
 
 const EMPTY: GraphData = { nodes: [], links: [] };
 
@@ -19,8 +22,8 @@ interface View {
   center: Company | null;
   hops: number;
   scope: Scope;
-  /** Agent가 찾은 결과. 있으면 그래프에 그 기업과 관계만 남긴다 */
-  found: AskResult | null;
+  /** Agent가 찾은 결과나 고른 제품. 있으면 그래프에 그 기업과 관계만 남긴다 */
+  found: Shown | null;
 }
 const HOME: View = { center: null, hops: 1, scope: "listed", found: null };
 
@@ -39,6 +42,11 @@ export function App() {
   /** "화면 맞추기"를 누를 때마다 올린다. 그래프가 전체가 보이게 다시 맞춘다 */
   const [refit, setRefit] = useState(0);
   const [drawer, setDrawer] = useState<Drawer>(null);
+  const [drawerWidth, setDrawerWidth] = useState(460);
+  /** 가장자리를 눌러 다시 열 때 보여 줄 것. 마지막에 보던 것 */
+  const lastDrawer = useRef<Exclude<Drawer, null>>("feed");
+  if (drawer) lastDrawer.current = drawer;
+  const [level, setLevel] = useState<Level>("family");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [data, setData] = useState<GraphData>(EMPTY);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -64,6 +72,43 @@ export function App() {
     setDrawer((open) => (open === "company" ? null : open));
   }, []);
   const showFound = useCallback((result: AskResult | null) => go({ found: result }), [go]);
+  /** 제품·제품군·분류를 골랐다: 그것을 파는 기업 전부를 그린다 (Agent를 부르지 않는다) */
+  const showPicked = useCallback(
+    (item: Suggestion) => {
+      if (!asOf) return;
+      const label = { product: "제품", family: "제품군", class: "공식 분류" }[item.kind];
+      fetchPick(item.kind, item.key, asOf)
+        .then((graph) => go({ found: { question: `${label} · ${item.name}`, graph, picked: true } }))
+        .catch(() => setError("그 제품을 파는 기업을 불러오지 못했습니다."));
+    },
+    [asOf, go],
+  );
+  /** 그래프의 오른쪽 가장자리: 누르면 오른쪽 칸을 여닫고, 끌면 너비를 바꾼다 */
+  const dragEdge = (event: React.PointerEvent) => {
+    event.preventDefault();
+    const startX = event.clientX;
+    const startWidth = drawer ? drawerWidth : 0;
+    let moved = false;
+    const move = (e: PointerEvent) => {
+      const dx = startX - e.clientX;
+      if (Math.abs(dx) > 4) moved = true;
+      if (!moved) return;
+      const width = startWidth + dx;
+      if (width > 140) {
+        setDrawerWidth(Math.round(Math.min(Math.max(width, 340), Math.min(760, window.innerWidth * 0.6))));
+        setDrawer((now) => now ?? lastDrawer.current);
+      } else setDrawer(null);
+    };
+    const stop = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", stop);
+      document.body.classList.remove("resizing");
+      if (!moved) setDrawer((now) => (now ? null : lastDrawer.current));
+    };
+    document.body.classList.add("resizing");
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", stop);
+  };
   const chat = useChat(showFound);
 
   useEffect(() => {
@@ -78,7 +123,7 @@ export function App() {
   useEffect(() => {
     if (!asOf) return;
     let cancelled = false;
-    const request = center ? fetchGraph(center.id, asOf, types, hops) : fetchOverview(asOf, types, scope);
+    const request = center ? fetchGraph(center.id, asOf, types, hops, level) : fetchOverview(asOf, types, scope, level);
     setLoading(true);
     request
       .then((next) => {
@@ -100,7 +145,7 @@ export function App() {
     return () => {
       cancelled = true;
     };
-  }, [asOf, types, center, hops, scope]);
+  }, [asOf, types, center, hops, scope, level]);
 
   // 그려진 점의 위치를 기억해 둔다 (라이브러리가 점 객체에 x, y, z를 직접 적는다)
   useEffect(() => {
@@ -248,7 +293,7 @@ export function App() {
                 </button>
               </div>
               <div className={narrowed ? "crumb narrowed" : "crumb"}>
-                <em>{found ? "질문으로 찾은 것" : center ? "한 기업 중심" : filtering ? "솎아 보는 중" : "보는 범위"}</em>
+                <em>{found ? (found.picked ? "고른 것" : "질문으로 찾은 것") : center ? "한 기업 중심" : filtering ? "솎아 보는 중" : "보는 범위"}</em>
                 <b>{found ? found.question : scopeLabel}</b>
                 {!found && filtering && center && <em>· 솎아 보는 중</em>}
               </div>
@@ -257,7 +302,7 @@ export function App() {
                   ← 전체 그래프로
                 </button>
               )}
-              <span className="spacer" />
+              <div className="bar-right">
               <TimeBar firstDate={meta.first_date} lastDate={meta.last_date} asOf={asOf} onAsOf={setAsOf} />
               <div className="settings-anchor">
                 <button
@@ -287,6 +332,8 @@ export function App() {
                       categories={meta.categories}
                       onScope={(value) => go({ scope: value })}
                       locked={found !== null}
+                      level={level}
+                      onLevel={setLevel}
                       filters={filters}
                       onFilters={setFilters}
                       shown={{ nodes: filtered.nodes.length, links: filtered.links.length }}
@@ -294,18 +341,42 @@ export function App() {
                   </div>
                 )}
               </div>
-              {chat.turns.length > 0 && (
-                <button className={drawer === "answer" ? "on" : ""} onClick={() => setDrawer(drawer === "answer" ? null : "answer")}>
-                  질문과 답 {chat.turns.length}
-                </button>
-              )}
               <button className={drawer === "feed" ? "on" : ""} onClick={() => setDrawer(drawer === "feed" ? null : "feed")}>
                 최근 공시
               </button>
               <button onClick={() => setRefit((n) => n + 1)} title="그래프 전체가 보이게 화면을 다시 맞춥니다">
                 화면 맞추기
               </button>
+              </div>
             </div>
+          </div>
+          {loading && !found && <div className="busy">그래프를 불러오는 중…</div>}
+          {!loading && shownData.nodes.length === 0 && (
+            <div className="stage-note">
+              <div>
+                이 조건에 맞는 관계가 없습니다.
+                <br />
+                조회 시점을 뒤로 옮기거나 솎아 보기 조건을 풀어 보세요.
+                <br />
+                {narrowed && <button onClick={backToAll}>전체 그래프로</button>}
+              </div>
+            </div>
+          )}
+
+          {error && <div className="toast">{error}</div>}
+
+          <div className="stage-bottom">
+            <Composer
+              chat={chat}
+              examples={chat.turns.length === 0 && drawer === null}
+              onAsk={() => setDrawer("answer")}
+              onFocus={() => chat.turns.length > 0 && setDrawer((now) => now ?? "answer")}
+              onPickProduct={showPicked}
+              onPick={(company: Company) => {
+                go({ found: null, center: company });
+                openCompany(company.id);
+              }}
+            />
             <div className="legend">
               <div>
                 {drawnTypes.map((type) => (
@@ -337,34 +408,14 @@ export function App() {
               </div>
             </div>
           </div>
-          {loading && !found && <div className="busy">그래프를 불러오는 중…</div>}
-          {!loading && shownData.nodes.length === 0 && (
-            <div className="stage-note">
-              <div>
-                이 조건에 맞는 관계가 없습니다.
-                <br />
-                조회 시점을 뒤로 옮기거나 솎아 보기 조건을 풀어 보세요.
-                <br />
-                {narrowed && <button onClick={backToAll}>전체 그래프로</button>}
-              </div>
-            </div>
-          )}
-
-          {error && <div className="toast">{error}</div>}
-
-          <Composer
-            chat={chat}
-            examples={chat.turns.length === 0 && drawer === null}
-            onAsk={() => setDrawer("answer")}
-            onReopen={chat.turns.length > 0 && drawer !== "answer" ? () => setDrawer("answer") : null}
-            onPick={(company: Company) => {
-              go({ found: null, center: company });
-              openCompany(company.id);
-            }}
+          <div
+            className={drawer ? "edge open" : "edge"}
+            onPointerDown={dragEdge}
+            title={drawer ? "누르면 오른쪽 칸을 닫고, 끌면 너비를 바꿉니다" : "누르거나 왼쪽으로 끌면 질문과 답, 최근 공시가 열립니다"}
           />
         </section>
 
-        <aside className="drawer" aria-hidden={drawer === null}>
+        <aside className="drawer" aria-hidden={drawer === null} style={{ "--drawer-width": `${drawerWidth}px` } as React.CSSProperties}>
           <div className="drawer-inner">
             <div className="drawer-head">
               {drawerTabs.map((kind) => (
@@ -377,7 +428,7 @@ export function App() {
                 ×
               </button>
             </div>
-            {drawer === "answer" && <ChatLog chat={chat} shown={found} onShow={showFound} />}
+            {drawer === "answer" && <ChatLog chat={chat} shown={found as AskResult | null} onShow={showFound} />}
             {drawer === "company" &&
               (detail ? (
                 <Panel

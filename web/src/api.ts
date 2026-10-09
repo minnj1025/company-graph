@@ -1,4 +1,4 @@
-import type { AskResult, AskStatus, Company, CompanyDetail, GraphData, Insights, Meta, RelType } from "./types";
+import type { AskResult, AskStatus, Company, CompanyDetail, GraphData, Insights, Meta, RelType, Suggestion, Taxonomy } from "./types";
 
 async function get<T>(path: string, params: Record<string, string | number> = {}): Promise<T> {
   const query = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)]));
@@ -11,10 +11,17 @@ export const fetchMeta = () => get<Meta>("/meta");
 export const searchCompanies = (q: string) => get<Company[]>("/companies", { q });
 /** "listed", "focus", 또는 "market:코스닥", "sector:자동차", "group:삼성" */
 export type Scope = string;
-export const fetchOverview = (asOf: string, types: RelType[], scope: Scope) =>
-  get<GraphData>("/overview", { as_of: asOf, types: types.join(","), scope });
-export const fetchGraph = (center: number, asOf: string, types: RelType[], hops: number) =>
-  get<GraphData>("/graph", { center, as_of: asOf, types: types.join(","), hops });
+/** 제품을 어느 크기의 범주로 묶어 그릴지: 대분류, 중분류(공식 분류), 제품군, 제품 */
+export type Level = "section" | "division" | "family" | "product";
+export const fetchOverview = (asOf: string, types: RelType[], scope: Scope, level: Level) =>
+  get<GraphData>("/overview", { as_of: asOf, types: types.join(","), scope, level });
+export const fetchGraph = (center: number, asOf: string, types: RelType[], hops: number, level: Level) =>
+  get<GraphData>("/graph", { center, as_of: asOf, types: types.join(","), hops, level });
+/** 적는 글에 맞는 제품, 제품군, 공식 분류 */
+export const fetchSuggest = (q: string) => get<Suggestion[]>("/suggest", { q });
+/** 제품·제품군·분류 하나를 파는 기업 전부의 그래프 */
+export const fetchPick = (kind: Suggestion["kind"], key: string, asOf: string) => get<GraphData>("/pick", { kind, key, as_of: asOf });
+export const fetchTaxonomy = () => get<Taxonomy>("/taxonomy");
 export const fetchCompany = (id: number, asOf: string) => get<CompanyDetail>(`/company/${id}`, { as_of: asOf });
 export const fetchInsights = (asOf: string) => get<Insights>("/insights", { as_of: asOf });
 export const fetchAskStatus = () => get<AskStatus>("/ask/status");

@@ -18,7 +18,7 @@ import {
   Vector3,
 } from "three";
 import SpriteText from "three-spritetext";
-import { FAMILY_COLOR, LINK_COLORS, nodeColor, PRODUCT_COLOR, TOPIC_COLOR, type ColorBy } from "./colors";
+import { LINK_COLORS, nodeColor, type ColorBy } from "./colors";
 import type { GraphData, GraphLink, GraphNode } from "./types";
 
 // 기업을 골랐을 때 그 기업과 이어지지 않은 것들. 어둡게 칠하는 대신 비쳐 보이게 해서, 고른 것만 남고 나머지는 배경으로 물러난다
@@ -39,7 +39,7 @@ export const shortName = (name: string) =>
 
 const endId = (end: number | GraphNode) => (typeof end === "number" ? end : end.id);
 // 제품군 점은 기업이 수십 곳씩 달려서, 연결 수 그대로 키우면 화면을 덮는다
-const nodeVal = (node: GraphNode) => (node.focus ? 12 : node.kind === "family" ? 6 + Math.sqrt(node.degree) * 3 : 1.2 + Math.min(node.degree, 60) * 0.45);
+const nodeVal = (node: GraphNode) => (node.focus ? 12 : node.kind === "family" || node.kind === "class" ? 6 + Math.sqrt(node.degree) * 3 : 1.2 + Math.min(node.degree, 60) * 0.45);
 const nodeRadius = (node: GraphNode) => Math.cbrt(nodeVal(node)) * REL_SIZE;
 
 // 점마다 물체를 하나씩 그리면 기업 1,800곳에서 그리기 명령이 수천 번이 된다.
@@ -311,6 +311,8 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
           ? `제품 "${node.name}"${node.sector !== "제품" ? ` · 제품군 ${node.sector}` : ""} · 이것을 파는 기업 ${node.degree}곳`
           : node.kind === "family"
             ? `제품군 "${node.name}" · 분야 ${node.sector} · 이 제품군의 것을 파는 기업 ${node.degree}곳`
+            : node.kind === "class"
+              ? `${node.sector} · 이 분류의 것을 파는 기업 ${node.degree}곳`
           : `${node.name}${node.group ? ` · ${node.group}` : ""} · ${node.sector}`,
     [],
   );
@@ -323,7 +325,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
       const show = chosen || (lit === null ? labeled.has(node.id) : lit.has(node.id));
       if (!show) return hit;
       const label = new SpriteText(node.kind === "topic" ? `# ${node.name}` : shortName(node.name));
-      label.color = node.kind === "topic" ? TOPIC_COLOR : node.kind === "product" ? PRODUCT_COLOR : node.kind === "family" ? FAMILY_COLOR : "#e8edf5";
+      label.color = node.kind ? nodeColor(node, "group", new Map()) : "#e8edf5";
       if (node.mentioned) {
         label.color = "#201600";
         label.backgroundColor = MENTIONED;
@@ -331,7 +333,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
         label.borderRadius = 2.5;
       }
       label.textHeight = chosen ? 9 : 6;
-      label.fontFace = "Pretendard, 'Malgun Gothic', sans-serif";
+      label.fontFace = "'Noto Sans KR', 'Malgun Gothic', sans-serif";
       label.fontWeight = "600";
       label.position.y = 7 + Math.cbrt(nodeVal(node)) * 3;
       hit.add(label);

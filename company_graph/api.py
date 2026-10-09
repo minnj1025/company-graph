@@ -17,8 +17,8 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
-from . import query
-from .db import AskLog, Base, BusinessSection, Company, Document, Product, Relation, get_engine, session
+from . import ksic, query
+from .db import AskLog, Base, BusinessSection, Company, Document, Product, ProductCode, Relation, get_engine, session
 from .product_families import FAMILY_FIELD
 from .stages import sector, stage
 
@@ -141,13 +141,15 @@ def product_index(db, as_of: date) -> dict[int, dict[str, dict]]:
     latest = (select(Product.company_id, func.max(Product.rcept_no).label("rcept_no"))
               .where(Product.disclosed_date <= as_of).group_by(Product.company_id).subquery())
     index: dict[int, dict[str, dict]] = defaultdict(dict)
+    codes = {(c.family, c.name): c.ksic for c in db.scalars(select(ProductCode))}
     for row in db.scalars(select(Product).join(latest, Product.rcept_no == latest.c.rcept_no)):
         if row.share_pct <= 0:
             continue
         families = row.std_families or [None] * len(row.std_names or [])
         count = len(row.std_names or ())
         for name, family in zip(row.std_names or (), families):
-            item = index[row.company_id].setdefault(name, {"share": 0.0, "raw": [], "family": family, "split": False})
+            item = index[row.company_id].setdefault(name, {"share": 0.0, "raw": [], "family": family, "split": False,
+                                                           "ksic": codes.get((family, name))})
             item["share"] = min(100.0, item["share"] + float(row.share_pct) / count)
             item["split"] = item["split"] or count > 1
             if row.name not in item["raw"]:
@@ -236,6 +238,186 @@ def add_products(db, graph: dict, as_of: date, company_ids, center: int | None =
     return graph
 
 
+LEVELS = ("section", "division", "family", "product")
+
+
+def class_id(code: str) -> int:
+    """공식 분류(대분류, 중분류) 점의 번호."""
+    return product_id("분류:" + code)
+
+
+def _group_of(item: dict, level: str) -> tuple[int, str, str, str] | None:
+    """제품 하나가 그 범주 크기에서 속하는 묶음: (점 번호, 이름, 점 종류, 설명). 묶을 데가 없으면 None."""
+    if level == "family":
+        family = item["family"]
+        return (family_id(family), family, "family", FAMILY_FIELD.get(family, "제품군")) if family and family != "기타" else None
+    code = item.get("ksic")
+    key = code and (ksic.section(code) if level == "section" else code[:2])
+    if not key:
+        return None
+    official = f"한국표준산업분류 {'대분류' if level == 'section' else '중분류'} {key} · {ksic.name(key)}"
+    return class_id(key), ksic.short(key), "class", official
+
+
+def add_groups(db, graph: dict, as_of: date, company_ids, level: str, center: int | None = None) -> dict:
+    """그래프에 범주 점과 `기업 → 범주` 선을 더한다. 범주는 공식 분류의 대분류·중분류이거나 제품군이다.
+
+    선의 값은 그 범주에 드는 제품들의 매출 비중을 더한 것이다. 제품 이름까지 보려면 add_products 를 쓴다.
+    """
+    index = product_index(db, as_of)
+    grouped: dict[int, dict[int, dict]] = {}
+    points: dict[int, tuple] = {}
+    for company_id in (index.keys() if center is not None else set(company_ids) & index.keys()):
+        for name, item in index[company_id].items():
+            group = _group_of(item, level)
+            if group is None:
+                continue
+            points[group[0]] = group
+            slot = grouped.setdefault(company_id, {}).setdefault(group[0], {"share": 0.0, "names": [], "split": False})
+            slot["share"] = min(100.0, slot["share"] + item["share"])
+            slot["names"].append(name)
+            slot["split"] = slot["split"] or item["split"]
+    if center is not None:
+        # 중심 기업의 범주와, 범주마다 그 비중이 큰 다른 기업 몇 곳
+        mine = set(grouped.get(center, {}))
+        chosen = {center}
+        for number in mine:
+            peers = sorted((i for i, slots in grouped.items() if i != center and number in slots), key=lambda i: -grouped[i][number]["share"])
+            chosen.update(peers[:SHARERS])
+        grouped = {i: {n: slot for n, slot in grouped[i].items() if n in mine} for i in chosen if i in grouped}
+    members = Counter(number for slots in grouped.values() for number in slots)
+    shown = {number for number, count in members.items() if count >= (1 if center is not None else SHARED_BY)}
+    known = {node["id"]: node for node in graph["nodes"]}
+    missing = {i for i, slots in grouped.items() if set(slots) & shown} - known.keys()
+    if missing:
+        for c in db.scalars(select(Company).where(Company.company_id.in_(missing))):
+            known[c.company_id] = {**company_json(c), "degree": 0, "focus": False}
+    for company_id, slots in grouped.items():
+        for number, slot in slots.items():
+            if number not in shown:
+                continue
+            about = f"매출의 {'약 ' if slot['split'] else ''}{slot['share']:.1f}%" + (" (나눈 어림값 포함)" if slot["split"] else "")
+            graph["links"].append({"source": company_id, "target": number, "type": "product", "count": len(slot["names"]),
+                                   "value": round(slot["share"], 2), "label": f"{about} · {', '.join(slot['names'][:4])}"})
+            known[company_id]["degree"] += 1
+    for number in sorted(shown):
+        _, name, kind, about = points[number]
+        known[number] = _point(number, name, kind, members[number], about)
+    graph["nodes"] = list(known.values())
+    return graph
+
+
+def add_product_layer(db, graph: dict, as_of: date, company_ids, level: str, center: int | None = None) -> dict:
+    if level == "product":
+        return add_products(db, graph, as_of, company_ids, center=center)
+    return add_groups(db, graph, as_of, company_ids, level if level in LEVELS else "family", center=center)
+
+
+@app.get("/api/taxonomy")
+def taxonomy(db=Depends(get_db)):
+    """제품을 묶는 분류 전체: 대분류 > 중분류(공식 분류) > 제품군 > 제품. 데이터 페이지가 목록으로 보여 준다."""
+    hit = _product_cache.get("taxonomy")
+    if hit and time.time() - hit[0] < META_TTL:
+        return hit[1]
+    index = product_index(db, date.today())
+    tree: dict = {}
+    unsure = {(c.family, c.name) for c in db.scalars(select(ProductCode).where(ProductCode.unsure))}
+    for company_id, items in index.items():
+        for name, item in items.items():
+            code, family = item.get("ksic"), item["family"] or "기타"
+            if not code:
+                continue
+            division = tree.setdefault(ksic.section(code), {}).setdefault(code[:2], {})
+            entry = division.setdefault(family, {}).setdefault(name, {"companies": set(), "ksic": code, "unsure": (family, name) in unsure})
+            entry["companies"].add(company_id)
+    out = []
+    for section in sorted(tree):
+        divisions = []
+        for code in sorted(tree[section]):
+            families = []
+            for family, products in tree[section][code].items():
+                companies = set().union(*(p["companies"] for p in products.values()))
+                families.append({"name": family, "field": FAMILY_FIELD.get(family), "companies": len(companies),
+                                 "products": sorted(({"name": n, "companies": len(p["companies"]), "ksic": p["ksic"], "ksic_name": ksic.name(p["ksic"]),
+                                                      "unsure": p["unsure"]} for n, p in products.items()), key=lambda x: (-x["companies"], x["name"]))})
+            divisions.append({"code": code, "name": ksic.name(code), "short": ksic.short(code),
+                              "families": sorted(families, key=lambda f: (-f["companies"], f["name"]))})
+        out.append({"code": section, "name": ksic.name(section), "divisions": divisions})
+    value = {"sections": out, "source": "한국표준산업분류 제11차 개정 (통계청 고시, 2024-07-01 시행)"}
+    _product_cache["taxonomy"] = (time.time(), value)
+    return value
+
+
+def _directory(db) -> list[dict]:
+    """찾을 수 있는 제품, 제품군, 공식 분류의 목록과 그것을 파는 기업 수. 입력 칸의 추천에 쓴다."""
+    hit = _product_cache.get("directory")
+    if hit and time.time() - hit[0] < META_TTL:
+        return hit[1]
+    index = product_index(db, date.today())
+    counts: dict[tuple, set] = defaultdict(set)
+    for company_id, items in index.items():
+        for name, item in items.items():
+            counts[("product", name, name)].add(company_id)
+            if item["family"] and item["family"] != "기타":
+                counts[("family", item["family"], item["family"])].add(company_id)
+            if item.get("ksic"):
+                counts[("class", item["ksic"][:2], ksic.short(item["ksic"][:2]))].add(company_id)
+    value = [{"kind": kind, "key": key, "name": name, "companies": len(ids)} for (kind, key, name), ids in counts.items()]
+    _product_cache["directory"] = (time.time(), value)
+    return value
+
+
+@app.get("/api/suggest")
+def suggest(q: str = Query(min_length=1, max_length=30), db=Depends(get_db)):
+    """적는 글에 맞는 제품, 제품군, 공식 분류. Agent를 부르지 않고 바로 그래프로 갈 수 있게 한다."""
+    squeeze = lambda text: "".join(text.split()).lower()
+    key = squeeze(q)
+    rank = {"family": 0, "class": 1, "product": 2}
+    found = [d for d in _directory(db) if key in squeeze(d["name"])]
+    found.sort(key=lambda d: (squeeze(d["name"]) != key, rank[d["kind"]], -d["companies"], d["name"]))
+    return found[:8]
+
+
+@app.get("/api/pick")
+def pick(kind: str, key: str, as_of: date, db=Depends(get_db)):
+    """제품 하나, 제품군 하나, 또는 공식 분류(중분류) 하나를 파는 기업 전부를 그 점에 이어 그린다."""
+    index = product_index(db, as_of)
+    if kind == "product":
+        number, match = product_id(key), (lambda name, item: name == key)
+    elif kind == "family":
+        number, match = family_id(key), (lambda name, item: item["family"] == key)
+    elif kind == "class" and ksic.valid(key):
+        number, match = class_id(key), (lambda name, item: (item.get("ksic") or "").startswith(key))
+    else:
+        raise HTTPException(404, "그런 제품이나 분류가 없습니다")
+    members, family_of = {}, Counter()
+    for company_id, items in index.items():
+        hits = [(name, item) for name, item in items.items() if match(name, item)]
+        if hits:
+            members[company_id] = {"share": min(100.0, sum(item["share"] for _, item in hits)), "names": [name for name, _ in hits],
+                                   "split": any(item["split"] for _, item in hits)}
+            family_of.update(item["family"] for _, item in hits if item["family"])
+    if not members:
+        raise HTTPException(404, "그 시점에 이것을 파는 기업이 없습니다")
+    nodes = [{**company_json(c), "degree": 1, "focus": False} for c in db.scalars(select(Company).where(Company.company_id.in_(members)))]
+    if kind == "product":
+        family = family_of.most_common(1)[0][0] if family_of else None
+        point = _point(number, key, "product", len(members), family or "제품", focus=True)
+    elif kind == "family":
+        point = _point(number, key, "family", len(members), FAMILY_FIELD.get(key, "제품군"), focus=True)
+    else:
+        point = _point(number, ksic.short(key), "class", len(members), f"한국표준산업분류 {key} · {ksic.name(key)}", focus=True)
+    links = [{"source": company_id, "target": number, "type": "product", "count": len(m["names"]), "value": round(m["share"], 2),
+              "label": f"매출의 {'약 ' if m['split'] else ''}{m['share']:.1f}% · {', '.join(m['names'][:4])}"} for company_id, m in members.items()]
+    if kind == "product" and point["sector"] != "제품":
+        # 그 제품이 속한 제품군을 한 단계 위에 둔다. 같은 제품군의 다른 제품은 제품군을 눌러 넘어가서 본다
+        family = point["sector"]
+        peers = {i for i, items in index.items() if any(item["family"] == family for item in items.values())}
+        nodes.append(_point(family_id(family), family, "family", len(peers), FAMILY_FIELD.get(family, "제품군")))
+        links.append({"source": number, "target": family_id(family), "type": "family", "count": 1, "value": None, "label": f"제품군 {family}"})
+    return {"nodes": nodes + [point], "links": links}
+
+
 def products_json(db, company_id: int, as_of: date) -> dict | None:
     """그 시점까지 나온 보고서의 제품 표. 주요 제품 절은 있는데 표를 읽지 못한 회사는 read 가 False 다(지어내지 않는다)."""
     latest = db.scalar(select(func.max(Product.rcept_no)).where(Product.company_id == company_id, Product.disclosed_date <= as_of))
@@ -246,9 +428,12 @@ def products_json(db, company_id: int, as_of: date) -> dict | None:
         return {"read": False} if has_section else None
     doc = db.get(Document, latest)
     rows = db.scalars(select(Product).where(Product.rcept_no == latest).order_by(Product.row_no)).all()
+    codes = {(c.family, c.name): c.ksic for c in db.scalars(select(ProductCode))}
+    code_of = lambda r: [codes.get((family, name)) for name, family in zip(r.std_names or [], r.std_families or [])]
     return {"read": True, "rcept_no": latest, "url": query.DART_VIEWER + latest, "report": doc.report_nm.strip() if doc else None,
             "rows": [{"segment": r.segment, "name": r.name, "share": float(r.share_pct), "std_names": r.std_names or [],
-                      "families": r.std_families or [], "unsure": bool(r.unsure)} for r in rows]}
+                      "families": r.std_families or [], "unsure": bool(r.unsure),
+                      "ksic": [code and {"code": code, "name": ksic.name(code)} for code in code_of(r)]} for r in rows]}
 
 
 def parse_types(types: str | None) -> list[str]:
@@ -304,7 +489,7 @@ def companies(q: str = Query(min_length=1), db=Depends(get_db)):
 
 
 @app.get("/api/overview")
-def overview(as_of: date, types: str | None = None, scope: str = "listed", db=Depends(get_db)):
+def overview(as_of: date, types: str | None = None, scope: str = "listed", level: str = "family", db=Depends(get_db)):
     """첫 화면의 그래프. 계열은 선이 너무 많아 그리지 않고 점의 색(집단)으로 보여 준다.
 
     scope: listed(상장사끼리), market:유가증권, sector:자동차, group:삼성 처럼 분류를 고르거나, focus(수집을 시작한 자동차 가치사슬).
@@ -318,11 +503,12 @@ def overview(as_of: date, types: str | None = None, scope: str = "listed", db=De
     relation_types = [t for t in chosen if t != "product"]
     graph = build_graph(db, query.relations(db, as_of, company_ids=ids, rel_types=relation_types, direction=direction)
                         if relation_types else [])
-    return add_products(db, graph, as_of, ids) if "product" in chosen else graph
+    return add_product_layer(db, graph, as_of, ids, level) if "product" in chosen else graph
 
 
 @app.get("/api/graph")
-def graph(center: int, as_of: date, types: str | None = None, hops: int = Query(1, ge=1, le=2), db=Depends(get_db)):
+def graph(center: int, as_of: date, types: str | None = None, hops: int = Query(1, ge=1, le=2), level: str = "product",
+          db=Depends(get_db)):
     """한 기업을 중심으로 hops 단계까지."""
     if db.get(Company, center) is None:
         raise HTTPException(404, "기업을 찾지 못했습니다")
@@ -338,7 +524,7 @@ def graph(center: int, as_of: date, types: str | None = None, hops: int = Query(
         # 계열은 중심 기업의 집단만 그린다. 단계를 넓히면 집단마다 별 모양이 겹쳐 읽을 수 없다
         edges += query.group_members(db, center, as_of)
     graph = build_graph(db, edges, focus={center})
-    return add_products(db, graph, as_of, [center], center=center) if "product" in chosen else graph
+    return add_product_layer(db, graph, as_of, [center], level, center=center) if "product" in chosen else graph
 
 
 def business_json(db, company_id: int, as_of: date) -> dict | None:

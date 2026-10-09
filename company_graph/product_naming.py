@@ -16,7 +16,8 @@ from collections import Counter, defaultdict
 from sqlalchemy import func, select
 
 from .config import DATA_DIR
-from .db import BusinessSection, Company, Product, init_db, session
+from . import ksic
+from .db import BusinessSection, Company, Product, ProductCode, init_db, session
 from .product_families import FAMILIES, FAMILY_FIELD
 from .stages import sector
 
@@ -271,8 +272,21 @@ def apply(named_by: str):
             row.std_names, row.std_families = [name for name, _ in pairs], [family for _, family in pairs]
             row.named_by, row.unsure = named_by, unsure
             changed += 1
+        # 제품 이름마다의 KSIC 세세분류 코드 (ksic_out_*.tsv: 제품군, 제품 이름, 코드. 짐작이면 끝에 ?)
+        used = {(family, name) for pairs, _ in results.values() for name, family in pairs}
+        db.query(ProductCode).delete()
+        coded = set()
+        for path in sorted(WORK.glob("ksic_out_*.tsv")):
+            for line in path.read_text(encoding="utf-8").splitlines():
+                parts = [part.strip() for part in line.split("\t")]
+                if len(parts) != 3:
+                    continue
+                family, name, code = parts[0], parts[1], parts[2].replace("?", "").strip()
+                if (family, name) in used and (family, name) not in coded and len(code) == 5 and ksic.valid(code):
+                    coded.add((family, name))
+                    db.add(ProductCode(family=family, name=name, ksic=code, unsure="?" in parts[2]))
         db.commit()
-    print(f"반영한 줄 {changed:,}개 ({named_by})")
+    print(f"반영한 줄 {changed:,}개 ({named_by}) | KSIC 코드가 붙은 제품 이름 {len(coded):,} / {len(used):,}")
 
 
 if __name__ == "__main__":

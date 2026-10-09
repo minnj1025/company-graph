@@ -141,6 +141,15 @@ class Product(Base):
     unsure: Mapped[bool] = mapped_column(Boolean, default=False)      # 이름을 붙일 때 짐작이 섞였다는 표시
 
 
+class ProductCode(Base):
+    """제품 이름 하나가 한국표준산업분류(KSIC 11차)의 어느 세세분류에 드는가. 제품군이 다르면 같은 이름도 따로 본다."""
+    __tablename__ = "product_code"
+    family: Mapped[str] = mapped_column(String(60), primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), primary_key=True)
+    ksic: Mapped[str] = mapped_column(String(5))                    # 세세분류 코드 (5자리)
+    unsure: Mapped[bool] = mapped_column(Boolean, default=False)    # 맞는 항목이 분명치 않아 짐작으로 고른 것
+
+
 class AskLog(Base):
     """화면에서 Agent에게 한 질문의 기록. 하루 질문 수 상한과 방문자별 제한을 세는 데 쓴다."""
     __tablename__ = "ask_log"

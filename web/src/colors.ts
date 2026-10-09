@@ -54,9 +54,10 @@ export function categoryColors(nodes: GraphNode[], colorBy: ColorBy): Map<string
 export const TOPIC_COLOR = "#5ad1c9";
 export const PRODUCT_COLOR = "#d8c75a";
 export const FAMILY_COLOR = "#ff9f5a";
+export const CLASS_COLOR = "#c79bff";
 
 export function nodeColor(node: GraphNode, colorBy: ColorBy, colors: Map<string, string>): string {
-  if (node.kind) return node.kind === "topic" ? TOPIC_COLOR : node.kind === "family" ? FAMILY_COLOR : PRODUCT_COLOR;
+  if (node.kind) return { topic: TOPIC_COLOR, family: FAMILY_COLOR, class: CLASS_COLOR, product: PRODUCT_COLOR }[node.kind];
   const key = keyOf(node, colorBy);
   return key ? (colors.get(key) ?? NO_GROUP) : NO_GROUP;
 }

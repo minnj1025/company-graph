@@ -14,7 +14,8 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.orm import aliased
 
 from . import query
-from .db import BusinessSection, Company, Document, Product, Relation
+from . import ksic as ksic_table
+from .db import BusinessSection, Company, Document, Product, ProductCode, Relation
 from .product_families import FAMILIES, FAMILY_FIELD
 
 LIMIT = 50
@@ -138,6 +139,8 @@ TOOLS = [
          "families": {"type": "array", "items": {"type": "string"}, "maxItems": 8, "description": "제품군 이름들. 목록에 있는 것을 글자 그대로"},
          "keywords": {"type": "array", "items": {"type": "string"}, "maxItems": 8,
                       "description": "제품 이름들. 낱말 하나는 2~20자. 띄어쓰기는 무시하고 찾는다"},
+         "ksic": {"type": "array", "items": {"type": "string"}, "maxItems": 8,
+                  "description": "한국표준산업분류(11차) 숫자 코드의 앞자리(2~5자리). 사용자가 공식 분류 코드로 물을 때만 쓴다. 제품마다 붙인 세세분류 코드로 찾는다"},
          "as_of": _AS_OF,
          "min_share": {"type": "number", "description": "매출 비중이 이 값(%) 이상인 회사만. 주력인 회사만 볼 때 쓴다"},
          "listed_only": {"type": "boolean", "description": "상장사만 (기본 true)"}},
@@ -472,15 +475,17 @@ def _latest_products(db, when: date, company_id: int | None = None):
     return latest.group_by(Product.company_id).subquery()
 
 
-def _product_row(row: Product) -> dict:
+def _product_row(row: Product, codes: dict | None = None) -> dict:
     families = row.std_families or [None] * len(row.std_names or [])
+    code = lambda name, family: (codes or {}).get((family, name))
     return {"segment": row.segment, "name": row.name, "share_pct": float(row.share_pct),
-            "products": [{"name": name, "family": family} for name, family in zip(row.std_names or [], families)],
+            "products": [{"name": name, "family": family, **({"ksic": code(name, family)} if code(name, family) else {})}
+                         for name, family in zip(row.std_names or [], families)],
             **({"unsure": True} if row.unsure else {})}
 
 
 _PRODUCT_NOTE = ("name 과 segment 는 보고서 표에 적힌 그대로, share_pct 는 그 줄이 매출에서 차지하는 비중(%)입니다. "
-                 "products 는 그 줄에 붙인 표준 이름과 제품군으로, 회사의 표 전체와 사업 개요를 보고 붙였지만 사람이 전부 확인한 것은 아닙니다. "
+                 "products 는 그 줄에 붙인 표준 이름과 제품군(그리고 한국표준산업분류 세세분류 코드 ksic)으로, 회사의 표 전체와 사업 개요를 보고 붙였지만 사람이 전부 확인한 것은 아닙니다. "
                  "답에는 표에 적힌 이름을 옮기세요. 한 줄에 여러 제품이 함께 적혀 있으면 share_pct 는 그 줄 전체의 비중이지 그 제품만의 비중이 아닙니다")
 
 
@@ -498,15 +503,19 @@ def _product_shares(db, when: date, words: list[str]) -> dict[int, float]:
     return shares
 
 
-def find_by_product(db, as_of, families=None, keywords=None, min_share=None, listed_only: bool = True) -> dict:
+def find_by_product(db, as_of, families=None, keywords=None, ksic=None, min_share=None, listed_only: bool = True) -> dict:
     when = _date(as_of, "as_of", required=True)
     wanted = list(dict.fromkeys(str(f).strip() for f in (families or []) if str(f).strip()))
     unknown = [f for f in wanted if f not in FAMILY_FIELD]
     if unknown:
         raise ToolError(f"제품군 {unknown} 은 목록에 없습니다. 도구 설명의 제품군 목록에 있는 이름을 글자 그대로 쓰세요")
     words = list(dict.fromkeys(str(w).strip() for w in (keywords or []) if str(w).strip()))[:8]
-    if not wanted and not words:
-        raise ToolError("families 나 keywords 중 하나는 주어야 합니다")
+    prefixes = [str(c).strip() for c in (ksic or []) if str(c).strip()]
+    if any(not ksic_table.valid(c) or not c.isdigit() for c in prefixes):
+        raise ToolError("ksic 는 한국표준산업분류 11차의 숫자 코드(2~5자리)입니다. 예: 26(전자부품), 261(반도체), 26111(메모리용 전자집적회로)")
+    if not wanted and not words and not prefixes:
+        raise ToolError("families, keywords, ksic 중 하나는 주어야 합니다")
+    codes = {(c.family, c.name): c.ksic for c in db.scalars(select(ProductCode))}
     if any(not 2 <= len(w) <= 20 for w in words):
         raise ToolError("keywords 는 2~20자인 제품 이름의 목록입니다")
     keys = [_squeeze(w) for w in words]
@@ -521,6 +530,12 @@ def find_by_product(db, as_of, families=None, keywords=None, min_share=None, lis
         raw_hit = any(key in _squeeze(row.name) or key in _squeeze(row.segment) for key in keys)
         if wanted and not in_family:
             continue
+        if prefixes:
+            pairs = [(name, family) for name, family in pairs if (codes.get((family, name)) or "").startswith(tuple(prefixes))]
+            in_family = [pair for pair in in_family if pair in pairs]
+            by_word = [pair for pair in by_word if pair in pairs]
+            if not pairs:
+                continue
         if keys and not by_word and not raw_hit:
             continue
         entry = found.setdefault(row.company_id, {"share_pct": 0.0, "rows": [], "rcept_no": row.rcept_no, "labels": [], "split": False})
@@ -529,10 +544,14 @@ def find_by_product(db, as_of, families=None, keywords=None, min_share=None, lis
         part = len(hit) / len(pairs) if pairs and hit else 1.0
         entry["split"] = entry["split"] or part < 1
         entry["share_pct"] = round(min(100.0, entry["share_pct"] + float(row.share_pct) * part), 2)
-        entry["rows"].append(_product_row(row))
+        entry["rows"].append(_product_row(row, codes))
         # 그래프에 그릴 점: 제품군으로 찾았으면 그 제품군, 낱말로 찾았으면 걸린 제품 이름(없으면 찾은 낱말)
-        labels = [(family, "family") for _, family in in_family] if wanted and not keys else \
-            [(name, "product") for name, _ in by_word] or [(words[0], "product")]
+        if wanted and not keys:
+            labels = [(family, "family") for _, family in in_family]
+        elif keys:
+            labels = [(name, "product") for name, _ in by_word] or [(words[0], "product")]
+        else:   # 공식 분류 코드로만 찾았다
+            labels = [(name, "product") for name, _ in pairs]
         for label in labels:
             if label not in entry["labels"]:
                 entry["labels"].append(label)
@@ -569,9 +588,11 @@ def get_products(db, company_id, as_of) -> dict:
     if not rows:
         return {"company": _brief(company), "read": False, "products": [],
                 "note": "이 회사의 제품 표는 읽지 못했거나 없습니다. 제품이 없다는 뜻이 아닙니다. get_business 로 '주요 제품 및 서비스'의 글을 직접 읽으세요"}
+    codes = {(c.family, c.name): c.ksic for c in db.scalars(select(ProductCode))}
     return {"company": _brief(company), "read": True, "report": _report_name(db, rows[0].rcept_no), "rcept_no": rows[0].rcept_no,
             "disclosed_date": rows[0].disclosed_date.isoformat(), "total": len(rows),
-            "products": [_product_row(row) for row in rows], "fields": _PRODUCT_NOTE}
+            "products": [_product_row(row, codes) for row in rows],
+            "fields": _PRODUCT_NOTE + ". ksic 는 그 제품에 붙인 한국표준산업분류(11차) 세세분류 코드입니다"}
 
 
 FUNCTIONS = {"find_by_product": find_by_product, "get_products": get_products,

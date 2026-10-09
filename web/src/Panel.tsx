@@ -132,7 +132,13 @@ function ProductSection({ products }: { products: ProductTable }) {
             <div className="row-meta">
               {row.segment ? `${row.segment} · ` : ""}
               {row.std_names.length > 0
-                ? row.std_names.map((name, n) => (row.families[n] && row.families[n] !== "기타" ? `${name} (${row.families[n]})` : name)).join(", ")
+                ? row.std_names.map((name, n) => (
+                    <span key={n} title={row.ksic[n] ? `한국표준산업분류 ${row.ksic[n]!.code} ${row.ksic[n]!.name}` : undefined}>
+                      {n > 0 && ", "}
+                      {name}
+                      {row.families[n] && row.families[n] !== "기타" && ` (${row.families[n]}${row.ksic[n] ? ` · ${row.ksic[n]!.code}` : ""})`}
+                    </span>
+                  ))
                 : "다른 회사와 묶지 않는 줄"}
               {row.unsure && row.std_names.length > 0 && <span className="warn"> · 짐작이 섞임</span>}
             </div>

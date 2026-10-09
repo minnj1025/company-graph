@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchTaxonomy } from "./api";
 import { ByType, Compare, Questions, VerdictBar, VerdictLegend, useEval, wilson } from "./Eval";
-import type { Meta } from "./types";
+import type { Meta, Taxonomy } from "./types";
 
 const REPO = "https://github.com/minnj1025/company-graph";
 
@@ -123,6 +124,8 @@ export function DataPage({ meta }: { meta: Meta }) {
         <li>이슈형 질문의 답이 얼마나 맞는지는 아직 재지 않았습니다. 아래 평가는 모두 관계를 묻는 질문입니다.</li>
       </ul>
 
+      <TaxonomySection />
+
       <h2>맞는지 어떻게 확인했나</h2>
       <p className="lead">
         수십만 줄을 사람이 다 볼 수 없고 정답지도 없어서, 공시 안에 적힌 숫자끼리 검산하고 다른 기관의 자료와 대조했습니다.
@@ -165,6 +168,72 @@ export function DataPage({ meta }: { meta: Meta }) {
       </p>
       <Credit />
     </div>
+  );
+}
+
+/** 제품을 묶는 분류 전체를 펼쳐 볼 수 있게: 대분류 > 중분류(공식 분류) > 제품군 > 제품 */
+function TaxonomySection() {
+  const [data, setData] = useState<Taxonomy | null>(null);
+  useEffect(() => {
+    fetchTaxonomy()
+      .then(setData)
+      .catch(() => setData(null));
+  }, []);
+  if (!data) return null;
+  const count = (families: { companies: number }[]) => families.reduce((sum, f) => sum + f.companies, 0);
+  return (
+    <>
+      <h2>제품을 묶는 분류</h2>
+      <p className="lead">
+        큰 범주는 {data.source}의 대분류와 중분류를 그대로 씁니다. 그 아래는 공식 분류가 뭉뚱그려지는 곳이 많아서(제품 이름의 35%가 "그 외 기타 …" 항목에
+        들어갑니다) 제품 말로 다시 묶은 제품군을 씁니다. 제품군은 이 서비스가 만든 묶음이고 공식 분류가 아닙니다. 대신 제품마다 공식 분류의 세세분류
+        코드를 붙여 두었습니다. 아래에서 펼쳐 볼 수 있고, 물음표는 맞는 항목이 분명치 않아 짐작으로 고른 코드입니다.
+      </p>
+      <div className="taxonomy">
+        {data.sections.map((section) => (
+          <details key={section.code}>
+            <summary>
+              <code>{section.code}</code>
+              <b>{section.name}</b>
+              <span>중분류 {section.divisions.length}개</span>
+            </summary>
+            {section.divisions.map((division) => (
+              <details key={division.code}>
+                <summary>
+                  <code>{division.code}</code>
+                  {division.name}
+                  <span>
+                    제품군 {division.families.length}개 · 줄 {count(division.families).toLocaleString()}개
+                  </span>
+                </summary>
+                {division.families.map((family) => (
+                  <div key={family.name} className="family">
+                    <h5>
+                      {family.name}
+                      <em>
+                        기업 {family.companies}곳 · 제품 {family.products.length}가지
+                      </em>
+                    </h5>
+                    <p className="names">
+                      {family.products.map((product, i) => (
+                        <span key={product.name} title={`${product.ksic} ${product.ksic_name} · 기업 ${product.companies}곳`}>
+                          {i > 0 && ", "}
+                          {product.name}{" "}
+                          <i>
+                            {product.ksic}
+                            {product.unsure ? "?" : ""}
+                          </i>
+                        </span>
+                      ))}
+                    </p>
+                  </div>
+                ))}
+              </details>
+            ))}
+          </details>
+        ))}
+      </div>
+    </>
   );
 }
 

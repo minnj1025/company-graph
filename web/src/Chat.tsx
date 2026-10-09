@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { askAgentStream, fetchAskStatus, searchCompanies, type AskEvent } from "./api";
+import { askAgentStream, fetchAskStatus, fetchSuggest, searchCompanies, type AskEvent } from "./api";
 import { shortName } from "./Graph";
-import type { AskResult, AskStatus, Company } from "./types";
+import type { AskResult, AskStatus, Company, Suggestion } from "./types";
 
 const DART = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=";
 /** 처음 화면의 입력 칸 위에 보이는 예시. 이 DB로 답할 수 있는 질문의 종류가 하나씩 다르다 */
@@ -15,7 +15,7 @@ const EXAMPLES = [
 ];
 /** 입력 칸에 번갈아 보이는 글 */
 const HINTS = [
-  "기업 이름이나 종목코드, 또는 궁금한 것을 적어 보세요",
+  "기업이나 제품 이름, 또는 궁금한 것을 적어 보세요",
   "농심은 뭘 팔아서 돈을 벌어?",
   "게임을 만드는 회사는 어디야?",
   "카카오가 지분을 가진 상장사는?",
@@ -204,14 +204,19 @@ interface ComposerProps {
   onAsk: () => void;
   /** 예시 질문을 보일지 (처음 화면에서만) */
   examples: boolean;
-  /** 답이 보이는 칸이 닫혀 있을 때, 다시 여는 버튼을 입력 칸 위에 둔다 */
-  onReopen: (() => void) | null;
+  /** 제품, 제품군, 공식 분류를 골랐다. Agent를 부르지 않고 그것을 파는 기업을 그린다 */
+  onPickProduct: (item: Suggestion) => void;
+  /** 입력 칸에 들어왔다. 지난 답이 있으면 답이 보이는 칸을 다시 연다 */
+  onFocus: () => void;
 }
 
+const KIND_LABELS: Record<Suggestion["kind"], string> = { product: "제품", family: "제품군", class: "공식 분류" };
+
 /** 그래프 아래의 입력 칸 하나. 기업 이름을 적으면 DB에서 바로 찾고, 문장을 적으면 Agent에게 묻는다 */
-export function Composer({ chat, onPick, onAsk, examples, onReopen }: ComposerProps) {
+export function Composer({ chat, onPick, onAsk, examples, onPickProduct, onFocus }: ComposerProps) {
   const [text, setText] = useState("");
   const [results, setResults] = useState<Company[]>([]);
+  const [things, setThings] = useState<Suggestion[]>([]);
   const [hint, setHint] = useState(0);
   const typed = text.trim();
 
@@ -224,16 +229,18 @@ export function Composer({ chat, onPick, onAsk, examples, onReopen }: ComposerPr
   useEffect(() => {
     if (typed.length < 1 || typed.length > 20) {
       setResults([]);
+      setThings([]);
       return;
     }
     let cancelled = false;
-    const timer = setTimeout(
-      () =>
-        searchCompanies(typed)
-          .then((found) => !cancelled && setResults(found.slice(0, 6)))
-          .catch(() => !cancelled && setResults([])),
-      200,
-    );
+    const timer = setTimeout(() => {
+      searchCompanies(typed)
+        .then((found) => !cancelled && setResults(found.slice(0, 5)))
+        .catch(() => !cancelled && setResults([]));
+      fetchSuggest(typed)
+        .then((found) => !cancelled && setThings(found.slice(0, 5)))
+        .catch(() => !cancelled && setThings([]));
+    }, 200);
     return () => {
       cancelled = true;
       clearTimeout(timer);
@@ -243,16 +250,19 @@ export function Composer({ chat, onPick, onAsk, examples, onReopen }: ComposerPr
   /** 적은 글이 이 기업의 이름이나 종목코드와 똑같은가. 그러면 Enter 가 질문이 아니라 이 기업으로 간다 */
   const isExact = (company: Company) => company.stock_code === typed || squeeze(shortName(company.name)) === squeeze(typed);
 
-  const pick = (company: Company) => {
+  const clear = () => {
     setText("");
     setResults([]);
+    setThings([]);
+  };
+  const pick = (company: Company) => {
+    clear();
     onPick(company);
   };
 
   const ask = (question: string) => {
     if (question.trim().length < 2 || chat.busy || chat.closed) return;
-    setText("");
-    setResults([]);
+    clear();
     onAsk();
     void chat.ask(question);
   };
@@ -279,15 +289,24 @@ export function Composer({ chat, onPick, onAsk, examples, onReopen }: ComposerPr
           ))}
         </div>
       )}
-      {onReopen && results.length === 0 && (
-        <div className="examples-row">
-          <button className="reopen" onClick={onReopen}>
-            {chat.busy ? "답하는 중… 보기" : `지난 질문과 답 ${chat.turns.length}개 다시 보기`} ↗
-          </button>
-        </div>
-      )}
-      {results.length > 0 && (
+      {results.length + things.length > 0 && (
         <ul className="composer-results">
+          {things.map((item) => (
+            <li key={`${item.kind}-${item.key}`}>
+              <button
+                onClick={() => {
+                  clear();
+                  onPickProduct(item);
+                }}
+              >
+                <span>{item.name}</span>
+                <span className="sub">
+                  {KIND_LABELS[item.kind]} · 기업 {item.companies}곳
+                </span>
+                <em>이것을 파는 기업 보기</em>
+              </button>
+            </li>
+          ))}
           {results.map((company) => (
             <li key={company.id}>
               <button onClick={() => pick(company)}>
@@ -317,11 +336,18 @@ export function Composer({ chat, onPick, onAsk, examples, onReopen }: ComposerPr
           void submit();
         }}
       >
-        <input value={text} onChange={(event) => setText(event.target.value)} maxLength={300} placeholder={HINTS[hint]} aria-label="기업 찾기 또는 질문" />
+        <input
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          onFocus={onFocus}
+          maxLength={300}
+          placeholder={HINTS[hint]}
+          aria-label="기업·제품 찾기 또는 질문"
+        />
         <button disabled={typed.length < 1}>{chat.busy ? "답하는 중…" : "보내기"}</button>
       </form>
       <div className="composer-status" title={chat.status?.enabled ? `답하는 모델: ${chat.status.model}` : undefined}>
-        <span>기업 이름·종목코드는 횟수 없이 바로 찾습니다</span>
+        <span>기업·제품 이름은 횟수 없이 바로 찾습니다</span>
         {" · "}
         <span>
           {chat.status === null

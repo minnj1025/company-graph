@@ -10,9 +10,9 @@ import sys
 
 from sqlalchemy import create_engine, func, select, text
 
-from .db import Base, BusinessSection, Company, CompanyAlias, Document, Product, Relation, get_engine
+from .db import Base, BusinessSection, Company, CompanyAlias, Document, Product, ProductCode, Relation, get_engine
 
-TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection, Product)
+TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection, Product, ProductCode)
 CHUNK = 5000
 
 
@@ -44,7 +44,7 @@ def main():
             # 번호를 그대로 옮겼으므로 자동 증가 값을 맞춰 둔다
             for model in TABLES:
                 key = list(model.__table__.primary_key.columns)[0]
-                if key.autoincrement is True or key.name.endswith("_id"):
+                if key.name.endswith("_id"):   # 번호가 아닌 열쇠(접수번호, 이름)는 자동 증가가 없다
                     write.execute(text(f"select setval(pg_get_serial_sequence('{model.__table__.name}', '{key.name}'), "
                                        f"(select coalesce(max({key.name}), 1) from {model.__table__.name}))"))
     with target.connect() as check:

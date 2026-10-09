@@ -20,7 +20,7 @@ export interface Company {
 
 export interface GraphNode extends Company {
   /** 기업이 아닌 점 (번호가 음수). "topic" 은 질문으로 찾은 사업 낱말, "product" 는 여러 기업이 함께 파는 제품이다 */
-  kind?: "topic" | "product" | "family";
+  kind?: "topic" | "product" | "family" | "class";
   degree: number;
   focus: boolean;
   /** 질문 결과 그래프에서, Agent의 답에 이름이 나온 기업 */
@@ -99,6 +99,8 @@ export interface ProductRow {
   families: string[];
   /** 이름을 붙일 때 짐작이 섞였다 */
   unsure: boolean;
+  /** std_names 와 같은 순서로, 제품마다의 한국표준산업분류 세세분류 */
+  ksic: ({ code: string; name: string } | null)[];
 }
 
 /** read 가 false 면 보고서에 제품 절은 있지만 표를 읽지 못한 것이다 */
@@ -135,6 +137,35 @@ export interface Meta {
   };
   /** 첫 화면을 나눠 볼 분류와 분류마다의 상장사 수 */
   categories: Record<"market" | "sector" | "group", { name: string; count: number }[]>;
+}
+
+/** 입력 칸에서 고를 수 있는 제품, 제품군, 공식 분류(중분류) */
+export interface Suggestion {
+  kind: "product" | "family" | "class";
+  /** 제품과 제품군은 이름, 공식 분류는 코드 */
+  key: string;
+  name: string;
+  companies: number;
+}
+
+/** 제품을 묶는 분류 전체: 대분류 > 중분류(공식 분류) > 제품군 > 제품 */
+export interface Taxonomy {
+  source: string;
+  sections: {
+    code: string;
+    name: string;
+    divisions: {
+      code: string;
+      name: string;
+      short: string;
+      families: {
+        name: string;
+        field: string | null;
+        companies: number;
+        products: { name: string; companies: number; ksic: string; ksic_name: string; unsure: boolean }[];
+      }[];
+    }[];
+  }[];
 }
 
 export type FeedType = "supply_contract" | "supply_termination" | "stake_acquisition" | "stake_disposal";

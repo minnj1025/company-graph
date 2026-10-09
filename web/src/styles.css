@@ -6,7 +6,7 @@
   --text: #e8edf5;
   --muted: #8d99ab;
   --accent: #7aa2ff;
-  font-family: Pretendard, "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+  font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   color: var(--text);
   font-size: 14px;
 }
@@ -2736,4 +2736,164 @@ h4,
   .facts > span {
     white-space: normal;
   }
+}
+
+/* ---------- 탐색 화면(3판): 조작은 오른쪽 위, 범례는 오른쪽 아래, 오른쪽 칸은 가장자리를 눌러 여닫는다 ---------- */
+.explore .stage {
+  container-type: inline-size;
+}
+
+.bar-right {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.stage-bottom {
+  position: absolute;
+  left: 14px;
+  right: 26px;
+  bottom: 14px;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.stage-bottom > * {
+  pointer-events: auto;
+}
+
+.stage-bottom .composer {
+  position: static;
+  transform: none;
+  width: auto;
+  flex: 1;
+  min-width: 0;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.explore .stage .stage-bottom .legend {
+  position: static;
+  flex: none;
+  max-width: 270px;
+  pointer-events: none;
+}
+
+/* 범례가 입력 칸과 겹칠 만큼 좁으면 범례를 뺀다 */
+@container (max-width: 1040px) {
+  .stage-bottom .legend {
+    display: none;
+  }
+}
+
+.edge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  width: 14px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.edge::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  width: 4px;
+  height: 56px;
+  margin-top: -28px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.22);
+  transition: background 0.15s, height 0.15s, margin-top 0.15s;
+}
+
+.edge:hover::after,
+body.resizing .edge::after {
+  background: var(--accent);
+  height: 84px;
+  margin-top: -42px;
+}
+
+body.resizing .drawer {
+  transition: none;
+}
+
+.drawer {
+  --drawer-width: 460px;
+}
+
+/* ---------- 데이터 페이지의 분류 목록 ---------- */
+.taxonomy details {
+  border-bottom: 1px solid var(--border);
+}
+
+.taxonomy summary {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 2px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.taxonomy summary::-webkit-details-marker {
+  display: none;
+}
+
+.taxonomy summary code {
+  flex: none;
+  min-width: 26px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.taxonomy summary span {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.taxonomy details details {
+  margin-left: 22px;
+  border-bottom: 0;
+}
+
+.taxonomy .family {
+  margin: 2px 0 12px 44px;
+}
+
+.taxonomy .family h5 {
+  margin: 0 0 5px;
+  font-size: 13px;
+  color: #ffb98a;
+}
+
+.taxonomy .family h5 em {
+  margin-left: 8px;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.taxonomy .names {
+  margin: 0;
+  color: #b9c3d3;
+  font-size: 12.5px;
+  line-height: 1.75;
+}
+
+.taxonomy .names i {
+  font-style: normal;
+  color: var(--muted);
 }

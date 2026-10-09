@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Scope } from "./api";
+import type { Level, Scope } from "./api";
 import { LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import type { Meta, RelType } from "./types";
 
@@ -18,6 +18,13 @@ export interface Filters {
 export const NO_FILTER: Filters = { minPct: 0, minAmount: 0, minDegree: 1 };
 const PCT_STEPS: [number, string][] = [[0, "전체"], [5, "5% 이상"], [20, "20% 이상"], [50, "50% 이상"]];
 const AMOUNT_STEPS: [number, string][] = [[0, "전체"], [1e10, "100억 이상"], [1e11, "1,000억 이상"], [1e12, "1조 이상"]];
+/** 큰 범주에서 작은 범주로: 값, 단추 이름, 설명 */
+const LEVELS: [Level, string, string][] = [
+  ["section", "대분류", "공식 분류 21개"],
+  ["division", "중분류", "공식 분류 77개"],
+  ["family", "제품군", "약 160개"],
+  ["product", "제품", "가장 작게"],
+];
 const DEGREE_STEPS: [number, string][] = [[1, "전체"], [2, "2곳 이상"], [5, "5곳 이상"], [10, "10곳 이상"]];
 
 /** first~last 사이의 매달 말일 */
@@ -126,6 +133,9 @@ interface Props extends TimeProps {
   onFilters: (filters: Filters) => void;
   /** 지금 그려진 기업과 선의 수 (조건을 건 뒤) */
   shown: { nodes: number; links: number };
+  /** 제품을 어느 크기의 범주로 묶어 그릴지 */
+  level: Level;
+  onLevel: (level: Level) => void;
   /** 질문으로 찾은 그래프를 보는 중. 그 그래프는 Agent가 조회한 결과라서 아래 조건으로 바뀌지 않는다 */
   locked: boolean;
 }
@@ -184,6 +194,23 @@ export function Settings(props: Props) {
           ))}
         </div>
       </div>
+
+      {types.includes("product") && (
+        <div className="block">
+          <div className="block-head">
+            <span>제품 범주</span>
+            <strong>{LEVELS.find(([value]) => value === props.level)?.[2]}</strong>
+          </div>
+          <div className="chips">
+            {LEVELS.map(([value, label]) => (
+              <button key={value} className={props.level === value ? "chip on" : "chip"} onClick={() => props.onLevel(value)}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <p className="hint">대분류와 중분류는 한국표준산업분류(통계청)이고, 제품군은 그 아래를 제품 말로 다시 묶은 것입니다.</p>
+        </div>
+      )}
 
       <div className="block">
         <div className="block-head">
