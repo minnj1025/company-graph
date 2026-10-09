@@ -3732,3 +3732,13 @@ details.sources a {
 .top h1 span {
   font-weight: 400;
 }
+
+/* 새 대화·지난 대화 줄은 스크롤해도 채팅 칸 위에 붙어 있다 */
+.chat-bar {
+  position: sticky;
+  top: -14px;
+  z-index: 2;
+  margin-top: -14px;
+  padding-top: 14px;
+  background: var(--panel);
+}
