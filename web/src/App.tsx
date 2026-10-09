@@ -481,7 +481,6 @@ export function App() {
               chat={chat}
               examples={chat.turns.length === 0 && drawer === null}
               onAsk={() => setDrawer("answer")}
-              onFocus={() => chat.turns.length > 0 && setDrawer((now) => now ?? "answer")}
               onPickProduct={showPicked}
               onPick={(company: Company) => {
                 go({ found: null, center: company, selected: company.id });

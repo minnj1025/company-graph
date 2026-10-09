@@ -460,14 +460,12 @@ interface ComposerProps {
   examples: boolean;
   /** 제품, 제품군, 공식 분류를 골랐다. Agent를 부르지 않고 그것을 파는 기업을 그린다 */
   onPickProduct: (item: Suggestion) => void;
-  /** 입력 칸에 들어왔다. 지난 답이 있으면 답이 보이는 칸을 다시 연다 */
-  onFocus: () => void;
 }
 
 const KIND_LABELS: Record<Suggestion["kind"], string> = { product: "제품", family: "제품군", class: "공식 분류" };
 
 /** 그래프 아래의 입력 칸 하나. 기업 이름을 적으면 DB에서 바로 찾고, 문장을 적으면 Agent에게 묻는다 */
-export function Composer({ chat, onPick, onAsk, examples, onPickProduct, onFocus }: ComposerProps) {
+export function Composer({ chat, onPick, onAsk, examples, onPickProduct }: ComposerProps) {
   const [text, setText] = useState("");
   const [results, setResults] = useState<Company[]>([]);
   const [things, setThings] = useState<Suggestion[]>([]);
@@ -593,7 +591,6 @@ export function Composer({ chat, onPick, onAsk, examples, onPickProduct, onFocus
         <input
           value={text}
           onChange={(event) => setText(event.target.value)}
-          onFocus={onFocus}
           maxLength={300}
           placeholder={HINTS[hint]}
           aria-label="기업·제품 찾기 또는 질문"
