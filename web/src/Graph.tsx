@@ -164,7 +164,8 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     if (!needsFit.current) return;
     // 보는 범위를 바꿨을 때만 전체가 보이게 맞춘다. 날짜만 바꿀 때는 시점을 그대로 둔다
     needsFit.current = false;
-    const timers = [1500, 5000].map((ms) => setTimeout(fit, ms));
+    // 점들이 모여드는 동안 따라가며 맞춘다
+    const timers = [500, 1600, 5000].map((ms) => setTimeout(fit, ms));
     return () => timers.forEach(clearTimeout);
   }, [data]);
 

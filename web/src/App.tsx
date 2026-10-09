@@ -105,17 +105,39 @@ export function App() {
     },
     [views],
   );
-  const showFound = useCallback((result: AskResult | null) => go({ found: result }), [go]);
+  /** 찾은 그래프의 점을 전체 그래프에서 있던 자리에 놓는다. 그러면 화면이 한 번에 바뀌지 않고, 그 점들이 제자리에서 모여든다 */
+  const seed = useCallback((graph: GraphData) => {
+    const fresh = graph.nodes.filter((node) => node.x === undefined);
+    const known = fresh.map((node) => positions.current.get(node.id)).filter((at) => at !== undefined);
+    if (known.length === 0) return;
+    const middle = { x: 0, y: 0, z: 0 };
+    for (const at of known) for (const axis of ["x", "y", "z"] as const) middle[axis] += at[axis] / known.length;
+    for (const node of fresh) {
+      // 전체 그래프에 없던 점(제품 점, 비상장사)은 모여드는 한가운데 근처에서 나온다
+      const at = positions.current.get(node.id);
+      Object.assign(node, at ?? { x: middle.x + (Math.random() - 0.5) * 40, y: middle.y + (Math.random() - 0.5) * 40, z: middle.z + (Math.random() - 0.5) * 40 });
+    }
+  }, []);
+  const showFound = useCallback(
+    (result: AskResult | null) => {
+      if (result) seed(result.graph);
+      go({ found: result });
+    },
+    [go, seed],
+  );
   /** 제품·제품군·분류를 골랐다: 그것을 파는 기업 전부를 그린다 (Agent를 부르지 않는다) */
   const showPicked = useCallback(
     (item: Suggestion) => {
       if (!asOf) return;
       const label = { product: "제품", family: "제품군", class: "공식 분류" }[item.kind];
       fetchPick(item.kind, item.key, asOf)
-        .then((graph) => go({ found: { question: `${label} · ${item.name}`, graph, picked: true } }))
+        .then((graph) => {
+          seed(graph);
+          go({ found: { question: `${label} · ${item.name}`, graph, picked: true } });
+        })
         .catch(() => setError("그 제품을 파는 기업을 불러오지 못했습니다."));
     },
-    [asOf, go],
+    [asOf, go, seed],
   );
   /** 그래프의 오른쪽 가장자리: 누르면 오른쪽 칸을 여닫고, 끌면 너비를 바꾼다 */
   const dragEdge = (event: React.PointerEvent) => {
