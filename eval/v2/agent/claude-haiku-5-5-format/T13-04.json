@@ -1,0 +1,74 @@
+{
+ "question": "와이지-원의 2025 사업연도 사업보고서 계열회사 현황에 상장 계열회사가 있습니까? 상장·비상장 회사 수를 표에 적힌 대로 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 상장 계열회사는 없습니다.** 조회된 계열회사 53곳은 모두 비상장입니다. 다만 사업보고서 표에 상장·비상장 합계가 따로 나오지 않아, 아래 수치는 조회 결과를 세어 낸 것입니다.\n\n- 상장: 0곳 (상장사만 걸러 조회한 결과 0건)\n- 비상장: 53곳 (전체 조회 결과 total 53)\n- 근거 공시: 접수번호 20260318000988 (2025-12-31 기준 사업보고서, 2026-03-18 공시)\n\n조회 응답은 53건 가운데 50건만 보여 주고 나머지는 잘렸습니다. 나머지 3건은 확인하지 못했지만, 상장 상대만 거른 조회가 0건이므로 상장 계열회사는 없다고 볼 수 있습니다.",
+ "followups": [
+  "와이지-원의 해외 계열회사 중 YG-1 America, Inc.의 지분 관계는 어떻게 공시되어 있나요?",
+  "와이지-원의 지분 관계(equity)는 어떤 기업들이 공시했나요?",
+  "와이지-원이 최근 공시한 공급계약은 무엇이 있나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "와이지-원"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3977,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 53,
+   "chars": 22350
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3977,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 695
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3977,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both",
+    "disclosed_from": "2026-03-19"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 698
+  }
+ ],
+ "cited": [
+  "20260318000988"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2771,
+  "cache_read_input_tokens": 67003,
+  "cache_creation_input_tokens": 25227
+ },
+ "seconds": 15.4,
+ "number": "T13-04",
+ "gold": "상장 계열회사는 없다(상장 칸은 회사수·기업명이 모두 \"-\"). 비상장 계열회사는 53개사로 적혀 있으며(기준일 2025년 12월 31일), QINGDAO NEW CENTURY TOOL CO.,LTD, YG-1 America, Inc., 주식회사 이노자드, 신세기산업㈜ 등이 들어 있다. 와이지-원 자신은 표에 올라 있지 않다."
+}

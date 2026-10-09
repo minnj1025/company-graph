@@ -1,0 +1,162 @@
+{
+ "question": "그 회사의 최대주주가 지분을 가진 다른 상장사는 어디야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "**에코프로비엠의 최대주주는 에코프로**(코스닥, 086520)이고, 에코프로는 상장사 2곳에 지분을 가지고 있습니다. 두 곳 모두 2025-12-31 기준 사업보고서 값입니다.\n\n| 상장사 | 시장 | 에코프로 지분율 | 접수번호 |\n|---|---|---|---|\n| 에코프로머티 (450080) | 유가증권 | 43.0% | 20260318001612, 20260320000475 |\n| 에코프로에이치엔 (383310) | 코스닥 | 31.0% | 20260316001329, 20260318001612 |\n\n- 두 지분 모두 에코프로가 사업보고서의 타법인 출자현황에 적은 값입니다. 지분율은 우선주를 포함한 발행주식총수 기준일 수 있어, 5% 이상 주주 표의 값과 다를 수 있습니다.\n- 에코프로는 이 밖에도 상장되지 않은 회사와 투자조합에 지분을 가지고 있습니다. 상장사만 나열했습니다.",
+ "followups": [
+  "에코프로머티의 최대주주와 주요 계열회사는 어디야?",
+  "에코프로에이치엔은 어떤 제품을 파는 회사야?",
+  "에코프로와 에코프로비엠 사이의 관계 경로를 찾아줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에코프로비엠"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에코프로"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2345,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 21,
+   "chars": 10682
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3793,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 9,
+   "chars": 5164
+  }
+ ],
+ "cited": [
+  "20260316001329",
+  "20260318001612",
+  "20260320000475"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1732,
+  "cache_read_input_tokens": 23941,
+  "cache_creation_input_tokens": 21256
+ },
+ "seconds": 10.5,
+ "number": "F07",
+ "first": {
+  "question": "에코프로비엠은 어떤 회사야?",
+  "answer": "**에코프로비엠**은 코스닥 상장사이자 에코프로 기업집단 소속으로, 하이니켈 계열 양극재(양극활물질)를 만드는 회사입니다. 매출은 거의 전부 양극재에서 나옵니다.\n\n**무엇을 파는지**\n- 2026년 반기보고서 기준 매출 표에는 '양극재(양극활물질)' 한 줄이 있고 비중은 100.3%입니다. 기타(임대수익, 스크랩 등)는 -0.3%입니다. (접수번호 20260814002535)\n- 사업 설명에 따르면 주력 제품은 NCA와 NCM 양극재입니다. 니켈 함량을 높이고 코발트는 적게 써서 에너지 밀도를 높이고 안정성을 확보한 제품입니다. NCA는 주로 전동공구 시장에 팔아 왔고, 최근에는 전기차용 배터리로 판매가 늘고 있다고 적혀 있습니다. (접수번호 20260814002535)\n- 같은 보고서는 당반기 양극활물질 매출이 연결 기준 \"약 1조 1,821억원\"이라고 적고 있습니다.\n\n**지배구조와 계열**\n- 최대주주는 에코프로로 지분 41.0%입니다. 기준일은 2025-12-31이고 접수번호는 20260318001612, 20260318001622입니다.\n- 주요 종속·출자 회사(지분율은 사업보고서 기준)는 다음과 같습니다. 접수번호는 모두 20260318001622입니다.\n\n| 회사 | 지분율 | 비고 |\n|---|---|---|\n| EcoCam Canada | 100.0% | 경영참가 |\n| EcoPro BM America, INC. | 100.0% | 경영참가 |\n| EcoPro BM Hungary Zrt. | 100.0% | 경영참여 |\n| 에코프로이엠 | 60.0% | 경영참가 |\n| PT ECOPRO ESG INVESTMENT | 51.0% | 경영참여 |\n| 데카머티리얼 | 20.0% | 단순투자 |\n\n- 같은 계열의 상장사로는 에코프로에이치엔(383310)과 에코프로머티(450080)가 있습니다. 에코프로머티(450080)는 2026-03-20 공시(접수번호 20260320000475)에서도 에코프로비엠의 계열회사로 나옵니다.\n- 특수관계법인인 데이지파트너스가 에코프로비엠 지분 3.99%를 가졌다고 자기 보고서에 적었습니다(접수번호 20260318001622).\n\n**최근 공시**\n- 2025-10-08부터 2026-10-08까지 공급계약 공시와 취득·처분 결정 공시는 없습니다. 이 DB는 2024년 1월 이후 공시를 모읍니다.",
+  "tool_calls": [
+   {
+    "tool": "find_company",
+    "input": {
+     "name": "에코프로비엠"
+    },
+    "error": null,
+    "total": null,
+    "chars": 195
+   },
+   {
+    "tool": "get_products",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08"
+    },
+    "error": null,
+    "total": 2,
+    "chars": 857
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08",
+     "rel_type": "equity",
+     "direction": "both"
+    },
+    "error": null,
+    "total": 18,
+    "chars": 9289
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08",
+     "rel_type": "affiliate",
+     "direction": "both"
+    },
+    "error": null,
+    "total": 18,
+    "chars": 8726
+   },
+   {
+    "tool": "get_filings",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08",
+     "doc_type": "supply_contract",
+     "filed_from": "2025-10-08"
+    },
+    "error": null,
+    "total": 0,
+    "chars": 554
+   },
+   {
+    "tool": "get_filings",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08",
+     "doc_type": "event",
+     "filed_from": "2025-10-08"
+    },
+    "error": null,
+    "total": 0,
+    "chars": 554
+   },
+   {
+    "tool": "get_business",
+    "input": {
+     "company_id": 3793,
+     "as_of": "2026-10-08",
+     "sections": [
+      1
+     ]
+    },
+    "error": null,
+    "total": null,
+    "chars": 1689
+   }
+  ],
+  "usage": {
+   "input_tokens": 8,
+   "output_tokens": 2543,
+   "cache_read_input_tokens": 21417,
+   "cache_creation_input_tokens": 23892
+  }
+ }
+}

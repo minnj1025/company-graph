@@ -1,0 +1,72 @@
+{
+ "question": "APS이노베이션의 2025 사업연도 사업보고서 타법인 출자현황에서 출자 목적이 단순투자로 적힌 회사를 기말 지분율과 함께 모두 알려 주세요. 그중 2025년에 새로 취득한 곳이 있으면 함께 짚어 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "APS이노베이션의 2025 사업연도 사업보고서(접수번호 20260319000618) 타법인 출자현황에서 출자 목적이 단순투자로 적힌 회사는 3곳입니다.\n\n| 기업 | 기말 지분율 | 보유 주식수 | 출자 목적 | 근거 |\n|---|---|---|---|---|\n| 티이씨씨 | 9.98% | 96,078 | 단순투자 | 20260319000618 |\n| (주)블루타일랩 | 5.88% | 24,316 | 단순투자 | 20260319000618 |\n| (주)화인카보텍 | 5.0% | 7,158 | 단순투자 | 20260319000618 |\n\n- 2025년에 새로 취득한 곳이 있는지는 확실하지 않습니다. 세 곳 모두 2024 사업연도 사업보고서 기준(2025-06-30 조회)의 출자 목록에는 없고, 2025 사업연도 보고서에 처음 나타났습니다. 다만 이 DB에는 2024년 이후 타법인 주식 취득 결정 공시가 한 건도 없어서, 취득 시점이나 경위는 이 DB로 확인할 수 없습니다.\n- 지분율은 보고서 표에 적힌 값 그대로이며, 우선주를 포함한 발행주식총수 기준일 수 있습니다.",
+ "followups": [
+  "티이씨씨의 최근 공시와 지분 관계를 보여 주세요",
+  "APS이노베이션의 2025 사업연도 지분 구조가 2024 사업연도와 어떻게 달라졌는지 정리해 주세요",
+  "APS이노베이션의 최근 공급계약 공시를 보여 주세요"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "APS이노베이션"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3250,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 9,
+   "chars": 4846
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3250,
+    "as_of": "2026-06-30",
+    "rel_type": "stake_acquisition",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 738
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3250,
+    "as_of": "2025-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 2634
+  }
+ ],
+ "cited": [
+  "20260319000618"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1956,
+  "cache_read_input_tokens": 36177,
+  "cache_creation_input_tokens": 16410
+ },
+ "seconds": 11.6,
+ "number": "T12-09",
+ "gold": "세 곳이다. 티이씨씨 9.98%, (주)블루타일랩 5.88%, (주)화인카보텍 5.00%. 이 가운데 (주)화인카보텍은 최초 취득일이 2025.09.01인 신규 취득(7,158주, 장부가액 500,036,000원)이다. 나머지 여섯 곳(소주디이티설비유한공사, VINA DE&T, DE&T US INC, PT. DENT ENERGY INDONESIA, DE&T MICHIGAN INC, DE&T CANADA LTD)은 모두 경영참여 목적이다."
+}

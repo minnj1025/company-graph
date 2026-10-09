@@ -1,0 +1,48 @@
+{
+ "question": "피제이전자의 2025 사업연도 사업보고서 계열회사 현황에 올라 있는 상장 계열회사와 비상장 계열회사를 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "피제이전자의 2025 사업연도 사업보고서(접수번호 20260316001412)에는 계열회사 표에 올라 있는 회사가 없습니다. 따라서 상장 계열회사와 비상장 계열회사 모두 0곳입니다.\n\n이 DB는 사업보고서의 계열회사 현황 표에 적힌 관계만 보여 줍니다. 표에 없다고 해서 계열 관계가 전혀 없다는 뜻은 아닙니다.",
+ "followups": [
+  "피제이전자의 지분 관계(최대주주와 주주 현황)는 어떻게 되나요?",
+  "피제이전자가 낸 공급계약 공시에는 어떤 것이 있나요?",
+  "피제이전자는 어떤 제품을 팔고 매출 비중은 어떤가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "피제이전자"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1875,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 811
+  }
+ ],
+ "cited": [
+  "20260316001412"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 599,
+  "cache_read_input_tokens": 21488,
+  "cache_creation_input_tokens": 11477
+ },
+ "seconds": 5.4,
+ "number": "T13-02",
+ "gold": "없다. 피제이전자의 2025 사업연도 사업보고서 계열회사 현황 표는 상장·비상장 구분 모두 회사수와 기업명이 \"-\"로 비어 있어, 보고된 계열회사가 상장·비상장 통틀어 한 곳도 없다."
+}

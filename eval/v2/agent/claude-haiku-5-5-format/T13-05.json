@@ -1,0 +1,48 @@
+{
+ "question": "일진전기의 2025 사업연도 사업보고서 계열회사 현황을 기준으로, 일진전기 자신을 제외한 상장 계열회사는 어디어디입니까? 표에 적힌 상장·비상장 회사 수도 함께 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "일진전기(company_id 3037)의 2025년 말 기준 계열회사 표에는 자신을 제외하고 33곳이 있으며, 상장사 4곳과 비상장 29곳입니다.\n\n**상장 계열회사 (4곳)**\n\n| 기업 | 종목코드 | 근거 접수번호 |\n|---|---|---|\n| 일진다이아 | 081000 | 20260311004216 |\n| 일진디스플 | 020760 | 20260311004216 |\n| 일진하이솔루스 | 271940 | 20260311004216 |\n| 일진홀딩스 | 015860 | 20260311004216 |\n\n**비상장 계열회사 (29곳, 같은 접수번호 20260311004216)**\n\n- 해외 법인 (13곳): Alpinion Guangzhou Medical Systems Co., Ltd., Alpinion Medical Deutschland GmbH, Alpinion US, Inc., ILJIN DISPLAY VINA CO.,LTD, ILJIN Diamond VINA, ILJIN EUROPE GMBH, ILJIN Electric USA. INC., ILJIN Hysolus Property Management Germany GmbH, ILJIN JAPAN, ILJIN STEEL AMERICA INC., ILJIN USA, Life Science Enterprises, SHANGHAI ILJIN Diamond CO., LTD\n- 국내 법인 (16곳): 마그마툴, 세마오일, 셀리게인, 아이텍, 아트테크, 알피니언메디칼시스템, 일진디앤코, 일진반도체, 일진씨앤에스, 일진에스앤티, 일진자동차, 일진제강, 일진지엘에스, 일진파트너스, 전주방송, 컴퍼니에이치앤\n\n참고로 이 표는 사업보고서 계열회사 현황에서 가져온 것이며, 기준일은 2025-12-31입니다. 일진홀딩스, 일진하이솔루스, 일진다이아, 일진디스플은 각자 보고서에서 일진전기를 계열회사로 적고 있어 양쪽 모두에서 확인됩니다.",
+ "followups": [
+  "일진홀딩스의 계열회사 현황은 어떻게 되나요?",
+  "일진하이솔루스의 최근 공급계약 공시를 보여 주세요.",
+  "일진전기의 주요 제품과 매출 비중은 어떻게 되나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "일진전기"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3037,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 37,
+   "chars": 16950
+  }
+ ],
+ "cited": [
+  "20260311004216"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 2757,
+  "cache_read_input_tokens": 21613,
+  "cache_creation_input_tokens": 19426
+ },
+ "seconds": 12.6,
+ "number": "T13-05",
+ "gold": "일진전기 자신을 제외한 상장 계열회사는 일진홀딩스(주), 일진다이아몬드(주), 일진디스플레이(주), 일진하이솔루스(주)의 네 곳이다. 표에는 상장 5개사(일진전기(주) 포함), 비상장 29개사로 적혀 있다(기준일 2025년 12월 31일)."
+}

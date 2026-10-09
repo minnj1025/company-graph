@@ -1,0 +1,78 @@
+{
+ "question": "그 회사의 최대주주는 누구고 지분율은 얼마야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "삼성생명의 최대주주는 **삼성물산**이고 지분율은 **19.3%**(38,688,000주)입니다. 기준일은 2025-12-31이며, 근거는 접수번호 20260312000856과 20260331004244입니다.\n\n같은 보고서에 나온 다른 주주는 이재용 10.44%, 이마트 5.88%, 이부진 5.76%, 삼성문화재단 4.68%입니다. 이재용·이부진·삼성문화재단은 최대주주의 특수관계인으로 적혀 있고, 이마트는 지분을 자기 보고서에 적은 회사입니다. 이 DB에는 5% 이상 주주 전체 목록이 없어서, 여기 나온 값이 전부는 아닙니다.",
+ "followups": [
+  "삼성물산의 최대주주와 지분율은?",
+  "삼성생명이 지분을 가진 회사는 어디인가요?",
+  "삼성전자의 최대주주 지분 구조를 다시 보여줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "삼성생명"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2627,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 10,
+   "chars": 5595
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1100,
+  "cache_read_input_tokens": 22625,
+  "cache_creation_input_tokens": 14745
+ },
+ "seconds": 7.6,
+ "number": "F03",
+ "first": {
+  "question": "삼성전자의 최대주주는 누구야?",
+  "answer": "삼성전자의 최대주주는 **삼성생명**으로 공시되어 있으며, 지분율은 8.51%(503,905,000주)입니다. 기준일은 2025-12-31이고, 사업보고서(접수번호 20260310002820, 20260331004244)에 실린 값입니다.\n\n이 DB의 주주 정보는 최대주주와 그 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만 포함합니다. 같은 보고서의 다른 주주(예: 삼성물산 4.4%)는 최대주주의 특수관계인이나 계열회사로 함께 나오지만, 5% 이상 주주 전체 목록은 아닙니다. 지분율은 우선주를 포함한 발행주식총수 기준일 수 있어, 보통주 기준 5% 이상 주주 표와 값이 다를 수 있습니다.",
+  "tool_calls": [
+   {
+    "tool": "find_company",
+    "input": {
+     "name": "삼성전자"
+    },
+    "error": null,
+    "total": null,
+    "chars": 192
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 3506,
+     "as_of": "2026-10-08",
+     "rel_type": "equity",
+     "direction": "in"
+    },
+    "error": null,
+    "total": 36,
+    "chars": 17738
+   }
+  ],
+  "usage": {
+   "input_tokens": 8,
+   "output_tokens": 985,
+   "cache_read_input_tokens": 21668,
+   "cache_creation_input_tokens": 20302
+  }
+ }
+}

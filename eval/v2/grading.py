@@ -7,6 +7,7 @@
       python -m eval.v2.grading collect  → eval/v2/grades.json
       결함을 고친 뒤 다시 돌린 답은 끝에 after 를 붙인다 (grading_after/, grades_after/, grades_after.json)
       웹 검색 기준선을 나중에 더 푼 문항은 끝에 more 를 붙인다 (grading_more/, grades_more/, 판정은 grades.json 에 더한다)
+      그 뒤에 다시 돌린 답은 실행할 때 붙인 꼬리말을 적는다. 예: format → agent/<모델>-format/, grading_format/, grades_format/, grades_format.json
 """
 import hashlib
 import json
@@ -36,14 +37,16 @@ def more_answers() -> list[dict]:
     return rows
 
 
-def answers(after: bool) -> list[dict]:
-    """채점할 답 전부: Agent의 149개와 웹 검색 기준선의 32개. after 이면 고친 뒤에 다시 돌린 Agent의 149개."""
+def answers(after: bool | str) -> list[dict]:
+    """채점할 답 전부: Agent의 149개와 웹 검색 기준선의 32개. after 이면 고친 뒤에 다시 돌린 Agent의 149개.
+    after 가 글자(꼬리말)이면 그 꼬리말로 다시 돌린 Agent의 답."""
+    tag = after if isinstance(after, str) else "after"
     rows = []
     for path in sorted((ROOT / "gold").glob("*.json")):
         gold = read(path)
         if gold.get("skip"):
             continue
-        sides = ((("after", ROOT / "agent" / (AGENT_MODEL + "-after") / path.name),) if after else
+        sides = (((tag, ROOT / "agent" / (AGENT_MODEL + "-" + tag) / path.name),) if after else
                  (("agent", ROOT / "agent" / AGENT_MODEL / path.name), ("baseline", ROOT / "baseline" / path.name)))
         for side, file in sides:
             if file.exists():
@@ -52,10 +55,14 @@ def answers(after: bool) -> list[dict]:
     return rows
 
 
-def bundle(after: bool, more: bool = False):
+def _suffix(after: bool | str, more: bool) -> str:
+    return "_more" if more else f"_{after}" if isinstance(after, str) else "_after" if after else ""
+
+
+def bundle(after: bool | str, more: bool = False):
     rows = more_answers() if more else answers(after)
     random.Random(SEED).shuffle(rows)
-    out = ROOT / ("grading_more" if more else "grading_after" if after else "grading")
+    out = ROOT / ("grading" + _suffix(after, more))
     out.mkdir(exist_ok=True)
     for old in out.glob("*.json"):
         old.unlink()
@@ -68,8 +75,8 @@ def bundle(after: bool, more: bool = False):
     print(f"답 {len(rows)}개, 묶음 {-(-len(rows) // BUNDLE_SIZE)}개")
 
 
-def collect(after: bool, more: bool = False):
-    suffix = "_more" if more else "_after" if after else ""
+def collect(after: bool | str, more: bool = False):
+    suffix = _suffix(after, more)
     keys = read(ROOT / f"grading{suffix}" / "keys.json")
     grades: dict[str, dict] = read(ROOT / "grades.json") if more else {}
     if more:
@@ -86,4 +93,5 @@ def collect(after: bool, more: bool = False):
 
 
 if __name__ == "__main__":
-    {"bundle": bundle, "collect": collect}[sys.argv[1]](after=sys.argv[2:] == ["after"], more=sys.argv[2:] == ["more"])
+    tag = (sys.argv[2:] or [""])[0]
+    {"bundle": bundle, "collect": collect}[sys.argv[1]](after=tag if tag not in ("", "after", "more") else tag == "after", more=tag == "more")

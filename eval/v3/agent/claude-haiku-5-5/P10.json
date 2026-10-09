@@ -1,0 +1,121 @@
+{
+ "question": "콘택트렌즈를 직접 만들어 파는 상장사는 어디이고, 국내와 해외에서 각각 어떤 방식으로 파나요?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 이 DB에서 콘택트렌즈를 직접 만들어 파는 상장사는 인터로조(코스닥, 119610) 한 곳뿐입니다.** 국내는 자체 브랜드 '클라렌(Clalen)'을 안경원 경로로 팔고, 해외는 OEM/ODM 방식과 현지법인 경로로 팝니다.\n\n**국내 판매 (자체 브랜드, 안경원 경로)**\n- 본사 → 안경원 → 소비자, 그리고 본사 → 대리점 → 안경원 → 소비자 경로입니다. 매출액은 12,661 백만원으로 전체의 21.3%입니다.\n- 자체 브랜드 클라렌(Clalen) 시리즈를 주력으로 판매한다고 적혀 있습니다.\n\n**해외 판매 (OEM/ODM 및 현지법인)**\n- 본사 → Distributor → 안경원 → 소비자 경로와 본사 → 해외현지법인 → 온·오프라인매장 → 소비자 경로가 있습니다. 매출액은 46,738 백만원으로 전체의 78.7%입니다.\n- 사업 개요에는 해외는 OEM/ODM 판매를 주력으로 한다고 적혀 있습니다. 해외 계열사로는 Shanghai Interojo Optical Products Co.,Ltd.(비상장)가 사업보고서 계열회사 표에 있습니다.\n\n**제품 구성 (2026년 반기 기준, 별도 기준, 매출 비중)**\n\n| 제품 | 매출 비중 |\n|---|---|\n| Hydrogel (1-Day disposable 등) | 59.72% |\n| FRP (Hydrogel 줄) | 22.02% |\n| Silicone Hydrogel (1-Day disposable) | 6.54% |\n| Silicone Hydrogel 줄의 FRP | 11.64% |\n\n근거: 인터로조 반기보고서(2026.06), 접수번호 20260814001914. 판매경로와 제품 표 모두 이 보고서의 값입니다.\n\n**콘택트렌즈를 언급하지만 완제품을 파는 회사는 아닌 곳**\n- KBG(4019): 콘텍트렌즈용 실리콘 하이드로겔 소재를 만듭니다(반기보고서 20260814001735).\n- 송원산업(1400): 콘택트렌즈 수지용 기능성 모노머 개발을 완료했다고 적었습니다(반기보고서 20260813000597).\n- 대원제약(2218): 콘택트렌즈와 몰드 관련 특허를 기재했습니다(반기보고서 20260807000516).\n- 마이크로엔엑스(2871): 보고서에 콘택트렌즈가 나오지만 업계 통계 표의 항목이고, 회사 자체 제품 표는 치과용 모터 시스템입니다. 그래서 완제품 제조사로 보지 않았습니다(사업보고서 20260323000619).",
+ "followups": [
+  "인터로조의 해외 계열사(Shanghai Interojo Optical Products)는 어떤 관계인가요?",
+  "KBG의 콘택트렌즈용 실리콘 하이드로겔 소재는 어떤 회사에 공급되나요?",
+  "인터로조가 낸 단일판매·공급계약 공시가 있나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_by_product",
+   "input": {
+    "as_of": "2026-10-08",
+    "keywords": [
+     "콘택트렌즈"
+    ],
+    "listed_only": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1399
+  },
+  {
+   "tool": "search_business",
+   "input": {
+    "keywords": [
+     "콘택트렌즈",
+     "컬러렌즈",
+     "렌즈"
+    ],
+    "as_of": "2026-10-08",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 192,
+   "chars": 28100
+  },
+  {
+   "tool": "get_business",
+   "input": {
+    "company_id": 1555,
+    "as_of": "2026-10-08",
+    "sections": [
+     1,
+     2,
+     4
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 2983
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1555,
+    "as_of": "2026-10-08",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1992
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1555,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 710
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 2871,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 234
+  },
+  {
+   "tool": "get_business",
+   "input": {
+    "company_id": 2871,
+    "as_of": "2026-10-08",
+    "sections": [
+     1,
+     2
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 7948
+  }
+ ],
+ "cited": [
+  "20260323000619",
+  "20260807000516",
+  "20260813000597",
+  "20260814001735",
+  "20260814001914"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 3584,
+  "cache_read_input_tokens": 123666,
+  "cache_creation_input_tokens": 46257
+ },
+ "seconds": 25.0,
+ "number": "P10"
+}

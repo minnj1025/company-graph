@@ -1,0 +1,60 @@
+{
+ "question": "2025년 11월 말 기준으로, 에이피위성이 Thuraya Telecommunication Company와 맺은 위성통신단말기 납품(No.100951) 계약의 공시상 종료일은 언제였나요? 그 종료일은 어떤 사유로 바뀐 것이었나요?",
+ "as_of": "2025-11-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**답: 2025년 11월 말 기준 공시상 종료일은 2025-12-31입니다.** 당초 2025-11-15였던 종료일을 2025-11-03 정정 공시로 2025-12-31로 바꿨고, 정정 사유는 \"계약종료일 변경\"이라고만 적혀 있습니다.\n\n- **계약:** 위성통신단말기 납품(No.100951), 상대 Thuraya Telecommunication Company(아랍에미레이트), 계약금액 5,184,907,000원, 최근 매출액 대비 8.8%\n- **당초 공시(2025-05-20, 접수번호 20250520900270):** 계약기간 2025-05-12 ~ 2025-11-15\n- **정정 공시(2025-11-03, 접수번호 20251103900718):** 계약 종료일 2025-11-15 → 2025-12-31, 정정 사유 \"계약종료일 변경\"\n\n공시에는 종료일을 바꾼 구체적인 이유(예: 납기 조정이나 잔금 일정)가 적혀 있지 않아, 사유는 이 이상 확인되지 않습니다. 이 DB에는 기준일 이후에 나온 정정 공시도 들어 있지만, 기준일(2025-11-30) 시점에 유효한 값만 답했습니다.",
+ "followups": [
+  "AP위성의 Comtech Mobile Datacom 계약(No. 다목적 위성통신 단말기)은 종료일이 어떻게 바뀌었나?",
+  "AP위성이 2025년 11월 말까지 낸 공급계약 정정 공시를 모두 보여줘",
+  "AP위성과 Thuraya Telecommunication Company의 계약 중 2025-11-30 시점에 유효한 것은 무엇인가?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에이피위성"
+   },
+   "error": null,
+   "total": null,
+   "chars": 191
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2875,
+    "as_of": "2025-11-30",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 18,
+   "chars": 12372
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2875,
+    "as_of": "2025-11-30",
+    "rel_type": "supply_contract",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 13,
+   "chars": 9822
+  }
+ ],
+ "cited": [
+  "20250520900270",
+  "20251103900718"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1574,
+  "cache_read_input_tokens": 21582,
+  "cache_creation_input_tokens": 23169
+ },
+ "seconds": 9.2,
+ "number": "T01-05",
+ "gold": "2025-11-30 시점의 최신 공시는 2025-11-03 정정공시로, 납품 예정일 연장에 따라 종료일을 2025-11-15에서 2025-12-31로 바꾼 것이다. 따라서 종료일은 2025-12-31이다. 2026-01-31(2025-12-15 정정)과 2026-02-28(2026-01-30 정정)은 그 뒤의 값이다."
+}

@@ -1,0 +1,145 @@
+{
+ "question": "라면을 만들어 파는 상장사는 어디이고, 매출에서 라면(면류)이 차지하는 비중은 얼마나 되나요?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "라면을 만드는 상장사는 농심, 삼양식품, 오뚜기 등이 대표적이고, 매출에서 라면이 차지하는 비중이 표로 확인되는 곳은 농심(85.9%)뿐입니다.\n\n| 기업 | 라면 관련 내용 | 매출 비중 | 근거 접수번호 |\n|---|---|---|---|\n| 농심 | 제품 표의 '라 면'(신라면, 안성탕면 외) | 85.9% (매출 1,622,749백만원) | 20260814000362 |\n| 삼양식품 | 라면(삼양라면, 불닭볶음면 등)을 주력으로 함. 표는 '면스낵' 묶음 | 면스낵 90.6%, 라면만 분리 안 됨 | 20260814003053 |\n| 오뚜기 | 라면은 '면제품류'에 포함된 것으로 보이나 표에 분리 안 됨 | 면제품류 548,794,000천원 (합계 1,899,001,546천원 대비), 라면만 분리 안 됨 | 20260814001966 |\n| 하림지주 | 자회사 미식 부문에서 '면(장인라면 외)' 생산 | 24,379백만원, 48.28%이나 회사 전체 기준인지 확인 안 됨 | 20260813001582 |\n| 보라티알 | '면류' 상품 항목이 있으나 제품명은 파스타로 분류됨 | 22.05% | 20260814001433 |\n\n- 농심의 85.9%는 표 기준 매출 구성비입니다. 이 표에는 매출에누리(16.9%)가 음수로 따로 적혀 있어 비율 합계가 100.0%입니다.\n- 삼양식품, 오뚜기는 보고서가 라면을 따로 나누지 않아 라면 비중을 확인할 수 없습니다.\n- 농심홀딩스는 농심의 지주회사이며, 제품 표는 포장재와 전자소재 중심입니다.\n- 라면을 직접 만드는 회사 가운데 이 DB로 라면 비중까지 확인된 곳은 농심 하나입니다. 나머지는 표 구성상 확인이 어렵습니다.",
+ "followups": [
+  "농심의 주요 제품 및 서비스 표를 보여줘",
+  "삼양식품의 해외 매출 비중은 얼마야?",
+  "농심과 농심홀딩스의 지분 관계는 어떻게 돼?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_by_product",
+   "input": {
+    "as_of": "2026-10-08",
+    "keywords": [
+     "라면",
+     "면류"
+    ]
+   },
+   "error": null,
+   "total": 1,
+   "chars": 999
+  },
+  {
+   "tool": "search_business",
+   "input": {
+    "keywords": [
+     "라면",
+     "면류"
+    ],
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 100,
+   "chars": 20967
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3379,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 230
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3832,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 232
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3243,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 231
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3537,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 1247
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 1631,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 8,
+   "chars": 1433
+  },
+  {
+   "tool": "get_business",
+   "input": {
+    "company_id": 3379,
+    "as_of": "2026-10-08",
+    "sections": [
+     2
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1685
+  },
+  {
+   "tool": "get_business",
+   "input": {
+    "company_id": 3832,
+    "as_of": "2026-10-08",
+    "sections": [
+     2
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 2028
+  },
+  {
+   "tool": "get_business",
+   "input": {
+    "company_id": 3243,
+    "as_of": "2026-10-08",
+    "sections": [
+     2
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1637
+  }
+ ],
+ "cited": [
+  "20260813001582",
+  "20260814000362",
+  "20260814001433",
+  "20260814001966",
+  "20260814003053"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 4094,
+  "cache_read_input_tokens": 69004,
+  "cache_creation_input_tokens": 35027
+ },
+ "seconds": 29.4,
+ "number": "P02"
+}

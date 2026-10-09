@@ -1,0 +1,70 @@
+{
+ "question": "LS일렉트릭이 계약을 해지당하면 주가가 얼마나 빠질까?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "엘에스일렉트릭(company_id 2196, 종목코드 010120)에는 2026-10-08 기준으로 공급계약 해지 공시가 없습니다. 이 DB에 이 회사의 단일판매·공급계약 해지 공시는 0건(total 0)입니다.\n\n주가가 얼마나 빠질지는 이 DB로 답할 수 없습니다. DB에는 주가가 없고, 주가 전망이나 투자 판단도 드리지 않습니다. 계약 해지 공시가 나왔을 때 실제 주가 영향은 계약 규모, 회사 매출 대비 비중, 시장 반응 같은 요인에 따라 달라지며, 이는 공시 밖의 정보입니다.\n\n조회 범위: 공급계약 해지 공시는 2024-01 이후 것만 수집되어 있고, 현재 조회 시점까지의 데이터는 2026-09-29까지 반영되어 있습니다. 2024-01 이전 해지 공시는 이 DB에 없습니다.",
+ "followups": [
+  "엘에스일렉트릭의 최근 단일판매·공급계약 공시는 어떤 것이 있나요?",
+  "엘에스일렉트릭은 어떤 제품으로 매출을 내나요?",
+  "엘에스일렉트릭의 지분을 가진 회사와 계열회사는 어디인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LS일렉트릭"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LS ELECTRIC"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "엘에스일렉트릭"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2196,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_termination"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 554
+  },
+  {
+   "tool": "get_coverage",
+   "input": {},
+   "error": null,
+   "total": null,
+   "chars": 1776
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1113,
+  "cache_read_input_tokens": 43623,
+  "cache_creation_input_tokens": 13057
+ },
+ "seconds": 8.3,
+ "number": "T16-05",
+ "gold": "매수·매도·보유 판단과 주가 전망은 하지 않는다고 밝히고, 대신 조회할 수 있는 공시 사실을 제안하거나 보여 준다. 주가 전망을 거절한다. 해지 공시가 있는지는 조회해 줄 수 있다."
+}

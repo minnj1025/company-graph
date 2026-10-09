@@ -1,0 +1,150 @@
+{
+ "question": "그중 카카오가 가진 지분율이 가장 낮은 곳은 어디고 몇 %야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "에스엠의 지분율이 21.61%로 가장 낮습니다. 다만 상장 계열 8곳 가운데 4곳(SM C&C, SM Life Design, 디어유, 키이스트)은 카카오가 직접 가진 지분 기록이 DB에 없어서, 이 4곳은 비교에서 빠졌습니다.\n\n| 기업 | 카카오 지분율 | 기준일 | 근거 접수번호 |\n|---|---|---|---|\n| 에스엠 | 21.61% | 2025-12-31 | 20260317000781, 20260318001423 |\n| 카카오뱅크 | 27.19% | 2025-12-31 | 20260318000884, 20260318001423 |\n| 카카오게임즈 | 37.93% | 2025-12-31 | 20260318001423, 20260318001659 |\n| 카카오페이 | 46.14% | 2025-12-31 | 20260312001366, 20260318001423 |\n\n- 지분율은 2025-12-31 기준 사업보고서의 타법인 출자현황에 적힌 값입니다. 조회 시점(2026-10-08)까지 나온 가장 최근 사업보고서가 이 기준이라 기준일이 다릅니다.\n- 카카오가 상장 계열 중 SM C&C, SM Life Design, 디어유, 키이스트의 지분을 직접 가졌다는 공시는 DB에 없습니다. 이 회사들이 카카오 계열에 속한다는 사실은 계열회사 표에 있지만, 지분이 어떤 경로로 연결되는지는 이 DB로 확인할 수 없습니다.\n- 참고로 바이브컴퍼니(코스닥, 301300)에 카카오가 7.6%를 단순투자로 보유한다고 보고서에 적혀 있습니다(접수번호 20260318001423). 바이브컴퍼니는 계열회사 목록에는 없어서 위 비교에서 뺐습니다.",
+ "followups": [
+  "카카오 계열 상장사 가운데 SM C&C와 카카오 사이에 연결된 지분 경로가 있나?",
+  "에스엠의 계열회사와 지분 현황은 어떻게 되나?",
+  "카카오가 바이브컴퍼니 지분을 취득한 결정 공시가 있나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 64,
+   "chars": 23832
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "affiliate",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 9,
+   "chars": 4965
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 2198
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 2676
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 3711
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 1793
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  }
+ ],
+ "cited": [
+  "20260312001366",
+  "20260317000781",
+  "20260318000884",
+  "20260318001423",
+  "20260318001659"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2837,
+  "cache_read_input_tokens": 49500,
+  "cache_creation_input_tokens": 30846
+ },
+ "seconds": 15.3,
+ "number": "F10",
+ "first": {
+  "question": "카카오의 계열회사 가운데 상장사는 어디야?",
+  "answer": "카카오의 계열회사 가운데 DB에서 상장사로 확인되는 곳은 8곳입니다(카카오 자신을 빼고). 모두 2025-12-31 기준 사업보고서 계열회사 현황에 실린 내용입니다.\n\n| 기업 | 종목코드 | 시장 |\n|---|---|---|\n| SM C&C | 048550 | 코스닥 |\n| SM Life Design | 063440 | 코스닥 |\n| 디어유 | 376300 | 코스닥 |\n| 에스엠 | 041510 | 코스닥 |\n| 카카오게임즈 | 293490 | 코스닥 |\n| 카카오뱅크 | 323410 | 유가증권 |\n| 카카오페이 | 377300 | 유가증권 |\n| 키이스트 | 054780 | 코스닥 |\n\n근거 접수번호는 모두 20260318001423입니다.\n\n계열 목록에는 이름만 있는 \"SM ENTERTAINMENT JAPAN Co.,Ltd\"도 있습니다. 보고서에서는 상장으로 표시돼 있지만 DB에 이 회사의 기업 정보가 없어서 상장 여부를 확인할 수 없어, 위 8곳에는 넣지 않았습니다. 카카오 자신까지 세면 상장 계열은 9곳입니다.",
+  "tool_calls": [
+   {
+    "tool": "find_company",
+    "input": {
+     "name": "카카오"
+    },
+    "error": null,
+    "total": null,
+    "chars": 192
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 2254,
+     "as_of": "2026-10-08",
+     "rel_type": "affiliate",
+     "direction": "out",
+     "listed_only": true
+    },
+    "error": null,
+    "total": 9,
+    "chars": 4965
+   }
+  ],
+  "usage": {
+   "input_tokens": 8,
+   "output_tokens": 1240,
+   "cache_read_input_tokens": 21410,
+   "cache_creation_input_tokens": 13556
+  }
+ }
+}

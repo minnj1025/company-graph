@@ -1,0 +1,150 @@
+{
+ "question": "그중 카카오가 가진 지분율이 가장 낮은 곳은 어디고 몇 %야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "카카오가 지분을 가진 상장 계열사 중 지분율이 가장 낮은 곳은 **에스엠 21.61%**입니다.\n\n| 기업 | 카카오 지분율 | 근거 접수번호 |\n|---|---|---|\n| 에스엠 | 21.61% | 20260317000781, 20260318001423 |\n| 카카오뱅크 | 27.19% | 20260318000884, 20260318001423 |\n| 카카오게임즈 | 37.93% | 20260318001423, 20260318001659 |\n| 카카오페이 | 46.14% | 20260312001366, 20260318001423 |\n\n- 지분율은 2025-12-31 기준(사업보고서 타법인 출자현황)이며, 조회 시점 2026-10-08까지 나온 가장 최근 값입니다.\n- SM C&C, SM Life Design, 디어유, 키이스트는 카카오의 지분 보고 목록에 없어 지분율을 확인할 수 없었습니다. 이 DB에 지분 관계가 공시되지 않았다는 뜻이고, 지분이 없다는 확인은 아닙니다.\n- SM ENTERTAINMENT JAPAN은 DB에 원장 번호가 없어 개별 조회를 하지 못했습니다.",
+ "followups": [
+  "에스엠의 최대주주와 특수관계인은 누구인가요?",
+  "카카오게임즈가 지분을 가진 회사는 어디인가요?",
+  "SM C&C는 어떤 회사이고 카카오와 어떤 관계가 공시돼 있나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 64,
+   "chars": 23832
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "affiliate",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 9,
+   "chars": 4965
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 2198
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 2676
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 3711
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 1793
+   },
+   "error": null,
+   "total": 0,
+   "chars": 893
+  }
+ ],
+ "cited": [
+  "20260312001366",
+  "20260317000781",
+  "20260318000884",
+  "20260318001423",
+  "20260318001659"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2619,
+  "cache_read_input_tokens": 49936,
+  "cache_creation_input_tokens": 30801
+ },
+ "seconds": 14.4,
+ "number": "F10",
+ "first": {
+  "question": "카카오의 계열회사 가운데 상장사는 어디야?",
+  "answer": "카카오의 계열회사 중 상장사는 자신을 제외하고 9곳입니다. 사업보고서 계열회사 표 기준(기준일 2025-12-31, 접수번호 20260318001423)입니다.\n\n| 기업 | 종목코드 | 시장 |\n|---|---|---|\n| SM C&C | 048550 | 코스닥 |\n| SM Life Design | 063440 | 코스닥 |\n| 디어유 | 376300 | 코스닥 |\n| 에스엠 | 041510 | 코스닥 |\n| 카카오게임즈 | 293490 | 코스닥 |\n| 카카오뱅크 | 323410 | 유가증권 |\n| 카카오페이 | 377300 | 유가증권 |\n| 키이스트 | 054780 | 코스닥 |\n| SM ENTERTAINMENT JAPAN Co.,Ltd | (없음) | (없음) |\n\nSM ENTERTAINMENT JAPAN Co.,Ltd는 DB 원장에 없는 상대라 이름만 있고 종목코드와 시장이 확인되지 않습니다. 상장으로 분류되어 있어 목록에 포함했지만, 이 DB만으로는 상장 여부를 확인할 수 없습니다. 자신을 포함하면 상장사는 10곳입니다.",
+  "tool_calls": [
+   {
+    "tool": "find_company",
+    "input": {
+     "name": "카카오"
+    },
+    "error": null,
+    "total": null,
+    "chars": 192
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 2254,
+     "as_of": "2026-10-08",
+     "rel_type": "affiliate",
+     "direction": "out",
+     "listed_only": true
+    },
+    "error": null,
+    "total": 9,
+    "chars": 4965
+   }
+  ],
+  "usage": {
+   "input_tokens": 8,
+   "output_tokens": 1020,
+   "cache_read_input_tokens": 21676,
+   "cache_creation_input_tokens": 13689
+  }
+ }
+}

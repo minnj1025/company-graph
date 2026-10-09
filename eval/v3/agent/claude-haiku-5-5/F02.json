@@ -1,0 +1,107 @@
+{
+ "question": "그중 지분율이 가장 높은 곳은 어디고 몇 %야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "카카오가 지분을 가진 상장사 중 지분율이 가장 높은 곳은 **카카오페이로 46.14%**입니다(최대주주, 2025-12-31 기준 사업보고서 값).\n\n근거 접수번호는 20260312001366, 20260318001423입니다. 조회 시점을 2026-10-08로 바꿔도 목록과 지분율은 그대로였습니다. 이 DB에는 반기·분기보고서가 아직 없어서, 2026년 중에 바뀐 지분은 반영되지 않았습니다.",
+ "followups": [
+  "카카오페이의 최근 공급계약이나 취득·처분 결정은 무엇이 있나?",
+  "카카오게임즈의 계열회사와 주요 제품은 무엇인가?",
+  "카카오뱅크의 최대주주 관계와 출자 현황을 알려줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 7,
+   "chars": 4395
+  }
+ ],
+ "cited": [
+  "20260312001366"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 808,
+  "cache_read_input_tokens": 22946,
+  "cache_creation_input_tokens": 14223
+ },
+ "seconds": 6.8,
+ "number": "F02",
+ "first": {
+  "question": "카카오가 지분을 가진 상장사는?",
+  "answer": "카카오가 지분을 가진 상장사는 **7곳**이고, 이 중 4곳은 최대주주 관계입니다. 모두 2025년 말 기준 사업보고서에 실린 값입니다(as_of_date 2025-12-31).\n\n| 기업 | 시장 | 지분율 | 비고 | 근거 접수번호 |\n|---|---|---|---|---|\n| 카카오페이 | 유가증권 | 46.14% | 최대주주 | 20260312001366, 20260318001423 |\n| 카카오게임즈 | 코스닥 | 37.93% | 최대주주 | 20260318001423, 20260318001659 |\n| 카카오뱅크 | 유가증권 | 27.19% | 최대주주 | 20260318000884, 20260318001423 |\n| 에스엠 | 코스닥 | 21.61% | 최대주주 | 20260317000781, 20260318001423 |\n| 바이브컴퍼니 | 코스닥 | 7.6% | 단순투자 | 20260318001423 |\n| 차바이오텍 | 코스닥 | 2.94% | 단순투자 | 20260318001423 |\n| 아이톡시 | 코스닥 | 0.06% | 단순투자 | 20260318001423 |\n\n- 이 목록은 DB에서 상장 여부를 확인할 수 있는 상대만 담았습니다. 원장에 이름만 있는 상대 40곳은 상장 여부를 알 수 없어 뺐고, 해외 상장사일 수 있습니다.\n- 주주 쪽 정보는 최대주주와 그 특수관계인, 지분 보유를 자기 보고서에 적은 회사만 담습니다. 사업보고서 출자현황 표 기준이라 5% 이상 주주 표의 값과 다를 수 있습니다.",
+  "tool_calls": [
+   {
+    "tool": "find_company",
+    "input": {
+     "name": "카카오"
+    },
+    "error": null,
+    "total": null,
+    "chars": 192
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 2254,
+     "as_of": "2026-10-08",
+     "rel_type": "equity",
+     "direction": "out"
+    },
+    "error": null,
+    "total": 64,
+    "chars": 23832
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 2254,
+     "as_of": "2026-10-08",
+     "rel_type": "affiliate",
+     "direction": "out",
+     "listed_only": true
+    },
+    "error": null,
+    "total": 9,
+    "chars": 4965
+   },
+   {
+    "tool": "get_relations",
+    "input": {
+     "company_id": 2254,
+     "as_of": "2026-10-08",
+     "rel_type": "equity",
+     "direction": "out",
+     "listed_only": true
+    },
+    "error": null,
+    "total": 7,
+    "chars": 4395
+   }
+  ],
+  "usage": {
+   "input_tokens": 10,
+   "output_tokens": 1873,
+   "cache_read_input_tokens": 47734,
+   "cache_creation_input_tokens": 29025
+  }
+ }
+}

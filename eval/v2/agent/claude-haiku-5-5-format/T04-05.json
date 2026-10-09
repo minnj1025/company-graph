@@ -1,0 +1,48 @@
+{
+ "question": "2026년 1월 말 기준으로, SK가스 측의 사우디 Advanced Polyolefins Industry Co. 지분 취득 결정에서 실제 취득 주체는 어느 회사이고, 그 시점에 공시되어 있던 취득금액과 취득예정일자는 무엇이었나요?",
+ "as_of": "2026-01-31",
+ "model": "claude-haiku-5-5",
+ "answer": "**실제 취득 주체는 SK Gas Petrochemical Pte. Ltd.(SK가스의 싱가포르 계열회사)입니다.** 2026년 1월 31일 기준으로 공시되어 있던 취득금액은 143,574,862,264원이고, 취득예정일자는 2026-11-10이었습니다. 이 결정은 SK가스가 공시했지만 취득 당사자는 자회사입니다.\n\n| 항목 | 내용 |\n|---|---|\n| 공시 주체 | SK가스 (company_id 1460) |\n| 실제 취득 주체 | SK Gas Petrochemical Pte. Ltd. (싱가포르, 투자업) |\n| 취득 대상 | Advanced Polyolefins Industry Co. (사우디아라비아) |\n| 취득금액 | 143,574,862,264원 |\n| 취득예정일자 | 2026-11-10 |\n| 취득 후 지분율 | 15.00% (38,469,375주) |\n| 근거 공시 | 접수번호 20251202800418 (2025-12-02 공시, 정정 공시) |\n\n이 금액은 정정 공시 값입니다. 정정 전 취득금액은 153,897,300,000원이었고, 정정 사유는 \"출자금액 감소 및 출자예정시기 확정 등\"입니다. 이 정정은 2025-12-02에 나왔으므로 2026-01-31 시점에 이미 반영되어 있었습니다. 이 결정은 2026-04-01에 무효 처리되었다고 기록되어 있지만, 그 날짜는 조회 시점 이후이므로 이 답에는 영향이 없습니다.",
+ "followups": [
+  "SK가스의 GridFlex Inc. 지분 취득 결정 현황은 어떻게 되나요?",
+  "SK Gas Petrochemical Pte. Ltd. 관련 다른 공시가 있나요?",
+  "SK가스가 2026년 이후 낸 공급계약 공시를 보여주세요."
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK가스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1460,
+    "as_of": "2026-01-31",
+    "rel_type": "stake_acquisition",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 4697
+  }
+ ],
+ "cited": [
+  "20251202800418"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1871,
+  "cache_read_input_tokens": 21583,
+  "cache_creation_input_tokens": 13812
+ },
+ "seconds": 10.4,
+ "number": "T04-05",
+ "gold": "취득 주체는 SK가스의 종속회사 SK Gas Petrochemical Pte. Ltd.이다. 2025-12-02 정정 공시 기준으로 취득금액은 143,574,862,264원(자산총액 대비 3.82%), 취득예정일자는 2026-11-10이며, 취득 후 지분율은 15.00%(38,469,375주)이다."
+}
