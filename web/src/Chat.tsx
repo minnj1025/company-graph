@@ -338,25 +338,30 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
           <button onClick={chat.startNew} disabled={chat.busy || chat.turns.length === 0} title="앞 내용을 잇지 않는 새 대화를 엽니다. 지금 대화는 지난 대화로 남습니다">
             + 새 대화
           </button>
-          <details className="past">
-            <summary>지난 대화 {chat.others.length}</summary>
-            <div className="past-list">
-              {chat.others.length === 0 && <p>이 대화 말고 남아 있는 대화가 없습니다.</p>}
-              {chat.others.map((other) => (
-                <button
-                  key={other.id}
-                  disabled={chat.busy}
-                  onClick={(event) => {
-                    (event.currentTarget.closest("details") as HTMLDetailsElement).open = false;
-                    chat.open(other.id);
-                  }}
-                >
-                  <span>{other.turns[0].question}</span>
-                  <em>질문 {other.turns.length}개</em>
-                </button>
-              ))}
-            </div>
-          </details>
+          {chat.others.length === 0 ? (
+            <span className="past none" title="이 대화 말고 남아 있는 대화가 없습니다">
+              지난 대화 0
+            </span>
+          ) : (
+            <details className="past">
+              <summary>지난 대화 {chat.others.length}</summary>
+              <div className="past-list">
+                {chat.others.map((other) => (
+                  <button
+                    key={other.id}
+                    disabled={chat.busy}
+                    onClick={(event) => {
+                      (event.currentTarget.closest("details") as HTMLDetailsElement).open = false;
+                      chat.open(other.id);
+                    }}
+                  >
+                    <span>{other.turns[0].question}</span>
+                    <em>질문 {other.turns.length}개</em>
+                  </button>
+                ))}
+              </div>
+            </details>
+          )}
         </div>
       }
       {chat.turns.length === 0 && (

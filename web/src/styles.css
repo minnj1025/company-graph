@@ -3781,3 +3781,11 @@ details.sources a {
 .chat-bar .past-list button.now span {
   font-weight: 600;
 }
+
+
+/* 다른 대화가 없으면 누를 것이 없다. 자리만 지키는 글자로 둔다 */
+.chat-bar .past.none {
+  color: var(--muted);
+  opacity: 0.5;
+  cursor: default;
+}
