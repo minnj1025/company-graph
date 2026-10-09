@@ -3481,3 +3481,12 @@ button.q:hover {
   height: 34px;
   overflow: hidden;
 }
+
+/* 보는 범위는 누르는 것이 아니라 알려 주는 글이라, 칸 없이 글자만 둔다 (선 위에서도 읽히게 글자 둘레만 어둡게) */
+.crumb,
+.crumb.narrowed {
+  padding: 7px 4px;
+  background: none;
+  box-shadow: none;
+  text-shadow: 0 0 4px var(--bg), 0 0 4px var(--bg), 0 0 8px var(--bg);
+}
