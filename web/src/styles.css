@@ -2936,3 +2936,45 @@ body.resizing .drawer {
   font-size: 15px;
   line-height: 1;
 }
+
+/* 입력 칸은 그래프 칸의 한가운데에 둔다 (오른쪽 칸이 열려 그래프가 좁아져도 그 가운데). 범례는 오른쪽 아래에 따로 얹는다 */
+.stage-bottom {
+  display: block;
+  left: 14px;
+  right: 14px;
+  height: 0;
+}
+
+.stage-bottom .composer {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(720px, 100%);
+  max-width: none;
+  margin: 0;
+}
+
+.explore .stage .stage-bottom .legend {
+  position: absolute;
+  right: 12px;
+  bottom: 0;
+}
+
+/* 범례와 닿을 만큼 좁으면 입력 칸을 양쪽에서 같은 만큼 줄여 가운데를 지킨다 */
+@container (max-width: 1340px) {
+  .stage-bottom .composer {
+    width: calc(100% - 2 * 296px);
+  }
+}
+
+@container (max-width: 1040px) {
+  .stage-bottom .composer {
+    width: min(720px, 100%);
+  }
+}
+
+.explore .stage .stage-bottom .legend {
+  left: auto;
+  top: auto;
+}
