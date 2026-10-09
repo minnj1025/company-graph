@@ -236,9 +236,9 @@ export function useChat(onShow: (result: AskResult | null) => void) {
     [busy, closed, onShow, turns, setTurns],
   );
 
-  /** 질문이 있는 대화 전부 (지금 대화도 넣는다). 최근 것이 위로 */
-  const all = chats.filter((chat) => chat.turns.length > 0).reverse();
-  return { turns, busy, status, left, closed, ask, owner, clear, startNew, open, all, current };
+  /** 지금 대화 말고 남아 있는 대화들. 최근 것이 위로 (지금 대화의 질문은 아래에 이미 죽 보인다) */
+  const others = chats.filter((chat) => chat.id !== current && chat.turns.length > 0).reverse();
+  return { turns, busy, status, left, closed, ask, owner, clear, startNew, open, others, current };
 }
 
 export type ChatState = ReturnType<typeof useChat>;
@@ -339,21 +339,20 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
             + 새 대화
           </button>
           <details className="past">
-            <summary>지난 대화 {chat.all.length}</summary>
+            <summary>지난 대화 {chat.others.length}</summary>
             <div className="past-list">
-              {chat.all.length === 0 && <p>아직 나눈 대화가 없습니다.</p>}
-              {chat.all.map((other) => (
+              {chat.others.length === 0 && <p>이 대화 말고 남아 있는 대화가 없습니다.</p>}
+              {chat.others.map((other) => (
                 <button
                   key={other.id}
-                  className={other.id === chat.current ? "now" : ""}
                   disabled={chat.busy}
                   onClick={(event) => {
                     (event.currentTarget.closest("details") as HTMLDetailsElement).open = false;
-                    if (other.id !== chat.current) chat.open(other.id);
+                    chat.open(other.id);
                   }}
                 >
                   <span>{other.turns[0].question}</span>
-                  <em>{other.id === chat.current ? "지금 대화 · " : ""}질문 {other.turns.length}개</em>
+                  <em>질문 {other.turns.length}개</em>
                 </button>
               ))}
             </div>
