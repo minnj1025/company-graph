@@ -236,9 +236,9 @@ export function useChat(onShow: (result: AskResult | null) => void) {
     [busy, closed, onShow, turns, setTurns],
   );
 
-  /** 지금 대화 말고 남아 있는 대화들. 최근 것이 위로 */
-  const others = chats.filter((chat) => chat.id !== current && chat.turns.length > 0).reverse();
-  return { turns, busy, status, left, closed, ask, owner, clear, startNew, open, others };
+  /** 질문이 있는 대화 전부 (지금 대화도 넣는다). 최근 것이 위로 */
+  const all = chats.filter((chat) => chat.turns.length > 0).reverse();
+  return { turns, busy, status, left, closed, ask, owner, clear, startNew, open, all, current };
 }
 
 export type ChatState = ReturnType<typeof useChat>;
@@ -321,40 +321,45 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
     bottom.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [chat.turns, chat.busy]);
   // 펼쳐 둔 질문 하나. 나머지는 질문만 한 줄씩 쌓인다. 새로 물으면 그 질문이 펼쳐진다
-  const [open, setOpen] = useState(chat.turns.length - 1);
-  useEffect(() => setOpen(chat.turns.length - 1), [chat.turns.length]);
+  // 대화를 열었을 때는 질문만 죽 보이고, 새로 물은 질문만 펼쳐진다
+  const [open, setOpen] = useState(-1);
+  const seen = useRef({ id: chat.current, count: chat.turns.length });
+  useEffect(() => {
+    const before = seen.current;
+    seen.current = { id: chat.current, count: chat.turns.length };
+    if (before.id !== chat.current) setOpen(-1);
+    else if (chat.turns.length > before.count) setOpen(chat.turns.length - 1);
+  }, [chat.current, chat.turns.length]);
 
   return (
     <div className="chat-log">
-      {(chat.turns.length > 0 || chat.others.length > 0) && (
+      {
         <div className="chat-bar">
           <button onClick={chat.startNew} disabled={chat.busy || chat.turns.length === 0} title="앞 내용을 잇지 않는 새 대화를 엽니다. 지금 대화는 지난 대화로 남습니다">
             + 새 대화
           </button>
-          {chat.others.length > 0 && (
-            <details className="past">
-              <summary>지난 대화 {chat.others.length}</summary>
-              <div className="past-list">
-              {chat.others.map((other) => (
+          <details className="past">
+            <summary>지난 대화 {chat.all.length}</summary>
+            <div className="past-list">
+              {chat.all.length === 0 && <p>아직 나눈 대화가 없습니다.</p>}
+              {chat.all.map((other) => (
                 <button
                   key={other.id}
+                  className={other.id === chat.current ? "now" : ""}
                   disabled={chat.busy}
                   onClick={(event) => {
                     (event.currentTarget.closest("details") as HTMLDetailsElement).open = false;
-                    chat.open(other.id);
-                    const last = [...other.turns].reverse().find((turn) => turn.result && turn.result.graph.nodes.length > 0);
-                    if (last) onShow(last.result!);
+                    if (other.id !== chat.current) chat.open(other.id);
                   }}
                 >
                   <span>{other.turns[0].question}</span>
-                  <em>질문 {other.turns.length}개</em>
+                  <em>{other.id === chat.current ? "지금 대화 · " : ""}질문 {other.turns.length}개</em>
                 </button>
               ))}
-              </div>
-            </details>
-          )}
+            </div>
+          </details>
         </div>
-      )}
+      }
       {chat.turns.length === 0 && (
         <p className="empty">
           아래 입력 칸에 궁금한 것을 적으면 답이 여기에 쌓입니다. 같은 대화 안에서는 "그중 가장 큰 곳은?"처럼 이어서 물을 수 있습니다.

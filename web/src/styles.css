@@ -3771,3 +3771,13 @@ details.sources a {
 .chat-bar .past summary + .past-list button {
   margin-top: 0;
 }
+
+
+.chat-bar .past-list p {
+  margin: 6px 8px;
+  color: var(--muted);
+}
+
+.chat-bar .past-list button.now span {
+  font-weight: 600;
+}
