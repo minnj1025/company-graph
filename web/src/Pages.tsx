@@ -171,7 +171,8 @@ function sourceOf(meta: Meta, label: string): string {
     "지분 취득 결정": "stake_acquisition",
     "지분 처분 결정": "stake_disposal",
   };
-  return meta.coverage.sources[key[label]] ?? "";
+  // "2024-01" 같은 날짜가 줄 끝에서 "2024-" 와 "01" 로 갈리지 않게, 숫자 사이의 붙임표를 줄이 바뀌지 않는 것으로 바꾼다
+  return (meta.coverage.sources[key[label]] ?? "").replace(/(\d)-(?=\d)/g, "$1\u2011");
 }
 
 /** Agent 평가: 149문항 결과, 웹 검색만 쓴 Claude와의 비교, 문항 열어보기. */
