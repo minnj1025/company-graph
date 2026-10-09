@@ -12,6 +12,8 @@ _TOTAL = re.compile(r"^(총\s*)?(합\s*계|총\s*계|소\s*계|계|total|합)$",
 _NUMBER = re.compile(r"^[△▲\-(]?\s*[\d,]+(\.\d+)?\s*%?\)?$")
 _INLINE = re.compile(r"[\d,]+(?:\.\d+)?\s*\(\s*(△|-)?\s*(\d{1,3}(?:\.\d+)?)\s*%?\s*\)")   # "576,425(92.00%)"
 _PERCENT = re.compile(r"^(△|▲|-)?\s*(\d{1,3}(?:\.\d+)?)\s*%?$")
+# 이름 칸이 아닌 것: 출시일("2014.12.23", "1999년"), 만든 회사("(주)덕성", "DUKSUNG VINA CO.,LTD.")
+_NOT_NAME = re.compile(r"^(19|20)?\d{2}\s*[.년/-]|\(주\)|㈜|주식회사|유한공사|co\.\s*,?\s*ltd|LTD|Inc\.", re.I)
 
 
 @dataclass
@@ -65,7 +67,8 @@ def _read(table: list[list[str]]) -> list[Product] | None:
                 continue
             at = len(row) - from_end
             share = _share(row[at])
-            names = [cell for cell in row[:at] if cell and cell != "-" and not _NUMBER.match(cell.replace(" ", ""))]
+            names = [cell for cell in row[:at] if cell and cell != "-" and not _NUMBER.match(cell.replace(" ", ""))
+                     and not _NOT_NAME.search(cell)]
             if share is None or not names:
                 continue
             if any(_TOTAL.match(name.replace(" ", "")) for name in names):

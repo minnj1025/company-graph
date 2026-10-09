@@ -124,7 +124,7 @@ export function App() {
   }, [data]);
 
   useEffect(() => {
-    if (selectedId === null || selectedId < 0 || !asOf) {   // 음수는 사업 낱말 점이다
+    if (selectedId === null || selectedId < 0 || !asOf) {   // 음수는 사업 낱말이나 제품 점이다
       setDetail(null);
       return;
     }
@@ -140,7 +140,9 @@ export function App() {
     if (filters === NO_FILTER) return data;
     const end = (side: number | GraphNode) => (typeof side === "number" ? side : side.id);
     let links = data.links.filter((link) =>
-      link.type === "equity" ? (link.value ?? 0) >= filters.minPct : link.type === "affiliate" || (link.value ?? 0) >= filters.minAmount,
+      link.type === "equity"
+        ? (link.value ?? 0) >= filters.minPct
+        : link.type === "affiliate" || link.type === "product" || (link.value ?? 0) >= filters.minAmount,
     );
     const degree = new Map<number, number>();
     for (const link of links) for (const id of [end(link.source), end(link.target)]) degree.set(id, (degree.get(id) ?? 0) + 1);
@@ -175,7 +177,7 @@ export function App() {
   const onSelect = useCallback(
     (node: GraphNode | null) => {
       setSelectedId(node ? node.id : null);
-      if (node && node.kind !== "topic") change({ sideOpen: true });
+      if (node && !node.kind) change({ sideOpen: true });
     },
     [change],
   );
@@ -334,7 +336,9 @@ export function App() {
               ))}
             </div>
             <div className="stat">
-              기업 {shownData.nodes.length}곳 · 선 {shownData.links.length}개 · 점을 끌어 옮기면 그 자리에 고정됩니다
+              기업 {shownData.nodes.filter((node) => !node.kind).length}곳
+              {shownData.nodes.some((node) => node.kind === "product") && ` · 제품 ${shownData.nodes.filter((node) => node.kind === "product").length}개`} · 선{" "}
+              {shownData.links.length}개 · 점을 끌어 옮기면 그 자리에 고정됩니다
             </div>
           </div>
           {error && <div className="toast">{error}</div>}

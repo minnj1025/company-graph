@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { shortName } from "./Graph";
-import type { Business, CompanyDetail, RelationRow } from "./types";
+import type { Business, CompanyDetail, ProductTable, RelationRow } from "./types";
 
 const formatValue = (row: RelationRow) => {
   if (row.value === null) return "금액 비공개";
@@ -102,6 +102,49 @@ function ReportText({ text }: { text: string }) {
   );
 }
 
+/** 보고서의 제품 표에서 읽은 줄. 표에 적힌 이름과 매출 비중은 그대로, 옆에 다른 회사와 묶는 표준 이름을 붙인다 */
+function ProductSection({ products }: { products: ProductTable }) {
+  const [expanded, setExpanded] = useState(false);
+  if (!products.read)
+    return (
+      <section>
+        <h3>제품과 매출 비중</h3>
+        <p className="row-meta">보고서에 제품 절은 있지만 표의 매출 비중을 읽지 못했습니다. 사업 내용의 원문에서 볼 수 있습니다.</p>
+      </section>
+    );
+  const rows = [...products.rows].sort((a, b) => b.share - a.share);
+  const shown = expanded ? rows : rows.slice(0, 8);
+  return (
+    <section>
+      <h3>
+        제품과 매출 비중 <span className="count">{rows.length}</span>
+        <a href={products.url} target="_blank" rel="noreferrer" className="h3-link" title={`DART 접수번호 ${products.rcept_no}`}>
+          {products.report ?? "보고서"} 원문
+        </a>
+      </h3>
+      <ul>
+        {shown.map((row, i) => (
+          <li key={i}>
+            <div className="row-head">
+              <span>{row.name}</span>
+              <strong>{row.share.toFixed(1)}%</strong>
+            </div>
+            <div className="row-meta">
+              {row.segment ? `${row.segment} · ` : ""}
+              {row.std_names.length > 0 ? `묶는 이름: ${row.std_names.join(", ")}` : "다른 회사와 묶지 않는 줄"}
+            </div>
+          </li>
+        ))}
+      </ul>
+      {rows.length > 8 && (
+        <button className="more" onClick={() => setExpanded(!expanded)}>
+          {expanded ? "접기" : `${rows.length - 8}줄 더 보기`}
+        </button>
+      )}
+    </section>
+  );
+}
+
 function BusinessSection({ business }: { business: Business }) {
   const [expanded, setExpanded] = useState(false);
   const overview = business.overview ?? "";
@@ -164,6 +207,7 @@ export function Panel({ detail, onOpen, onCenter, onClose }: Props) {
       </div>
       <div className="panel-body">
         {detail.business && <BusinessSection key={detail.business.rcept_no} business={detail.business} />}
+        {detail.products && <ProductSection key={detail.company.id} products={detail.products} />}
         <Section title="보유한 지분" rows={of("equity", true)} other={object} onOpen={onOpen} />
         <Section title="이 기업의 주주 (기업)" rows={of("equity", false)} other={subject} onOpen={onOpen} />
         <Section title="판 계약 (공급계약 공시)" rows={of("supply_contract", true)} other={object} onOpen={onOpen} />

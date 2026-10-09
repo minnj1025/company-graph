@@ -1,6 +1,6 @@
 """조회용 사본을 다른 DB(배포용 Postgres 등)로 옮긴다. 원본은 건드리지 않는다.
 
-옮기는 것: 기업, 별칭, 공시 문서 목록, 지금 유효한 관계 줄(내려진 줄은 빼고). 품질 기록과 원문은 옮기지 않는다.
+옮기는 것: 기업, 별칭, 공시 문서 목록, 지금 유효한 관계 줄(내려진 줄은 빼고), 사업 내용, 제품. 품질 기록과 원문은 옮기지 않는다.
 대상 DB의 같은 표는 비우고 다시 채운다. 대상 주소는 환경 변수 TARGET_DB_URL 로 준다 (명령줄에 적으면 기록에 남는다).
 
 실행: TARGET_DB_URL=postgresql+psycopg://... python -m company_graph.export_db
@@ -10,9 +10,9 @@ import sys
 
 from sqlalchemy import create_engine, func, select, text
 
-from .db import Base, BusinessSection, Company, CompanyAlias, Document, Relation, get_engine
+from .db import Base, BusinessSection, Company, CompanyAlias, Document, Product, Relation, get_engine
 
-TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection)
+TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection, Product)
 CHUNK = 5000
 
 

@@ -1,4 +1,4 @@
-export type RelType = "equity" | "supply_contract" | "affiliate" | "stake_acquisition" | "stake_disposal";
+export type RelType = "equity" | "supply_contract" | "affiliate" | "stake_acquisition" | "stake_disposal" | "product";
 /** 사건형 관계. 첫 화면의 그래프에는 그리지 않고, 기업 상세와 Agent가 찾은 결과에 나온다 */
 export type EventType = "supply_termination" | "merger" | "split" | "business_transfer";
 /** 기업과 사업 낱말을 잇는 선. 질문으로 찾은 결과에만 나온다 */
@@ -19,8 +19,8 @@ export interface Company {
 }
 
 export interface GraphNode extends Company {
-  /** "topic" 이면 기업이 아니라 사업 낱말이다 (번호가 음수) */
-  kind?: "topic";
+  /** 기업이 아닌 점 (번호가 음수). "topic" 은 질문으로 찾은 사업 낱말, "product" 는 여러 기업이 함께 파는 제품이다 */
+  kind?: "topic" | "product";
   degree: number;
   focus: boolean;
   x?: number;
@@ -84,10 +84,27 @@ export interface Business {
   cut: boolean;
 }
 
+/** 보고서의 "주요 제품 및 서비스" 표에서 읽은 줄 */
+export interface ProductRow {
+  segment: string | null;
+  /** 표에 적힌 이름 그대로 */
+  name: string;
+  /** 매출 비중(%) */
+  share: number;
+  /** 다른 회사의 같은 제품과 묶는 표준 이름. 비어 있으면 묶을 것이 없는 줄("기타", "임대")이다 */
+  std_names: string[];
+}
+
+/** read 가 false 면 보고서에 제품 절은 있지만 표를 읽지 못한 것이다 */
+export type ProductTable =
+  | { read: false }
+  | { read: true; rcept_no: string; url: string; report: string | null; rows: ProductRow[] };
+
 export interface CompanyDetail {
   company: Company;
   as_of: string;
   business: Business | null;
+  products: ProductTable | null;
   relations: RelationRow[];
   group: { count: number; source: Evidence[]; members: string[] };
 }
@@ -101,6 +118,15 @@ export interface Meta {
   documents: number;
   relations: Record<string, number>;
   coverage: { notice: string; sources: Record<string, string> };
+  /** 사업 내용과 제품을 얼마나 담았는지 */
+  business: {
+    sections: number;
+    reports: number;
+    companies: number;
+    companies_with_product_section: number;
+    companies_with_products: number;
+    product_rows: number;
+  };
   /** 첫 화면을 나눠 볼 분류와 분류마다의 상장사 수 */
   categories: Record<"market" | "sector" | "group", { name: string; count: number }[]>;
 }

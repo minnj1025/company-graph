@@ -93,3 +93,37 @@ CREATE TABLE quality_log (
   created_at DATETIME     NOT NULL,
   KEY ix_quality_check (check_name)
 );
+
+-- 정기보고서 "II. 사업의 내용"의 소제목 하나. 보고서에 적힌 글 그대로 담는다(요약하거나 값을 뽑지 않는다)
+CREATE TABLE business_section (
+  section_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+  company_id     INT          NOT NULL,
+  rcept_no       CHAR(14)     NOT NULL,
+  bsns_year      SMALLINT     NULL,
+  disclosed_date DATE         NOT NULL,
+  section_no     SMALLINT     NOT NULL COMMENT '소제목 번호. 1 사업의 개요, 2 주요 제품 및 서비스 …',
+  title          VARCHAR(100) NOT NULL,
+  text           LONGTEXT     NOT NULL,
+  truncated      BOOLEAN      NOT NULL DEFAULT FALSE COMMENT '길어서 자른 절',
+  UNIQUE KEY uq_business_section (rcept_no, section_no),
+  KEY ix_business_section_company (company_id, disclosed_date),
+  FOREIGN KEY (company_id) REFERENCES company (company_id)
+);
+
+-- "주요 제품 및 서비스" 표의 한 줄. 매출 비중의 합이 100에 가까운 표만 담는다
+CREATE TABLE product (
+  product_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+  company_id     INT           NOT NULL,
+  rcept_no       CHAR(14)      NOT NULL,
+  bsns_year      SMALLINT      NULL,
+  disclosed_date DATE          NOT NULL,
+  row_no         SMALLINT      NOT NULL COMMENT '표에서 몇째 줄인가',
+  segment        VARCHAR(100)  NULL COMMENT '사업부문 칸이 따로 있으면 그 값',
+  name           VARCHAR(100)  NOT NULL COMMENT '표에 적힌 품목 이름 그대로',
+  share_pct      DECIMAL(7, 2) NOT NULL COMMENT '매출 비중(%)',
+  std_names      JSON          NULL COMMENT '여러 회사의 같은 제품을 묶는 표준 이름. 빈 목록이면 묶을 것이 없는 줄(기타, 임대)',
+  named_by       VARCHAR(40)   NULL COMMENT '표준 이름을 붙인 것: rule 또는 모델 이름. NULL이면 아직 안 붙임',
+  UNIQUE KEY uq_product_row (rcept_no, row_no),
+  KEY ix_product_company (company_id, disclosed_date),
+  FOREIGN KEY (company_id) REFERENCES company (company_id)
+);

@@ -121,6 +121,24 @@ class BusinessSection(Base):
     truncated: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
+class Product(Base):
+    """정기보고서 "주요 제품 및 서비스" 표의 한 줄. 이름은 표에 적힌 그대로 두고, 회사마다 다르게 부르는 같은 제품을 묶는 표준 이름을 따로 둔다."""
+    __tablename__ = "product"
+    __table_args__ = (UniqueConstraint("rcept_no", "row_no", name="uq_product_row"),
+                      Index("ix_product_company", "company_id", "disclosed_date"))
+    product_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    company_id: Mapped[int] = mapped_column(ForeignKey("company.company_id"))
+    rcept_no: Mapped[str] = mapped_column(String(14))
+    bsns_year: Mapped[int | None] = mapped_column(SmallInteger)
+    disclosed_date: Mapped[date] = mapped_column(Date)
+    row_no: Mapped[int] = mapped_column(SmallInteger)                 # 표에서 몇째 줄인가
+    segment: Mapped[str | None] = mapped_column(String(100))          # 사업부문 칸이 따로 있으면 그 값
+    name: Mapped[str] = mapped_column(String(100))                    # 표에 적힌 품목 이름 그대로
+    share_pct: Mapped[Decimal] = mapped_column(Numeric(7, 2))         # 매출 비중(%)
+    std_names: Mapped[list | None] = mapped_column(JSON)              # 표준 이름. 비어 있으면 제품이라 할 것이 없는 줄("기타", "상품")
+    named_by: Mapped[str | None] = mapped_column(String(40))          # 표준 이름을 붙인 것: rule 또는 모델 이름. 없으면 아직 안 붙임
+
+
 class AskLog(Base):
     """화면에서 Agent에게 한 질문의 기록. 하루 질문 수 상한과 방문자별 제한을 세는 데 쓴다."""
     __tablename__ = "ask_log"

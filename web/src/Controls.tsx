@@ -4,7 +4,7 @@ import { LINK_COLORS, LINK_LABELS, type ColorBy } from "./colors";
 import { shortName } from "./Graph";
 import type { Company, Meta, RelType } from "./types";
 
-const ALL_TYPES: RelType[] = ["equity", "supply_contract", "stake_acquisition", "stake_disposal", "affiliate"];
+const ALL_TYPES: RelType[] = ["equity", "supply_contract", "stake_acquisition", "stake_disposal", "affiliate", "product"];
 
 /** 그래프를 솎아 내는 조건. 서버에 다시 묻지 않고 받은 그래프에서 거른다 */
 export interface Filters {
@@ -275,7 +275,13 @@ export function Controls(props: Props) {
               onClick={() => toggle(type)}
               disabled={type === "affiliate" && props.centerName === null}
               data-type={type}
-              title={type === "affiliate" && props.centerName === null ? "기업 하나를 중심으로 볼 때만 그립니다" : undefined}
+              title={
+                type === "affiliate" && props.centerName === null
+                  ? "기업 하나를 중심으로 볼 때만 그립니다"
+                  : type === "product"
+                    ? "보고서의 제품 표에서 읽은 것입니다. 전체 화면에서는 두 곳 이상이 함께 파는 제품만 점으로 그리고, 선의 굵기는 매출 비중입니다"
+                    : undefined
+              }
             >
               <i style={{ background: LINK_COLORS[type] }} />
               {LINK_LABELS[type]}

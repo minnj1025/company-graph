@@ -41,7 +41,8 @@ export function DataPage({ meta }: { meta: Meta }) {
       <h2>무엇이 들어 있나</h2>
       <p className="lead">
         금융감독원 전자공시(DART)에서 기업과 기업의 관계를 뽑아, 언제 성립했고 언제 공개됐고 언제 바뀌었는지를 같이 저장했습니다.
-        상장사 2,759곳의 공시를 읽었고, 양식이 정해진 공시만 규칙으로 읽었습니다. 추출에 LLM은 쓰지 않았습니다.
+        상장사 2,759곳의 공시를 읽었고, 양식이 정해진 공시만 규칙으로 읽었습니다. 관계 추출에 LLM은 쓰지 않았습니다. 관계 말고 기업이 무엇을
+        하는지도 담았습니다(아래 "사업 내용과 제품").
       </p>
       <div className="tiles">
         <div className="tile">
@@ -74,6 +75,47 @@ export function DataPage({ meta }: { meta: Meta }) {
         ))}
         <p className="muted small">막대 길이는 줄 수의 제곱근에 비례합니다. 가장 많은 것과 적은 것이 700배 차이라 그대로 그리면 작은 것이 보이지 않습니다.</p>
       </div>
+
+      <h2>사업 내용과 제품</h2>
+      <p className="lead">
+        관계 표만으로는 "이 이슈와 닿는 회사"를 찾을 수 없어서, 사업보고서와 반기보고서의 "사업의 내용"을 두 층으로 담았습니다.
+      </p>
+      <div className="tiles">
+        <div className="tile">
+          <b>{meta.business.sections.toLocaleString()}</b>
+          <span>사업 내용의 절 (보고서 {meta.business.reports.toLocaleString()}건)</span>
+        </div>
+        <div className="tile">
+          <b>{meta.business.companies.toLocaleString()}</b>
+          <span>사업 내용이 있는 기업</span>
+        </div>
+        <div className="tile">
+          <b>{meta.business.companies_with_products.toLocaleString()}</b>
+          <span>제품 표를 읽은 기업</span>
+        </div>
+        <div className="tile">
+          <b>{(meta.business.companies_with_product_section - meta.business.companies_with_products).toLocaleString()}</b>
+          <span>제품 표를 읽지 못한 기업</span>
+        </div>
+      </div>
+      <ul className="notes">
+        <li>
+          <b>사업 내용</b>은 소제목 단위로 자르기만 하고 요약하거나 값을 뽑지 않습니다. "라면 만드는 회사는?" 같은 질문이 오면 Agent가 낱말로 찾고, 매출
+          비중 표를 읽어 그 사업이 주력인 회사와 언급만 있는 회사를 나눠 답합니다. 수혜를 볼지, 주가가 오를지는 말하지 않습니다.
+        </li>
+        <li>
+          <b>제품</b>은 "주요 제품 및 서비스"의 매출 비중 표에서 읽었습니다. 비중의 합이 100에 가까운 표만 믿습니다. 제품 절이 있는{" "}
+          {meta.business.companies_with_product_section.toLocaleString()}곳 가운데 {meta.business.companies_with_products.toLocaleString()}곳을 읽었고,
+          읽지 못한 회사는 기업 상세에 그렇게 표시합니다.
+        </li>
+        <li>
+          같은 제품을 회사마다 다르게 적습니다("분리막", "LiBS", "2차전지 분리막"). 표에 적힌 이름은 그대로 두고, 여러 회사를 묶는 표준 이름을 따로
+          붙였습니다. "기타", "상품", "임대"처럼 무엇인지 알 수 없는 줄은 규칙으로 가려내고 나머지는 Claude Haiku에 물었습니다. 표준 이름은 모델이 붙인
+          것이라 틀릴 수 있어서, 기업 상세에는 표의 이름과 표준 이름을 나란히 보여 줍니다.
+        </li>
+        <li>탐색 화면의 관계에서 "제품"을 켜면 두 곳 이상이 함께 파는 제품이 점으로 나타나고, 선의 굵기는 그 제품이 매출에서 차지하는 비중입니다.</li>
+        <li>이슈형 질문의 답이 얼마나 맞는지는 아직 재지 않았습니다. 아래 평가는 모두 관계를 묻는 질문입니다.</li>
+      </ul>
 
       <h2>맞는지 어떻게 확인했나</h2>
       <p className="lead">
@@ -108,7 +150,7 @@ export function DataPage({ meta }: { meta: Meta }) {
 
       <h2>없는 것</h2>
       <ul className="notes">
-        <li>반기·분기보고서, 최대주주와 특수관계인이 아닌 주주, 주요 고객, 합병·분할, 뉴스, 주가</li>
+        <li>분기보고서, 반기보고서의 지분·계열 표(반기보고서는 사업 내용만 읽었습니다), 최대주주와 특수관계인이 아닌 주주, 주요 고객, 합병·분할, 뉴스, 주가</li>
         <li>2024년 1월 이전의 공급계약과 취득·처분 결정</li>
         <li>매수·매도 판단. 이 서비스는 공시에 적힌 사실만 보여 줍니다.</li>
       </ul>

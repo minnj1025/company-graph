@@ -13,6 +13,7 @@ export const LINK_COLORS: Record<LinkType, string> = {
   split: "#b48cff",
   business_transfer: "#b48cff",
   business: "#5ad1c9",
+  product: "#d8c75a",
 };
 
 export const LINK_LABELS: Record<LinkType, string> = {
@@ -26,6 +27,7 @@ export const LINK_LABELS: Record<LinkType, string> = {
   split: "분할",
   business_transfer: "영업양수도",
   business: "사업 내용에 언급",
+  product: "제품",
 };
 
 const GROUP_PALETTE = ["#7aa2ff", "#ffb454", "#6fd08c", "#f48fb1", "#b48cff", "#5ad1c9", "#ff6b6b", "#c9a26b"];
@@ -38,7 +40,7 @@ const keyOf = (node: GraphNode, colorBy: ColorBy) => (colorBy === "sector" ? nod
 export function categoryColors(nodes: GraphNode[], colorBy: ColorBy): Map<string, string> {
   const counts = new Map<string, number>();
   for (const node of nodes) {
-    if (node.kind === "topic") continue;
+    if (node.kind) continue;
     const key = keyOf(node, colorBy);
     // 비상장 계열사는 업종 정보가 없다. 색을 주지 않고 회색으로 둔다
     if (key && key !== NO_SECTOR) counts.set(key, (counts.get(key) ?? 0) + 1);
@@ -48,9 +50,10 @@ export function categoryColors(nodes: GraphNode[], colorBy: ColorBy): Map<string
 }
 
 export const TOPIC_COLOR = "#5ad1c9";
+export const PRODUCT_COLOR = "#d8c75a";
 
 export function nodeColor(node: GraphNode, colorBy: ColorBy, colors: Map<string, string>): string {
-  if (node.kind === "topic") return TOPIC_COLOR;
+  if (node.kind) return node.kind === "topic" ? TOPIC_COLOR : PRODUCT_COLOR;
   const key = keyOf(node, colorBy);
   return key ? (colors.get(key) ?? NO_GROUP) : NO_GROUP;
 }

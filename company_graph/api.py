@@ -5,6 +5,7 @@
 import hashlib
 import os
 import time
+import zlib
 from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 
@@ -13,12 +14,12 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
 from . import query
-from .db import AskLog, Base, BusinessSection, Company, Document, Relation, get_engine, session
+from .db import AskLog, Base, BusinessSection, Company, Document, Product, Relation, get_engine, session
 from .stages import sector, stage
 
 app = FastAPI(title="기업 관계 그래프")
 _engine = get_engine()
-GRAPH_TYPES = ("equity", "supply_contract", "affiliate", "stake_acquisition", "stake_disposal")
+GRAPH_TYPES = ("equity", "supply_contract", "affiliate", "stake_acquisition", "stake_disposal", "product")
 DEFAULT_TYPES = ("equity", "supply_contract", "affiliate")
 
 
@@ -106,6 +107,90 @@ def build_graph(db, edges: list[dict], focus: set[int] = frozenset()) -> dict:
     return {"nodes": nodes, "links": links}
 
 
+# ---------- 제품: 기업이 무엇을 파는가 ----------
+
+_product_cache: dict = {}
+SHARED_BY = 2       # 첫 화면에서는 이만큼의 기업이 함께 파는 제품만 점으로 둔다
+SHARERS = 12        # 한 기업을 중심으로 볼 때, 제품 하나에 붙이는 다른 기업 수 (매출 비중이 큰 순)
+
+
+def product_id(name: str) -> int:
+    """제품 점의 번호. 기업 번호, 질문 결과의 낱말 점(-1, -2, …)과 겹치지 않는 음수이고, 이름이 같으면 늘 같다."""
+    return -(zlib.crc32(name.encode()) + 1000)
+
+
+def product_index(db, as_of: date) -> dict[int, dict[str, dict]]:
+    """기업 → {표준 이름: {share 매출 비중 합, raw 표에 적힌 이름들}}. 기업마다 그 시점까지 나온 가장 나중 보고서의 표만 쓴다."""
+    hit = _product_cache.get(as_of)
+    if hit and time.time() - hit[0] < META_TTL:
+        return hit[1]
+    latest = (select(Product.company_id, func.max(Product.rcept_no).label("rcept_no"))
+              .where(Product.disclosed_date <= as_of).group_by(Product.company_id).subquery())
+    index: dict[int, dict[str, dict]] = defaultdict(dict)
+    for row in db.scalars(select(Product).join(latest, Product.rcept_no == latest.c.rcept_no)):
+        if row.share_pct <= 0:
+            continue
+        for name in row.std_names or ():
+            item = index[row.company_id].setdefault(name, {"share": 0.0, "raw": []})
+            item["share"] = min(100.0, item["share"] + float(row.share_pct))
+            if row.name not in item["raw"]:
+                item["raw"].append(row.name)
+    _product_cache[as_of] = (time.time(), index)
+    return index
+
+
+def add_products(db, graph: dict, as_of: date, company_ids, center: int | None = None) -> dict:
+    """그래프에 제품 점과 `기업 → 제품` 선을 더한다. 선의 값은 그 제품이 기업 매출에서 차지하는 비중(%)이다."""
+    index = product_index(db, as_of)
+    makers = defaultdict(dict)
+    if center is not None:
+        # 중심 기업의 제품은 혼자 파는 것도 보여 주고, 같은 제품을 파는 기업을 비중이 큰 순으로 붙인다
+        mine = index.get(center, {})
+        for company_id, items in index.items():
+            for name in items.keys() & mine.keys():
+                makers[name][company_id] = items[name]
+        for name, found in makers.items():
+            top = sorted((i for i in found if i != center), key=lambda i: -found[i]["share"])[:SHARERS]
+            makers[name] = {i: found[i] for i in [center, *top]}
+    else:
+        for company_id in set(company_ids) & index.keys():
+            for name, item in index[company_id].items():
+                makers[name][company_id] = item
+        makers = {name: found for name, found in makers.items() if len(found) >= SHARED_BY}
+    known = {node["id"]: node for node in graph["nodes"]}
+    missing = {i for found in makers.values() for i in found} - known.keys()
+    if missing:
+        for c in db.scalars(select(Company).where(Company.company_id.in_(missing))):
+            known[c.company_id] = {**company_json(c), "degree": 0, "focus": False}
+    for name, found in sorted(makers.items()):
+        number = product_id(name)
+        known[number] = {"id": number, "name": name, "kind": "product", "stock_code": None, "listed": False, "group": None,
+                         "stage": "", "sector": "제품", "market": None, "in_scope": False, "degree": len(found), "focus": False}
+        for company_id, item in found.items():
+            raw = ", ".join(item["raw"][:3])
+            graph["links"].append({"source": company_id, "target": number, "type": "product", "count": 1,
+                                   "value": round(item["share"], 2),
+                                   "label": f"매출의 {item['share']:.1f}% · 보고서에 적힌 이름: {raw}"})
+            known[company_id]["degree"] += 1
+    graph["nodes"] = list(known.values())
+    return graph
+
+
+def products_json(db, company_id: int, as_of: date) -> dict | None:
+    """그 시점까지 나온 보고서의 제품 표. 주요 제품 절은 있는데 표를 읽지 못한 회사는 read 가 False 다(지어내지 않는다)."""
+    latest = db.scalar(select(func.max(Product.rcept_no)).where(Product.company_id == company_id, Product.disclosed_date <= as_of))
+    if latest is None:
+        has_section = db.scalar(select(func.count()).select_from(BusinessSection).where(
+            BusinessSection.company_id == company_id, BusinessSection.disclosed_date <= as_of,
+            BusinessSection.title.like("%주요 제품%")))
+        return {"read": False} if has_section else None
+    doc = db.get(Document, latest)
+    rows = db.scalars(select(Product).where(Product.rcept_no == latest).order_by(Product.row_no)).all()
+    return {"read": True, "rcept_no": latest, "url": query.DART_VIEWER + latest, "report": doc.report_nm.strip() if doc else None,
+            "rows": [{"segment": r.segment, "name": r.name, "share": float(r.share_pct), "std_names": r.std_names or []}
+                     for r in rows]}
+
+
 def parse_types(types: str | None) -> list[str]:
     chosen = [t for t in (types or "").split(",") if t in GRAPH_TYPES]
     return chosen or list(DEFAULT_TYPES)
@@ -138,7 +223,19 @@ def _meta(db) -> dict:
             "in_scope": db.scalar(select(func.count()).select_from(Company).where(Company.in_scope)),
             "documents": db.scalar(select(func.count()).select_from(Document)),
             "relations": {query.LABELS[k]: v for k, v in counts.items()}, "coverage": query.coverage(db),
+            "business": business_counts(db),
             "categories": categories(db)}
+
+
+def business_counts(db) -> dict:
+    """사업 내용과 제품을 얼마나 담았는지. 제품 표는 읽지 못한 회사가 있어 그 수를 같이 보여 준다."""
+    companies = select(func.count(func.distinct(BusinessSection.company_id)))
+    return {"sections": db.scalar(select(func.count()).select_from(BusinessSection)),
+            "reports": db.scalar(select(func.count(func.distinct(BusinessSection.rcept_no)))),
+            "companies": db.scalar(companies),
+            "companies_with_product_section": db.scalar(companies.where(BusinessSection.title.like("%주요 제품%"))),
+            "companies_with_products": db.scalar(select(func.count(func.distinct(Product.company_id)))),
+            "product_rows": db.scalar(select(func.count()).select_from(Product))}
 
 
 @app.get("/api/companies")
@@ -158,7 +255,10 @@ def overview(as_of: date, types: str | None = None, scope: str = "listed", db=De
     ids, direction = scope_members(db, scope)
     if not ids:
         return build_graph(db, [])
-    return build_graph(db, query.relations(db, as_of, company_ids=ids, rel_types=chosen, direction=direction))
+    relation_types = [t for t in chosen if t != "product"]
+    graph = build_graph(db, query.relations(db, as_of, company_ids=ids, rel_types=relation_types, direction=direction)
+                        if relation_types else [])
+    return add_products(db, graph, as_of, ids) if "product" in chosen else graph
 
 
 @app.get("/api/graph")
@@ -169,14 +269,16 @@ def graph(center: int, as_of: date, types: str | None = None, hops: int = Query(
     chosen = parse_types(types)
     seen, frontier, edges = {center}, {center}, []
     for _ in range(hops):
-        found = query.relations(db, as_of, company_ids=frontier, rel_types=[t for t in chosen if t != "affiliate"])
+        relation_types = [t for t in chosen if t not in ("affiliate", "product")]
+        found = query.relations(db, as_of, company_ids=frontier, rel_types=relation_types) if relation_types else []
         edges += found
         frontier = {i for e in found for i in (e["subject_id"], e["object_id"]) if i} - seen
         seen |= frontier
     if "affiliate" in chosen:
         # 계열은 중심 기업의 집단만 그린다. 단계를 넓히면 집단마다 별 모양이 겹쳐 읽을 수 없다
         edges += query.group_members(db, center, as_of)
-    return build_graph(db, edges, focus={center})
+    graph = build_graph(db, edges, focus={center})
+    return add_products(db, graph, as_of, [center], center=center) if "product" in chosen else graph
 
 
 def business_json(db, company_id: int, as_of: date) -> dict | None:
@@ -206,6 +308,7 @@ def company(company_id: int, as_of: date, db=Depends(get_db)):
     members = query.group_members(db, company_id, as_of)
     order = lambda e: (e["type"], e["subject_id"] != company_id, -(e["value"] or 0))
     return {"company": company_json(found), "as_of": as_of, "business": business_json(db, company_id, as_of),
+            "products": products_json(db, company_id, as_of),
             "relations": [edge_json(db, e) for e in sorted(edges, key=order)],
             "group": {"count": len(members),
                       "source": edge_json(db, members[0])["evidence"] if members else [],
