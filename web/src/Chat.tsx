@@ -277,16 +277,21 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
             <div className={turn.result === shown ? "a shown" : "a"}>
               <Tools result={turn.result} />
               <Answer result={turn.result} onCompany={(id) => onCompany(turn.result!, id)} />
-              <div className="sources">
-                <b>출처</b>
-                {turn.result.sources.length === 0 && <span>이 답은 근거로 든 공시가 없습니다 (조회 결과가 없거나, 답하지 않는 질문입니다)</span>}
-                {turn.result.sources.map((source) => (
-                  <a key={source.rcept_no} href={source.url} target="_blank" rel="noreferrer" title="DART 공시 원문">
-                    <em>{source.filed ?? source.rcept_no}</em>
-                    {source.company ? `${source.company} · ${source.report}` : `접수번호 ${source.rcept_no}`}
-                  </a>
-                ))}
-              </div>
+              {turn.result.sources.length === 0 ? (
+                <div className="sources">
+                  <span>이 답은 근거로 든 공시가 없습니다 (조회 결과가 없거나, 답하지 않는 질문입니다)</span>
+                </div>
+              ) : (
+                <details className="sources">
+                  <summary>출처 {turn.result.sources.length}건</summary>
+                  {turn.result.sources.map((source) => (
+                    <a key={source.rcept_no} href={source.url} target="_blank" rel="noreferrer" title="DART 공시 원문">
+                      <em>{source.filed ?? source.rcept_no}</em>
+                      {source.company ? `${source.company} · ${source.report}` : `접수번호 ${source.rcept_no}`}
+                    </a>
+                  ))}
+                </details>
+              )}
               <div className="a-foot">
                 <span className="facts">
                   <span>{turn.result.seconds}초</span>
