@@ -3603,3 +3603,28 @@ details.sources a {
   display: block;
   margin-top: 4px;
 }
+
+/* 스크롤 막대: 어디서나 가늘고 어둡게 (브라우저 기본의 흰 막대와 화살표가 나오지 않게) */
+:root {
+  color-scheme: dark;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* 답의 표는 칸 너비 안에서 줄을 바꿔, 가로 막대가 생기지 않게 한다 */
+.answer table {
+  table-layout: auto;
+  max-width: 100%;
+}
+
+.answer th {
+  white-space: normal;
+}
+
+.answer td,
+.answer th {
+  overflow-wrap: anywhere;
+}
