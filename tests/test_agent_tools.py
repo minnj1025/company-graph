@@ -120,3 +120,15 @@ def test_resale_rows_are_marked():
     assert not _resale(Row(segment="제품", name="라면", std_names=["라면"]))
     assert not _resale(Row(segment="제/상품", name="음료", std_names=["음료"]))
     assert not _resale(Row(segment="금융상품 판매", name="펀드", std_names=["펀드 판매"]))
+
+
+def test_price_rows_are_parsed():
+    from datetime import date
+    from decimal import Decimal
+    from company_graph.prices import parse
+
+    rows = parse([{"BAS_DD": "20261008", "ISU_CD": "005930", "TDD_CLSPRC": "71,200", "FLUC_RT": "-1.25", "ACC_TRDVOL": "12,345",
+                   "ACC_TRDVAL": "878,964,000", "MKTCAP": "425,000,000,000,000"},
+                  {"BAS_DD": "20261008", "ISU_CD": "000001", "TDD_CLSPRC": "-"}])
+    assert rows == [{"stock_code": "005930", "trade_date": date(2026, 10, 8), "close_price": Decimal("71200"), "change_pct": Decimal("-1.25"),
+                     "volume": 12345, "trade_value": 878964000, "market_cap": 425000000000000}]

@@ -94,11 +94,16 @@ class Relation(Base):
 
 
 class PriceDaily(Base):
+    """상장 주식의 하루 시세. 장중 값이 아니라 거래일 다음 날 나오는 값이다 (prices.py)."""
     __tablename__ = "price_daily"
+    __table_args__ = (Index("ix_price_date", "trade_date"),)
     stock_code: Mapped[str] = mapped_column(String(6), primary_key=True)
     trade_date: Mapped[date] = mapped_column(Date, primary_key=True)
     close_price: Mapped[Decimal] = mapped_column(Numeric(14, 2))
+    change_pct: Mapped[Decimal | None] = mapped_column(Numeric(7, 2))   # 전 거래일 종가 대비 등락률(%)
     volume: Mapped[int] = mapped_column(BigInteger)
+    trade_value: Mapped[int | None] = mapped_column(BigInteger)         # 거래대금(원)
+    market_cap: Mapped[int | None] = mapped_column(BigInteger)          # 시가총액(원)
 
 
 class QualityLog(Base):

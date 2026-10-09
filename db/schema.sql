@@ -81,8 +81,12 @@ CREATE TABLE price_daily (
   stock_code  CHAR(6)        NOT NULL,
   trade_date  DATE           NOT NULL,
   close_price DECIMAL(14, 2) NOT NULL,
+  change_pct  DECIMAL(7, 2),            -- 전 거래일 종가 대비 등락률(%)
   volume      BIGINT         NOT NULL,
-  PRIMARY KEY (stock_code, trade_date)
+  trade_value BIGINT,                   -- 거래대금(원)
+  market_cap  BIGINT,                   -- 시가총액(원)
+  PRIMARY KEY (stock_code, trade_date),
+  KEY ix_price_date (trade_date)
 );
 
 -- 품질 게이트에 걸린 건. 건수를 품질 지표로 쓴다
