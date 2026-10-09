@@ -228,7 +228,8 @@ export function App() {
             groups={groups}
             selectedId={selectedId}
             onSelect={onSelect}
-            fitKey={`${found ? `ask-${found.question}` : `${center?.id ?? scope}-${hops}`}-${refit}`}
+            fitKey={found ? `ask-${found.question}` : `${center?.id ?? scope}-${hops}`}
+            refit={refit}
           />
 
           <div className="stage-top">

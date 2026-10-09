@@ -73,11 +73,13 @@ interface Props {
   groups: Map<string, string>;
   selectedId: number | null;
   onSelect: (node: GraphNode | null) => void;
-  /** 이 값이 바뀌면 그래프 전체가 보이게 카메라를 맞춘다 */
+  /** 보는 범위가 바뀌었다는 표시. 이 값이 바뀐 뒤 새 자료가 오면 그래프 전체가 보이게 카메라를 맞춘다 */
   fitKey: string;
+  /** "화면 맞추기"를 누른 횟수. 바뀌면 자료가 그대로여도 바로 맞춘다 */
+  refit: number;
 }
 
-export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey }: Props) {
+export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey, refit }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const graph = useRef<ForceGraphMethods<GraphNode, GraphLink> | undefined>(undefined);
   const [size, setSize] = useState({ width: 800, height: 600 });
@@ -100,6 +102,20 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     return () => observer.disconnect();
   }, []);
 
+  const shown = useRef(data);
+  shown.current = data;
+  /** 그려진 점 전체가 보이게 카메라를 옮긴다 */
+  const fit = useCallback(() => {
+    const placed = shown.current.nodes.filter((n) => n.x !== undefined);
+    if (placed.length === 0) return;
+    const mean = (pick: (n: GraphNode) => number) => placed.reduce((sum, n) => sum + pick(n), 0) / placed.length;
+    const [cx, cy, cz] = [mean((n) => n.x!), mean((n) => n.y!), mean((n) => n.z!)];
+    // 가장 먼 점 몇 개 때문에 전체가 작아지지 않게, 거리 순으로 92% 지점까지를 화면에 담는다
+    const distances = placed.map((n) => Math.hypot(n.x! - cx, n.y! - cy, n.z! - cz)).sort((a, b) => a - b);
+    const radius = Math.max(placed.length < 30 ? 70 : 170, distances[Math.floor((distances.length - 1) * 0.92)]);
+    graph.current?.cameraPosition({ x: cx, y: cy, z: cz + radius * 2.5 }, { x: cx, y: cy, z: cz }, 900);
+  }, []);
+
   // 점끼리 더 밀어내고 선을 길게 잡아야 뭉치지 않고 구조가 보인다
   useEffect(() => {
     const charge = graph.current?.d3Force("charge") as { strength?: (v: number) => void } | undefined;
@@ -119,19 +135,17 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     if (!needsFit.current) return;
     // 보는 범위를 바꿨을 때만 전체가 보이게 맞춘다. 날짜만 바꿀 때는 시점을 그대로 둔다
     needsFit.current = false;
-    const fit = () => {
-      const placed = data.nodes.filter((n) => n.x !== undefined);
-      if (placed.length === 0) return;
-      const mean = (pick: (n: GraphNode) => number) => placed.reduce((sum, n) => sum + pick(n), 0) / placed.length;
-      const [cx, cy, cz] = [mean((n) => n.x!), mean((n) => n.y!), mean((n) => n.z!)];
-      // 가장 먼 점 몇 개 때문에 전체가 작아지지 않게, 거리 순으로 92% 지점까지를 화면에 담는다
-      const distances = placed.map((n) => Math.hypot(n.x! - cx, n.y! - cy, n.z! - cz)).sort((a, b) => a - b);
-      const radius = Math.max(placed.length < 30 ? 70 : 170, distances[Math.floor((distances.length - 1) * 0.92)]);
-      graph.current?.cameraPosition({ x: cx, y: cy, z: cz + radius * 2.5 }, { x: cx, y: cy, z: cz }, 900);
-    };
     const timers = [1500, 5000].map((ms) => setTimeout(fit, ms));
     return () => timers.forEach(clearTimeout);
   }, [data]);
+
+  // 버튼을 눌렀을 때. 자료가 바뀌지 않았으니 위의 effect 가 돌지 않는다
+  const asked = useRef(refit);
+  useEffect(() => {
+    if (asked.current === refit) return;
+    asked.current = refit;
+    fit();
+  }, [refit, fit]);
 
   useEffect(() => {
     // 범위만 먼저 바뀌고 자료는 나중에 오는 경우. 위에서 이미 처리했으면 다시 맞추지 않는다
