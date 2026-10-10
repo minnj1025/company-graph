@@ -4344,3 +4344,25 @@ details.sources a {
   font-size: 20px;
   font-weight: 600;
 }
+
+
+/* 당일 기사: 사람이 쓴 제목을 앞에, 자동 요약은 뒤에 작게 */
+.hot-news a {
+  color: var(--text);
+  font-size: 13px;
+  margin: 3px 0;
+}
+
+.hot-news p {
+  margin: 8px 0 0;
+  color: #aeb7c6;
+  font-size: 12.5px;
+}
+
+.hot-news p .muted {
+  margin-right: 6px;
+  padding: 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 11px;
+}

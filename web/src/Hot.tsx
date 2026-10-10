@@ -36,6 +36,33 @@ function newsLink(names: string[], day: string): string {
   return `https://search.naver.com/search.naver?${query}`;
 }
 
+/** 제목에 매체 이름이 없을 때 주소로 알아보는 매체 */
+const OUTLETS: Record<string, string> = {
+  "newspim.com": "뉴스핌", "mt.co.kr": "머니투데이", "hankyung.com": "한국경제", "sedaily.com": "서울경제", "etoday.co.kr": "이투데이",
+  "fnnews.com": "파이낸셜뉴스", "edaily.co.kr": "이데일리", "mk.co.kr": "매일경제", "sbs.co.kr": "SBS Biz", "asiae.co.kr": "아시아경제",
+  "heraldcorp.com": "헤럴드경제", "yna.co.kr": "연합뉴스", "newsis.com": "뉴시스", "cbci.co.kr": "CBC뉴스", "widedaily.com": "와이드경제",
+  "thebell.co.kr": "더벨", "chosun.com": "조선비즈", "donga.com": "동아일보", "joongang.co.kr": "중앙일보", "news1.kr": "뉴스1",
+};
+const outletOf = (url: string) => {
+  const host = new URL(url).hostname.replace(/^(www|m|biz|markets|news)\./, "");
+  return OUTLETS[host] ?? OUTLETS[host.split(".").slice(-3).join(".")] ?? OUTLETS[host.split(".").slice(-2).join(".")] ?? host;
+};
+/** 표에 앞세울 기사: 제목다운 제목을 가진 첫 근거. 종목 이름만 적힌 시세 페이지 같은 것은 건너뛴다 */
+const lead = (sources: { title: string; url: string }[]) => sources.find((source) => headline(source).title.length >= 12);
+
+/** 검색 결과의 제목에서 기사 제목과 매체를 가른다. "제목 < 증권 < 기사본문 - 매체", "제목 - 매체" 꼴을 다듬는다 */
+function headline(source: { title: string; url: string }): { title: string; outlet: string } {
+  const [head, ...tail] = source.title.split(" < ");
+  const rest = tail.join(" < ");
+  const cut = (text: string) => {
+    const at = text.lastIndexOf(" - ");
+    return at > 0 && text.length - at - 3 <= 16 ? [text.slice(0, at), text.slice(at + 3)] : [text, ""];
+  };
+  const [title, fromHead] = cut(head.trim());
+  const outlet = fromHead || cut(rest)[1] || outletOf(source.url);
+  return { title: title.replace(/\s*·\s*시장 영향은\?$/, ""), outlet: outlet.replace(/\(.*$/, "").trim() };
+}
+
 /** 종목 이름 옆의 시장 표시 */
 function Market({ name }: { name?: string | null }) {
   return name ? <span className="hot-market">{name}</span> : null;
@@ -105,13 +132,15 @@ function Detail({ group, day, side, onGraph }: { group: HotGroup; day: string; s
         </p>
         {group.news && group.news.found !== "none" && (
           <div className="hot-news">
-            <b>{group.news.found === "group" ? "기사 요약 (자동)" : "한 종목을 다룬 기사 요약 (자동)"}</b>
-            <p>{group.news.reason}</p>
+            <b>{group.news.found === "group" ? "당일 기사" : "한 종목을 다룬 당일 기사"}</b>
             {group.news.sources.map((source) => (
               <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
-                {source.title} ↗
+                {headline(source).title} <span className="muted">{headline(source).outlet} ↗</span>
               </a>
             ))}
+            <p>
+              <span className="muted">자동 요약</span> {group.news.reason}
+            </p>
           </div>
         )}
         {group.news?.found === "none" && <p className="muted">이 종목들을 함께 다룬 당일 기사는 찾지 못했습니다.</p>}
@@ -255,7 +284,11 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
                       </span>
                     ))}
                     {group.grade !== "뚜렷함" && <span className="hot-tie dim">약한 신호</span>}
-                    {group.news?.found === "group" && <p className="hot-why">{group.news.reason}</p>}
+                    {group.news?.found === "group" && lead(group.news.sources) && (
+                      <p className="hot-why">
+                        {headline(lead(group.news.sources)!).title} <span className="muted">· {headline(lead(group.news.sources)!).outlet}</span>
+                      </p>
+                    )}
                   </td>
                   <td className={`${side} num`}>
                     {signed(average)}
@@ -290,7 +323,7 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
         <p className="hot-none">이 거래일에는 기준을 넘는 연관 {word}이 없습니다.</p>
       )}
       <p className="hot-foot muted">
-        {word} 종목은 "{word}한 곳 / 같은 연결 고리를 가진 상장사 전체"입니다. 연결 고리는 종목들의 공통점이며 주가가 움직인 원인을 뜻하지 않습니다. 연결 고리 아래의 한 줄은 그날의 기사를 검색해 자동으로 요약한 것으로, 기사를 찾은 경우에만 있습니다. 요약이 기사와 어긋날 수 있으니 줄을 펴서 기사 제목을 함께 확인하세요.
+        {word} 종목은 "{word}한 곳 / 같은 연결 고리를 가진 상장사 전체"입니다. 연결 고리는 종목들의 공통점이며 주가가 움직인 원인을 뜻하지 않습니다. 연결 고리 아래의 한 줄은 그날 이 종목들을 다룬 기사의 제목으로, 기사를 찾은 경우에만 있습니다. 줄을 펴면 나오는 자동 요약은 기사와 어긋날 수 있습니다.
         약한 신호는 세 종목뿐이거나 일부만 움직인 경우로, 과거 기간에 견주면 넷에 하나꼴로 우연히도 나타납니다.
       </p>
 
