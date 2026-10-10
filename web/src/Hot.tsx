@@ -105,7 +105,7 @@ function Detail({ group, day, side, onGraph }: { group: HotGroup; day: string; s
         </p>
         {group.news && group.news.found !== "none" && (
           <div className="hot-news">
-            <b>{group.news.found === "group" ? "기사가 전한 배경" : "한 종목을 다룬 기사"}</b>
+            <b>{group.news.found === "group" ? "기사 요약 (자동)" : "한 종목을 다룬 기사 요약 (자동)"}</b>
             <p>{group.news.reason}</p>
             {group.news.sources.map((source) => (
               <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
@@ -290,7 +290,7 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
         <p className="hot-none">이 거래일에는 기준을 넘는 연관 {word}이 없습니다.</p>
       )}
       <p className="hot-foot muted">
-        {word} 종목은 "{word}한 곳 / 같은 연결 고리를 가진 상장사 전체"입니다. 연결 고리는 종목들의 공통점이며 주가가 움직인 원인을 뜻하지 않습니다. 연결 고리 아래의 한 줄은 그날의 기사가 전한 배경을 검색해 요약한 것으로, 기사를 찾은 경우에만 있습니다.
+        {word} 종목은 "{word}한 곳 / 같은 연결 고리를 가진 상장사 전체"입니다. 연결 고리는 종목들의 공통점이며 주가가 움직인 원인을 뜻하지 않습니다. 연결 고리 아래의 한 줄은 그날의 기사를 검색해 자동으로 요약한 것으로, 기사를 찾은 경우에만 있습니다. 요약이 기사와 어긋날 수 있으니 줄을 펴서 기사 제목을 함께 확인하세요.
         약한 신호는 세 종목뿐이거나 일부만 움직인 경우로, 과거 기간에 견주면 넷에 하나꼴로 우연히도 나타납니다.
       </p>
 
