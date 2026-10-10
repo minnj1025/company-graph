@@ -794,6 +794,14 @@ class _Found:
             for path in result["paths"]:
                 for item in path:
                     self.relation(item)
+        elif name == "get_price_moves":
+            groups = result.get("groups", []) + [g for day in result.get("days", []) for g in day["groups"]]
+            for group in groups[:8]:   # 종목군의 종목을 그리고, 그 사이의 관계는 _around 가 잇는다
+                ids = [m["company_id"] for m in group["members"]]
+                self.companies.update(ids)
+                self.ranked += [i for i in ids if i not in self.ranked]
+            if "company" in result:
+                self.focus.add(result["company"]["company_id"])
         elif name == "find_disclosers":
             target = arguments.get("counterparty_id")
             for company in result["companies"][:80]:

@@ -8,7 +8,7 @@
   - 모든 줄에 근거 공시의 접수번호가 있다
 """
 import re
-from datetime import date
+from datetime import date, timedelta
 
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import aliased
@@ -16,7 +16,7 @@ from sqlalchemy.orm import aliased
 from . import query
 from . import ksic as ksic_table
 from .display_names import group_key, group_label
-from .db import BusinessSection, Company, Document, Product, ProductCode, Relation
+from .db import BusinessSection, Company, Document, HotDay, Product, ProductCode, Relation
 from .product_families import FAMILIES, FAMILY_FIELD
 
 LIMIT = 50
@@ -151,6 +151,19 @@ TOOLS = [
                     "읽지 못한 회사는 read=false 로 나오고, 그때는 get_business 로 표의 글을 직접 읽는다.",
      "input_schema": {"type": "object", "properties": {"company_id": _COMPANY, "as_of": _AS_OF},
                       "required": ["company_id", "as_of"]}},
+    {"name": "get_price_moves",
+     "description": "거래일의 주가 움직임을 관계와 제품으로 설명한다. 그날 시장보다 크게 오르거나 내린 종목 가운데, 같은 제품을 팔거나 "
+                    "지분·계열·공급계약으로 이어진 종목을 묶은 '종목군'과, 어디에도 묶이지 않은 '개별 종목'을 준다. 장 마감 뒤의 일별 값이며 장중 값이 아니다. "
+                    "쓰는 법 셋: (1) day 만 주면 그날의 전체, (2) company_id 를 주면 그 회사가 급등·급락한 날과 함께 움직인 종목, "
+                    "(3) keyword 를 주면 연결 고리(제품 이름)나 종목 이름에 그 낱말이 든 종목군이 나온 날. (2)와 (3)은 as_of 에서 lookback_days 만큼 거슬러 찾는다.",
+     "input_schema": {"type": "object", "properties": {
+         "as_of": _AS_OF,
+         "day": {"type": "string", "description": "볼 거래일 YYYY-MM-DD. 없으면 as_of 이전의 가장 최근 거래일. 그날이 거래일이 아니면 바로 앞 거래일"},
+         "company_id": _COMPANY,
+         "keyword": {"type": "string", "description": "연결 고리나 종목 이름에서 찾을 낱말. 예: 강관, HLB, 전력 케이블"},
+         "direction": {"type": "string", "enum": ["up", "down", "both"], "description": "오른 쪽, 내린 쪽, 둘 다(기본)"},
+         "lookback_days": {"type": "integer", "description": "company_id 나 keyword 로 찾을 때 거슬러 볼 날 수(달력 기준). 기본 30, 최대 120"}},
+         "required": ["as_of"]}},
     {"name": "get_coverage",
      "description": "이 DB가 무엇을 언제부터 언제까지 모았고 무엇을 모으지 않았는지. 결과가 비었을 때 답하기 전에 확인한다.",
      "input_schema": {"type": "object", "properties": {}}},
@@ -621,7 +634,71 @@ def get_products(db, company_id, as_of) -> dict:
             "fields": _PRODUCT_NOTE + ". ksic 는 그 제품에 붙인 한국표준산업분류(11차) 세세분류 코드입니다"}
 
 
-FUNCTIONS = {"find_by_product": find_by_product, "get_products": get_products,
+def _move_group(group: dict, direction: str) -> dict:
+    news = group.get("news") or {}
+    out = {"direction": direction, "strength": "strong" if group["grade"] == "뚜렷함" else "weak", "link_kind": group["kind"], "link": group["why"],
+           "moved": group["n"], "of": group["of"], "streak_days": group.get("streak", 1),
+           "members": [{"company_id": m["id"], "name": m["name"], "market": m.get("market"), "change_pct": m["change"]} for m in group["members"]]}
+    if news.get("found") in ("group", "single"):
+        out["articles"] = [{"title": s["title"], "url": s["url"]} for s in news["sources"]]
+        out["article_scope"] = "이 종목들을 함께 다룬 기사" if news["found"] == "group" else "한 종목만 다룬 기사"
+        out["auto_summary"] = news["reason"]
+    elif news.get("found") == "none":
+        out["articles"] = []
+    return out
+
+
+def get_price_moves(db, as_of, day=None, company_id=None, keyword=None, direction: str = "both", lookback_days: int = 30) -> dict:
+    when = _date(as_of, "as_of", required=True)
+    if direction not in ("up", "down", "both"):
+        raise ToolError("direction 은 up, down, both 중 하나입니다")
+    sides = lambda payload: [(d, side) for d, side in (("up", payload), ("down", payload.get("down") or {})) if direction in (d, "both")]
+    note = ("종목군은 그날 시장 중앙값보다 3%p 이상 움직이고 그날 상·하위 8%에 든 종목 가운데, 연결 고리(link)를 함께 가진 종목이 셋 이상인 것입니다. "
+            "link 는 종목들의 공통점이지 주가가 움직인 원인이 아닙니다. 원인을 말하려면 articles 의 기사 제목을 근거로 대고 주소를 함께 적으세요. "
+            "auto_summary 는 모델이 기사를 요약한 것으로 기사와 어긋날 수 있으니 '자동 요약에 따르면'이라고 밝혀 쓰고, articles 가 없으면 원인을 짐작하지 마세요. "
+            "strength 가 weak 인 것은 넷에 하나꼴로 우연히도 나옵니다. moved/of 는 움직인 종목 수와 그 연결 고리를 가진 상장사 수입니다. "
+            "change_pct 는 전 거래일 종가 대비 등락률(%)이며, 앞으로의 주가에 대해서는 말하지 않습니다.")
+    if company_id is None and not keyword:
+        target = _date(day, "day") or when
+        row = db.scalar(select(HotDay).where(HotDay.trade_date <= min(target, when)).order_by(HotDay.trade_date.desc()).limit(1))
+        if row is None:
+            return {"days": [], "note": "그 시점 이전에 계산해 둔 거래일이 없습니다. 주가는 2026년 2월부터 있습니다"}
+        payload, groups, alone = row.payload, [], []
+        for d, side in sides(payload):
+            groups += [_move_group(g, d) for g in side.get("groups", [])]
+            alone += [{"direction": d, "company_id": a["id"], "name": a["name"], "market": a.get("market"), "change_pct": a["change"],
+                       "recent_filings": [{"title": f["title"], "rcept_no": f["rcept_no"], "date": f["date"]} for f in a.get("filings", [])]}
+                      for a in side.get("alone", [])[:10]]
+        groups.sort(key=lambda g: (g["strength"] != "strong", -abs(sum(m["change_pct"] for m in g["members"]) / len(g["members"]))))
+        return {"day": row.trade_date.isoformat(), "market_median_pct": payload["market"], "watched": payload["watched"],
+                "groups": groups, "alone": alone, "alone_note": "어디에도 묶이지 않고 시장 대비 10%p 이상 움직인 종목 가운데 많이 움직인 10곳씩",
+                "fields": note}
+    company = _company(db, company_id) if company_id is not None else None
+    word = _squeeze(keyword) if keyword else None
+    if word is not None and not 2 <= len(word) <= 20:
+        raise ToolError("keyword 는 2~20자입니다")
+    start = when - timedelta(days=max(1, min(int(lookback_days or 30), 120)))
+    days = []
+    for row in db.scalars(select(HotDay).where(HotDay.trade_date <= when, HotDay.trade_date >= start).order_by(HotDay.trade_date.desc())):
+        hits, solo = [], []
+        for d, side in sides(row.payload):
+            for g in side.get("groups", []):
+                by_company = company is not None and any(m["id"] == company.company_id for m in g["members"])
+                by_word = word is not None and (any(word in _squeeze(w) for w in g["why"]) or any(word in _squeeze(m["name"]) for m in g["members"]))
+                if by_company or by_word:
+                    hits.append(_move_group(g, d))
+            if company is not None:
+                solo += [{"direction": d, "change_pct": a["change"], "recent_filings": a.get("filings", [])}
+                         for a in side.get("alone", []) if a["id"] == company.company_id]
+        if hits or solo:
+            days.append({"day": row.trade_date.isoformat(), "market_median_pct": row.payload["market"], "groups": hits,
+                         **({"moved_alone": solo} if solo else {})})
+    return {"from": start.isoformat(), "to": when.isoformat(), **({"company": _brief(company)} if company else {}), **({"keyword": keyword} if keyword else {}),
+            "total_days": len(days), "days": days[:15], "truncated": len(days) > 15,
+            "fields": note + " moved_alone 은 그 회사가 종목군에 묶이지 않고 혼자 크게 움직인 날입니다(많이 움직인 20곳 안에 든 날만 기록됩니다)."}
+
+
+FUNCTIONS = {"get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
              "search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
              "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}
