@@ -165,3 +165,24 @@ def test_hot_relation_group_skips_hubs_and_merges_same_members():
     # 여러 곳에 출자한 회사(20)를 거쳐서만 이어진 곳들은 무리가 아니다
     hub = {(i, 20): {"지분"} for i in range(1, 13)}
     assert find_groups({**quiet, 1: 9.0, 2: 9.0, 3: 9.0, 20: 9.0}, 3.0, liquid, _links(rel=hub)) == []
+
+
+def test_hot_news_keeps_only_sources_the_search_returned():
+    from datetime import date
+    from types import SimpleNamespace as Block
+    from company_graph.hot_news import read_answer
+
+    hit = Block(url="https://news.example/1", title="강관주 강세", page_age="2026-10-01")
+    search = Block(type="web_search_tool_result", content=[hit])
+    say = lambda body: Block(type="text", text=body)
+    good = read_answer([search, say('찾았습니다.\n{"found": "group", "reason": "LNG 투자 기대에 강관주가 올랐다고 전했다", "urls": ["https://news.example/1"]}')])
+    assert (good["found"], good["sources"][0]["title"], good["searches"]) == ("group", "강관주 강세", 1)
+    # 검색 결과에 없던 주소를 댔다: 근거가 없으므로 이유도 버린다
+    made_up = read_answer([search, say('{"found": "group", "reason": "수주 기대", "urls": ["https://made.up/x"]}')])
+    assert (made_up["found"], made_up["reason"], made_up["sources"]) == ("none", "", [])
+    assert read_answer([say("기사를 찾지 못했습니다")])["found"] == "none"
+    # 그 거래일 무렵의 기사가 아니면 근거로 치지 않는다 (10월 10일에 본 "9 days ago" 는 10월 1일)
+    answer = say('{"found": "group", "reason": "강관주 강세", "urls": ["https://news.example/1"]}')
+    aged = Block(type="web_search_tool_result", content=[Block(url="https://news.example/1", title="강관주 강세", page_age="9 days ago")])
+    assert read_answer([aged, answer], date(2026, 9, 30), date(2026, 10, 10))["found"] == "group"
+    assert read_answer([aged, answer], date(2026, 6, 18), date(2026, 10, 10))["found"] == "none"

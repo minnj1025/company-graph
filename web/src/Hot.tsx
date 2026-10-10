@@ -36,6 +36,11 @@ function newsLink(names: string[], day: string): string {
   return `https://search.naver.com/search.naver?${query}`;
 }
 
+/** 종목 이름 옆의 시장 표시 */
+function Market({ name }: { name?: string | null }) {
+  return name ? <span className="hot-market">{name}</span> : null;
+}
+
 function Bar({ value }: { value: number }) {
   return (
     <span className={`hot-bar ${value < 0 ? "fall" : ""}`}>
@@ -79,7 +84,10 @@ function Detail({ group, day, side, onGraph }: { group: HotGroup; day: string; s
         <tbody>
           {group.members.map((member) => (
             <tr key={member.id}>
-              <td>{member.name}</td>
+              <td>
+                {member.name}
+                <Market name={member.market} />
+              </td>
               <td className={`${side} num`}>{signed(member.change)}</td>
               <td>
                 <Bar value={member.change} />
@@ -95,6 +103,18 @@ function Detail({ group, day, side, onGraph }: { group: HotGroup; day: string; s
             : `${title(group)}의 매출 비중이 10% 이상인 상장사 ${group.of}곳 가운데 ${group.n}곳이 같은 날 ${WORD[side]}했습니다.`}
           {(group.streak ?? 1) > 1 && ` 앞 거래일에 이어 ${group.streak}거래일째입니다.`}
         </p>
+        {group.news && group.news.found !== "none" && (
+          <div className="hot-news">
+            <b>{group.news.found === "group" ? "기사가 전한 배경" : "한 종목을 다룬 기사"}</b>
+            <p>{group.news.reason}</p>
+            {group.news.sources.map((source) => (
+              <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
+                {source.title} ↗
+              </a>
+            ))}
+          </div>
+        )}
+        {group.news?.found === "none" && <p className="muted">이 종목들을 함께 다룬 당일 기사는 찾지 못했습니다.</p>}
         <button onClick={onGraph}>관계 그래프로 보기</button>
         <a href={newsLink(group.members.slice(0, 2).map((member) => member.name), day)} target="_blank" rel="noreferrer">
           당일 기사 검색 ↗
@@ -235,6 +255,7 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
                       </span>
                     ))}
                     {group.grade !== "뚜렷함" && <span className="hot-tie dim">약한 신호</span>}
+                    {group.news?.found === "group" && <p className="hot-why">{group.news.reason}</p>}
                   </td>
                   <td className={`${side} num`}>
                     {signed(average)}
@@ -269,7 +290,7 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
         <p className="hot-none">이 거래일에는 기준을 넘는 연관 {word}이 없습니다.</p>
       )}
       <p className="hot-foot muted">
-        {word} 종목은 "{word}한 곳 / 같은 연결 고리를 가진 상장사 전체"입니다. 연결 고리는 종목들의 공통점이며 주가가 움직인 원인을 뜻하지 않습니다.
+        {word} 종목은 "{word}한 곳 / 같은 연결 고리를 가진 상장사 전체"입니다. 연결 고리는 종목들의 공통점이며 주가가 움직인 원인을 뜻하지 않습니다. 연결 고리 아래의 한 줄은 그날의 기사가 전한 배경을 검색해 요약한 것으로, 기사를 찾은 경우에만 있습니다.
         약한 신호는 세 종목뿐이거나 일부만 움직인 경우로, 과거 기간에 견주면 넷에 하나꼴로 우연히도 나타납니다.
       </p>
 
@@ -296,6 +317,7 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
               <td className="num muted">{order + 1}</td>
               <td>
                 <b>{item.name}</b>
+                <Market name={item.market} />
               </td>
               <td className={`${side} num`}>
                 {signed(item.change)}

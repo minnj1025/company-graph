@@ -247,7 +247,9 @@ export interface HotGroup {
   /** 무리에 든 곳의 수와, 그 공통점을 가진 상장사 전부의 수 */
   n: number;
   of: number;
-  members: { id: number; name: string; change: number }[];
+  members: { id: number; name: string; market?: string | null; change: number }[];
+  /** 그날의 기사가 전한 이유 (hot_news.py). found: 종목군을 다룬 기사, 한 종목만 다룬 기사, 못 찾음. 아직 찾아보지 않았으면 없다 */
+  news?: { found: "group" | "single" | "none"; reason: string; sources: { title: string; url: string }[] };
   /** 앞 거래일부터 며칠째 이어졌는지. 처음이면 1 */
   streak?: number;
 }
@@ -257,7 +259,7 @@ export interface HotSide {
   /** 그날 급등(급락)한 종목의 수 */
   hot: number;
   groups: HotGroup[];
-  alone: { id: number; name: string; change: number; filings: { title: string; rcept_no: string; date: string }[] }[];
+  alone: { id: number; name: string; market?: string | null; change: number; filings: { title: string; rcept_no: string; date: string }[] }[];
   alone_total: number;
 }
 

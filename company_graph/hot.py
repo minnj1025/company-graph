@@ -32,6 +32,7 @@ STRONG = 5.0                          # 무리에서 셋째로 많이 오른 곳
 SOLO = 10.0                           # 무리에 들지 못하고 이만큼 오른 곳은 "혼자 오른 곳"으로 따로 둔다
 ALONE_SHOWN = 20                      # 혼자 오른 곳은 많이 오른 순으로 이만큼만 남긴다
 FILING_DAYS = 4                       # 혼자 오른 곳에 붙이는 공시: 그날까지 나흘 사이에 나온 것
+MARKET_NAMES = {"Y": "코스피", "K": "코스닥", "N": "코넥스"}   # DART 의 법인 구분. 유가증권시장을 흔히 부르는 대로 코스피라고 적는다
 REL_NAMES = {"affiliate": "계열", "equity": "지분", "supply_contract": "공급계약"}
 CLEAR, FAIR = "뚜렷함", "보통"
 
@@ -42,6 +43,7 @@ class Links:
     names: dict[int, str]
     holders: dict[str, set[int]]                    # 좁은 제품 이름 → 가진 회사
     rel: dict[tuple[int, int], set[str]]            # (작은 id, 큰 id) → 관계 종류
+    markets: dict[int, str] = field(default_factory=dict)   # 기업 → 코스피, 코스닥, 코넥스
     near: dict[int, set[int]] = field(default_factory=dict)
     hubs: set[int] = field(default_factory=set)
 
@@ -57,7 +59,9 @@ class Links:
 
 def load_links(db, as_of: date | None = None) -> Links:
     """as_of 를 주면 그날까지 공시된 것만 쓴다. 안 주면 지금 유효한 것 전부."""
-    listed = {c.company_id: c.label for c in db.scalars(select(Company).where(Company.stock_code.isnot(None))) if "스팩" not in c.label}
+    companies = [c for c in db.scalars(select(Company).where(Company.stock_code.isnot(None))) if "스팩" not in c.label]
+    listed = {c.company_id: c.label for c in companies}
+    markets = {c.company_id: MARKET_NAMES[c.corp_cls] for c in companies if c.corp_cls in MARKET_NAMES}
     relations = select(Relation.subject_company_id, Relation.object_company_id, Relation.rel_type).where(
         Relation.retired_at.is_(None), Relation.subject_company_id.isnot(None), Relation.object_company_id.isnot(None))
     latest = select(Product.company_id, func.max(Product.rcept_no).label("rcept_no"))
@@ -77,7 +81,7 @@ def load_links(db, as_of: date | None = None) -> Links:
             for name in row.std_names or []:
                 if not name.endswith(("유통", "도소매")):   # 받아서 파는 것은 같은 제품을 만드는 무리가 아니다
                     holders[name].add(row.company_id)
-    return Links(listed, {name: members for name, members in holders.items() if 2 <= len(members) <= NARROW}, dict(rel))
+    return Links(listed, {name: members for name, members in holders.items() if 2 <= len(members) <= NARROW}, dict(rel), markets)
 
 
 def load_prices(db, start: date | None = None, end: date | None = None) -> tuple[list[date], dict[date, dict[int, tuple[float, float]]]]:
@@ -175,9 +179,10 @@ def _side(days: list[date], prices: dict, k: int, links: Links, down: bool) -> d
     alone = sorted((c for c, value in excess.items() if value >= max(line, SOLO) and c not in grouped), key=lambda c: -excess[c])
     return {"hot": sum(1 for value in excess.values() if value >= line),
             "groups": [{"grade": g["grade"], "kind": g["kind"], "why": g["why"][:4], "n": len(g["members"]), "of": g["of"], "third": round(g["third"], 1),
-                        "members": [{"id": m, "name": links.names[m], "change": change[m]} for m in sorted(g["members"], key=lambda m: -excess[m])]}
+                        "members": [{"id": m, "name": links.names[m], "market": links.markets.get(m), "change": change[m]}
+                                    for m in sorted(g["members"], key=lambda m: -excess[m])]}
                        for g in groups],
-            "alone": [{"id": c, "name": links.names[c], "change": change[c]} for c in alone]}
+            "alone": [{"id": c, "name": links.names[c], "market": links.markets.get(c), "change": change[c]} for c in alone]}
 
 
 def day_result(days: list[date], prices: dict, k: int, links: Links) -> dict:
@@ -214,6 +219,13 @@ def store(db, days: list[date], prices: dict, links: Links, start: date, end: da
             for item in side["alone"]:
                 item["filings"] = filings[item["id"]][:3]
         row = db.get(HotDay, day)
+        if row is not None:   # 다시 계산해도 이미 찾아 둔 기사(hot_news.py)는 구성이 같은 종목군에 그대로 둔다
+            for new, old in ((result, row.payload), (result["down"], row.payload.get("down") or {})):
+                found = {frozenset(m["id"] for m in g["members"]): g["news"] for g in old.get("groups", []) if "news" in g}
+                for group in new["groups"]:
+                    news = found.get(frozenset(m["id"] for m in group["members"]))
+                    if news:
+                        group["news"] = news
         if row is None:
             db.add(HotDay(trade_date=day, payload=result, computed_at=datetime.now()))
         else:
