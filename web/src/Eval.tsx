@@ -221,22 +221,22 @@ export function Compare({ data }: { data: EvalData }) {
       <div className="duel">
         <div>
           <h4>
-            이 DB를 쓰는 Agent <span>{data.agent_model}</span>
+            DB 기반 Agent <span>{data.agent_model}</span>
           </h4>
           <VerdictBar sides={ours} />
         </div>
         <div>
           <h4>
-            웹 검색만 쓰는 Claude <span>{data.baseline_model}</span>
+            웹 검색 전용 Claude <span>{data.baseline_model}</span>
           </h4>
           <VerdictBar sides={theirs} />
         </div>
       </div>
       <VerdictLegend />
       <div className="versus-grid">
-        <Versus title="문항당 걸린 시간 (중앙값)" ours={seconds[0]} theirs={seconds[1]} unit="초" note={`${(seconds[1] / seconds[0]).toFixed(0)}배 차이. 웹 검색은 검색과 페이지 읽기를 여러 번 되풀이합니다.`} />
-        <Versus title="문항당 쓴 토큰 (중앙값)" ours={tokens[0]} theirs={tokens[1]} unit="" note="입력과 출력, 캐시에서 읽은 것을 모두 더했습니다. 웹 검색 쪽은 실행 도구의 기본 지시문이 포함된 값입니다." />
-        <Versus title="근거 공시를 직접 확인한 문항" ours={cited} theirs={opened} unit={`/${shared.length}`} note={`Agent는 답에 접수번호를 적고, 그 번호가 조회 결과에 있었는지 검사합니다. 웹 검색은 공시 원문을 ${opened}번 열었고, 페이지 읽기 ${fetched}번 중 ${failed}번이 실패했습니다.`} />
+        <Versus title="문항당 소요 시간 (중앙값)" ours={seconds[0]} theirs={seconds[1]} unit="초" note={`${(seconds[1] / seconds[0]).toFixed(0)}배 차이. 웹 검색은 검색과 페이지 읽기를 여러 번 되풀이합니다.`} />
+        <Versus title="문항당 토큰 사용량 (중앙값)" ours={tokens[0]} theirs={tokens[1]} unit="" note="입력과 출력, 캐시에서 읽은 것을 모두 더했습니다. 웹 검색 쪽은 실행 도구의 기본 지시문이 포함된 값입니다." />
+        <Versus title="근거 공시 직접 확인 문항 수" ours={cited} theirs={opened} unit={`/${shared.length}`} note={`Agent는 답에 접수번호를 적고, 그 번호가 조회 결과에 있었는지 검사합니다. 웹 검색은 공시 원문을 ${opened}번 열었고, 페이지 읽기 ${fetched}번 중 ${failed}번이 실패했습니다.`} />
       </div>
       <Strip
         rows={[
