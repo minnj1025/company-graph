@@ -286,7 +286,10 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
                     {group.grade !== "뚜렷함" && <span className="hot-tie dim">약한 신호</span>}
                     {group.news?.found === "group" && lead(group.news.sources) && (
                       <p className="hot-why">
-                        {headline(lead(group.news.sources)!).title} <span className="muted">· {headline(lead(group.news.sources)!).outlet}</span>
+                        {/* 제목을 누르면 줄이 펴지지 않고 기사로 간다 */}
+                        <a href={lead(group.news.sources)!.url} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>
+                          {headline(lead(group.news.sources)!).title} <span className="muted">· {headline(lead(group.news.sources)!).outlet} ↗</span>
+                        </a>
                       </p>
                     )}
                   </td>

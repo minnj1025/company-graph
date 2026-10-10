@@ -4366,3 +4366,13 @@ details.sources a {
   border-radius: 2px;
   font-size: 11px;
 }
+
+.hot-why a {
+  color: inherit;
+}
+
+.hot-why a:hover {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
