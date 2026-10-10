@@ -142,7 +142,9 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     // 가장 먼 점 몇 개 때문에 전체가 작아지지 않게, 거리 순으로 92% 지점까지를 화면에 담는다
     const distances = placed.map((n) => Math.hypot(n.x! - cx, n.y! - cy, n.z! - cz)).sort((a, b) => a - b);
     const radius = Math.max(placed.length < 30 ? 70 : 170, distances[Math.floor((distances.length - 1) * 0.92)]);
-    graph.current?.cameraPosition({ x: cx, y: cy, z: cz + radius * 2.5 }, { x: cx, y: cy, z: cz }, 900);
+    // 둘레에 여백이 남게 조금 물러선다. 점이 적은 그래프(질문으로 찾은 것)는 이름표가 커서 더 물러선다
+    const back = placed.length < 30 ? 3.6 : 3.5;
+    graph.current?.cameraPosition({ x: cx, y: cy, z: cz + radius * back }, { x: cx, y: cy, z: cz }, 900);
   }, []);
 
   // 점끼리 더 밀어내고 선을 길게 잡아야 뭉치지 않고 구조가 보인다

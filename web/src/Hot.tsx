@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import type React from "react";
 import { fetchHot, fetchHotGraph } from "./api";
-import { Credit } from "./Pages";
+import { Credit } from "./Credit";
 import type { GraphData, HotDay, HotGroup } from "./types";
 
 type Side = "up" | "down";

@@ -25,6 +25,21 @@ from .product_families import FAMILY_FIELD
 from .stages import sector, stage
 
 app = FastAPI(title="기업 관계 그래프")
+
+# 읽기만 하는 응답은 CDN 이 들고 있다가 바로 내준다. 첫 화면의 그래프(/api/overview)는 만드는 데 1~4초가 걸린다.
+# 공시 자료는 DB를 다시 옮기고 배포할 때만 바뀌고(배포하면 CDN 의 것은 버려진다), 이슈 종목만 날마다 바뀌어 짧게 둔다.
+# 사람마다 다른 응답(/api/ask…)과 실패한 응답에는 붙이지 않는다
+_CACHED = {"/api/hot": "public, s-maxage=600, stale-while-revalidate=86400"}
+_CACHE_DEFAULT = "public, s-maxage=86400, stale-while-revalidate=604800"
+
+
+@app.middleware("http")
+async def cache_reads(request: Request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+    if request.method == "GET" and response.status_code == 200 and path.startswith("/api/") and not path.startswith(("/api/ask", "/api/health")):
+        response.headers["Cache-Control"] = next((v for k, v in _CACHED.items() if path.startswith(k)), _CACHE_DEFAULT)
+    return response
 _engine = get_engine()
 GRAPH_TYPES = ("equity", "supply_contract", "affiliate", "stake_acquisition", "stake_disposal", "product")
 DEFAULT_TYPES = ("equity", "supply_contract", "affiliate")

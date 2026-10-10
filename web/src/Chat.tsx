@@ -157,7 +157,7 @@ function loadChats(): { chats: Conversation[]; current: string } {
 }
 
 /** 질문과 답의 기록. 입력 칸(그래프 아래)과 답이 보이는 칸(오른쪽)이 떨어져 있어서 화면 맨 위에서 쥐고 내려 준다 */
-export function useChat(onShow: (result: AskResult | null) => void, onScreen?: (ids: number[]) => void) {
+export function useChat(onShow: (result: AskResult | null) => void, onScreen?: (question: string, highlight: number[], also: number[]) => void) {
   const [{ chats, current }, setBook] = useState(loadChats);
   const [busy, setBusy] = useState(false);
   const turns = chats.find((chat) => chat.id === current)?.turns ?? [];
@@ -224,7 +224,7 @@ export function useChat(onShow: (result: AskResult | null) => void, onScreen?: (
               // Agent가 화면에 보일 기업을 정했다: 답이 다 오기 전에 지금 그래프에서 그 점들을 먼저 밝힌다
               if (event.name === "show_on_graph") {
                 const { highlight, also } = event.input as { highlight?: number[]; also?: number[] };
-                onScreen?.([...(highlight ?? []), ...(also ?? [])]);
+                onScreen?.(clean, highlight ?? [], also ?? []);
               }
               // 답을 다 쓴 뒤에 화면만 움직인 것이면(closing) 쓴 글을 지우지 않는다
               const closing = (event as { closing?: boolean }).closing === true;

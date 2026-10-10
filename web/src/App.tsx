@@ -1,17 +1,25 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchCompany, fetchGraph, fetchMeta, fetchOverview, fetchPick, fetchTaxonomy, type Level, type Scope } from "./api";
 import { categoryColors, CLASS_COLOR, FAMILY_COLOR, legend, LINK_COLORS, LINK_LABELS, PRODUCT_COLOR, TOPIC_COLOR, type ColorBy } from "./colors";
 import { Cards } from "./Cards";
 import { ChatLog, Composer, useChat } from "./Chat";
 import { LevelList, NO_FILTER, Settings, TimeBar, type Filters } from "./Controls";
 import { Graph, MENTIONED, shortName } from "./Graph";
-import { HotPage } from "./Hot";
-import { Credit, DataPage, QuestionsPage } from "./Pages";
+import { Credit } from "./Credit";
 import { Panel } from "./Panel";
 import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType, Suggestion, Taxonomy } from "./types";
 
 /** 그래프에 따로 띄운 것: Agent의 답이 찾은 결과이거나, 입력 칸에서 고른 제품·제품군·분류 */
-type Shown = Pick<AskResult, "question" | "graph"> & { picked?: boolean };
+type Shown = Pick<AskResult, "question" | "graph"> & {
+  picked?: boolean;
+  /** Agent가 답을 쓰기 전에 "이 기업들을 보여 줘"라고 해서 먼저 그려 둔 것. 답이 끝나면 완성된 그래프로 바뀐다 */
+  early?: boolean;
+};
+
+// 그래프 말고 다른 탭은 누를 때 받는다. 첫 화면이 받는 양이 준다
+const HotPage = lazy(() => import("./Hot").then((m) => ({ default: m.HotPage })));
+const DataPage = lazy(() => import("./Pages").then((m) => ({ default: m.DataPage })));
+const QuestionsPage = lazy(() => import("./Pages").then((m) => ({ default: m.QuestionsPage })));
 
 const EMPTY: GraphData = { nodes: [], links: [] };
 
@@ -39,6 +47,31 @@ const KIND_LEGEND: [NonNullable<GraphNode["kind"]>, string, string][] = [
 ];
 
 const DRAWER_TITLES: Record<Exclude<Drawer, null>, string> = { answer: "채팅", company: "기업 상세", feed: "최근 공시" };
+
+type Layout = Map<number, { x: number; y: number; z: number }>;
+const LAYOUT_KEY = "layout";
+let layoutSaved = 0;
+
+/** 지난번에 자리 잡은 점들의 위치. 있으면 그래프가 처음부터 그 자리에서 시작한다 */
+function loadLayout(): Layout {
+  try {
+    const rows = JSON.parse(localStorage.getItem(LAYOUT_KEY) ?? "[]") as [number, number, number, number][];
+    return new Map(rows.map(([id, x, y, z]) => [id, { x, y, z }]));
+  } catch {
+    return new Map();
+  }
+}
+
+/** 10초에 한 번만 적는다. 점이 2천 개쯤이라 문자열로 60KB 남짓 */
+function saveLayout(layout: Layout) {
+  if (Date.now() - layoutSaved < 10000 || layout.size < 200) return;
+  layoutSaved = Date.now();
+  try {
+    localStorage.setItem(LAYOUT_KEY, JSON.stringify([...layout].map(([id, at]) => [id, Math.round(at.x), Math.round(at.y), Math.round(at.z)])));
+  } catch {
+    /* 자리가 모자라면 적지 않는다 */
+  }
+}
 
 export function App() {
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -92,7 +125,7 @@ export function App() {
   const [data, setData] = useState<GraphData>(EMPTY);
   const [detail, setDetail] = useState<CompanyDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const positions = useRef(new Map<number, { x: number; y: number; z: number }>());
+  const positions = useRef(loadLayout());
   const picked = useRef(selectedId);
   picked.current = selectedId;
   /** 그래프가 그리는 것을 바꾼다. replace 면 지금 자리를 고치고(단계 수처럼 작은 변화), 아니면 새 자리를 쌓는다 */
@@ -174,14 +207,38 @@ export function App() {
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", stop);
   };
-  // Agent가 답하는 도중에 "이 기업들을 보여 줘"라고 하면, 지금 그래프에서 그 점들만 밝게 남긴다. 답이 끝나면 찾은 그래프로 넘어간다
-  const [pointed, setPointed] = useState<Set<number> | null>(null);
+  // Agent가 답을 쓰기 전에 "이 기업들을 보여 줘"라고 하면, 그 기업들만으로 먼저 모여들게 한다(전체 그래프에서 아는 점과 선으로).
+  // 답이 끝나 완성된 그래프가 오면, 이미 모여 있는 점은 그 자리에 두고 새 점(제품 등)만 더한다
+  const early = useRef<GraphData | null>(null);
   const chat = useChat(
     (result) => {
-      setPointed(null);
+      const before = early.current;
+      early.current = null;
+      if (result && before) {
+        const placed = new Map(before.nodes.map((node) => [node.id, node]));
+        for (const node of result.graph.nodes) {
+          const at = placed.get(node.id);
+          if (at?.x !== undefined) Object.assign(node, { x: at.x, y: at.y, z: at.z });
+        }
+        seed(result.graph);
+        go({ found: result }, true);   // 먼저 그려 둔 자리를 고쳐 쓴다. 뒤로 가기에 두 걸음이 쌓이지 않게
+        return;
+      }
       showFound(result);
     },
-    (ids) => setPointed(new Set(ids)),
+    (question, highlight, also) => {
+      const wanted = new Set([...highlight, ...also]);
+      const strong = new Set(highlight);
+      const nodes = data.nodes.filter((node) => wanted.has(node.id)).map(({ x: _x, y: _y, z: _z, ...node }) => ({ ...node, vx: undefined, vy: undefined, vz: undefined, focus: strong.has(node.id) }));
+      if (nodes.length === 0) return;   // 지금 그래프에 없는 기업들이다. 답이 끝날 때까지 기다린다
+      const kept = new Set(nodes.map((node) => node.id));
+      const end = (value: unknown) => (typeof value === "object" && value !== null ? (value as GraphNode).id : (value as number));
+      const links = data.links.filter((link) => kept.has(end(link.source)) && kept.has(end(link.target))).map((link) => ({ ...link, source: end(link.source), target: end(link.target) }));
+      const graph = { nodes, links } as GraphData;
+      early.current = graph;
+      seed(graph);
+      go({ found: { question, graph, early: true } });
+    },
   );
 
   useEffect(() => {
@@ -228,6 +285,7 @@ export function App() {
       for (const node of data.nodes) {
         if (node.x !== undefined) positions.current.set(node.id, { x: node.x, y: node.y ?? 0, z: node.z ?? 0 });
       }
+      saveLayout(positions.current);
     }, 1000);
     return () => clearInterval(timer);
   }, [data]);
@@ -266,6 +324,12 @@ export function App() {
   useEffect(() => {
     if (!found) {
       setDrawn(null);
+      setSpotlight(null);
+      return;
+    }
+    if (drawn?.early && !found.early && drawn.question === found.question) {
+      // 먼저 모아 둔 그림에서 이어 간다. 다시 흐렸다가 바꾸면 두 번 깜빡인다
+      setDrawn(found);
       setSpotlight(null);
       return;
     }
@@ -395,9 +459,9 @@ export function App() {
             groups={groups}
             selectedId={drawn === found ? selectedId : null}
             onSelect={onSelect}
-            spotlight={spotlight ?? pointed}
+            spotlight={spotlight}
             light={theme === "light"}
-            fitKey={drawn ? `ask-${drawn.question}` : `${center?.id ?? scope}-${hops}`}
+            fitKey={drawn ? `ask-${drawn.question}${drawn.early ? "-early" : ""}` : `${center?.id ?? scope}-${hops}`}
             refit={refit}
           />
 
@@ -612,6 +676,7 @@ export function App() {
 
       {tab !== "graph" && (
         <div className="overlay">
+          <Suspense fallback={<div className="page"><p className="muted">불러오는 중…</p></div>}>
           {tab === "hot" ? (
             <HotPage
               onShow={(title, graph) => {
@@ -625,6 +690,7 @@ export function App() {
           ) : (
             <QuestionsPage />
           )}
+          </Suspense>
         </div>
       )}
     </div>
