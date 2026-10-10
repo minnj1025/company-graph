@@ -47,6 +47,22 @@ export function App() {
   const [colorBy, setColorBy] = useState<ColorBy>("group");
   const [views, setViews] = useState<{ list: View[]; at: number }>({ list: [HOME], at: 0 });
   const { center, hops, scope, found, selected: selectedId } = views.list[views.at];
+  // 바탕: 어두운 것이 기본이고, 고른 것은 이 브라우저에 적어 둔다
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    try {
+      return localStorage.getItem("theme") === "light" ? "light" : "dark";
+    } catch {
+      return "dark";
+    }
+  });
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {
+      /* 적어 두지 못해도 이번에는 바뀐다 */
+    }
+  }, [theme]);
   const [tab, setTab] = useState<"graph" | "hot" | "data" | "agent">("graph");
   const [filters, setFilters] = useState<Filters>(NO_FILTER);
   const [loading, setLoading] = useState(false);
@@ -343,6 +359,23 @@ export function App() {
         </nav>
         <div className="top-stat">
           기업 {meta.companies.toLocaleString()}곳 · 최근 공시 {meta.last_date}
+          <button
+            className="theme-toggle"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            title={theme === "dark" ? "밝은 바탕으로" : "어두운 바탕으로"}
+            aria-label={theme === "dark" ? "밝은 바탕으로" : "어두운 바탕으로"}
+          >
+            {theme === "dark" ? (
+              <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+                <circle cx="10" cy="10" r="3.6" fill="currentColor" />
+                <path d="M10 1.5v2.6M10 15.9v2.6M1.5 10h2.6M15.9 10h2.6M4 4l1.8 1.8M14.2 14.2 16 16M16 4l-1.8 1.8M5.8 14.2 4 16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+                <path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7Z" fill="currentColor" />
+              </svg>
+            )}
+          </button>
         </div>
       </header>
 
@@ -355,6 +388,7 @@ export function App() {
             selectedId={drawn === found ? selectedId : null}
             onSelect={onSelect}
             spotlight={spotlight}
+            light={theme === "light"}
             fitKey={drawn ? `ask-${drawn.question}` : `${center?.id ?? scope}-${hops}`}
             refit={refit}
           />

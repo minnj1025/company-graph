@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
+import type React from "react";
 import { fetchHot, fetchHotGraph } from "./api";
 import { Credit } from "./Pages";
 import type { GraphData, HotDay, HotGroup } from "./types";
@@ -190,8 +191,8 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
     <div className="page hot">
       <h2>이슈 종목</h2>
       <p className="lead">
-        그날 크게 움직인 종목을 정리합니다. 같은 날 함께 움직인 종목들이 공시상 무엇으로 연결되어 있는지를 찾아 묶었고(연관 급등·급락), 묶이지 않은
-        종목은 따로 둡니다. 테마를 미리 정해 두지 않고 사업보고서의 제품 구성과 지분·계열·공급계약 관계에서 연결 고리를 찾습니다.
+        그날 크게 움직인 종목을, 공시상 무엇으로 이어져 있는지에 따라 묶었습니다. 테마를 미리 정해 두지 않고 사업보고서의 제품 구성과 지분·계열·공급계약
+        관계에서 연결 고리를 찾습니다.
       </p>
 
       <div className="hot-top">
@@ -293,9 +294,8 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
                       </p>
                     )}
                   </td>
-                  <td className={`${side} num`}>
+                  <td className={`${side} num heat`} style={{ "--heat": Math.min(1, Math.abs(average) / 20) } as React.CSSProperties}>
                     {signed(average)}
-                    <Bar value={average} />
                   </td>
                   <td className="num">
                     {group.n}
@@ -325,10 +325,7 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
       ) : (
         <p className="hot-none">이 거래일에는 기준을 넘는 연관 {word}이 없습니다.</p>
       )}
-      <p className="hot-foot muted">
-        {word} 종목은 "{word}한 곳 / 같은 연결 고리를 가진 상장사 전체"입니다. 연결 고리는 종목들의 공통점이며 주가가 움직인 원인을 뜻하지 않습니다. 연결 고리 아래의 한 줄은 그날 이 종목들을 다룬 기사의 제목으로, 기사를 찾은 경우에만 있습니다. 줄을 펴면 나오는 자동 요약은 기사와 어긋날 수 있습니다.
-        약한 신호는 세 종목뿐이거나 일부만 움직인 경우로, 과거 기간에 견주면 넷에 하나꼴로 우연히도 나타납니다.
-      </p>
+
 
       <div className="hot-bar-head">
         <h3>개별 {word}</h3>
@@ -380,6 +377,12 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
         </tbody>
       </table>
       {part.alone.length === 0 && <p className="hot-none">해당하는 종목이 없습니다.</p>}
+      <details className="more hot-notes">
+        <summary>기준과 유의사항</summary>
+      <p className="hot-foot muted">
+        {word} 종목은 "{word}한 곳 / 같은 연결 고리를 가진 상장사 전체"입니다. 연결 고리는 종목들의 공통점이며 주가가 움직인 원인을 뜻하지 않습니다. 연결 고리 아래의 한 줄은 그날 이 종목들을 다룬 기사의 제목으로, 기사를 찾은 경우에만 있습니다. 줄을 펴면 나오는 자동 요약은 기사와 어긋날 수 있습니다.
+        약한 신호는 세 종목뿐이거나 일부만 움직인 경우로, 과거 기간에 견주면 넷에 하나꼴로 우연히도 나타납니다.
+      </p>
       <p className="hot-foot muted">
         공시는 이 사이트가 수집하는 종류(정기보고서, 공급계약, 지분 변동)만 표시됩니다. 실적 발표나 거래 재개 공시는 포함되지 않습니다.
       </p>
@@ -389,6 +392,7 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
         스팩은 제외했습니다. 급등(급락) 종목은 시장 중앙값 대비 3%p 이상 오르고(내리고) 당일 상위(하위) 8%에 든 종목입니다. 이 화면은 과거의 주가 움직임을 정리한 것으로 투자
         권유가 아닙니다.
       </p>
+      </details>
       <Credit />
     </div>
   );

@@ -96,9 +96,11 @@ interface Props {
   refit: number;
   /** 곧 이 점들만 남는 그래프로 바뀐다. 바뀌기 직전에 이 점들만 밝게 두고 나머지를 흐려서, 화면이 한 번에 바뀌지 않게 한다 */
   spotlight: Set<number> | null;
+  /** 밝은 바탕인가. 바탕색과 이름표의 글자색이 바뀐다 */
+  light: boolean;
 }
 
-export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey, refit, spotlight }: Props) {
+export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey, refit, spotlight, light }: Props) {
   grouped = data.nodes.some((node) => node.kind === "class" || node.kind === "family");
   const container = useRef<HTMLDivElement>(null);
   const graph = useRef<ForceGraphMethods<GraphNode, GraphLink> | undefined>(undefined);
@@ -341,7 +343,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
       const show = chosen || (lit === null ? labeled.has(node.id) : lit.has(node.id));
       if (!show) return hit;
       const label = new SpriteText(node.kind === "topic" ? `# ${node.name}` : shortName(node.name));
-      label.color = node.kind ? nodeColor(node, "group", new Map()) : "#e8edf5";
+      label.color = node.kind && !(light && node.kind === "class") ? nodeColor(node, "group", new Map()) : light ? "#1b1c1f" : "#e8edf5";
       if (node.mentioned) {
         label.color = "#201600";
         label.backgroundColor = MENTIONED;
@@ -355,7 +357,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
       hit.add(label);
       return hit;
     },
-    [selectedId, lit, labeled],
+    [selectedId, lit, labeled, light],
   );
   const linkLit = useCallback(
     (link: GraphLink) =>
@@ -510,7 +512,7 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
         width={size.width}
         height={size.height}
         graphData={data}
-        backgroundColor="#0d0e10"
+        backgroundColor={light ? "#f5f4f1" : "#0d0e10"}
         showNavInfo={false}
         nodeId="id"
         nodeLabel={nodeLabel}

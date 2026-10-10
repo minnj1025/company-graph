@@ -2,7 +2,7 @@
   --bg: #0b0f16;
   --panel: #141a26;
   --surface: rgba(17, 23, 33, 0.86);
-  --border: rgba(255, 255, 255, 0.09);
+  --border: rgb(var(--ink) / 0.09);
   --text: #e8edf5;
   --muted: #8d99ab;
   --accent: #7aa2ff;
@@ -66,7 +66,7 @@ a:hover {
   padding: 16px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 h1 {
@@ -101,9 +101,9 @@ h1 span {
 .search input {
   width: 100%;
   padding: 9px 12px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgb(var(--ink) / 0.06);
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: 4px;
   outline: none;
 }
 
@@ -120,9 +120,9 @@ h1 span {
   margin: 0;
   padding: 4px;
   list-style: none;
-  background: #151c28;
+  background: var(--raised);
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: 4px;
 }
 
 .results button {
@@ -134,11 +134,11 @@ h1 span {
   text-align: left;
   background: none;
   border: 0;
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
 .results button:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgb(var(--ink) / 0.07);
 }
 
 .block {
@@ -175,9 +175,9 @@ h1 span {
   width: 30px;
   height: 30px;
   flex: none;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgb(var(--ink) / 0.07);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 11px;
 }
 
@@ -194,15 +194,15 @@ h1 span {
   padding: 5px 10px;
   background: transparent;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 3px;
   color: var(--muted);
   font-size: 12px;
 }
 
 .chip.on {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: rgb(var(--ink) / 0.09);
+  border-color: rgb(var(--ink) / 0.22);
 }
 
 .chip:disabled {
@@ -230,7 +230,7 @@ h1 span {
   padding: 10px 14px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 12px;
   color: var(--muted);
   pointer-events: none;
@@ -268,7 +268,7 @@ h1 span {
   padding: 8px 14px;
   background: #3a1d22;
   border: 1px solid #7a3540;
-  border-radius: 9px;
+  border-radius: 4px;
   font-size: 13px;
 }
 
@@ -282,7 +282,7 @@ h1 span {
   flex-direction: column;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .panel header {
@@ -312,9 +312,9 @@ h1 span {
 .panel-actions button {
   flex: none;
   padding: 6px 11px;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 8px;
+  background: rgb(var(--ink) / 0.16);
+  border: 1px solid rgb(var(--ink) / 0.4);
+  border-radius: 4px;
   font-size: 12px;
 }
 
@@ -424,23 +424,23 @@ h1 span {
 }
 
 .warn {
-  color: #e0a458;
+  color: var(--warn);
 }
 
 .scope-select {
   width: 100%;
   padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  border: 1px solid rgb(var(--ink) / 0.12);
+  background: rgb(var(--ink) / 0.05);
   color: inherit;
   font: inherit;
 }
 
 .scope-select option,
 .scope-select optgroup {
-  background: #161b26;
-  color: #e6ebf5;
+  background: var(--raised);
+  color: var(--text);
 }
 
 /* 위쪽 탭과, 그래프 위에 덮는 글 화면 */
@@ -453,7 +453,7 @@ h1 span {
   display: flex;
   gap: 4px;
   padding: 4px;
-  border-radius: 6px;
+  border-radius: 3px;
   background: var(--surface);
   border: 1px solid var(--border);
 }
@@ -461,13 +461,13 @@ h1 span {
 .tabs button {
   padding: 7px 16px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 3px;
   background: transparent;
   color: var(--muted);
 }
 
 .tabs button.on {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgb(var(--ink) / 0.18);
   color: var(--text);
 }
 
@@ -496,7 +496,7 @@ h1 span {
 }
 
 .page .lead {
-  color: #b9c3d3;
+  color: var(--text-2);
   margin: 0 0 18px;
 }
 
@@ -509,8 +509,8 @@ h1 span {
 
 .tile {
   padding: 16px 18px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  background: rgb(var(--ink) / 0.04);
   border: 1px solid var(--border);
 }
 
@@ -552,7 +552,7 @@ h1 span {
 .bar {
   display: flex;
   height: 34px;
-  border-radius: 8px;
+  border-radius: 4px;
   overflow: hidden;
   margin-bottom: 8px;
 }
@@ -560,7 +560,7 @@ h1 span {
 .bar div {
   display: grid;
   place-items: center;
-  color: #0b0f16;
+  color: var(--on-accent);
   font-weight: 600;
 }
 
@@ -583,7 +583,7 @@ h1 span {
 .notes {
   margin: 0 0 18px;
   padding-left: 20px;
-  color: #b9c3d3;
+  color: var(--text-2);
 }
 
 .notes li {
@@ -606,9 +606,9 @@ h1 span {
 .example {
   text-align: left;
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(var(--ink) / 0.03);
   line-height: 1.45;
 }
 
@@ -620,16 +620,16 @@ h1 span {
 }
 
 .example.on {
-  border-color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.1);
+  border-color: rgb(var(--ink) / 0.6);
+  background: rgb(var(--ink) / 0.1);
 }
 
 .example-body {
   min-width: 0;
   padding: 18px 20px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(var(--ink) / 0.03);
 }
 
 .question {
@@ -658,7 +658,7 @@ h1 span {
   align-items: baseline;
   font-size: 12px;
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: 4px;
   background: rgba(0, 0, 0, 0.3);
 }
 
@@ -673,7 +673,7 @@ h1 span {
 
 .tool em {
   font-style: normal;
-  color: #6fd08c;
+  color: var(--good);
   white-space: nowrap;
 }
 
@@ -770,7 +770,7 @@ h1 span {
   position: relative;
   min-width: 0;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
@@ -785,7 +785,7 @@ h1 span {
 .fold,
 .unfold {
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 3px;
   background: var(--surface);
   color: var(--muted);
   font-size: 12px;
@@ -813,8 +813,8 @@ h1 span {
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  border: 1px solid rgb(var(--ink) / 0.5);
   background: rgba(20, 30, 52, 0.92);
 }
 
@@ -838,9 +838,9 @@ h1 span {
 .found button {
   flex: none;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 3px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(var(--ink) / 0.08);
 }
 
 .stage .legend {
@@ -862,8 +862,8 @@ h1 span {
   flex-direction: column;
   padding: 12px 14px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.025);
+  border-radius: 4px;
+  background: rgb(var(--ink) / 0.025);
 }
 
 .card h3 {
@@ -988,7 +988,7 @@ h1 span {
 .meter {
   height: 6px;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgb(var(--ink) / 0.06);
 }
 
 .meter div {
@@ -1010,8 +1010,8 @@ h1 span {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.025);
+  border-radius: 4px;
+  background: rgb(var(--ink) / 0.025);
   overflow: hidden;
   position: relative;
 }
@@ -1064,7 +1064,7 @@ h1 span {
 
 .chat-intro p {
   margin: 0 0 12px;
-  color: #b9c3d3;
+  color: var(--text-2);
   line-height: 1.6;
 }
 
@@ -1081,12 +1081,12 @@ h1 span {
   padding: 9px 12px;
   text-align: left;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  background: rgb(var(--ink) / 0.03);
 }
 
 .suggestion:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.6);
+  border-color: rgb(var(--ink) / 0.6);
 }
 
 .turn {
@@ -1099,7 +1099,7 @@ h1 span {
   max-width: 90%;
   padding: 8px 12px;
   border-radius: 12px 12px 2px 12px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgb(var(--ink) / 0.18);
 }
 
 .turn .a {
@@ -1110,7 +1110,7 @@ h1 span {
 }
 
 .turn .a.shown {
-  border-color: rgba(255, 255, 255, 0.55);
+  border-color: rgb(var(--ink) / 0.55);
 }
 
 .turn .a.pending {
@@ -1119,7 +1119,7 @@ h1 span {
 
 .turn .a.error,
 .warn {
-  color: #ffb454;
+  color: var(--warn);
 }
 
 .warn {
@@ -1153,7 +1153,7 @@ h1 span {
 .a-foot button {
   flex: none;
   padding: 3px 10px;
-  border-radius: 6px;
+  border-radius: 3px;
   border: 1px solid var(--border);
   background: none;
   color: var(--accent);
@@ -1170,9 +1170,9 @@ h1 span {
   flex: 1;
   min-width: 0;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgb(var(--ink) / 0.06);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
   outline: none;
 }
 
@@ -1183,9 +1183,9 @@ h1 span {
 .chat-input button {
   padding: 0 16px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 4px;
   background: var(--accent);
-  color: #0b0f16;
+  color: var(--on-accent);
   font-weight: 600;
 }
 
@@ -1268,13 +1268,13 @@ h1 span {
   font-size: 11px;
   line-height: 18px;
   background: rgba(255, 180, 84, 0.16);
-  color: #ffb454;
+  color: var(--warn);
 }
 
 .feed .kind-해지,
 .feed .kind-철회 {
   background: rgba(255, 107, 107, 0.16);
-  color: #ff8a8a;
+  color: var(--bad);
 }
 
 .cards {
@@ -1314,12 +1314,12 @@ h1 span {
 .rel .meter,
 .versus .meter {
   height: 10px;
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .rel .meter div,
 .versus .meter div {
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .checks {
@@ -1333,9 +1333,9 @@ h1 span {
   gap: 14px;
   align-items: center;
   padding: 14px 16px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(var(--ink) / 0.03);
 }
 
 .check p {
@@ -1363,7 +1363,7 @@ h1 span {
   position: absolute;
   inset: 7px;
   border-radius: 50%;
-  background: #10151f;
+  background: var(--raised);
 }
 
 .ring b {
@@ -1375,7 +1375,7 @@ h1 span {
 .bar.slim {
   height: 20px;
   margin: 0;
-  border-radius: 5px;
+  border-radius: 3px;
   font-size: 12px;
 }
 
@@ -1444,9 +1444,9 @@ h1 span {
 
 .versus {
   padding: 14px 16px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(var(--ink) / 0.03);
 }
 
 .versus-row {
@@ -1477,7 +1477,7 @@ h1 span {
 }
 
 .time-strip line {
-  stroke: rgba(255, 255, 255, 0.1);
+  stroke: rgb(var(--ink) / 0.1);
 }
 
 .time-strip text {
@@ -1496,9 +1496,9 @@ h1 span {
 
 .reveal {
   padding: 10px 18px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  border: 1px solid rgb(var(--ink) / 0.6);
+  background: rgb(var(--ink) / 0.12);
   font-weight: 600;
   margin-bottom: 14px;
 }
@@ -1515,9 +1515,9 @@ h1 span {
 
 .q-filter select {
   padding: 6px 8px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid var(--border);
-  background: #141a26;
+  background: var(--raised);
   color: inherit;
 }
 
@@ -1529,9 +1529,9 @@ h1 span {
 
 .q {
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
   margin-bottom: 6px;
-  background: rgba(255, 255, 255, 0.025);
+  background: rgb(var(--ink) / 0.025);
 }
 
 .q summary {
@@ -1564,7 +1564,7 @@ h1 span {
   flex: none;
   padding: 0 8px;
   border: 1px solid;
-  border-radius: 6px;
+  border-radius: 3px;
   font-size: 11.5px;
   line-height: 20px;
   white-space: nowrap;
@@ -1618,7 +1618,7 @@ h1 span {
 
 .q-body .reason {
   margin: 0 0 10px;
-  color: #b9c3d3;
+  color: var(--text-2);
   font-size: 13px;
 }
 
@@ -1663,7 +1663,7 @@ h1 span {
 
 .side-grip:hover,
 body.resizing .side-grip {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgb(var(--ink) / 0.45);
 }
 
 body.resizing {
@@ -1721,7 +1721,7 @@ body.resizing {
 .credit b {
   font-weight: 600;
   margin-right: 6px;
-  color: #b9c3d3;
+  color: var(--text-2);
 }
 
 .page .credit {
@@ -1758,7 +1758,7 @@ body.resizing {
 /* ---------- 왼쪽 조절 칸: 날짜 바로 고르기, 솎아 보기 ---------- */
 .controls .date {
   padding: 3px 6px;
-  border-radius: 6px;
+  border-radius: 3px;
   border: 1px solid var(--border);
   background: transparent;
   color: inherit;
@@ -1781,9 +1781,9 @@ body.resizing {
 
 .steps select {
   padding: 5px 8px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid var(--border);
-  background: #141a26;
+  background: var(--raised);
   color: inherit;
 }
 
@@ -1792,7 +1792,7 @@ body.resizing {
   margin: 0 0 6px;
   font-size: 12.5px;
   line-height: 1.6;
-  color: #cfd6e2;
+  color: var(--text-2);
 }
 
 .biz h4 {
@@ -1830,8 +1830,8 @@ body.resizing {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.025);
+  border-radius: 4px;
+  background: rgb(var(--ink) / 0.025);
   overflow: hidden;
 }
 
@@ -1884,7 +1884,7 @@ body.resizing {
 .fold-cards {
   flex: none;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 3px;
   background: transparent;
   color: var(--muted);
   font-size: 11.5px;
@@ -1903,7 +1903,7 @@ body.resizing {
   top: 9px;
   right: 10px;
   z-index: 2;
-  background: #10151f;
+  background: var(--raised);
 }
 
 .strip {
@@ -1924,13 +1924,13 @@ body.resizing {
   letter-spacing: 0;
   padding: 0 14px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.025);
+  border-radius: 4px;
+  background: rgb(var(--ink) / 0.025);
 }
 
 .strip:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(var(--ink) / 0.1);
 }
 
 .side.folded .side-pane,
@@ -1972,7 +1972,7 @@ body.resizing {
 body.resizing .grip-left,
 body.resizing .grip-right,
 body.resizing-row .grip-top {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgb(var(--ink) / 0.45);
 }
 
 body.resizing-row {
@@ -2005,7 +2005,7 @@ body.resizing-row {
     letter-spacing: 0;
     padding: 0 14px;
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 4px;
   }
 
   .cards-wrap {
@@ -2036,14 +2036,14 @@ body.resizing-row {
   align-items: center;
   gap: 8px;
   padding: 7px 12px;
-  border-radius: 6px;
+  border-radius: 3px;
   border: 1px solid var(--border);
   background: var(--surface);
   font-size: 13px;
 }
 
 .crumb.narrowed {
-  border-color: rgba(255, 255, 255, 0.7);
+  border-color: rgb(var(--ink) / 0.7);
   background: rgba(38, 54, 92, 0.95);
 }
 
@@ -2067,16 +2067,16 @@ body.resizing-row {
 .stage-bar button {
   flex: none;
   padding: 7px 13px;
-  border-radius: 6px;
+  border-radius: 3px;
   border: 1px solid var(--border);
   background: var(--surface);
   font-size: 12.5px;
 }
 
 .stage-bar button.primary {
-  border-color: rgba(255, 255, 255, 0.8);
+  border-color: rgb(var(--ink) / 0.8);
   background: #3d5fb8;
-  color: #fff;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -2099,7 +2099,7 @@ body.resizing-row {
   pointer-events: auto;
   margin-top: 8px;
   padding: 7px 14px;
-  border-radius: 6px;
+  border-radius: 3px;
   border: 1px solid var(--border);
   background: var(--panel);
 }
@@ -2110,7 +2110,7 @@ body.resizing-row {
   bottom: 14px;
   transform: translateX(-50%);
   padding: 5px 12px;
-  border-radius: 6px;
+  border-radius: 3px;
   background: var(--surface);
   border: 1px solid var(--border);
   font-size: 12px;
@@ -2120,7 +2120,7 @@ body.resizing-row {
 .reset-filters {
   margin-top: 4px;
   padding: 4px 10px;
-  border-radius: 6px;
+  border-radius: 3px;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--accent);
@@ -2139,7 +2139,7 @@ select:focus-visible {
 .col-head button:hover,
 .side-head button:hover,
 .fold-cards:hover {
-  border-color: rgba(255, 255, 255, 0.7);
+  border-color: rgb(var(--ink) / 0.7);
   color: var(--text);
 }
 
@@ -2179,8 +2179,8 @@ select:focus-visible {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.025);
+  border-radius: 4px;
+  background: rgb(var(--ink) / 0.025);
   overflow: hidden;
 }
 
@@ -2196,14 +2196,14 @@ select:focus-visible {
 .drawer-head button {
   padding: 6px 11px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 3px;
   background: transparent;
   color: var(--muted);
   font-size: 13px;
 }
 
 .drawer-head button.on {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(var(--ink) / 0.08);
   color: var(--text);
   font-weight: 600;
 }
@@ -2270,7 +2270,7 @@ select:focus-visible {
 }
 
 .stage-bar button.on {
-  border-color: rgba(255, 255, 255, 0.8);
+  border-color: rgb(var(--ink) / 0.8);
   color: var(--accent);
 }
 
@@ -2279,7 +2279,7 @@ select:focus-visible {
   align-items: center;
   gap: 8px;
   padding: 3px 10px 3px 12px;
-  border-radius: 6px;
+  border-radius: 3px;
   border: 1px solid var(--border);
   background: var(--surface);
   font-size: 12.5px;
@@ -2304,7 +2304,7 @@ select:focus-visible {
 
 .timebar .date {
   padding: 3px 6px;
-  border-radius: 6px;
+  border-radius: 3px;
   border: 1px solid var(--border);
   background: transparent;
   color: inherit;
@@ -2322,7 +2322,7 @@ select:focus-visible {
   overflow-y: auto;
   padding: 12px 14px 4px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
   background: var(--panel);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
   animation: settings-in 0.18s ease;
@@ -2372,15 +2372,15 @@ select:focus-visible {
 
 .examples-row button {
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 3px;
   border: 1px solid var(--border);
   background: var(--surface);
-  color: #c9d2e0;
+  color: var(--text-2);
   font-size: 12.5px;
 }
 
 .examples-row button:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.7);
+  border-color: rgb(var(--ink) / 0.7);
   color: var(--text);
 }
 
@@ -2393,8 +2393,8 @@ select:focus-visible {
   display: flex;
   gap: 8px;
   padding: 7px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
+  border: 1px solid rgb(var(--ink) / 0.16);
+  border-radius: 4px;
   background: rgba(20, 26, 38, 0.94);
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4);
 }
@@ -2417,9 +2417,9 @@ select:focus-visible {
   flex: none;
   padding: 0 18px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 4px;
   background: var(--accent);
-  color: #0b0f16;
+  color: var(--on-accent);
   font-weight: 600;
 }
 
@@ -2432,7 +2432,7 @@ select:focus-visible {
   text-align: center;
   color: var(--muted);
   font-size: 11.5px;
-  text-shadow: 0 1px 4px #0b0f16, 0 0 8px #0b0f16;
+  text-shadow: 0 1px 4px var(--bg), 0 0 8px var(--bg);
 }
 
 .composer-results {
@@ -2440,7 +2440,7 @@ select:focus-visible {
   margin: 0;
   padding: 6px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
   background: var(--panel);
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4);
 }
@@ -2452,13 +2452,13 @@ select:focus-visible {
   gap: 10px;
   padding: 8px 10px;
   border: 0;
-  border-radius: 9px;
+  border-radius: 4px;
   background: transparent;
   text-align: left;
 }
 
 .composer-results button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgb(var(--ink) / 0.07);
 }
 
 .composer-results .sub {
@@ -2477,7 +2477,7 @@ select:focus-visible {
 .composer-results .ask-row {
   border-top: 1px solid var(--border);
   border-radius: 0 0 9px 9px;
-  color: #c9d2e0;
+  color: var(--text-2);
 }
 
 @media (max-width: 900px) {
@@ -2593,7 +2593,7 @@ select:focus-visible {
 }
 
 .examples-row .reopen {
-  border-color: rgba(255, 255, 255, 0.6);
+  border-color: rgb(var(--ink) / 0.6);
   color: var(--accent);
 }
 
@@ -2611,9 +2611,9 @@ select:focus-visible {
 .locked-note {
   margin: 0 0 12px;
   padding: 9px 11px;
-  border-radius: 9px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #c9d2e0;
+  border-radius: 4px;
+  background: rgb(var(--ink) / 0.12);
+  color: var(--text-2);
   font-size: 12px;
   line-height: 1.55;
 }
@@ -2635,7 +2635,7 @@ select:focus-visible {
 
 .steps-done li::before {
   content: "✓ ";
-  color: #6fd08c;
+  color: var(--good);
 }
 
 .steps-done li.now::before {
@@ -2799,7 +2799,7 @@ h4,
   height: 56px;
   margin-top: -28px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.22);
+  background: rgb(var(--ink) / 0.22);
   transition: background 0.15s, height 0.15s, margin-top 0.15s;
 }
 
@@ -2862,7 +2862,7 @@ body.resizing .drawer {
 .taxonomy .family h5 {
   margin: 0 0 5px;
   font-size: 13px;
-  color: #ffb98a;
+  color: var(--warn);
 }
 
 .taxonomy .family h5 em {
@@ -2875,7 +2875,7 @@ body.resizing .drawer {
 
 .taxonomy .names {
   margin: 0;
-  color: #b9c3d3;
+  color: var(--text-2);
   font-size: 12.5px;
   line-height: 1.75;
 }
@@ -2900,7 +2900,7 @@ body.resizing .drawer {
 
 .settings {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  scrollbar-color: rgb(var(--ink) / 0.22) transparent;
 }
 
 .bar-right .settings-anchor {
@@ -2989,7 +2989,7 @@ body.resizing .drawer {
 .stage-bar button:active:not(:disabled),
 .examples-row button:active:not(:disabled),
 .chip:active:not(:disabled) {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgb(var(--ink) / 0.4);
 }
 
 .stage-bar button.on,
@@ -2997,13 +2997,13 @@ body.resizing .drawer {
 .chip.on,
 .chip.on:hover {
   border-color: transparent;
-  background: rgba(255, 255, 255, 0.3);
-  color: #fff;
+  background: rgb(var(--ink) / 0.3);
+  color: var(--text);
   font-weight: 600;
 }
 
 .chip {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--ink) / 0.04);
 }
 
 .crumb.narrowed {
@@ -3014,7 +3014,7 @@ body.resizing .drawer {
 .stage-bar button.primary:hover {
   border-color: transparent;
   background: #3d5fb8;
-  color: #fff;
+  color: #ffffff;
 }
 
 .stage-bar button.primary:hover {
@@ -3022,7 +3022,7 @@ body.resizing .drawer {
 }
 
 .stage-bar .timebar .icon {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(var(--ink) / 0.08);
 }
 
 /* ---------- 답의 표, 기업 링크, 이어서 물어보기 ---------- */
@@ -3031,7 +3031,7 @@ body.resizing .drawer {
 }
 
 .answer th {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(var(--ink) / 0.05);
   color: var(--muted);
   font-weight: 600;
   white-space: nowrap;
@@ -3055,7 +3055,7 @@ body.resizing .drawer {
   top: 5px;
   bottom: 5px;
   border-radius: 0 4px 4px 0;
-  background: rgba(255, 255, 255, 0.28);
+  background: rgb(var(--ink) / 0.28);
 }
 
 .answer td.pct span {
@@ -3076,7 +3076,7 @@ body.resizing .drawer {
 }
 
 .company-link:hover {
-  color: #ffd666;
+  color: var(--warn);
 }
 
 .followups {
@@ -3096,15 +3096,15 @@ body.resizing .drawer {
 .followups button {
   padding: 7px 12px;
   border: 0;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  background: rgb(var(--ink) / 0.12);
   color: var(--text);
   font-size: 13px;
   text-align: left;
 }
 
 .followups button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.26);
+  background: rgb(var(--ink) / 0.26);
 }
 
 .followups button:disabled {
@@ -3122,11 +3122,11 @@ body.resizing .drawer {
   max-height: min(560px, calc(100vh - 300px));
   overflow-y: auto;
   padding: 8px;
-  border-radius: 8px;
+  border-radius: 4px;
   background: var(--panel);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  scrollbar-color: rgb(var(--ink) / 0.22) transparent;
   animation: settings-in 0.18s ease;
 }
 
@@ -3136,7 +3136,7 @@ body.resizing .drawer {
   gap: 8px;
   width: 100%;
   padding: 7px 10px;
-  border-radius: 8px;
+  border-radius: 4px;
   background: transparent;
   font-size: 13px;
   font-weight: 400;
@@ -3145,14 +3145,14 @@ body.resizing .drawer {
 }
 
 .stage-bar .level-list button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(var(--ink) / 0.2);
 }
 
 .stage-bar .level-list button.all {
   flex-direction: column;
   gap: 2px;
   margin-bottom: 6px;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgb(var(--ink) / 0.14);
   font-weight: 600;
 }
 
@@ -3207,25 +3207,25 @@ body.resizing .drawer {
 .followups button,
 .a-foot button,
 .reset-filters {
-  border-radius: 7px;
+  border-radius: 3px;
 }
 
 .stage-bar .timebar .icon {
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
 .composer-input {
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .settings,
 .level-list,
 .composer-results {
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .stage-bar .level-list button {
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
 
@@ -3234,7 +3234,7 @@ body.resizing .drawer {
   --bg: #0d0e10;
   --panel: #17181b;
   --surface: #1b1c20;
-  --border: rgba(255, 255, 255, 0.1);
+  --border: rgb(var(--ink) / 0.1);
   --text: #ececec;
   --muted: #9a9ca3;
   --accent: #e2b04a;
@@ -3250,13 +3250,13 @@ body {
 .composer-input,
 .composer-results {
   box-shadow: none;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgb(var(--ink) / 0.14);
   background: var(--panel);
 }
 
 .explore .stage,
 .drawer-inner {
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .drawer-inner {
@@ -3269,50 +3269,50 @@ body {
 .chip.on,
 .chip.on:hover,
 .tabs button.on {
-  background: #e4e5e7;
-  color: #111214;
+  background: var(--text);
+  color: var(--bg);
   font-weight: 600;
 }
 
 .stage-bar button:hover:not(:disabled):not(.on):not(.primary),
 .examples-row button:hover:not(:disabled),
 .chip:hover:not(:disabled):not(.on) {
-  background: #2a2b30;
+  background: var(--raised-2);
 }
 
 .stage-bar button.primary,
 .stage-bar button.primary:hover,
 .composer-input button:not(:disabled) {
-  background: #e4e5e7;
-  color: #111214;
+  background: var(--text);
+  color: var(--bg);
 }
 
 .stage-bar button.primary:hover,
 .composer-input button:hover:not(:disabled) {
-  background: #fff;
+  background: var(--text);
 }
 
 .crumb.narrowed {
   background: var(--surface);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+  box-shadow: inset 0 0 0 1px rgb(var(--ink) / 0.28);
 }
 
 .chip.listed {
-  box-shadow: inset 0 0 0 1.5px #e4e5e7;
+  box-shadow: inset 0 0 0 1.5px var(--text);
 }
 
 .stage-bar .level-list button.all {
-  background: #24252a;
+  background: var(--raised);
 }
 
 .stage-bar .level-list button:hover {
-  background: #2e2f35;
+  background: var(--raised-2);
 }
 
 /* 채팅: 답은 칸에 넣지 않고 글 그대로 둔다 (칸 안에 또 칸을 두지 않는다) */
 .turn .q {
-  border-radius: 8px;
-  background: #26272c;
+  border-radius: 4px;
+  background: var(--raised);
 }
 
 .turn .a,
@@ -3332,20 +3332,20 @@ body {
 }
 
 .followups button {
-  background: #24252a;
+  background: var(--raised);
 }
 
 .followups button:hover:not(:disabled) {
-  background: #2e2f35;
+  background: var(--raised-2);
 }
 
 .answer td.pct i {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgb(var(--ink) / 0.16);
 }
 
 .answer a,
 .sources a {
-  color: #9ec1ff;
+  color: var(--info);
 }
 
 /* 글이 흘러나올 때의 깜빡이는 막대는 두지 않는다 */
@@ -3356,7 +3356,7 @@ body {
 
 .edge:hover::after,
 body.resizing .edge::after {
-  background: #e4e5e7;
+  background: var(--text);
 }
 
 .chat-button svg {
@@ -3368,12 +3368,12 @@ body.resizing .edge::after {
 }
 
 .composer-input button:disabled {
-  background: #26272c;
+  background: var(--raised);
   color: var(--muted);
 }
 
 input[type="range"] {
-  accent-color: #d8d9dc;
+  accent-color: var(--text-2);
 }
 
 
@@ -3469,11 +3469,11 @@ button.q {
 }
 
 button.q:hover {
-  background: #303137;
+  background: var(--raised-2);
 }
 
 .turn .q.shown {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 0 0 1px rgb(var(--ink) / 0.45);
 }
 
 /* 예시 질문은 한 줄만. 들어가지 않는 것은 보이지 않는다 */
@@ -3507,7 +3507,7 @@ button.q:hover {
 
 .stage-bar .reset {
   margin-left: -4px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(var(--ink) / 0.1);
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -3516,8 +3516,8 @@ button.q:hover {
 
 .stage-bar .reset:hover:not(:disabled),
 .stage-bar .history button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: rgb(var(--ink) / 0.2);
+  color: var(--text);
 }
 
 
@@ -3551,7 +3551,7 @@ button.q:hover {
 }
 
 .turn.folded .q:hover {
-  background: #24252a;
+  background: var(--raised);
   color: var(--text);
 }
 
@@ -3609,9 +3609,13 @@ details.sources a {
   color-scheme: dark;
 }
 
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-color: rgb(var(--ink) / 0.2) transparent;
 }
 
 /* 답의 표는 칸 너비 안에서 줄을 바꿔, 가로 막대가 생기지 않게 한다 */
@@ -3687,7 +3691,7 @@ details.sources a {
   margin-top: 2px;
   padding: 7px 8px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 3px;
   background: none;
   color: var(--text);
   font-size: 13px;
@@ -3699,7 +3703,7 @@ details.sources a {
 }
 
 .chat-bar .past button:hover:not(:disabled) {
-  background: #24252a;
+  background: var(--raised);
 }
 
 .chat-bar .past button span {
@@ -3762,9 +3766,9 @@ details.sources a {
   max-height: 320px;
   overflow-y: auto;
   padding: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 8px;
-  background: #1f2024;
+  border: 1px solid rgb(var(--ink) / 0.14);
+  border-radius: 4px;
+  background: var(--raised);
 }
 
 .chat-bar .past-list button,
@@ -3794,8 +3798,6 @@ details.sources a {
 /* 동반 상승 종목군 */
 .page.hot {
   max-width: 1080px;
-  --up: #f0666b;
-  --down: #5b9bf0;
 }
 
 .hot .up {
@@ -3829,7 +3831,7 @@ details.sources a {
   padding: 6px 8px;
   border: 0;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgb(var(--ink) / 0.07);
   color: var(--text);
   font: inherit;
   font-weight: 600;
@@ -3866,15 +3868,15 @@ details.sources a {
 .hot-days i {
   display: block;
   width: 100%;
-  background: rgba(255, 255, 255, 0.22);
+  background: rgb(var(--ink) / 0.22);
 }
 
 .hot-days i.none {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(var(--ink) / 0.08);
 }
 
 .hot-days button:hover i {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgb(var(--ink) / 0.5);
 }
 
 .hot-days button.on i {
@@ -3944,7 +3946,7 @@ details.sources a {
 
 .hot-table th {
   padding: 7px 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-top: 1px solid rgb(var(--ink) / 0.22);
   border-bottom: 1px solid var(--border);
   color: var(--muted);
   font-size: 12px;
@@ -3954,7 +3956,7 @@ details.sources a {
 
 .hot-table td {
   padding: 9px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgb(var(--ink) / 0.06);
   vertical-align: middle;
 }
 
@@ -3964,7 +3966,7 @@ details.sources a {
 
 .hot-table > tbody > tr:not(.hot-open):hover,
 .hot-table > tbody > tr.open {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--ink) / 0.04);
 }
 
 .hot-table tr.weak b {
@@ -3981,8 +3983,8 @@ details.sources a {
   margin-left: 8px;
   padding: 1px 5px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #aeb7c6;
+  background: rgb(var(--ink) / 0.08);
+  color: var(--text-2);
   font-size: 11px;
 }
 
@@ -3996,7 +3998,7 @@ details.sources a {
   width: 56px;
   height: 4px;
   margin-left: 8px;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgb(var(--ink) / 0.07);
   vertical-align: middle;
 }
 
@@ -4017,7 +4019,7 @@ details.sources a {
 
 .hot-open > td {
   padding: 4px 10px 18px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--ink) / 0.04);
 }
 
 .hot-detail {
@@ -4043,14 +4045,14 @@ details.sources a {
 
 .hot-side p {
   margin: 2px 0 12px;
-  color: #b9c3d3;
+  color: var(--text-2);
 }
 
 .hot-side button {
   margin-right: 14px;
   padding: 6px 12px;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(var(--ink) / 0.1);
   font-size: 13px;
 }
 
@@ -4128,7 +4130,7 @@ details.sources a {
 
 .hot-days button span:first-child {
   align-items: flex-end;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgb(var(--ink) / 0.14);
 }
 
 .hot-days i.up {
@@ -4259,7 +4261,7 @@ details.sources a {
 
 .hot-why {
   margin: 3px 0 0;
-  color: #aeb7c6;
+  color: var(--text-2);
   font-size: 12.5px;
   line-height: 1.45;
 }
@@ -4283,7 +4285,7 @@ details.sources a {
 
 .hot-news a {
   display: block;
-  color: #aeb7c6;
+  color: var(--text-2);
   font-size: 12.5px;
 }
 
@@ -4355,7 +4357,7 @@ details.sources a {
 
 .hot-news p {
   margin: 8px 0 0;
-  color: #aeb7c6;
+  color: var(--text-2);
   font-size: 12.5px;
 }
 
@@ -4454,4 +4456,223 @@ details.sources a {
   .toc {
     display: none;
   }
+}
+
+
+/* 바탕 두 가지. 어두운 바탕이 기본이고, 밝은 바탕은 위 오른쪽의 단추로 고른다.
+   --ink 는 바탕 위에 옅게 겹치는 색(선, 눌린 자리)이라 바탕과 반대로 뒤집힌다 */
+:root {
+  --ink: 255 255 255;
+  --text-2: #b9c0cb;
+  --raised: #24252a;
+  --raised-2: #2e2f35;
+  --on-accent: #14110a;
+  --up: #f0666b;
+  --down: #5b9bf0;
+  --good: #6fd08c;
+  --warn: #f0b354;
+  --bad: #ff8a8a;
+  --info: #9ec1ff;
+}
+
+:root[data-theme="light"] {
+  --bg: #f5f4f1;
+  --panel: #ffffff;
+  --surface: #ffffff;
+  --border: rgba(20, 22, 28, 0.13);
+  --text: #1b1c1f;
+  --muted: #6a6e77;
+  --accent: #8a5a00;
+  --ink: 20 22 28;
+  --text-2: #3c4048;
+  --raised: #ffffff;
+  --raised-2: #ecebe7;
+  --on-accent: #ffffff;
+  --up: #d0303a;
+  --down: #1f5fc4;
+  --good: #1c8748;
+  --warn: #a86400;
+  --bad: #c9363e;
+  --info: #2a5fc0;
+}
+
+/* 밝은 바탕에서는 떠 있는 칸을 그림자가 아니라 선으로 구분한다 */
+:root[data-theme="light"] .overlay,
+:root[data-theme="light"] body {
+  background: var(--bg);
+}
+
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-left: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: var(--muted);
+}
+
+.theme-toggle:hover {
+  background: rgb(var(--ink) / 0.08);
+  color: var(--text);
+}
+
+
+.top-stat {
+  display: flex;
+  align-items: center;
+}
+
+
+/* 글이 많은 페이지: 읽는 폭을 줄이고, 숫자를 앞에 두고, 풀이는 접는다 */
+.page .lead {
+  max-width: 74ch;
+  color: var(--text-2);
+}
+
+.page h2 {
+  margin-top: 56px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+  font-size: 19px;
+  letter-spacing: -0.01em;
+}
+
+.page h2:first-child,
+.page.hot h2 {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.page .tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0;
+  margin: 0 0 20px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.page .tile {
+  padding: 12px 16px;
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+  background: none;
+}
+
+.page .tile:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.page .tile b {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.page .tile span {
+  font-size: 12.5px;
+  line-height: 1.45;
+  display: block;
+}
+
+.page .checks {
+  display: block;
+  margin: 0 0 16px;
+  border-top: 1px solid var(--border);
+}
+
+.page .check {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  align-items: baseline;
+  gap: 14px;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid rgb(var(--ink) / 0.07);
+  border-radius: 0;
+  background: none;
+}
+
+.page .check .pct {
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--good);
+}
+
+.page .check p {
+  margin: 0;
+}
+
+.page .check span {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+details.more {
+  margin: 6px 0 4px;
+}
+
+details.more > summary {
+  display: inline-block;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+  list-style: none;
+}
+
+details.more > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.more > summary::before {
+  content: "+ ";
+}
+
+details.more[open] > summary::before {
+  content: "− ";
+}
+
+details.more > summary:hover {
+  color: var(--text);
+}
+
+details.more .notes {
+  margin-top: 10px;
+  max-width: 82ch;
+  color: var(--text-2);
+  font-size: 13.5px;
+}
+
+.hot-notes {
+  margin-top: 28px;
+}
+
+/* 이슈 종목: 평균 등락률을 색이 찬 칸으로. 크게 움직일수록 짙다 */
+.hot-table td.heat {
+  width: 104px;
+  font-size: 15px;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--up) calc(var(--heat) * 34%), transparent);
+}
+
+.hot-table td.heat.down {
+  background: color-mix(in srgb, var(--down) calc(var(--heat) * 34%), transparent);
+}
+
+.hot-table td b {
+  font-size: 15px;
+}
+
+.hot-stats dd {
+  font-size: 22px;
+}
+
+.hot-days {
+  height: 48px;
 }
