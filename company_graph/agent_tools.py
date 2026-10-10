@@ -27,12 +27,17 @@ MARKETS = {"Y": "유가증권", "K": "코스닥", "N": "코넥스", "E": "비상
 ATTRS = ("title", "kind", "period_start", "period_end", "party_hidden", "party_relation", "subsidiary", "ratio_pct",
          "recent_sales", "region", "purpose", "method", "pct_after", "shares", "shares_after", "equity_ratio_pct",
          "expected_date", "business", "nationality", "relation", "ratio_check", "correction_reason", "changes",
-         "amount_from", "reason", "listed", "relation_to_filer")
+         "amount_from", "reason", "listed", "relation_to_filer",
+         "holder_name_raw", "shares_begin", "pct_begin", "exited", "note")
 # detail 에 나오는 이름의 뜻. 도구 결과에 같이 실어 Agent가 값을 헷갈리지 않게 한다
 FIELDS = ("as_of_date: 계약일·결의일·해지일·보고서 기준일. period_start~period_end: 계약기간(시작일~종료일). "
           "ratio_pct: 최근 매출액 대비(%). equity_ratio_pct: 자기자본 대비(%). expected_date: 취득·처분 예정일자. "
           "shares: 취득·처분 주식수, shares_after·pct_after: 거래 뒤 소유주식수·지분율. "
-          "changes: 정정 공시의 [항목, 정정 전, 정정 후]. reason: 해지·철회 사유. correction_reason: 정정 사유")
+          "changes: 정정 공시의 [항목, 정정 전, 정정 후]. reason: 해지·철회 사유. correction_reason: 정정 사유. "
+          "주주 목록(equity 의 in)에서: shares 는 기말 주식수, shares_begin·pct_begin 은 기초 주식수·지분율, "
+          "holder_name_raw 는 그 보고서에 적힌 주주 이름(회사가 그 뒤 이름을 바꿨으면 지금 이름과 다르다. 그 시점을 묻는 답에는 이 이름을 쓴다), "
+          "exited=true 는 기초에는 주식이 있었으나 기말에 0주가 된 주주, note 는 표의 비고. 지분율 0.0 은 반올림한 값이고 shares 가 있으면 주주다. "
+          "reports: 같은 지분을 두 회사가 저마다 보고서에 적었을 때 표별 값. differs=true 면 두 보고서의 지분율이 서로 다르다")
 
 # 제품군 목록을 도구 설명에 싣는다. Agent가 질문의 뜻에 맞는 제품군을 여기서 골라 넘긴다
 _FAMILY_LIST = "; ".join(f"[{field}] " + ", ".join(family for f, family, _ in FAMILIES if f == field)
@@ -226,6 +231,9 @@ def find_company(db, name: str) -> dict:
                     if found else "원장에 없는 이름입니다. 상장사와 그 계열회사만 들어 있습니다"}
 
 
+_TABLES = {"largest_shareholders": "최대주주 현황", "other_corp_investments": "타법인출자 현황"}
+
+
 def _edge(db, edge: dict) -> dict:
     subject = db.get(Company, edge["subject_id"]) if edge["subject_id"] else None
     obj = db.get(Company, edge["object_id"]) if edge["object_id"] else None
@@ -238,7 +246,11 @@ def _edge(db, edge: dict) -> dict:
             "unit": {"pct": "%", "krw": "원"}.get(edge["unit"]),
             "as_of_date": edge["as_of_date"] and edge["as_of_date"].isoformat(),
             "disclosed_date": edge["disclosed_date"].isoformat(),
-            "disclosed_by": {"subject": "주체가 공시", "object": "상대가 공시", "both": "양쪽 공시에서 확인"}[edge["disclosed_by"]],
+            "disclosed_by": "양쪽 공시에 있으나 값이 다름" if edge.get("differs") else
+                            {"subject": "주체가 공시", "object": "상대가 공시", "both": "양쪽 공시에서 확인"}[edge["disclosed_by"]],
+            **({"reports": [{"table": _TABLES.get(r["source"], r["source"]), "filer": (subject if r["side"] == "subject" else obj).label,
+                             "value": float(r["value"]), "shares": r["shares"], "rcept_no": r["rcept_no"]} for r in edge["reports"]],
+                "differs": edge["differs"]} if edge.get("reports") else {}),
             "stale": edge["stale"] or None,
             "superseded_on": edge["invalidated_date"] and edge["invalidated_date"].isoformat(),
             "detail": _detail(edge["attrs"]),
@@ -257,12 +269,16 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
         edges = query.group_members(db, company.company_id, when)
     else:
         edges = query.relations(db, when, company_ids=[company.company_id], rel_types=[rel_type], direction=direction,
-                                include_superseded=bool(include_superseded) and rel_type not in ("equity", "affiliate"))
+                                include_superseded=bool(include_superseded) and rel_type not in ("equity", "affiliate"),
+                                include_exited=rel_type == "equity" and direction == "in")
     if counterparty_id is not None:
         other = _company(db, counterparty_id).company_id
         edges = [e for e in edges if other in (e["subject_id"], e["object_id"])]
     edges = [e for e in edges if (start is None or e["disclosed_date"] >= start) and (end is None or e["disclosed_date"] <= end)]
     rows = [_edge(db, e) for e in edges]
+    # 최대주주 현황 표의 합계 줄 (그 표가 적은 값. 줄마다의 지분율을 더한 값과 다를 수 있다)
+    holder_total = next((e["attrs"]["table_total"] for e in edges if e["type"] == "equity" and e["object_id"] == company.company_id
+                         and e["attrs"].get("table_total")), None) if direction == "in" else None
     unknown_listing = None
     if listed_only:
         other = "object" if direction != "in" else "subject"
@@ -292,6 +308,7 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
                    if report else None)
     return {"company": _brief(company), "as_of": when.isoformat(), "total": len(rows), "truncated": len(rows) > LIMIT,
             "affiliate_summary": summary,
+            **({"holder_table_total": {**holder_total, "note": "최대주주와 특수관계인의 합계(보통주). pct 는 기말, pct_begin 은 기초"}} if holder_total else {}),
             "relations": rows[:LIMIT],
             "fields": FIELDS,
             "unknown_listing": unknown_listing and f"원장에 없는 상대 {unknown_listing}곳은 상장 여부를 알 수 없어 뺐습니다. "
@@ -644,8 +661,23 @@ def get_products(db, company_id, as_of) -> dict:
             "fields": _PRODUCT_NOTE + ". ksic 는 그 제품에 붙인 한국표준산업분류(11차) 세세분류 코드입니다"}
 
 
-def _move_group(group: dict, direction: str) -> dict:
+def _after(url: str, when: date) -> bool:
+    """기사 주소에 적힌 날짜(20260905 꼴)가 조회 시점보다 뒤인가. 기사의 발행일을 따로 저장하지 않아 주소로만 가린다."""
+    for found in re.findall(r"(?<!\d)(20\d{2})[-/]?(\d{2})[-/]?(\d{2})(?!\d{3})", url):
+        try:
+            if date(*map(int, found)) > when:
+                return True
+        except ValueError:
+            pass
+    return False
+
+
+def _move_group(group: dict, direction: str, when: date) -> dict:
     news = group.get("news") or {}
+    if news.get("sources"):   # 조회 시점 뒤에 나온 기사는 그 시점에 볼 수 없던 것이다
+        news = {**news, "sources": [s for s in news["sources"] if not _after(s["url"], when)]}
+        if not news["sources"]:
+            news = {}
     out = {"direction": direction, "strength": "strong" if group["grade"] == "뚜렷함" else "weak", "link_kind": group["kind"], "link": group["why"],
            "moved": group["n"], "of": group["of"], "streak_days": group.get("streak", 1),
            "members": [{"company_id": m["id"], "name": m["name"], "market": m.get("market"), "change_pct": m["change"]} for m in group["members"]]}
@@ -674,13 +706,18 @@ def get_price_moves(db, as_of, day=None, company_id=None, keyword=None, directio
         if row is None:
             return {"days": [], "note": "그 시점 이전에 계산해 둔 거래일이 없습니다. 주가는 2026년 2월부터 있습니다"}
         payload, groups, alone = row.payload, [], []
+        asked = _date(day, "day")
+        moved_day = (None if asked is None or asked == row.trade_date else
+                     f"{asked.isoformat()} 은 조회 시점({when.isoformat()})보다 뒤여서 볼 수 없습니다. 아래는 {row.trade_date.isoformat()} 의 값입니다" if asked > when else
+                     f"{asked.isoformat()} 은 거래일이 아니거나(휴장일·주말) 계산해 둔 자료가 없습니다. 아래는 그 앞의 가장 가까운 거래일 {row.trade_date.isoformat()} 의 값이니, 답에서 날짜가 다르다는 것을 먼저 밝히세요")
         for d, side in sides(payload):
-            groups += [_move_group(g, d) for g in side.get("groups", [])]
+            groups += [_move_group(g, d, when) for g in side.get("groups", [])]
             alone += [{"direction": d, "company_id": a["id"], "name": a["name"], "market": a.get("market"), "change_pct": a["change"],
                        "recent_filings": [{"title": f["title"], "rcept_no": f["rcept_no"], "date": f["date"]} for f in a.get("filings", [])]}
                       for a in side.get("alone", [])[:10]]
         groups.sort(key=lambda g: (g["strength"] != "strong", -abs(sum(m["change_pct"] for m in g["members"]) / len(g["members"]))))
-        return {"day": row.trade_date.isoformat(), "market_median_pct": payload["market"], "watched": payload["watched"],
+        return {"day": row.trade_date.isoformat(), **({"day_note": moved_day} if moved_day else {}),
+                "market_median_pct": payload["market"], "watched": payload["watched"],
                 "groups": groups, "alone": alone, "alone_note": "어디에도 묶이지 않고 시장 대비 10%p 이상 움직인 종목 가운데 많이 움직인 10곳씩",
                 "fields": note}
     company = _company(db, company_id) if company_id is not None else None
@@ -696,7 +733,7 @@ def get_price_moves(db, as_of, day=None, company_id=None, keyword=None, directio
                 by_company = company is not None and any(m["id"] == company.company_id for m in g["members"])
                 by_word = word is not None and (any(word in _squeeze(w) for w in g["why"]) or any(word in _squeeze(m["name"]) for m in g["members"]))
                 if by_company or by_word:
-                    hits.append(_move_group(g, d))
+                    hits.append(_move_group(g, d, when))
             if company is not None:
                 solo += [{"direction": d, "change_pct": a["change"], "recent_filings": a.get("filings", [])}
                          for a in side.get("alone", []) if a["id"] == company.company_id]

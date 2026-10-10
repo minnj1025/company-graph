@@ -25,7 +25,17 @@ from .names import clean_reported, normalize
 
 YEARS = (2023, 2024, 2025)
 LISTED = ("Y", "K", "N")
-VERSION = "equity-3"  # 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
+VERSION = "equity-4"  # 4: 최대주주 현황에서 0.00%로 찍힌 주주와 기간 중 빠진 주주, 기초 값, 합계 줄을 남기고 종류주 줄을 뺌. 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
+
+
+TOTAL_NAMES = ("합계", "계", "소계")
+_NOT_COMMON = ("우선", "종류", "기타", "없는")
+
+
+def is_common(kind: str | None) -> bool:
+    """최대주주 현황의 '주식의 종류' 칸이 보통주인가. 회사마다 적는 말이 달라(보통주식, 의결권 있는 주식, 빈칸) 아닌 것을 가려낸다."""
+    text = "".join((kind or "").split())
+    return "보통" in text or not any(word in text for word in _NOT_COMMON)
 
 
 def to_decimal(text: str | None) -> Decimal | None:
@@ -181,11 +191,23 @@ def load_shareholders(db, company: Company, year: int, index, affiliates, names:
     rcept_no = rows[0]["rcept_no"]
     doc = upsert_document(db, company, rcept_no, year, names)
     new_rows = []
+    # 보통주만 넣는다. 우선주·종류주 줄까지 넣으면 한 주주가 두 줄이 된다
+    rows = [row for row in rows if is_common(row.get("stock_knd"))]
+    # 표의 합계 줄. 줄마다 반올림한 지분율을 더한 값과 다를 수 있어 적힌 그대로 둔다
+    total = next(({"shares": row.get("trmend_posesn_stock_co"), "pct": (row.get("trmend_posesn_stock_qota_rt") or "").strip(),
+                   "shares_begin": row.get("bsis_posesn_stock_co"), "pct_begin": (row.get("bsis_posesn_stock_qota_rt") or "").strip()}
+                  for row in rows if "".join((row.get("nm") or "").split()) in ("합계", "계")
+                  and to_decimal(row.get("trmend_posesn_stock_qota_rt")) is not None), None)
     for row in rows:
         name = " ".join((row.get("nm") or "").split())
         pct = to_decimal(row.get("trmend_posesn_stock_qota_rt"))
-        # 보통주만 넣는다. 우선주 줄까지 넣으면 한 주주가 두 줄이 된다
-        if not name or name in ("합계", "계") or not pct or "우선" in (row.get("stock_knd") or ""):
+        held, held_before = to_decimal(row.get("trmend_posesn_stock_co")), to_decimal(row.get("bsis_posesn_stock_co"))
+        # 기말에 주식이 없지만 기초에는 있던 사람(기간 중에 명단에서 빠진 사람)도 0% 줄로 남긴다. 조회에서는 따로 청해야 나온다
+        exited = not held and bool(held_before) and not pct
+        if exited:
+            pct = Decimal(0)
+        # 지분율이 0.00 으로 찍혀도 주식이 있으면 주주다(반올림). 주식도 지분율도 없는 줄만 버린다
+        if not name or "".join(name.split()) in TOTAL_NAMES or pct is None or not (pct or held or exited):
             continue
         holder_id, reason = link_in_context(index, affiliates, name)
         if holder_id == company.company_id or not in_range(db, pct, rcept_no, f"{name} → {company.name}"):
@@ -199,7 +221,12 @@ def load_shareholders(db, company: Company, year: int, index, affiliates, names:
             disclosed_date=doc.rcept_dt, rcept_no=rcept_no, extract_method="api", trust_tier=1,
             attrs={"source": "largest_shareholders", "link_reason": reason, "holder_name_raw": name,
                    "raw_pct": (row.get("trmend_posesn_stock_qota_rt") or "").strip(),
-                   "relation_to_filer": row.get("relate"), "shares": row.get("trmend_posesn_stock_co")}))
+                   "relation_to_filer": row.get("relate"), "shares": row.get("trmend_posesn_stock_co"),
+                   "shares_begin": row.get("bsis_posesn_stock_co"),
+                   "pct_begin": (row.get("bsis_posesn_stock_qota_rt") or "").strip(),
+                   **({"exited": True} if exited else {}),
+                   **({"note": row["rm"].strip()} if (row.get("rm") or "").strip() not in ("", "-") else {}),
+                   **({"table_total": total} if total else {})}))
     counts = loader.sync(db, [Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
                               Relation.object_company_id == company.company_id,
                               or_(Relation.subject_company_id.is_(None),

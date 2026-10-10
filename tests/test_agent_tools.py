@@ -186,3 +186,9 @@ def test_hot_news_keeps_only_sources_the_search_returned():
     aged = Block(type="web_search_tool_result", content=[Block(url="https://news.example/1", title="강관주 강세", page_age="9 days ago")])
     assert read_answer([aged, answer], date(2026, 9, 30), date(2026, 10, 10))["found"] == "group"
     assert read_answer([aged, answer], date(2026, 6, 18), date(2026, 10, 10))["found"] == "none"
+
+
+def test_common_stock_rows():
+    from company_graph.extract_equity import is_common
+    assert all(is_common(k) for k in ("보통주", "보통주식", "의결권 있는 주식", "-", None, "의결권 없는 보통주"))
+    assert not any(is_common(k) for k in ("우선주", "종류주", "종류주식", "기타주식", "기 타", "의결권 없는 주식", "2우선주"))

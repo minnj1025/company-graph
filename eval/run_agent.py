@@ -36,12 +36,13 @@ def sealed_questions() -> list[tuple[str, str, str, date]]:
     return rows
 
 
-def v2_questions() -> list[tuple[str, str, str, date]]:
-    """평가 2판. 문항과 정답은 eval/v2/gold/*.json 에 있고, 만들 수 없다고 표시된 묶음(skip)은 뺀다."""
+def v2_questions(folder: str = "v2") -> list[tuple[str, str, str, date]]:
+    """평가 2판과 3판. 문항과 정답은 eval/<판>/gold/*.json 에 있고, 만들 수 없다고 표시된 묶음(skip)은 뺀다.
+    3판의 이어지는 대화 문항(followup)은 eval/v3/followups.py 가 따로 돌린다."""
     rows = []
-    for path in sorted((ROOT / "v2" / "gold").glob("*.json")):
+    for path in sorted((ROOT / folder / "gold").glob("*.json")):
         item = json.loads(path.read_text(encoding="utf-8"))
-        if not item.get("skip"):
+        if not item.get("skip") and item.get("type") != "followup":
             rows.append((item["id"], item["question"], item["gold"], date.fromisoformat(item["as_of"])))
     return rows
 
@@ -51,14 +52,14 @@ def main():
     parser.add_argument("--model", default="claude-haiku-5-5", help="제품이 쓰는 모델이 기본이다. agent.MODEL(Opus)을 기본으로 두었다가 평가 한 번에 20달러가 나간 적이 있다")
     parser.add_argument("--only", default="")
     parser.add_argument("--resume", action="store_true", help="이미 답이 있는 문항은 건너뛴다")
-    parser.add_argument("--set", default="practice", choices=["practice", "sealed", "v2"])
+    parser.add_argument("--set", default="practice", choices=["practice", "sealed", "v2", "v3"])
     parser.add_argument("--tag", default="", help="결과 폴더 이름 뒤에 붙일 말. 고친 뒤에 다시 돌린 결과를 따로 둘 때 쓴다")
     args = parser.parse_args()
     only = set(filter(None, args.only.split(",")))
-    out_dir = ROOT / {"practice": "agent", "sealed": "sealed/agent", "v2": "v2/agent"}[args.set] / (args.model + args.tag)
+    out_dir = ROOT / {"practice": "agent", "sealed": "sealed/agent", "v2": "v2/agent", "v3": "v3/agent"}[args.set] / (args.model + args.tag)
     out_dir.mkdir(parents=True, exist_ok=True)
     total = {"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}
-    items = (sealed_questions() if args.set == "sealed" else v2_questions() if args.set == "v2"
+    items = (sealed_questions() if args.set == "sealed" else v2_questions(args.set) if args.set in ("v2", "v3")
              else [(n, q, g, AS_OF) for n, q, g in questions()])
     for number, question, gold, as_of in items:
         if only and number not in only:

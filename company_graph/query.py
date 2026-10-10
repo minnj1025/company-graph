@@ -28,7 +28,9 @@ EVENT_TYPES = ("supply_termination", "stake_acquisition", "stake_disposal", "mer
 DART_VIEWER = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo="
 # 사업보고서는 1년에 한 번 나온다. 기준일이 이보다 오래된 지분·계열은 "그 뒤 보고서가 없다"는 뜻이다
 STALE_AFTER = timedelta(days=548)
-NOTICE = "공시된 관계만 보여 줍니다. 여기에 없다고 해서 관계가 없다는 뜻은 아닙니다."
+# 최대주주 현황에만 있는 칸. 가진 쪽의 출자현황 줄을 대표로 쓸 때도 이것은 옮겨 싣는다
+HOLDER_KEYS = ("relation_to_filer", "holder_name_raw", "shares_begin", "pct_begin", "note", "table_total")
+NOTICE ="공시된 관계만 보여 줍니다. 여기에 없다고 해서 관계가 없다는 뜻은 아닙니다."
 
 
 def visible(as_of: date):
@@ -97,10 +99,12 @@ def _side(rel: Relation) -> str:
     return "object" if _filer(rel) == rel.object_company_id and rel.object_company_id != rel.subject_company_id else "subject"
 
 
-def _reduce(rows: list[Relation], latest_report: dict[int, str], as_of: date) -> list[dict]:
+def _reduce(rows: list[Relation], latest_report: dict[int, str], as_of: date, exited: bool = False) -> list[dict]:
     """위 규칙 2~4를 적용해 줄을 선으로 줄인다."""
     edges = []
     current = [r for r in rows if r.rel_type not in ("equity", "affiliate") or latest_report.get(_filer(r)) == r.rcept_no]
+    if not exited:   # 기간 중에 주식을 다 내놓은 주주의 0% 줄은 주주 명단의 변동을 물을 때만 쓴다
+        current = [r for r in current if not (r.attrs or {}).get("exited")]
 
     equity = defaultdict(list)
     for r in current:
@@ -114,9 +118,13 @@ def _reduce(rows: list[Relation], latest_report: dict[int, str], as_of: date) ->
         edge = _edge(same_date[0], sorted({r.rcept_no for r in same_date}),
                      "both" if len(sides) == 2 else sides.pop(), as_of)
         # 가진 쪽의 표를 대표로 쓰더라도, 내준 쪽 표에 적힌 관계(최대주주 본인, 계열회사 등)는 같이 싣는다
-        role = next(((r.attrs or {}).get("relation_to_filer") for r in same_date if (r.attrs or {}).get("relation_to_filer")), None)
-        if role:
-            edge["attrs"] = {**edge["attrs"], "relation_to_filer": role}
+        listed = next(((r.attrs or {}) for r in same_date if (r.attrs or {}).get("source") == "largest_shareholders"), {})
+        edge["attrs"] = {**edge["attrs"], **{k: listed[k] for k in HOLDER_KEYS if listed.get(k) not in (None, "")}}
+        if len(sides) == 2:
+            # 같은 지분을 두 회사가 저마다 적었다. 값이 서로 다를 수 있어 양쪽 것을 다 남긴다
+            edge["reports"] = [{"side": _side(r), "source": (r.attrs or {}).get("source"), "value": r.value_num,
+                                "shares": (r.attrs or {}).get("shares"), "rcept_no": r.rcept_no} for r in same_date]
+            edge["differs"] = len({r.value_num for r in same_date}) > 1
         edges.append(edge)
 
     edges += [_edge(r, [r.rcept_no], "subject", as_of) for r in current if r.rel_type != "equity"]
@@ -124,12 +132,12 @@ def _reduce(rows: list[Relation], latest_report: dict[int, str], as_of: date) ->
 
 
 def relations(db, as_of: date, *, company_ids=None, rel_types=None, direction: str = "both",
-              include_superseded: bool = False) -> list[dict]:
+              include_superseded: bool = False, include_exited: bool = False) -> list[dict]:
     """그 시점에 보이는 관계. company_ids를 주면 그 기업이 주체이거나 상대인 것만.
     include_superseded 면 그 뒤 정정·해지·철회로 무효가 된 공시도 넣는다 ("그 달에 나온 공시를 모두"에 답할 때)."""
     rows = _rows(db, as_of, company_ids, rel_types, direction, include_superseded)
     filers = {_filer(r) for r in rows if r.rel_type in ("equity", "affiliate")}
-    return _reduce(rows, _latest_reports(db, as_of, filers) if filers else {}, as_of)
+    return _reduce(rows, _latest_reports(db, as_of, filers) if filers else {}, as_of, include_exited)
 
 
 def coverage(db) -> dict:

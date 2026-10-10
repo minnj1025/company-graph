@@ -33,7 +33,9 @@ SOLO = 10.0                           # 무리에 들지 못하고 이만큼 오
 ALONE_SHOWN = 20                      # 혼자 오른 곳은 많이 오른 순으로 이만큼만 남긴다
 FILING_DAYS = 4                       # 혼자 오른 곳에 붙이는 공시: 그날까지 나흘 사이에 나온 것
 MARKET_NAMES = {"Y": "코스피", "K": "코스닥", "N": "코넥스"}   # DART 의 법인 구분. 유가증권시장을 흔히 부르는 대로 코스피라고 적는다
-REL_NAMES = {"affiliate": "계열", "equity": "지분", "supply_contract": "공급계약"}
+REL_NAMES = {"affiliate": "계열", "equity": "지분", "supply_contract": "공급계약", "supply_termination": "공급계약 해지",
+             "major_customer": "주요 고객", "stake_acquisition": "지분 취득 결정", "stake_disposal": "지분 처분 결정",
+             "merger": "합병 결정", "split": "분할 결정", "business_transfer": "영업양수도 결정"}
 CLEAR, FAIR = "뚜렷함", "보통"
 
 
@@ -71,7 +73,9 @@ def load_links(db, as_of: date | None = None) -> Links:
     else:
         relations = relations.where(Relation.invalidated_date.is_(None))
     rel = collections.defaultdict(set)
-    for subject, target, kind in db.execute(relations):
+    for subject, target, kind, attrs in db.execute(relations.add_columns(Relation.attrs)):
+        if (attrs or {}).get("exited"):   # 기간 중에 주식을 다 내놓은 주주의 0% 줄은 관계로 치지 않는다
+            continue
         if subject != target and subject in listed and target in listed:
             rel[(min(subject, target), max(subject, target))].add(REL_NAMES.get(kind, kind))
     latest = latest.group_by(Product.company_id).subquery()

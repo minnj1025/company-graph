@@ -169,3 +169,21 @@ def test_reextraction_keeps_identical_rows_and_retires_changed_ones(db):
     rows = db.scalars(select(Relation).where(*scope).order_by(Relation.relation_id)).all()
     assert [(r.value_num, r.retired_at is None, r.extractor_version) for r in rows] == [
         (Decimal(50), False, None), (Decimal(55), True, "v3")]
+
+
+def test_equity_keeps_both_reports_when_they_disagree(db):
+    same = next(e for e in only(query.relations(db, date(2026, 9, 1), company_ids=[MOBIS]), "equity") if e["subject_id"] == KIA)
+    assert not same["differs"] and {r["source"] for r in same["reports"]} == {"other_corp_investments", "largest_shareholders"}
+    db.scalars(select(Relation).where(Relation.rcept_no == "20260309000001")).one().value_num = Decimal("18.64")
+    db.commit()
+    other = next(e for e in only(query.relations(db, date(2026, 9, 1), company_ids=[MOBIS]), "equity") if e["subject_id"] == KIA)
+    assert other["differs"] and {r["value"] for r in other["reports"]} == {Decimal("18.10"), Decimal("18.64")}
+
+
+def test_holders_who_left_show_only_when_asked(db):
+    db.add(Relation(subject_name_raw="홍길동", object_company_id=MOBIS, object_name_raw="-", rel_type="equity", value_num=Decimal(0),
+                    value_unit="pct", as_of_date=date(2025, 12, 31), disclosed_date=date(2026, 3, 9), rcept_no="20260309000001",
+                    extract_method="api", trust_tier=1, attrs={"source": "largest_shareholders", "exited": True, "shares_begin": "270"}))
+    db.commit()
+    names = lambda **more: {e["subject_name_raw"] for e in query.relations(db, date(2026, 9, 1), company_ids=[MOBIS], rel_types=["equity"], direction="in", **more)}
+    assert "홍길동" not in names() and "홍길동" in names(include_exited=True)
