@@ -21,6 +21,9 @@ const HotPage = lazy(() => import("./Hot").then((m) => ({ default: m.HotPage }))
 const DataPage = lazy(() => import("./Pages").then((m) => ({ default: m.DataPage })));
 const QuestionsPage = lazy(() => import("./Pages").then((m) => ({ default: m.QuestionsPage })));
 
+/** 그래프에 그릴 수 있는 관계 전부. 범례에 이 순서로 나온다 */
+const ALL_TYPES: RelType[] = ["equity", "supply_contract", "affiliate", "stake_acquisition", "stake_disposal", "product"];
+
 const EMPTY: GraphData = { nodes: [], links: [] };
 
 /** 오른쪽에서 밀려 나오는 칸에 무엇을 보일지. 닫혀 있으면 그래프가 화면을 다 쓴다 */
@@ -77,6 +80,8 @@ export function App() {
   const [meta, setMeta] = useState<Meta | null>(null);
   const [asOf, setAsOf] = useState<string | null>(null);
   const [types, setTypes] = useState<RelType[]>(["equity", "supply_contract"]);
+  // 기업 하나를 중심으로 볼 때 그리는 관계. 전체 그래프와 따로 두고, 처음에는 그 기업의 선을 전부 보인다
+  const [centerTypes, setCenterTypes] = useState<RelType[]>(ALL_TYPES);
   const [colorBy, setColorBy] = useState<ColorBy>("group");
   const [views, setViews] = useState<{ list: View[]; at: number }>({ list: [HOME], at: 0 });
   const { center, hops, scope, found, selected: selectedId } = views.list[views.at];
@@ -253,7 +258,7 @@ export function App() {
   useEffect(() => {
     if (!asOf) return;
     let cancelled = false;
-    const request = center ? fetchGraph(center.id, asOf, types, hops, level) : fetchOverview(asOf, types, scope, level);
+    const request = center ? fetchGraph(center.id, asOf, centerTypes, hops, level) : fetchOverview(asOf, types, scope, level);
     setLoading(true);
     request
       .then((next) => {
@@ -275,7 +280,7 @@ export function App() {
     return () => {
       cancelled = true;
     };
-  }, [asOf, types, center, hops, scope, level]);
+  }, [asOf, types, centerTypes, center, hops, scope, level]);
 
   // 그려진 점의 위치를 기억해 둔다 (라이브러리가 점 객체에 x, y, z를 직접 적는다)
   useEffect(() => {
@@ -505,8 +510,8 @@ export function App() {
                       lastDate={meta.last_date}
                       asOf={asOf}
                       onAsOf={setAsOf}
-                      types={types}
-                      onTypes={setTypes}
+                      types={center ? centerTypes : types}
+                      onTypes={center ? setCenterTypes : setTypes}
                       colorBy={colorBy}
                       onColorBy={setColorBy}
                       centerName={center ? shortName(center.name) : null}
@@ -590,14 +595,36 @@ export function App() {
               }}
             />
             <div className="legend">
-              <div>
-                {drawnTypes.map((type) => (
-                  <span key={type}>
-                    <i className="line" style={{ background: LINK_COLORS[type] }} />
-                    {LINK_LABELS[type]}
-                  </span>
-                ))}
-              </div>
+              {found ? (
+                <div>
+                  {drawnTypes.map((type) => (
+                    <span key={type}>
+                      <i className="line" style={{ background: LINK_COLORS[type] }} />
+                      {LINK_LABELS[type]}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                // 범례가 곧 단추다: 선 종류를 눌러 켜고 끈다. 보기 설정을 열지 않아도 된다
+                <div className="legend-types">
+                  {(center ? ALL_TYPES : ALL_TYPES.filter((type) => type !== "affiliate")).map((type) => {
+                    const on = (center ? centerTypes : types).includes(type);
+                    const toggle = (now: RelType[]) => (now.includes(type) ? now.filter((each) => each !== type) : [...now, type]);
+                    return (
+                      <button
+                        key={type}
+                        className={on ? "on" : ""}
+                        aria-pressed={on}
+                        title={on ? `${LINK_LABELS[type]} 선 끄기` : `${LINK_LABELS[type]} 선 켜기`}
+                        onClick={() => (center ? setCenterTypes(toggle) : setTypes(toggle))}
+                      >
+                        <i className="line" style={{ background: LINK_COLORS[type] }} />
+                        {LINK_LABELS[type]}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
               <div>
                 {legend(colorBy, groups).map(([name, color]) => (
                   <span key={name}>
@@ -696,3 +723,4 @@ export function App() {
     </div>
   );
 }
+

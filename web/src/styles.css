@@ -4841,3 +4841,38 @@ details.more .notes {
   font-size: 20px;
   font-weight: 600;
 }
+
+
+/* 범례의 선 종류는 눌러서 켜고 끄는 단추다. 꺼진 것은 흐리고 선이 비어 있다 */
+.legend {
+  pointer-events: auto;
+}
+
+.legend-types button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  opacity: 0.5;
+}
+
+.legend-types button:not(.on) .line {
+  background: none !important;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.legend-types button.on {
+  color: var(--text-2);
+  opacity: 1;
+}
+
+.legend-types button:hover {
+  background: rgb(var(--ink) / 0.08);
+  opacity: 1;
+}
