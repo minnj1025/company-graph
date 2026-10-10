@@ -4705,3 +4705,40 @@ details.more .notes {
 .page h4 {
   font-size: 15px;
 }
+
+/* 긴 글은 표와 같은 폭을 쓰고 양쪽 끝을 맞춘다. 낱말 중간에서는 끊지 않는다 */
+.page .lead,
+.page .notes li,
+.page .hot-foot,
+.page .hot-side p,
+.page .muted.small {
+  max-width: none;
+  text-align: justify;
+  text-wrap: wrap;
+  word-break: keep-all;
+}
+
+details.more .notes {
+  max-width: none;
+}
+
+/* 페이지 안의 여러 줄짜리 글은 모두 같은 규칙으로: 칸의 폭을 끝까지 쓰고 양쪽 끝을 맞춘다 */
+.page p,
+.page li,
+.page dd,
+.page .rel em,
+.page .credit,
+.page .q-text,
+.page .row-meta {
+  max-width: none;
+  text-align: justify;
+  text-wrap: wrap;
+  word-break: keep-all;
+}
+
+/* 한 줄짜리 표시와 가운데 놓는 안내는 그대로 */
+.page .toc p,
+.page .hot-none,
+.page .hot-why {
+  text-align: left;
+}
