@@ -1,0 +1,70 @@
+{
+ "question": "2025년 11월 말 기준으로, 에이피위성이 Thuraya Telecommunication Company와 맺은 위성통신단말기 납품(No.100951) 계약의 공시상 종료일은 언제였나요? 그 종료일은 어떤 사유로 바뀐 것이었나요?",
+ "as_of": "2025-11-30",
+ "model": "claude-haiku-5-5",
+ "answer": "2025년 11월 30일 기준 공시상 종료일은 **2025-12-31**입니다. 이는 2025-11-15였던 종료일을 정정 공시로 늦춘 값입니다.\n\n- **계약:** AP위성(코스닥 211270)과 Thuraya Telecommunication Company의 위성통신단말기 납품(No.100951), 계약금액 5,184,907,000원, 계약일 2025-05-19\n- **최초 공시 (접수번호 20250520900270, 2025-05-20):** 계약기간 2025-05-12 ~ 2025-11-15. 이 공시는 나중의 정정으로 대체되었습니다.\n- **정정 공시 (접수번호 20251103900718, 2025-11-03, [기재정정]):** 계약 종료일을 2025-11-15에서 2025-12-31로 변경. 정정 사유는 \"계약종료일 변경\"입니다.\n\n공시에는 종료일을 바꾼 구체적인 이유가 적혀 있지 않습니다. 정정 사유는 \"계약종료일 변경\" 한 줄뿐입니다. 이 정정 공시는 이후에 다시 정정되거나 해지된 기록이 없어 2025-11-30 시점에도 유효합니다.",
+ "followups": [
+  "AP위성의 Thuraya 위성휴대폰 납품 계약들의 종료일 변경 이력은?",
+  "AP위성이 2025년 11월 말 이전에 낸 공급계약 공시 전체 목록은?",
+  "AP위성과 Comtech Mobile Datacom의 계약 종료일 정정 내역은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에이피위성"
+   },
+   "error": null,
+   "total": null,
+   "chars": 191
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2875,
+    "as_of": "2025-11-30",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 18,
+   "chars": 12372
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2875,
+    "as_of": "2025-11-30",
+    "doc_type": "event"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 550
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2875
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 197
+  }
+ ],
+ "cited": [
+  "20250520900270",
+  "20251103900718"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1198,
+  "cache_read_input_tokens": 47442,
+  "cache_creation_input_tokens": 21283
+ },
+ "seconds": 7.8,
+ "number": "T01-05",
+ "gold": "2025-11-30 시점의 최신 공시는 2025-11-03 정정공시로, 납품 예정일 연장에 따라 종료일을 2025-11-15에서 2025-12-31로 바꾼 것이다. 따라서 종료일은 2025-12-31이다. 2026-01-31(2025-12-15 정정)과 2026-02-28(2026-01-30 정정)은 그 뒤의 값이다."
+}

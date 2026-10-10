@@ -1,0 +1,87 @@
+{
+ "question": "엔씨(엔씨소프트)가 2026년 4월 공시한 JustPlay GmbH 지분 취득 결정은 이후 정정되었는데, 정정으로 무엇이 바뀌었나요? 취득 주체와 취득금액, 취득 후 지분율은 정정 뒤에도 그대로인지 함께 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "정정으로 바뀐 것은 취득예정일자 하나뿐입니다(2026-04-30 → 2026-04-28). 취득 주체, 취득금액, 취득 후 지분율은 정정 뒤에도 그대로입니다.\n\nJustPlay GmbH 지분 취득 건은 공시 주체가 NC이고, 실제 취득 당사자는 NC의 종속회사 Veroplay Limited입니다. 원 공시(2026-04-14, 접수번호 20260414800757)는 2026-04-23 정정 공시(접수번호 20260423800621)로 대체됐고, 현재 유효한 것은 정정본입니다.\n\n| 항목 | 정정 전 (20260414800757) | 정정 후 (20260423800621) |\n|---|---|---|\n| 공시 주체 | NC | NC |\n| 실제 취득 주체 | Veroplay Limited | Veroplay Limited (동일) |\n| 취득 대상 | JustPlay GmbH (독일) | JustPlay GmbH (동일) |\n| 취득금액 | 298919600000 원 | 298919600000 원 (동일) |\n| 취득 주식수 | 17696 | 17696 (동일) |\n| 취득 후 소유 주식수 | 17696 | 17696 (동일) |\n| 취득 후 지분율 | 70% | 70% (동일) |\n| 취득 방법 | 현금취득 | 현금취득 (동일) |\n| 취득예정일자 | 2026-04-30 | 2026-04-28 (정정 사유: 취득예정일자 변경) |\n\n- 정정 전후 모두 계약일(as_of_date)은 2026-04-14입니다.\n- 정정 공시에는 실제 취득이 완료됐다는 내용이 없고, 취득예정일만 적혀 있습니다. 완료일은 이 DB에서 확인되지 않습니다.\n- 같은 날 NC가 낸 Veroplay Limited 지분 취득 건(접수번호 20260414800765)도 2026-04-22 정정됐습니다(접수번호 20260422800552). 정정 사유는 대금 납입 완료와 취득예정일 확정이며, 취득예정일은 2026-04-23으로 바뀌었습니다. 이 건은 JustPlay 건과 별개의 공시이고, Veroplay 지분율 100%와 취득금액 319044880000 원은 정정 뒤에도 같습니다.",
+ "followups": [
+  "NC가 낸 Veroplay Limited 지분 취득 정정 공시의 변경 내용은 무엇인가요?",
+  "NC의 종속회사 Veroplay Limited는 다른 취득·처분 결정이 있었나요?",
+  "NC의 2026년 공급계약 공시에는 무엇이 있나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "엔씨소프트"
+   },
+   "error": null,
+   "total": null,
+   "chars": 199
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "엔씨"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3154,
+    "as_of": "2026-06-30",
+    "doc_type": "event",
+    "filed_from": "2026-04-01",
+    "filed_to": "2026-06-30"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 3890
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3154,
+    "as_of": "2026-06-30",
+    "rel_type": "stake_acquisition",
+    "direction": "out",
+    "disclosed_from": "2026-04-01",
+    "disclosed_to": "2026-06-30",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 4,
+   "chars": 4183
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3154
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  }
+ ],
+ "cited": [
+  "20260414800757",
+  "20260414800765",
+  "20260422800552",
+  "20260423800621"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2434,
+  "cache_read_input_tokens": 59399,
+  "cache_creation_input_tokens": 20139
+ },
+ "seconds": 13.9,
+ "number": "T04-02",
+ "gold": "2026-04-23 정정 공시에서 바뀐 것은 취득예정일자 하나로, 2026-04-30에서 2026-04-28로 앞당겨졌다(정정사유: 취득예정일자 변경). 취득 주체는 엔씨의 종속회사 Veroplay Limited로 변함없고, 취득주식수 17,696주, 취득금액 298,919,600,000원(자산총액 대비 6.9%), 취득 후 지분율 70%도 그대로다."
+}

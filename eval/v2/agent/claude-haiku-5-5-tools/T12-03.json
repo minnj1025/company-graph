@@ -1,0 +1,72 @@
+{
+ "question": "나이벡의 2025 사업연도 사업보고서 타법인 출자현황 기준으로, 경영참여 목적으로 지분을 보유한 회사는 어디어디입니까?",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 이 DB에서 나이벡의 2025 사업연도 사업보고서(접수번호 20260320001388) 타법인 출자현황에 올라온 회사는 없습니다. 따라서 경영참여 목적으로 지분을 보유한 회사도 확인되지 않습니다.**\n\n- **타법인 출자(지분 보유) 조회:** 나이벡이 주체인 지분 관계는 0건입니다.\n- **계열회사 조회:** 사업보고서의 계열회사 표에 올라온 회사가 없습니다(접수번호 20260320001388).\n- **경영참여 목적 여부:** 이 DB의 관계 자료에는 출자 목적(경영참여 등) 항목이 없어서, 목적별로 거를 수 없습니다. 출자 대상 자체가 없으므로 이 질문은 해당 없음으로 봅니다.\n\n참고로, 이 DB에서 나이벡 쪽으로 들어오는 지분은 주주 정보뿐입니다. 최대주주 정종평이 15.18%(1,725,403주, 본인)이고, 임원·감사·특수관계인 개인 주주가 있습니다. 이는 나이벡이 다른 회사에 출자한 내용이 아니고, 이 DB는 5% 이상 주주 전체를 담지 않습니다.",
+ "followups": [
+  "나이벡의 최대주주 정종평과 특수관계인의 지분 현황은?",
+  "나이벡의 최근 공급계약 공시는 무엇이 있나?",
+  "나이벡의 주요 제품과 매출 비중은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "나이벡"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2314,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 891
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2314,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 809
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2314,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 7,
+   "chars": 4098
+  }
+ ],
+ "cited": [
+  "20260320001388"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1835,
+  "cache_read_input_tokens": 40979,
+  "cache_creation_input_tokens": 17559
+ },
+ "seconds": 11.6,
+ "number": "T12-03",
+ "gold": "없다. 나이벡의 2025 사업연도 사업보고서 타법인 출자현황에는 출자 법인이 기재되어 있지 않고(법인명·목적·지분율이 모두 \"-\", 합계도 \"-\"), 따라서 경영참여 목적 출자처도 없다."
+}

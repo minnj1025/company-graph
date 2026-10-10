@@ -302,7 +302,7 @@ function Question({ item, data }: { item: EvalItem; data: EvalData }) {
           {(
             [
               ["Agent의 답 (처음)", item.agent],
-              ["Agent의 답 (고친 뒤)", item.after],
+              ["Agent의 답 (최근)", item.after],
             ] as const
           ).map(([label, side]) => (
             <div key={label}>
@@ -366,7 +366,7 @@ export function Questions({ data }: { data: EvalData }) {
           ))}
         </select>
         <select value={verdict} onChange={(event) => setVerdict(event.target.value as Verdict | "")}>
-          <option value="">모든 판정 (고친 뒤)</option>
+          <option value="">모든 판정 (최근)</option>
           {VERDICTS.map(([key, label]) => (
             <option key={key} value={key}>
               {label}

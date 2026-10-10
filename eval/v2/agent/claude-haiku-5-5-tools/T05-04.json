@@ -1,0 +1,60 @@
+{
+ "question": "일진홀딩스가 2024년 5월 공시한 싱가포르 230kV 전력케이블 공급·설치 계약에서 실제 계약 당사자는 어느 회사인가요? 계약 상대와 계약금액, 매출액 대비 비율, 계약기간을 알려 주세요.",
+ "as_of": "2024-12-31",
+ "model": "claude-haiku-5-5",
+ "answer": "실제 계약 당사자는 일진홀딩스의 자회사인 **일진전기(주)** 입니다. 공시는 일진홀딩스 명의로 나갔지만, 계약 주체는 자회사 일진전기입니다 (접수번호 20240516800735).\n\n- **계약 상대:** 싱가포르 전력청(SPGroup)\n- **계약금액:** 75059514651 원\n- **매출액 대비 비율:** 6.02% (최근 매출액 1246731647188 원 기준)\n- **계약기간:** 2024-05-15 ~ 2027-10-31 (계약일 2024-05-15)\n- **계약명:** SUPPLY AND INSTALLATION OF 230KV POWER CABLES, AUXILIARY CABLES AND (영문 제목 그대로)\n\n이 공시는 정정·해지 없이 유효한 상태로 조회됐습니다. 조회 시점은 2024-12-31입니다.",
+ "followups": [
+  "일진홀딩스의 2024년 공급계약 공시를 모두 보여 줘",
+  "일진전기의 최근 주요 제품과 매출 비중은?",
+  "일진홀딩스의 계열회사와 지분 구조는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "일진홀딩스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1209,
+    "as_of": "2024-12-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2024-05-01",
+    "filed_to": "2024-05-31"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1163
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1209
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 199
+  }
+ ],
+ "cited": [
+  "20240516800735"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 938,
+  "cache_read_input_tokens": 40949,
+  "cache_creation_input_tokens": 14705
+ },
+ "seconds": 6.3,
+ "number": "T05-04",
+ "gold": "실제 계약 당사자는 일진홀딩스가 아니라 자회사인 일진전기(주)이다. 일진전기가 싱가포르 전력청(SPGroup)과 2024-05-15 체결한 계약으로, 계약금액은 75,059,514,651원(SGD 74,133,586.16 환산), 매출액 대비 6.02%, 계약기간은 2024-05-15~2027-10-31이다."
+}

@@ -1,0 +1,92 @@
+{
+ "question": "동아지질이 2025년에 새로 공시한 공급계약(정정 공시 제외) 중 판매·공급지역이 해외인 계약을 모두 들어 줘. 상대가 누구인지와 2025년 말 기준 계약금액, 그 합계도 알려 줘.",
+ "as_of": "2025-12-31",
+ "model": "claude-haiku-5-5",
+ "answer": "동아지질이 2025년에 새로 공시한 공급계약(정정 공시 제외) 중 판매·공급지역이 해외인 계약은 2건이고, 계약금액 합계는 51731077917원입니다.\n\n| 상대 | 계약명 | 계약금액(원, 2025-12-31 기준) | 계약일 | 지역 | 접수번호 |\n|---|---|---|---|---|---|\n| LIM WEN HENG CONSTRUCTION PTE LTD | BUILDING WORKS AT JURONG WEST NEIGHBOURHOOD 1 CONTRACT 34 / Ground Improvement | 22368142166 | 2025-06-09 | Singapore | 20250609800471 (원공시), 정정 20250819800168 |\n| Obayashi Singapore Private Limited | SUBSTRUCTURE WORK OF PACKAGE B: TERMINAL 5B FOR THE TERMINAL 5, CHANGI EAST, AT SINGAPORE CHANGI AIRPORT | 29362935751 | 2025-07-01 | Singapore | 20250702800084 |\n\n- LIM WEN HENG 계약은 원공시(6월 9일) 금액이 14472015216원이었고, 8월 19일 정정 공시(20250819800168)로 22368142166원이 됐습니다. 2025-12-31 기준 금액은 정정 후 값입니다. 정정 공시 자체는 목록에서 뺐습니다.\n- 두 계약의 금액은 공시에 적힌 원화 환산액입니다.\n- 같은 기간 나머지 신규 공급계약 4건(접수번호 20250206800720, 20250421800727, 20250829800389, 20251107800290)은 국내 현장으로 적혀 있어 제외했습니다.",
+ "followups": [
+  "동아지질의 2025년 국내 공급계약 목록을 보여 줘",
+  "LIM WEN HENG CONSTRUCTION과 동아지질의 다른 계약 이력은?",
+  "동아지질의 2025년 말 기준 최대주주와 계열회사는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "동아지질"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3263,
+    "as_of": "2025-12-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-01-01",
+    "filed_to": "2025-12-31"
+   },
+   "error": null,
+   "total": 54,
+   "chars": 40323
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3263,
+    "as_of": "2025-12-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-01-01",
+    "filed_to": "2025-06-30"
+   },
+   "error": null,
+   "total": 25,
+   "chars": 21063
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3263,
+    "as_of": "2025-12-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-07-01",
+    "filed_to": "2025-12-31"
+   },
+   "error": null,
+   "total": 29,
+   "chars": 23248
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3263
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20250206800720",
+  "20250421800727",
+  "20250609800471",
+  "20250702800084",
+  "20250819800168",
+  "20250829800389",
+  "20251107800290"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 3118,
+  "cache_read_input_tokens": 129992,
+  "cache_creation_input_tokens": 66768
+ },
+ "seconds": 18.1,
+ "number": "T06-04",
+ "gold": "2025년 신규 공시 6건 가운데 해외 계약은 2건이고 둘 다 싱가포르다. ① 2025-06-09 자율공시 「BUILDING WORKS AT JURONG WEST NEIGHBOURHOOD 1 CONTRACT 34 / Ground Improvement」 — LIM WEN HENG CONSTRUCTION PTE LTD. 최초 14,472,015,216원이었고 2025-08-19 정정(계약금액변경)으로 22,368,142,166원이 되었다. ② 2025-07-02 「SUBSTRUCTURE WORK OF PACKAGE B: TERMINAL 5B FOR THE TERMINAL 5, CHANGI EAST, AT SINGAPORE CHANGI AIRPORT」 — Obayashi Singapore Private Limited, 29,362,935,751원. 연말 기준 합계는 51,731,077,917원이다. 나머지 신규 4건(조달청, 동부건설, 코오롱글로벌, 현대건설)은 국내다."
+}

@@ -1,0 +1,83 @@
+{
+ "question": "디엘(DL) 주식회사가 2025년 11월 공시한 여천NCC(주) 주식 취득 결정에서 실제 취득 주체는 어느 회사이고, 취득 금액과 방법, 취득 후 지분율은 어떻게 되나요?",
+ "as_of": "2026-03-31",
+ "model": "claude-opus-5-5",
+ "answer": "공시는 DL이 냈지만 실제로 주식을 취득한 회사는 자회사 DL케미칼(주)입니다. 대여금을 출자전환하는 방식으로 150000000000원어치를 취득했고, 취득 후 여천NCC(주) 지분율은 50.00%입니다. (근거 공시: 20251120800299, 2025-11-20 공시)\n\n| 항목 | 내용 |\n|---|---|\n| 공시 회사 | DL |\n| 실제 취득 주체 | DL케미칼(주) |\n| 대상 회사 | 여천NCC(주) (석유화학제품 제조업, 대한민국) |\n| 결의일·공시일 | 2025-11-20 |\n| 취득 금액 | 150000000000원 |\n| 자기자본 대비 | 8.48% |\n| 취득 방법 | 대여금의 출자전환으로 인한 취득 |\n| 취득 주식수 | 7736345주 |\n| 취득 후 소유 주식수 | 20515666주 |\n| 취득 후 지분율 | 50.00% |\n| 취득 목적 | 여천NCC(주)의 재무구조 개선 |\n| 취득 예정일 | 2025-11-26 |\n\n정정 공시까지 넣어 조회해도 2025년 11월에 나온 공시는 이 1건뿐이었고, 나중에 정정되거나 무효가 된 기록은 없습니다.",
+ "followups": [
+  "DL이 2024년 이후 낸 타법인 주식 취득·처분 결정을 모두 보여줘",
+  "DL의 최대주주와 특수관계인 지분율은?",
+  "DL의 계열회사 목록과 DL케미칼에 대한 지분 관계는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "DL"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "여천NCC"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4034,
+    "as_of": "2026-03-31",
+    "rel_type": "stake_acquisition",
+    "direction": "out",
+    "disclosed_from": "2025-11-01",
+    "disclosed_to": "2025-11-30",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1370
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "DL케미칼"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     12167
+    ],
+    "also": [
+     4034
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 202
+  }
+ ],
+ "cited": [
+  "20251120800299"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1113,
+  "cache_read_input_tokens": 56144,
+  "cache_creation_input_tokens": 15012
+ },
+ "seconds": 19.0,
+ "number": "T05-05",
+ "gold": "실제 취득 주체는 디엘(주)가 아니라 자회사인 DL케미칼(주)이다. DL케미칼이 여천NCC에 대여한 금액을 출자전환하는 방식으로 여천NCC 주식 7,736,345주를 150,000,000,000원(DL케미칼 자기자본 대비 8.48%)에 취득하며, 취득 후 소유주식수는 20,515,666주, 지분율은 50.00%이다. 목적은 여천NCC의 재무구조 개선이다."
+}

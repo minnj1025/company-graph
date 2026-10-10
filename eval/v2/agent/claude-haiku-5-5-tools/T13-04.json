@@ -1,0 +1,57 @@
+{
+ "question": "와이지-원의 2025 사업연도 사업보고서 계열회사 현황에 상장 계열회사가 있습니까? 상장·비상장 회사 수를 표에 적힌 대로 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "상장 계열회사는 없습니다. 자기 자신(와이지-원, 019210)을 뺀 계열회사는 모두 비상장 53곳입니다.\n\n사업보고서 계열회사 표의 집계는 다음과 같습니다. 기준일은 2025-12-31이고, 접수번호는 20260318000988입니다.\n\n| 구분 | 상장 | 비상장 |\n|---|---|---|\n| 자신을 포함한 수 (표의 기준) | 1 | 53 |\n| 자신을 뺀 수 | 0 | 53 |\n\n- 상장으로 집계된 1곳은 와이지-원 자신입니다.\n- 비상장 53곳은 해외 법인과 국내 법인(예: ㈜더블에이치, ㈜슈퍼툴, 신세기산업㈜ 등)입니다.",
+ "followups": [
+  "와이지-원의 사업보고서 계열회사 53곳 중 해외 법인은 어느 나라에 있나요?",
+  "와이지-원의 지분 구조(최대주주와 특수관계인)는 어떻게 되나요?",
+  "와이지-원이 최근 1년간 낸 공급계약 공시가 있나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "와이지-원"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3977,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 53,
+   "chars": 22691
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3977
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1045,
+  "cache_read_input_tokens": 51845,
+  "cache_creation_input_tokens": 25814
+ },
+ "seconds": 7.5,
+ "number": "T13-04",
+ "gold": "상장 계열회사는 없다(상장 칸은 회사수·기업명이 모두 \"-\"). 비상장 계열회사는 53개사로 적혀 있으며(기준일 2025년 12월 31일), QINGDAO NEW CENTURY TOOL CO.,LTD, YG-1 America, Inc., 주식회사 이노자드, 신세기산업㈜ 등이 들어 있다. 와이지-원 자신은 표에 올라 있지 않다."
+}

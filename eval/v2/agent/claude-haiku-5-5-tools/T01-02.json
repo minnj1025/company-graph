@@ -1,0 +1,107 @@
+{
+ "question": "2025년 말 시점의 공시 기준으로, 엔케이가 엔케이텍에 이동식 수소 충전설비(700bar)를 공급하는 계약의 종료일은 언제였고, 계약상대인 엔케이텍은 회사와 어떤 관계로 기재되어 있었나요?",
+ "as_of": "2025-12-31",
+ "model": "claude-haiku-5-5",
+ "answer": "**2025년 말 기준 계약 종료일은 2026-09-30이고, 엔케이텍은 공시에 '계열회사'로 기재되어 있었습니다.**\n\n2025-12-31 시점에 유효한 공시는 접수번호 20250523800149([기재정정] 단일판매·공급계약체결, 2025-05-23 접수)입니다. 이 정정으로 계약기간 종료일이 2025-05-30에서 2026-09-30으로 바뀌었습니다. 계약 시작일은 2023-08-24, 계약금액은 5,007,342,000원, 계약 종류는 상품공급입니다. 이 정정은 2024-08-23 공시(20240823800248)를 고친 것입니다.\n\n엔케이텍의 관계는 다음과 같습니다.\n- 공급계약 공시의 '당사자 관계'란에 \"계열회사\"로 적혀 있습니다 (20250523800149).\n- 사업보고서의 계열회사 현황 표에도 엔케이텍이 엔케이의 계열회사로 나옵니다 (접수번호 20250319000323, 기준일 2024-12-31).\n- 지분 관계는 조회되지 않았습니다. 엔케이 지분을 가진 주주 목록에 엔케이텍은 없습니다.\n\n참고로 이 계약은 2025-12-31 기준으로 유효한 것으로 조회되었고, 해지나 철회 공시는 확인되지 않았습니다.",
+ "followups": [
+  "엔케이텍의 제품과 사업 내용은 무엇인가요?",
+  "엔케이의 다른 공급계약 상대는 어디인가요?",
+  "엔케이의 2025년 말 기준 계열회사 목록은 어떻게 되나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "엔케이"
+   },
+   "error": null,
+   "total": null,
+   "chars": 191
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "엔케이텍"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2718,
+    "as_of": "2025-12-31",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 3848
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2718,
+    "as_of": "2025-12-31",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "counterparty_id": 9026
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1417
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2718,
+    "as_of": "2025-12-31",
+    "rel_type": "equity",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 8,
+   "chars": 4485
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2718,
+    "as_of": "2025-12-31",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 10,
+   "chars": 5009
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2718,
+     9026
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 294
+  }
+ ],
+ "cited": [
+  "20240823800248",
+  "20250319000323",
+  "20250523800149"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1773,
+  "cache_read_input_tokens": 49162,
+  "cache_creation_input_tokens": 22935
+ },
+ "seconds": 10.5,
+ "number": "T01-02",
+ "gold": "2025-12-31 시점의 최신 공시는 2025-05-23 정정공시로, 종료일을 2025-05-30에서 2026-09-30으로 바꾼 것이다. 이때 계약상대 (주)엔케이텍과의 관계는 '계열회사'로 기재되어 있었다. 종료일 2027-06-30과 '자회사' 표기는 2026-09-30 정정에서야 나온다."
+}

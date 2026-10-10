@@ -1,0 +1,82 @@
+{
+ "question": "피제이전자의 2025 사업연도 사업보고서 계열회사 현황에 올라 있는 상장 계열회사와 비상장 계열회사를 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-opus-5-5",
+ "answer": "피제이전자는 2025 사업연도 사업보고서(2026-03-16 접수, 20260316001412)를 냈습니다. 그런데 이 DB에는 그 보고서의 계열회사 현황에서 뽑은 계열회사가 하나도 없습니다. 상장·비상장 모두 없습니다.\n\n- **계열회사 조회(2026-06-30 시점):** 결과가 0건입니다. DB는 2023-04-18부터 2026-10-01까지 공시된 사업보고서의 계열회사 현황 표를 모았으므로, 이 보고서도 수집 기간 안에 있습니다. 다만 도구는 \"여기에 없다고 해서 관계가 없다는 뜻은 아니다\"라고 안내합니다. 따라서 이 결과만으로 피제이전자에 계열회사가 없다고 단정할 수는 없습니다. 원문 표는 DART 공시(https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260316001412)에서 직접 확인하시는 것이 확실합니다.\n- **같은 보고서의 지분 정보:** 피제이전자가 다른 회사에 출자했다는 기록은 없습니다. 주주로 올라 있는 것은 모두 개인으로, 최대주주인 김재석(28.02%)과 특수관계인 15명입니다. 계열회사로 이어 볼 수 있는 법인 주주도 없습니다(2025-12-31 기준, 20260316001412).",
+ "followups": [
+  "피제이전자의 최대주주와 특수관계인 지분 현황을 모두 보여 줘",
+  "피제이전자가 최근 1년간 낸 공급계약 공시가 있어?",
+  "피제이전자의 주요 제품과 매출 비중은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "피제이전자"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1875,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 698
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1875,
+    "as_of": "2026-06-30",
+    "doc_type": "annual"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1301
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1875,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 16,
+   "chars": 8336
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1875
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20260316001412"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1347,
+  "cache_read_input_tokens": 60044,
+  "cache_creation_input_tokens": 19848
+ },
+ "seconds": 15.5,
+ "number": "T13-02",
+ "gold": "없다. 피제이전자의 2025 사업연도 사업보고서 계열회사 현황 표는 상장·비상장 구분 모두 회사수와 기업명이 \"-\"로 비어 있어, 보고된 계열회사가 상장·비상장 통틀어 한 곳도 없다."
+}

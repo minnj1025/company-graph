@@ -19,6 +19,8 @@ ROOT = Path(__file__).parent
 AGENT_MODEL = "claude-haiku-5-5"
 SEED = 20261008
 BUNDLE_SIZE = 26
+# 꼬리말이 가리키는 답의 폴더가 "<Agent 모델>-<꼬리말>"이 아닌 것. opus: 같은 도구를 Opus 5.5 로 돌린 답(모델 비교용)
+FOLDERS = {"opus": "claude-opus-5-5-tools"}
 
 
 def read(path: Path):
@@ -46,7 +48,7 @@ def answers(after: bool | str) -> list[dict]:
         gold = read(path)
         if gold.get("skip"):
             continue
-        sides = (((tag, ROOT / "agent" / (AGENT_MODEL + "-" + tag) / path.name),) if after else
+        sides = (((tag, ROOT / "agent" / FOLDERS.get(tag, AGENT_MODEL + "-" + tag) / path.name),) if after else
                  (("agent", ROOT / "agent" / AGENT_MODEL / path.name), ("baseline", ROOT / "baseline" / path.name)))
         for side, file in sides:
             if file.exists():

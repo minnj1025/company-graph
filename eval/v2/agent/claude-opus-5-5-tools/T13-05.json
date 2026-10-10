@@ -1,0 +1,65 @@
+{
+ "question": "일진전기의 2025 사업연도 사업보고서 계열회사 현황을 기준으로, 일진전기 자신을 제외한 상장 계열회사는 어디어디입니까? 표에 적힌 상장·비상장 회사 수도 함께 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-opus-5-5",
+ "answer": "일진전기를 빼면 상장 계열회사는 일진홀딩스, 일진다이아, 일진디스플, 일진하이솔루스 4곳입니다. 계열회사 현황에 나온 회사는 상장 4곳, 비상장 29곳으로 모두 33곳입니다. 근거는 2025년 12월 31일 기준 일진전기 사업보고서(2026-03-11 공시, 접수번호 20260311004216)입니다.\n\n**상장 계열회사 (일진전기 제외)**\n\n| 기업 | 종목코드 | 시장 | 근거 접수번호 |\n|---|---|---|---|\n| 일진홀딩스 | 015860 | 유가증권 | 20260311004216 |\n| 일진다이아 | 081000 | 유가증권 | 20260311004216 |\n| 일진디스플 | 020760 | 유가증권 | 20260311004216 |\n| 일진하이솔루스 | 271940 | 유가증권 | 20260311004216 |\n\n**비상장 계열회사 29곳**\n- 국내 16곳: 마그마툴, 세마오일, 셀리게인, 아이텍, 아트테크, 알피니언메디칼시스템, 일진디앤코, 일진반도체, 일진씨앤에스, 일진에스앤티, 일진자동차, 일진제강, 일진지엘에스, 일진파트너스, 전주방송, 컴퍼니에이치앤\n- 해외 13곳: Alpinion Guangzhou Medical Systems Co., Ltd., Alpinion Medical Deutschland GmbH, Alpinion US, Inc., ILJIN DISPLAY VINA CO.,LTD, ILJIN Diamond VINA, ILJIN EUROPE GMBH, ILJIN Electric USA. INC., ILJIN Hysolus Property Management Germany GmbH, ILJIN JAPAN, ILJIN STEEL AMERICA INC., ILJIN USA, Life Science Enterprises, SHANGHAI ILJIN Diamond CO., LTD\n\n**회사 수를 읽을 때 주의할 점**\n- 위 숫자는 이 DB가 일진전기 보고서에서 뽑은 상대 회사의 줄 수를 직접 센 값입니다. 표 원문에 적힌 합계 숫자는 DB에 따로 들어 있지 않습니다.\n- 원문 표가 일진전기 자신까지 넣어 세었다면 상장 5곳, 비상장 29곳, 모두 34곳이 됩니다. 이 경우는 원문에서 한 번 더 확인해야 합니다.",
+ "followups": [
+  "일진홀딩스가 가진 일진전기 지분율은 얼마인가요?",
+  "일진하이솔루스의 2025 사업연도 사업보고서 계열회사 현황에는 어떤 회사들이 있나요?",
+  "일진전기가 최근 1년간 공시한 단일판매·공급계약을 모두 알려 주세요."
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "일진전기"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3037,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 37,
+   "chars": 16950
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1209,
+     3035,
+     3405,
+     3038
+    ],
+    "also": [
+     3037
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 489
+  }
+ ],
+ "cited": [
+  "20260311004216"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1855,
+  "cache_read_input_tokens": 48565,
+  "cache_creation_input_tokens": 22818
+ },
+ "seconds": 24.1,
+ "number": "T13-05",
+ "gold": "일진전기 자신을 제외한 상장 계열회사는 일진홀딩스(주), 일진다이아몬드(주), 일진디스플레이(주), 일진하이솔루스(주)의 네 곳이다. 표에는 상장 5개사(일진전기(주) 포함), 비상장 29개사로 적혀 있다(기준일 2025년 12월 31일)."
+}

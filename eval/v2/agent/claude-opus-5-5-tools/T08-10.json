@@ -1,0 +1,84 @@
+{
+ "question": "한국비티비가 2026년 1월부터 9월까지 공시한 단일판매ㆍ공급계약의 계약상대와 계약금액을 알려주세요.",
+ "as_of": "2026-10-08",
+ "model": "claude-opus-5-5",
+ "answer": "한국비티비(코스닥, 219750)가 2026년 1월부터 9월까지 공시한 단일판매ㆍ공급계약은 이 DB에 한 건도 없습니다. 그래서 답할 계약상대나 계약금액이 없습니다.\n\n- **기간 안의 공시:** 2026-01-01~2026-09-30에 나온 공시를 나중에 정정되거나 해지된 것까지 포함해 조회했지만 0건이었습니다. 이 회사가 낸 공시 목록에서도 같은 기간의 공급계약은 0건이었습니다.\n- **수집 범위:** 이 DB는 2024-01-02부터 2026-10-08까지 건별로 공시된 공급계약을 모았습니다. 질문하신 기간은 이 범위 안에 있으므로, 자료가 빠진 것이 아니라 이 기간에 공시된 것이 없다는 뜻입니다.\n- **다른 기간:** 범위를 넓혀 2024년 1월 이후 전체를 봐도 한국비티비의 공급계약 공시는 없습니다.\n\n다만 이 DB는 건별로 공시된 계약만 모읍니다. 공시 대상이 아닌 작은 계약까지 없다는 뜻은 아닙니다.",
+ "followups": [
+  "한국비티비는 어떤 제품을 팔고 매출 비중은 어떻게 돼?",
+  "한국비티비의 최대주주와 특수관계인 지분율은?",
+  "한국비티비가 최근 타법인 주식을 취득하거나 처분한 결정이 있어?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한국비티비"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3517,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "disclosed_from": "2026-01-01",
+    "disclosed_to": "2026-09-30",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 711
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3517,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_contract",
+    "filed_from": "2026-01-01",
+    "filed_to": "2026-09-30"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 551
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3517,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 551
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3517
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 14,
+  "output_tokens": 1223,
+  "cache_read_input_tokens": 70255,
+  "cache_creation_input_tokens": 15268
+ },
+ "seconds": 14.2,
+ "number": "T08-10",
+ "gold": "한국비티비가 2026년 1~9월에 낸 단일판매ㆍ공급계약 공시는 없다. 이 회사는 2024년 1월 이후 조회 시점까지 단일판매ㆍ공급계약체결 공시를 한 건도 내지 않았으므로(공시 목록 기준), '확인할 수 없다'가 아니라 '공시된 계약이 없다'가 답이다."
+}

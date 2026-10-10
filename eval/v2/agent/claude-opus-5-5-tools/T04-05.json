@@ -1,0 +1,61 @@
+{
+ "question": "2026년 1월 말 기준으로, SK가스 측의 사우디 Advanced Polyolefins Industry Co. 지분 취득 결정에서 실제 취득 주체는 어느 회사이고, 그 시점에 공시되어 있던 취득금액과 취득예정일자는 무엇이었나요?",
+ "as_of": "2026-01-31",
+ "model": "claude-opus-5-5",
+ "answer": "2026-01-31 기준으로 실제 취득 주체는 SK가스의 싱가포르 손자회사 **SK Gas Petrochemical Pte. Ltd.**입니다. 그 시점에 공시되어 있던 취득금액은 **143,574,862,264원**, 취득예정일자는 **2026-11-10**입니다 (정정공시 20251202800418).\n\n**공시 내용 (20251202800418, 2025-12-02 공시, 결의일 2020-03-27)**\n- 공시는 SK가스가 냈습니다. 다만 공시에 적힌 실제 취득자는 자회사 SK Gas Petrochemical Pte. Ltd.입니다.\n- 취득 대상은 Advanced Polyolefins Industry Co.(사우디아라비아)이고, 현금으로 38469375주를 취득합니다. 취득 뒤 지분율은 15.00%입니다.\n- 목적은 \"사우디 내 가스화학사업(PDH/PP 및 IPA) 추진을 위한 투자재원 제공\"입니다.\n- 이 공시는 \"출자금액 감소 및 출자예정시기 확정 등\"을 이유로 낸 정정공시입니다. 정정으로 바뀐 값은 아래와 같습니다.\n  - 취득금액: 153,897,300,000원 → 143,574,862,264원\n  - 취득예정일자: \"-\" → 2026-11-10\n\n**출자가 이어지는 구조 (같은 날 함께 낸 정정공시)**\n| 단계 | 취득 주체 | 취득 대상 | 취득금액(원) | 취득예정일자 | 접수번호 |\n|---|---|---|---|---|---|\n| 1 | SK가스 | SK Gas International Pte. Ltd. | 143,574,862,264 | 2026-11-10 | 20251202800385 |\n| 2 | SK Gas International Pte. Ltd. | SK Gas Petrochemical Pte. Ltd. | 143,574,862,264 | 2026-11-10 | 20251202800412 |\n| 3 | SK Gas Petrochemical Pte. Ltd. | Advanced Polyolefins Industry Co. | 143,574,862,264 | 2026-11-10 | 20251202800418 |\n\n정리하면 SK가스 → SK Gas International → SK Gas Petrochemical → Advanced Polyolefins Industry Co. 순으로 같은 금액이 내려가는 구조입니다. 위 세 공시는 모두 2026-04-01에 다시 정정됐습니다. 그래서 2026-01-31 기준으로 유효했던 값은 위 값이고, 지금 유효한 값은 다를 수 있습니다.",
+ "followups": [
+  "SK가스의 Advanced Polyolefins Industry Co. 지분 취득 결정은 2026-04-01 정정에서 무엇이 바뀌었나요?",
+  "SK가스가 2025년 이후 낸 타법인 주식 취득 결정을 모두 보여 주세요.",
+  "SK가스의 최대주주와 주요 출자회사는 어디인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK가스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1460,
+    "as_of": "2026-01-31",
+    "rel_type": "stake_acquisition",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 4697
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1460
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20251202800385",
+  "20251202800412",
+  "20251202800418"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1451,
+  "cache_read_input_tokens": 43039,
+  "cache_creation_input_tokens": 16686
+ },
+ "seconds": 17.7,
+ "number": "T04-05",
+ "gold": "취득 주체는 SK가스의 종속회사 SK Gas Petrochemical Pte. Ltd.이다. 2025-12-02 정정 공시 기준으로 취득금액은 143,574,862,264원(자산총액 대비 3.82%), 취득예정일자는 2026-11-10이며, 취득 후 지분율은 15.00%(38,469,375주)이다."
+}

@@ -48,7 +48,7 @@ def v2_questions() -> list[tuple[str, str, str, date]]:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default=agent.MODEL)
+    parser.add_argument("--model", default="claude-haiku-5-5", help="제품이 쓰는 모델이 기본이다. agent.MODEL(Opus)을 기본으로 두었다가 평가 한 번에 20달러가 나간 적이 있다")
     parser.add_argument("--only", default="")
     parser.add_argument("--resume", action="store_true", help="이미 답이 있는 문항은 건너뛴다")
     parser.add_argument("--set", default="practice", choices=["practice", "sealed", "v2"])

@@ -31,6 +31,12 @@ const V3: [string, number, number, number][] = [
   ["이어지는 대화 (10쌍)", 10, 0, 0],
 ];
 
+/** 같은 149문항을 모델만 바꿔 푼 결과 (2026-10-11). 정답, 부분 정답, 미답, 사실 오류, 시간, 문항당 비용 */
+const MODELS: [string, number, number, number, number, string, string][] = [
+  ["Claude Haiku 5.5 (서비스에 쓰는 모델)", 124, 16, 2, 7, "10.7초", "약 6원"],
+  ["Claude Opus 5.5", 127, 15, 2, 5, "16.7초", "약 200원"],
+];
+
 /** 긴 페이지 왼쪽의 목차. 지금 읽는 구역에 표시가 따라 내려온다. 작은 제목(sub)은 들여 쓴다 */
 const TOC: { id: string; label: string; sub?: boolean }[] = [
   { id: "what", label: "데이터 구성" },
@@ -40,6 +46,7 @@ const TOC: { id: string; label: string; sub?: boolean }[] = [
   { id: "hot", label: "3. 이슈 종목 탐지" },
   { id: "news", label: "4. 기사 요약" },
   { id: "agent", label: "5. Agent 답변" },
+  { id: "models", label: "모델 비교", sub: true },
   { id: "baseline", label: "웹 검색 대비 비교", sub: true },
   { id: "followups", label: "제품·연속 질문", sub: true },
   { id: "limits", label: "미포함 범위와 한계" },
@@ -490,16 +497,62 @@ function EvalSection() {
             {tally(sides, "wrong")}문항. 조회 결과에 없는 접수번호를 답에 인용한 문항은 {invented}개입니다.
           </li>
           <li>
-            <b>해석상 유의점</b> 이 결과는 첫 실행(정답 {pct(tally(before, "correct"), before.length)}%)에서 드러난 결함을 고친 뒤의 값입니다. 문항을 확인한
-            뒤 개선한 것이므로 새 문항에서 같은 수준이 재현된다는 보장은 없습니다.
+            <b>해석상 유의점</b> 첫 실행(정답 {pct(tally(before, "correct"), before.length)}%)에서 드러난 결함을 고치고, 그 뒤 답의 형식과 도구(주가 움직임,
+            화면 조작)를 바꾼 다음 다시 측정한 값입니다. 문항을 확인한 뒤 개선한 것이므로 새 문항에서 같은 수준이 재현된다는 보장은 없습니다.
           </li>
           <li>
-            <b>개선 내용</b> 첫 실행의 부분 정답은 대부분 DB에는 있으나 조회 도구가 반환하지 않던 값(자기자본 대비 비율, 취득 예정일자, 해지 사유)
-            때문이었고, 도구가 해당 값을 반환하도록 수정했습니다.
+            <b>남은 오답</b> 사실 오류 {tally(sides, "wrong")}문항 가운데 5문항은 더 큰 모델(Opus 5.5)도 같은 방식으로 틀렸습니다. 주주 명단의 변동과 두
+            보고서 간 지분율 차이를 묻는 문항으로, 모델이 아니라 조회 도구가 내주는 자료의 한계로 보입니다.
           </li>
         </ul>
       </details>
       <ByType data={data} />
+
+      <h2 id="models">모델 비교</h2>
+      <p className="lead">
+        같은 도구와 지시문으로 모델만 바꿔 같은 {sides.length}문항을 풀게 했습니다. 정답 수의 차이는 3문항이고, 문항당 비용은 약 35배 차이입니다.
+      </p>
+      <table className="grid">
+        <thead>
+          <tr>
+            <th />
+            <th className="num">정답</th>
+            <th className="num">부분 정답</th>
+            <th className="num">답하지 못함</th>
+            <th className="num">사실 오류</th>
+            <th className="num">소요 시간 (중앙값)</th>
+            <th className="num">문항당 비용</th>
+          </tr>
+        </thead>
+        <tbody>
+          {MODELS.map(([name, ...cells]) => (
+            <tr key={name}>
+              <td>{name}</td>
+              {cells.map((cell, index) => (
+                <td key={index} className="num">
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <details className="more">
+        <summary>검증 방법과 한계</summary>
+        <ul className="notes">
+          <li>
+            <b>겹치는 정도</b> 두 모델이 모두 정답인 문항이 120개, Opus만 더 잘한 문항이 9개, Haiku만 더 잘한 문항이 4개입니다. 채점자는 어느 모델의
+            답인지 모르는 상태에서 판정했습니다.
+          </li>
+          <li>
+            <b>비용</b> 토큰 사용량에 공개 단가를 곱해 계산했습니다. Haiku의 캐시 단가는 추정치여서 실제 청구액과 다를 수 있습니다.
+          </li>
+          <li>
+            <b>해석</b> 이 문항들은 조회 도구가 답의 대부분을 정하는 유형이어서 모델 간 차이가 작게 나옵니다. 여러 단계를 스스로 설계해야 하는 질문에서는
+            차이가 더 클 수 있으며, 그런 문항은 이 시험에 없습니다.
+          </li>
+        </ul>
+      </details>
 
       <h2 id="baseline">웹 검색 대비 비교</h2>
       <p className="lead">
@@ -585,4 +638,5 @@ export function QuestionsPage() {
     </div>
   );
 }
+
 

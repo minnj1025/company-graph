@@ -1,0 +1,91 @@
+{
+ "question": "올릭스가 2025년 1월부터 12월까지 단일판매ㆍ공급계약체결 공시로 알린 계약의 상대방과 금액을 알려주세요.",
+ "as_of": "2026-01-31",
+ "model": "claude-haiku-5-5",
+ "answer": "올릭스(226950, 코스닥)가 2025년 1월부터 12월까지 낸 단일판매·공급계약체결 공시는 DB에서 찾지 못했습니다. 상대방과 금액을 적을 건이 없습니다.\n\n- 공급계약 공시 조회(2025-01-01~2025-12-31, 유효한 공시 기준)는 0건입니다.\n- 정정·해지된 공시까지 포함해도 0건입니다.\n- 이 DB의 단일판매·공급계약 공시는 2024-01-02부터 모은 것이므로 2025년은 수집 범위 안입니다. 따라서 \"이 DB에는 공시가 없다\"는 뜻이며, 실제로 공시가 없었는지는 DART에서 직접 확인하시는 것이 정확합니다.\n- 참고로 이 DB는 공급계약 공시를 건별로 공시한 계약만 모읍니다.",
+ "followups": [
+  "올릭스가 낸 취득·처분 결정 공시에는 어떤 것이 있나요?",
+  "올릭스의 지분 관계(최대주주, 계열)는 어떻게 되나요?",
+  "올릭스와 같은 제품을 파는 다른 상장사는 어디인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "올릭스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2087,
+    "as_of": "2026-01-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-01-01",
+    "filed_to": "2025-12-31"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 549
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2087,
+    "as_of": "2026-01-31",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "disclosed_from": "2025-01-01",
+    "disclosed_to": "2025-12-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 709
+  },
+  {
+   "tool": "get_coverage",
+   "input": {},
+   "error": null,
+   "total": null,
+   "chars": 1776
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2087,
+    "as_of": "2026-01-31",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 549
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2087
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 14,
+  "output_tokens": 1302,
+  "cache_read_input_tokens": 73058,
+  "cache_creation_input_tokens": 16843
+ },
+ "seconds": 11.0,
+ "number": "T08-08",
+ "gold": "올릭스가 2025년(1~12월)에 낸 단일판매ㆍ공급계약 공시는 없다. 이 회사는 2024년 1월 이후 조회 시점까지 단일판매ㆍ공급계약체결 공시를 한 건도 내지 않았으므로(공시 목록 기준), '확인할 수 없다'가 아니라 '공시된 계약이 없다'가 답이다."
+}

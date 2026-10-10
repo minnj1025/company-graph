@@ -1,0 +1,74 @@
+{
+ "question": "에이치에스효성(HS효성)이 2024년 10월 공시한 Hyosung Quang Nam Co.,Ltd. 출자 결정에서 실제 출자 주체는 어느 회사인가요? 취득금액과 취득 후 지분율, 취득 목적을 알려 주세요.",
+ "as_of": "2025-03-31",
+ "model": "claude-opus-5-5",
+ "answer": "이 출자를 실제로 한 회사는 HS효성이 아니라 자회사 에이치에스효성첨단소재(주)(HS효성첨단소재)입니다. 공시는 모회사인 HS효성이 냈습니다(접수번호 20241029800520).\n\n**출자 결정 내용 (2024-10-29 결의·공시)**\n- **취득 대상:** Hyosung Quang Nam Co.,Ltd.\n  - 소재: 베트남\n  - 사업: 타이어코드 생산 및 판매\n  - 관계: 계열회사\n- **취득금액:** 41610000000원 (자기자본 대비 5.55%)\n- **취득 방법:** 현금 취득\n- **취득 후 지분율:** 100%\n- **취득 예정일:** 2024-11-28\n- **취득 목적:** 계열회사 재무구조 개선 및 성장투자 재원 확보\n\n정정 공시까지 포함해 찾아봤지만, 2025-03-31까지 이 결정이 정정되거나 무효가 된 기록은 나오지 않았습니다.",
+ "followups": [
+  "HS효성첨단소재의 최대주주와 지분율은?",
+  "HS효성첨단소재가 2024년 이후 낸 타법인 주식 취득·처분 결정을 모두 보여줘",
+  "HS효성의 계열회사 목록은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에이치에스효성"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3809,
+    "as_of": "2025-03-31",
+    "rel_type": "stake_acquisition",
+    "direction": "out",
+    "disclosed_from": "2024-10-01",
+    "disclosed_to": "2024-10-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1373
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에이치에스효성첨단소재"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2443
+    ],
+    "also": [
+     3809
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 202
+  }
+ ],
+ "cited": [
+  "20241029800520"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 924,
+  "cache_read_input_tokens": 55780,
+  "cache_creation_input_tokens": 14882
+ },
+ "seconds": 11.2,
+ "number": "T05-07",
+ "gold": "실제 출자 주체는 에이치에스효성이 아니라 자회사인 에이치에스효성첨단소재(주)이다. 베트남 계열회사 Hyosung Quang Nam Co.,Ltd.에 41,610,000,000원(USD 30백만 환산, 자기자본 대비 5.55%)을 현금으로 출자하며 취득 후 지분율은 100%이다. 목적은 계열회사 재무구조 개선 및 성장투자 재원 확보이다."
+}

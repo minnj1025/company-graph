@@ -1,0 +1,86 @@
+{
+ "question": "LG생활건강이 2026년 8월 공시한 더에이본컴퍼니(The Avon Company) 지분 처분 결정에서 실제로 지분을 처분하는 회사는 어디인가요? 처분 주식수와 처분금액, 처분 후 지분율도 함께 알려 주세요.",
+ "as_of": "2026-09-30",
+ "model": "claude-opus-5-5",
+ "answer": "공시는 LG생활건강이 냈지만 실제로 지분을 처분하는 회사는 미국 종속회사인 **LG H&H USA, Inc.**입니다. 더에이본컴퍼니(The Avon Company) 주식 60,000,100주를 처분하고, 처분 금액은 정정 공시로 확정된 7,646,373,791원입니다. 처분하고 나면 남는 지분은 0%입니다.\n\n**처분 결정 내용** (최초 공시 20260824800386, 2026-08-24 접수, 종속회사의 주요경영사항이자 자율공시)\n- 처분하는 회사: LG H&H USA, Inc.\n- 처분 대상: 더에이본컴퍼니 (The Avon Company). 미국 회사로 화장품과 생활용품을 팔고, LG생활건강의 계열회사입니다.\n- 이사회 결의일: 2026-08-23\n- 처분 주식수: 60,000,100주\n- 처분 후 소유 주식수와 지분율: 0주, 0%\n- 처분 예정일: 2026-09-01\n- 처분 목적: 북미 사업 포트폴리오 전략적 재편 및 핵심사업 집중\n\n**처분 금액이 정정됨** (기재정정 20260901800452, 2026-09-01 접수)\n- 최초 공시 금액은 8,358,000,000원이었습니다. 주식매매계약의 매매대금 USD 6,000,000에 2026-08-21 매매기준율 1USD=1,393.00원을 곱한 값입니다.\n- 정정 공시에서 7,646,373,791원으로 바뀌었고, 정정 사유는 \"거래 종결에 따른 처분 금액 확정\"입니다. 지금 유효한 값은 정정 후 금액입니다.\n\n**같은 날 나온 출자전환 공시**\nLG H&H USA, Inc.는 같은 날 더에이본컴퍼니에 빌려준 돈을 출자로 바꿔 지분을 취득하는 결정도 냈습니다(20260824800439). 목적은 \"자회사 재무구조 개선\"이고, 거래 뒤 보유 주식은 60,000,100주(100%)입니다. 취득 금액은 정정 공시(20260901800508)에서 283,496,662,639원으로 확정됐습니다. 이 정정 공시에는 이번 출자가 LG H&H USA, Inc.가 The Avon Company 지분 100%를 Stratford Worldwide, LLC에 넘기는 건과 관련된 것이라고 적혀 있습니다. 즉 지분을 사는 쪽은 Stratford Worldwide, LLC입니다.",
+ "followups": [
+  "LG생활건강의 최근 1년 타법인 주식 취득·처분 결정 공시를 모두 보여 줘",
+  "LG생활건강의 주요 제품과 매출 비중은?",
+  "LG생활건강의 최대주주와 특수관계인 지분율은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LG생활건강"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2757,
+    "as_of": "2026-09-30",
+    "rel_type": "stake_disposal",
+    "direction": "out",
+    "disclosed_from": "2026-08-01",
+    "disclosed_to": "2026-08-31"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 737
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2757,
+    "as_of": "2026-09-30",
+    "doc_type": "event",
+    "filed_from": "2026-07-01",
+    "filed_to": "2026-09-30"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 3971
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "더에이본컴퍼니"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2757
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260824800386",
+  "20260824800439",
+  "20260901800452",
+  "20260901800508"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 14,
+  "output_tokens": 1707,
+  "cache_read_input_tokens": 74182,
+  "cache_creation_input_tokens": 16980
+ },
+ "seconds": 19.3,
+ "number": "T05-01",
+ "gold": "처분 주체는 LG생활건강 본사가 아니라 종속회사인 LG H&H USA, Inc.이다(종속회사의 주요경영사항 공시). LG H&H USA, Inc.가 보유한 The Avon Company 주식 60,000,100주(지분 100%)를 Stratford Worldwide, LLC에 8,358,000,000원(USD 6,000,000 환산)에 처분하며, 처분 후 지분율은 0%이다."
+}

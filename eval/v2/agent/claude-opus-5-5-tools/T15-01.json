@@ -1,0 +1,90 @@
+{
+ "question": "알에프에이치아이씨(RFHIC)가 2024년에 새로 체결해 공시한 공급계약 가운데 계열회사 등 특수관계자를 상대로 한 계약은 무엇인가요? 상대방과 계약 내용, 금액, 기간을 모두 알려 주세요.",
+ "as_of": "2024-12-31",
+ "model": "claude-opus-5-5",
+ "answer": "RFHIC가 2024년에 새로 맺어 공시한 특수관계자 상대 공급계약은 1건입니다. 2024-08-02에 계열회사(미국현지법인)인 RFHIC US Corporation과 맺은 「미국 방산업체향 고출력 GaN SSPA 공급 계약」입니다.\n\n**계약 내용** (접수번호 20240802900292)\n- 상대방: RFHIC US Corporation이며, 공시에 적힌 관계는 계열회사(미국현지법인)입니다.\n- 계약명: 미국 방산업체향 고출력 GaN SSPA 공급 계약의 건\n- 금액: 11516255302원으로, 최근 매출액 111432998779원의 10.33%입니다.\n- 계약일: 2024-08-02\n- 계약기간: 2024-08-02부터 2026-09-01까지\n- 판매 지역: 미국\n- 2024-12-31까지 이 계약을 정정하거나 해지한 공시는 없습니다.\n\n**빼낸 공시**\n- **2024-02-29 공시 (접수번호 20240229901538)**: 같은 RFHIC US Corporation과의 「SAAB Defence and Security 향 방산용 레이더 고출력전력증폭기(HPA) 공급 계약의 건」입니다. 금액은 13309296000원입니다. 이 공시는 새 계약이 아니라 2018-06-20에 맺은 계약을 고친 [기재정정] 공시입니다. 정정 사유는 \"계약 종료일 수정\"이고, 종료일이 2025-06-30에서 2024-02-29로 바뀌었습니다. 그래서 2024년 신규 체결로 세지 않았습니다.\n- **LIG넥스원(주) 계약 (접수번호 20240502900130)**: 2024년의 다른 신규 공시입니다. 「함정용전자전장비-II 고출력전력증폭기 공급 계약」, 18000000000원이며, 공시에 특수관계 표시가 없습니다.\n- **다른 계열회사**: 2023년 사업보고서(접수번호 20240430001183)에는 RF머트리얼즈와 RF시스템즈도 계열회사로 올라 있습니다. 다만 2024년에 이 두 회사를 상대로 낸 공급계약 공시는 없습니다.",
+ "followups": [
+  "RFHIC US Corporation과 RFHIC 사이의 지분 관계는 어떻게 되나요?",
+  "RFHIC의 계열회사 RF머트리얼즈는 어떤 제품을 팔고 있나요?",
+  "RFHIC가 2025년에 낸 공급계약 공시를 모두 알려 주세요."
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "알에프에이치아이씨"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2220,
+    "as_of": "2024-12-31",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "disclosed_from": "2024-01-01",
+    "disclosed_to": "2024-12-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 3,
+   "chars": 2615
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2220,
+    "as_of": "2024-12-31",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1969
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2220,
+    "as_of": "2024-12-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2024-01-01",
+    "filed_to": "2024-12-31"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 2342
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2220
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20240229901538",
+  "20240430001183",
+  "20240502900130",
+  "20240802900292"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1604,
+  "cache_read_input_tokens": 60718,
+  "cache_creation_input_tokens": 17962
+ },
+ "seconds": 16.9,
+ "number": "T15-01",
+ "gold": "2024년 신규 체결 공시 2건 중 특수관계자 상대 계약은 1건이다. 2024-08-02 계열회사(미국현지법인) RFHIC US Corporation과 체결한 '미국 방산업체향 고출력 GaN SSPA 공급 계약'으로, 계약금액 11,516,255,302원(매출액 대비 10.33%), 계약기간 2024-08-02~2026-09-01이다. 같은 해 LIG넥스원(주)과의 18,000,000,000원 계약은 회사와의 관계가 '-'로 특수관계자 계약이 아니다."
+}

@@ -1,0 +1,98 @@
+{
+ "question": "와이지-원의 2025 사업연도 사업보고서 계열회사 현황에 상장 계열회사가 있습니까? 상장·비상장 회사 수를 표에 적힌 대로 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-opus-5-5",
+ "answer": "와이지-원 자신을 빼면 상장 계열회사는 없습니다. 2025 사업연도 사업보고서(기준일 2025-12-31, 접수번호 20260318000988) 계열회사 현황을 보고서 표처럼 자신을 넣어 세면 **상장 1곳(와이지-원 자신), 비상장 53곳**입니다.\n\n| 구분 | 상장 | 비상장 | 합계 |\n|---|---|---|---|\n| 와이지-원 포함 | 1 | 53 | 54 |\n| 와이지-원 제외 | 0 | 53 | 53 |\n\n- 이 수는 보고서 표의 상장·비상장 집계 칸을 그대로 옮긴 것이 아닙니다. DB가 표의 회사 목록에 붙은 상장 여부를 세어 만든 값입니다. 보고서 계열회사 표는 보통 회사 자신을 넣어 세기 때문에 \"포함\" 줄이 표의 모양에 가깝습니다.\n- 와이지-원 말고는 상장으로 분류된 계열회사가 없습니다. 상장사만 골라 다시 조회해도 0건이었습니다.\n- 비상장 53곳 가운데 조회 결과에 이름까지 나온 곳은 50곳입니다. 나머지 3곳은 결과가 잘려 이름을 확인하지 못했습니다.\n- 이름이 확인된 국내 비상장 계열회사는 ㈜더블에이치, ㈜슈퍼툴, ㈜아스트라코팅, ㈜원덴, ㈜제넨텍, ㈜한국기술, ㈜호텔카리스, ㈜휴텍, 신세기산업㈜입니다. 나머지는 YG-1 America, Inc., YG-1 Deutschland GmbH, QINGDAO YG-1 TOOL CO.,LTD 같은 해외 법인입니다.",
+ "followups": [
+  "와이지-원의 최대주주와 특수관계인 지분율은?",
+  "와이지-원이 최근 1년간 낸 타법인 주식 취득·처분 결정 공시는?",
+  "와이지-원의 주요 제품과 매출 비중은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "와이지-원"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3977,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 53,
+   "chars": 22350
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3977,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 695
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3977,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 698
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3977,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "out",
+    "disclosed_from": "2026-03-18",
+    "disclosed_to": "2026-03-18"
+   },
+   "error": null,
+   "total": 53,
+   "chars": 22691
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3977
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20260318000988"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 16,
+  "output_tokens": 2411,
+  "cache_read_input_tokens": 142240,
+  "cache_creation_input_tokens": 38994
+ },
+ "seconds": 30.0,
+ "number": "T13-04",
+ "gold": "상장 계열회사는 없다(상장 칸은 회사수·기업명이 모두 \"-\"). 비상장 계열회사는 53개사로 적혀 있으며(기준일 2025년 12월 31일), QINGDAO NEW CENTURY TOOL CO.,LTD, YG-1 America, Inc., 주식회사 이노자드, 신세기산업㈜ 등이 들어 있다. 와이지-원 자신은 표에 올라 있지 않다."
+}

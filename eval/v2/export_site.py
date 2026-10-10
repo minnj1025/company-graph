@@ -30,9 +30,13 @@ TYPES = {
 }
 
 
+# 가장 최근 실행의 꼬리말. 평가를 다시 돌리면 이것만 바꾼다 (after: 결함 수정 뒤, format: 답의 모양을 바꾼 뒤, tools: 주가·화면 도구를 더한 뒤)
+LATEST = "tools"
+
+
 def main():
     grades = read(ROOT / "grades.json")
-    after_grades = read(ROOT / "grades_after.json")   # 이 시험으로 찾은 결함을 고친 뒤 다시 돌린 결과
+    after_grades = read(ROOT / f"grades_{LATEST}.json")   # 가장 최근에 다시 돌린 결과. 화면은 이것을 "최근 결과"로 보인다
     usage = read(ROOT / "baseline_usage.json")
     items = []
     for path in sorted((ROOT / "gold").glob("*.json")):
@@ -46,9 +50,9 @@ def main():
             "tools": [{"name": call["tool"], "input": call["input"], "total": call["total"], "error": call["error"]} for call in ran["tool_calls"]],
             "unverified": ran["cited_not_in_results"],
         }
-        again = read(ROOT / "agent" / (AGENT_MODEL + "-after") / path.name)
+        again = read(ROOT / "agent" / (AGENT_MODEL + "-" + LATEST) / path.name)
         item["after"] = {
-            **after_grades[gold["id"]]["after"], "answer": again["answer"], "seconds": again["seconds"], "tokens": sum(again["usage"].values()),
+            **after_grades[gold["id"]][LATEST], "answer": again["answer"], "seconds": again["seconds"], "tokens": sum(again["usage"].values()),
             "tools": [{"name": call["tool"], "input": call["input"], "total": call["total"], "error": call["error"]} for call in again["tool_calls"]],
             "unverified": again["cited_not_in_results"],
         }

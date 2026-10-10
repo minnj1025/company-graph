@@ -1,0 +1,59 @@
+{
+ "question": "세경하이테크가 2025 사업연도 말 기준으로 지분 50% 이상을 가진 출자 법인을 타법인 출자현황에서 모두 찾아 지분율과 함께 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-opus-5-5",
+ "answer": "세경하이테크가 2025-12-31 기준으로 지분 50% 이상을 가진 출자 법인은 모두 5곳입니다. 지분율이 가장 높은 곳은 100%를 가진 Dongguan SG Design Center Co., Ltd.와 SEGYUNG VINA CO.,LTD입니다.\n\n| 출자 법인 | 지분율 | 출자 목적 | 근거 접수번호 |\n|---|---|---|---|\n| Dongguan SG Design Center Co., Ltd. | 100.0% | 설계 연구 생산 판매 | 20260323001499 |\n| SEGYUNG VINA CO.,LTD | 100.0% | 생산거점확보 | 20260323001499 |\n| SGJ CO.LTD | 94.0% | 프린터설비 제조 및 판매를 목적 | 20260323001499 |\n| 주식회사 세스맷 | 73.0% | 사업다각화 | 20260323001499 |\n| 지디에스 | 55.0% | DECO PATTERN 기술력 확보 및 R&D제고 | 20260323001499 |\n\n- 위 지분율은 2026-03-23에 공시된 사업보고서의 타법인 출자현황에 적힌 값입니다. 보고서 기준일은 2025-12-31로, 질문하신 기준일과 같습니다.\n- 출자현황에는 모두 7곳이 있습니다. 나머지 2곳은 50%에 못 미쳐 위 표에서 뺐습니다. SEED GLOBAL PTE. LIMITED가 47.0%, RAISONTECH INC가 15.0%입니다.\n- 출자 법인 5곳은 모두 이 DB에 따로 등록되지 않은 회사라 이름만 확인됩니다. 그래서 이 회사들의 주주나 계약 같은 관계는 더 조회할 수 없습니다.",
+ "followups": [
+  "세경하이테크의 최대주주와 특수관계인은 누구야?",
+  "세경하이테크가 최근 1년 동안 낸 단일판매·공급계약 공시를 알려줘",
+  "세경하이테크는 무엇을 팔고 제품별 매출 비중은 어때?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "세경하이테크"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1838,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 7,
+   "chars": 4025
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1838
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 199
+  }
+ ],
+ "cited": [
+  "20260323001499"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1031,
+  "cache_read_input_tokens": 42383,
+  "cache_creation_input_tokens": 15984
+ },
+ "seconds": 11.8,
+ "number": "T12-07",
+ "gold": "다섯 곳이다. SEGYUNG VINA CO.,LTD 100%, Dongguan SG Design Center Co., Ltd. 100%, SGJ CO.LTD 94%, 주식회사 세스맷 73%, 지디에스 55%. 2025.12.31에 새로 취득한 SEED GLOBAL PTE. LIMITED는 47%, RAISONTECH INC는 15%로 50%에 못 미친다."
+}

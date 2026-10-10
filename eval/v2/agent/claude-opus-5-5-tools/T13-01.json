@@ -1,0 +1,63 @@
+{
+ "question": "송원산업의 2025 사업연도 사업보고서 계열회사 현황에서 상장 계열회사와 비상장 계열회사는 각각 몇 곳이고, 상장으로 분류된 회사는 어디입니까?",
+ "as_of": "2026-06-30",
+ "model": "claude-opus-5-5",
+ "answer": "송원산업 2025 사업연도 사업보고서(기준일 2025-12-31, 공시일 2026-06-02, 접수번호 20260602000117)의 계열회사 현황에 실린 계열회사는 16곳입니다. 16곳 모두 비상장이고, 상장으로 분류된 계열회사는 없습니다.\n\n다만 송원산업 자신은 유가증권시장 상장사입니다. 보고서 표에서 송원산업 자신이 '상장'으로 한 줄 따로 적혔는지는 이 DB 결과로 확인되지 않습니다. 이 DB가 돌려준 목록에는 송원산업이 아닌 계열회사만 있었기 때문입니다.\n\n| # | 계열회사 | 상장 여부 | 근거 접수번호 |\n|---|---|---|---|\n| 1 | Songwon Baifu Chemicals (Tangshan) Co.,Ltd. | 비상장 | 20260602000117 |\n| 2 | Songwon Chemicals GmbH | 비상장 | 20260602000117 |\n| 3 | Songwon Europe GmbH | 비상장 | 20260602000117 |\n| 4 | Songwon Group Holding AG | 비상장 | 20260602000117 |\n| 5 | Songwon International AG | 비상장 | 20260602000117 |\n| 6 | Songwon International Middle East FZE | 비상장 | 20260602000117 |\n| 7 | Songwon International-Americas, Inc. | 비상장 | 20260602000117 |\n| 8 | Songwon International-Japan K.K. | 비상장 | 20260602000117 |\n| 9 | Songwon International-Qingdao Co., Ltd. | 비상장 | 20260602000117 |\n| 10 | Songwon Management AG | 비상장 | 20260602000117 |\n| 11 | Songwon Polysys Additive-Sole Proprietorship LLC | 비상장 | 20260602000117 |\n| 12 | Songwon Specialty Chemicals-India Pvt. Ltd. | 비상장 | 20260602000117 |\n| 13 | Songwon Trading GmbH | 비상장 | 20260602000117 |\n| 14 | Songwon-ATG GmbH | 비상장 | 20260602000117 |\n| 15 | 경신실업 | 비상장 | 20260602000117 |\n| 16 | 송원물산 | 비상장 | 20260602000117 |\n\n16곳 가운데 14곳은 해외 법인이고, 국내 법인은 경신실업과 송원물산 2곳입니다.",
+ "followups": [
+  "송원산업의 최대주주와 특수관계인 지분율은?",
+  "송원산업이 최근 1년간 낸 타법인 주식 취득·처분 결정 공시는?",
+  "송원산업의 주요 제품과 매출 비중은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "송원산업"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1400,
+    "as_of": "2026-06-30",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 16,
+   "chars": 7706
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1400
+    ],
+    "also": [
+     5449,
+     5448
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20260602000117"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1471,
+  "cache_read_input_tokens": 44012,
+  "cache_creation_input_tokens": 17815
+ },
+ "seconds": 15.9,
+ "number": "T13-01",
+ "gold": "상장 1개사, 비상장 16개사다(기준일 2025년 12월 31일). 상장으로 적힌 1개사는 송원산업(주) 자신이므로, 회사 자신을 빼면 상장 계열회사는 없다. 비상장 16개사는 송원물산(주), 경신실업(주)과 Songwon International AG 등 해외 법인 14곳이다."
+}

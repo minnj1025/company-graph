@@ -1,0 +1,62 @@
+{
+ "question": "에이치에스효성(HS효성)이 2024년 10월 공시한 Hyosung Quang Nam Co.,Ltd. 출자 결정에서 실제 출자 주체는 어느 회사인가요? 취득금액과 취득 후 지분율, 취득 목적을 알려 주세요.",
+ "as_of": "2025-03-31",
+ "model": "claude-haiku-5-5",
+ "answer": "실제 출자 주체는 HS효성의 자회사인 **에이치에스효성첨단소재(주)**입니다. 공시는 HS효성이 냈지만, 취득 주체는 그 자회사입니다 (접수번호 20241029800520).\n\n- **취득금액:** 41,610,000,000원 (현금 취득)\n- **취득 후 지분율:** 100% (자회사가 Hyosung Quang Nam Co.,Ltd.를 100% 보유하게 되는 것으로 공시됨)\n- **취득 목적:** 계열회사 재무구조 개선 및 성장투자 재원 확보\n- **기타:** 취득 예정일 2024-11-28, 결정(기준)일 2024-10-29, 대상 회사는 베트남 법인으로 사업은 타이어코드 생산 및 판매, 자기자본 대비 5.55%입니다.\n\n이 결정은 2025-03-31 기준으로 정정·철회된 기록이 없습니다.",
+ "followups": [
+  "HS효성의 2024년 공시된 타법인 주식 처분 결정은 어떤 것이 있었나요?",
+  "에이치에스효성첨단소재와 HS효성의 계열 관계는 어떻게 되나요?",
+  "Hyosung Quang Nam Co.,Ltd.와 같은 베트남 타이어코드 사업을 하는 회사는 어디인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에이치에스효성"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3809,
+    "as_of": "2025-03-31",
+    "rel_type": "stake_acquisition",
+    "direction": "out",
+    "disclosed_from": "2024-10-01",
+    "disclosed_to": "2024-10-31",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1373
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3809
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20241029800520"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1029,
+  "cache_read_input_tokens": 41240,
+  "cache_creation_input_tokens": 14843
+ },
+ "seconds": 7.4,
+ "number": "T05-07",
+ "gold": "실제 출자 주체는 에이치에스효성이 아니라 자회사인 에이치에스효성첨단소재(주)이다. 베트남 계열회사 Hyosung Quang Nam Co.,Ltd.에 41,610,000,000원(USD 30백만 환산, 자기자본 대비 5.55%)을 현금으로 출자하며 취득 후 지분율은 100%이다. 목적은 계열회사 재무구조 개선 및 성장투자 재원 확보이다."
+}

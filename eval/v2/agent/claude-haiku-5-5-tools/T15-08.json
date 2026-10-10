@@ -1,0 +1,87 @@
+{
+ "question": "아고스(구 휴먼테크놀로지)가 2024년에 새로 체결해 공시한 공급계약 가운데 관계회사 등 특수관계자를 상대로 한 계약은 무엇인가요? 상대방과 계약 내용, 금액, 매출액 대비 비율, 기간을 알려 주세요.",
+ "as_of": "2024-12-31",
+ "model": "claude-haiku-5-5",
+ "answer": "아고스가 2024년에 공시한 공급계약 중 특수관계자(관계회사)를 상대로 한 계약은 1건입니다. 상대는 주식회사 마크티이고, 공시에 \"관계회사\"로 적혀 있습니다.\n\n| 항목 | 내용 |\n|---|---|\n| 상대방 | 주식회사 마크티 (공시상 관계회사) |\n| 계약 내용 | AI스피커 물품공급 계약 (대한민국) |\n| 계약 금액 | 10000000000원 |\n| 최근 매출액 대비 | 25.97% |\n| 계약 기간 | 2024-10-28 ~ 2025-06-30 |\n| 계약일 | 2024-10-28 |\n| 근거 | 접수번호 20241028900338 |\n\n참고로 2024년에 공시된 다른 공급계약은 Xplora Technologies AS와의 웨어러블 디바이스 계약 1건(접수번호 20240321901491)입니다. 이 건은 2022-09-14 계약을 정정한 공시로, 계약기간 종료일이 2024-03-30에서 2025-06-30으로 연기됐습니다. 공시에 특수관계자로 표시되어 있지 않아 위 답에서는 뺐습니다.\n\n마크티는 아고스의 계열회사 현황 표(사업보고서 기준, 2023-12-31)에는 이름이 나오지 않습니다. 같은 표에는 마크링크, 마크아이 등이 있습니다. 마크티가 관계회사로 분류된 근거는 2024-10-28 공급계약 공시의 \"관계회사\" 표기뿐입니다.",
+ "followups": [
+  "아고스의 2024년 계열회사 현황은 어떻게 되나요?",
+  "마크티와 아고스 사이에 다른 공급계약이나 지분 관계가 있나요?",
+  "아고스의 Xplora Technologies 공급계약 정정 내역을 자세히 보여 주세요"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "아고스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 4117,
+    "as_of": "2024-12-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2024-01-01",
+    "filed_to": "2024-12-31"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1699
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4117,
+    "as_of": "2024-12-31",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "disclosed_from": "2024-01-01",
+    "disclosed_to": "2024-12-31"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1923
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4117,
+    "as_of": "2024-12-31",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 7,
+   "chars": 3706
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     4117
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  }
+ ],
+ "cited": [
+  "20240321901491",
+  "20241028900338"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1645,
+  "cache_read_input_tokens": 44546,
+  "cache_creation_input_tokens": 18393
+ },
+ "seconds": 9.4,
+ "number": "T15-08",
+ "gold": "1건이다. 2024-10-28 관계회사인 주식회사 마크티와 체결한 'AI스피커 물품공급 계약'으로, 계약금액 10,000,000,000원(부가세 별도, 매출액 대비 25.97%), 계약기간 2024-10-28~2025-06-30이다. 같은 해 정정 공시된 Xplora Technologies AS 상대 웨어러블 디바이스 계약(12,221,972,000원, 2022년 체결)은 관계가 '-'이다."
+}
