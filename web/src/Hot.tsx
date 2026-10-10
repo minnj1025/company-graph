@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type React from "react";
 import { fetchHot, fetchHotGraph } from "./api";
 import { Credit } from "./Credit";
@@ -158,7 +158,7 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
   const [data, setData] = useState<HotDay | null>(null);
   const [day, setDay] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
-  const [weak, setWeak] = useState(false);
+  const [strongOnly, setStrongOnly] = useState(false);
   const [side, setSide] = useState<Side>("up");
   const [open, setOpen] = useState<number | null>(null);
 
@@ -184,7 +184,7 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
   const word = WORD[side];
   const all = part.groups.map((group, index) => ({ group, index, average: mean(group.members.map((member) => member.change)) }));
   const strong = all.filter(({ group }) => group.grade === "뚜렷함");
-  const rows = (weak ? all : strong).sort((a, b) => Number(b.group.grade === "뚜렷함") - Number(a.group.grade === "뚜렷함") || Math.abs(b.average) - Math.abs(a.average));
+  const rows = (strongOnly ? strong : all).sort((a, b) => Number(b.group.grade === "뚜렷함") - Number(a.group.grade === "뚜렷함") || Math.abs(b.average) - Math.abs(a.average));
   const show = (group: HotGroup, index: number) => fetchHotGraph(data.day, index, side).then((graph) => onShow(`${data.day} ${word} · ${title(group)}`, graph));
 
   return (
@@ -230,8 +230,8 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
         <div>
           <dt>연관 급등 / 급락</dt>
           <dd>
-            <span className="up">{data.groups.filter((group) => group.grade === "뚜렷함").length}</span> <span className="muted">/</span>{" "}
-            <span className="down">{data.down.groups.filter((group) => group.grade === "뚜렷함").length}</span>
+            <span className="up">{data.groups.length}</span> <span className="muted">/</span>{" "}
+            <span className="down">{data.down.groups.length}</span>
             <small>건</small>
           </dd>
         </div>
@@ -257,75 +257,55 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
       <div className="hot-bar-head">
         <h3>연관 {word}</h3>
         <label>
-          <input type="checkbox" checked={weak} onChange={(event) => setWeak(event.target.checked)} /> 약한 신호 포함
+          <input type="checkbox" checked={strongOnly} onChange={(event) => setStrongOnly(event.target.checked)} /> 뚜렷한 신호만
         </label>
       </div>
       {rows.length ? (
-        <table className="hot-table">
-          <thead>
-            <tr>
-              <th className="num">#</th>
-              <th>연결 고리</th>
-              <th className="num">평균 등락률</th>
-              <th className="num">{word} 종목</th>
-              <th>주도주</th>
-              <th className="num">연속</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(({ group, index, average }, order) => (
-              <Fragment key={index}>
-                <tr className={`${open === index ? "open" : ""} ${group.grade === "뚜렷함" ? "" : "weak"}`} onClick={() => setOpen(open === index ? null : index)}>
-                  <td className="num muted">{order + 1}</td>
-                  <td>
-                    <b>{title(group)}</b>
-                    {ties(group).map((tie) => (
-                      <span key={tie} className="hot-tie">
-                        {tie}
-                      </span>
-                    ))}
-                    {group.grade !== "뚜렷함" && <span className="hot-tie dim">약한 신호</span>}
-                    {group.news?.found === "group" && lead(group.news.sources) && (
-                      <p className="hot-why">
-                        {/* 제목을 누르면 줄이 펴지지 않고 기사로 간다 */}
-                        <a href={lead(group.news.sources)!.url} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>
-                          {headline(lead(group.news.sources)!).title} <span className="muted">· {headline(lead(group.news.sources)!).outlet} ↗</span>
-                        </a>
-                      </p>
-                    )}
-                  </td>
-                  <td className={`${side} num heat`} style={{ "--heat": Math.min(1, Math.abs(average) / 20) } as React.CSSProperties}>
-                    {signed(average)}
-                  </td>
-                  <td className="num">
-                    {group.n}
-                    <span className="muted"> / {group.of}</span>
-                  </td>
-                  <td className="hot-lead">
-                    {group.members.slice(0, 2).map((member) => (
-                      <span key={member.id}>
-                        {member.name} <em className={side}>{signed(member.change, 1)}</em>
-                      </span>
-                    ))}
-                  </td>
-                  <td className="num">{(group.streak ?? 1) > 1 ? `${group.streak}일째` : <span className="muted">–</span>}</td>
-                </tr>
-                {open === index && (
-                  <tr className="hot-open">
-                    <td />
-                    <td colSpan={5}>
-                      <Detail group={group} day={data.day} side={side} onGraph={() => show(group, index)} />
-                    </td>
-                  </tr>
-                )}
-              </Fragment>
+        <>
+          <div className={`hot-tiles ${side} ${rows.length <= 2 ? "few" : ""}`}>
+            {rows.map(({ group, index, average }) => (
+              <button
+                key={index}
+                className={`${open === index ? "on" : ""} ${group.grade === "뚜렷함" ? "" : "weak"}`}
+                style={{ "--heat": Math.min(1, Math.abs(average) / 15) } as React.CSSProperties}
+                aria-expanded={open === index}
+                onClick={() => setOpen(open === index ? null : index)}
+              >
+                <b>{title(group)}</b>
+                <strong>{signed(average)}</strong>
+                <span>
+                  {group.n} / {group.of}종목
+                  {(group.streak ?? 1) > 1 && ` · ${group.streak}일째`}
+                  {group.grade !== "뚜렷함" && " · 약한 신호"}
+                </span>
+              </button>
             ))}
-          </tbody>
-        </table>
+          </div>
+          {rows
+            .filter(({ index }) => index === open)
+            .map(({ group, index, average }) => (
+              <div key={index} className="hot-panel">
+                <div className="hot-panel-head">
+                  <b>{title(group)}</b>
+                  {ties(group).map((tie) => (
+                    <span key={tie} className="hot-tie">
+                      {tie}
+                    </span>
+                  ))}
+                  {group.grade !== "뚜렷함" && <span className="hot-tie dim">약한 신호</span>}
+                  <em className={side}>평균 {signed(average)}</em>
+                  <button onClick={() => setOpen(null)} aria-label="닫기">
+                    ×
+                  </button>
+                </div>
+                <Detail group={group} day={data.day} side={side} onGraph={() => show(group, index)} />
+              </div>
+            ))}
+          {open === null && <p className="hot-hint muted">칸을 누르면 종목별 등락률과 당일 기사, 관계 그래프가 아래에 나옵니다.</p>}
+        </>
       ) : (
         <p className="hot-none">이 거래일에는 기준을 넘는 연관 {word}이 없습니다.</p>
       )}
-
 
       <div className="hot-bar-head">
         <h3>개별 {word}</h3>
@@ -380,9 +360,9 @@ export function HotPage({ onShow }: { onShow: (title: string, graph: GraphData) 
       <details className="more hot-notes">
         <summary>기준과 유의사항</summary>
       <p className="hot-foot muted">
-        <b>{word} 종목</b> "{word}한 종목 수 / 같은 연결 고리를 가진 상장사 수"입니다. <b>연결 고리</b>는 종목들의 공통점이며 주가 변동의 원인이
-        아닙니다. 그 아래 한 줄은 당일 해당 종목들을 다룬 기사의 제목이며, 기사가 확인된 경우에만 표시됩니다. 펼쳤을 때 나오는 자동 요약은 기사 내용과 다를
-        수 있습니다. <b>약한 신호</b>는 3종목뿐이거나 일부만 움직인 경우로, 과거 기간 기준 약 4건 중 1건은 우연으로 추정됩니다.
+        <b>칸의 숫자</b> 큰 숫자는 묶인 종목의 평균 등락률이고, 그 아래는 "{word}한 종목 수 / 같은 연결 고리를 가진 상장사 수"입니다. 칸의 이름인{" "}
+        <b>연결 고리</b>는 종목들의 공통점이며 주가 변동의 원인이 아닙니다. 당일 기사는 확인된 경우에만 표시되며, 자동 요약은 기사 내용과 다를 수
+        있습니다. <b>약한 신호</b>는 3종목뿐이거나 일부만 움직인 경우로, 과거 기간 기준 약 4건 중 1건은 우연으로 추정됩니다.
       </p>
       <p className="hot-foot muted">
         <b>최근 공시</b> 이 사이트가 수집하는 공시(정기보고서, 공급계약, 지분 변동)만 표시됩니다. 실적 발표, 거래 재개 등의 공시는 포함되지 않습니다.
