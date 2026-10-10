@@ -22,6 +22,7 @@ from .db import HotDay, session
 
 MODEL = "claude-haiku-5-5"
 SEARCHES = 3
+MAX_TOKENS = 8000   # 검색 사이사이의 생각도 여기서 나간다. 2,000으로 두었을 때는 답을 적기 전에 끊겨 찾은 기사를 버렸다
 RELATIONS = ("계열", "지분", "공급계약")
 GROUP, SINGLE, NONE = "group", "single", "none"   # 종목군을 다룬 기사 / 한 종목만 다룬 기사 / 못 찾음
 
@@ -99,12 +100,14 @@ def explain(client, group: dict, day: date, down: bool, model: str = MODEL) -> d
               "user_location": {"type": "approximate", "country": "KR", "timezone": "Asia/Seoul"}}]
     content, used = [], [0, 0]
     for _ in range(3):   # 서버가 검색을 돌리다 쉬면(pause_turn) 이어서 부른다
-        response = client.messages.create(model=model, max_tokens=2000, system=SYSTEM, tools=tools, messages=messages)
+        response = client.messages.create(model=model, max_tokens=MAX_TOKENS, system=SYSTEM, tools=tools, messages=messages)
         content += response.content
         used = [used[0] + response.usage.input_tokens, used[1] + response.usage.output_tokens]
         if response.stop_reason != "pause_turn":
             break
         messages = [messages[0], {"role": "assistant", "content": content}]
+    if response.stop_reason == "max_tokens":   # 답을 다 적지 못했다. 못 찾은 것으로 남기지 않고 다음에 다시 찾게 한다
+        raise RuntimeError("답이 끊겼습니다 (max_tokens)")
     return {**read_answer(content, day), "tokens": used}
 
 
@@ -122,7 +125,8 @@ def _wanted(payload: dict):
                 yield down, group
 
 
-def store(db, start: date | None = None, end: date | None = None, redo: bool = False) -> tuple[int, int]:
+def store(db, start: date | None = None, end: date | None = None, redo: str = "") -> tuple[int, int]:
+    """redo: "" 이면 아직 찾아보지 않은 것만, "none" 이면 못 찾았던 것도 다시, "all" 이면 전부 다시."""
     client, done, searches = _client(), 0, 0
     rows = select(HotDay).order_by(HotDay.trade_date)
     if start:
@@ -132,9 +136,13 @@ def store(db, start: date | None = None, end: date | None = None, redo: bool = F
     for row in db.scalars(rows):
         changed = False
         for down, group in _wanted(row.payload):
-            if "news" in group and not redo:
+            if "news" in group and not (redo == "all" or (redo == "none" and group["news"]["found"] == NONE)):
                 continue
-            news = explain(client, group, row.trade_date, down)
+            try:
+                news = explain(client, group, row.trade_date, down)
+            except Exception as error:   # 한 건이 안 되어도 나머지는 한다. 이 건은 다음 실행 때 다시 찾는다
+                print(row.trade_date, group["why"][0], "실패:", str(error)[:80], flush=True)
+                continue
             group["news"] = {key: news[key] for key in ("found", "reason", "sources")}
             done, searches, changed = done + 1, searches + news["searches"], True
             print(row.trade_date, "하락" if down else "상승", group["why"][0], "→", news["found"], news["reason"], flush=True)
@@ -159,7 +167,7 @@ def main():
             else:   # 날마다 도는 일: 가장 최근 닷새만 본다. 지난 날을 한꺼번에 채우려면 기간을 준다
                 end = db.scalar(select(HotDay.trade_date).order_by(HotDay.trade_date.desc()).limit(1))
                 start = end - timedelta(days=7)
-            done, searches = store(db, start, end, redo="--redo" in sys.argv)
+            done, searches = store(db, start, end, redo=next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--redo=")), ""))
             print(f"종목군 {done}건, 검색 {searches}번")
 
 

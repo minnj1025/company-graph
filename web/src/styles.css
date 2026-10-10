@@ -4286,3 +4286,32 @@ details.sources a {
   color: #aeb7c6;
   font-size: 12.5px;
 }
+
+
+/* 데이터 페이지의 숫자: 카드에 하나씩 담지 않고 한 줄에 나란히, 사이에 금만 긋는다 */
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.tile {
+  flex: 1 1 160px;
+  padding: 12px 18px 12px 0;
+  margin-right: 18px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.tile + .tile {
+  padding-left: 18px;
+  border-left: 1px solid var(--border);
+}
+
+.tile b {
+  font-size: 20px;
+  font-weight: 600;
+}
