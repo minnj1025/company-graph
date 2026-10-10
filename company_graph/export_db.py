@@ -13,7 +13,7 @@ from sqlalchemy import create_engine, func, select, text
 
 from datetime import timedelta
 
-from .db import Base, BusinessSection, Company, CompanyAlias, Document, HotDay, PriceDaily, Product, ProductCode, Relation, get_engine
+from .db import Base, BusinessSection, Company, CompanyAlias, Document, HotDay, PriceDaily, Product, ProductCode, Relation, SiteText, get_engine
 
 TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection, Product, ProductCode)
 # 대상 DB에서 날마다 채워지는 표(.github/workflows/daily.yml). 비우면 그동안 쌓인 날이 사라지므로, 대상에 없는 날만 채운다
@@ -22,6 +22,8 @@ CHUNK = 5000
 
 
 def fill_missing_days(source, target):
+    # 화면에서 고친 글은 대상 DB에서만 쓰인다. 표가 없으면 만들기만 하고 내용은 건드리지 않는다
+    Base.metadata.create_all(target, tables=[SiteText.__table__])
     for model, recent in DAILY:
         table = model.__table__
         day = table.c.trade_date

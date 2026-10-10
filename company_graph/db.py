@@ -170,6 +170,16 @@ class ProductCode(Base):
     unsure: Mapped[bool] = mapped_column(Boolean, default=False)    # 맞는 항목이 분명치 않아 짐작으로 고른 것
 
 
+class SiteText(Base):
+    """화면의 글을 운영자가 고쳐 쓴 것. 코드에 적힌 원래 글(original)을 고친 글(text)로 바꿔 보여 준다.
+    코드를 고쳐 원래 글이 달라지면 그 줄은 더는 맞지 않아 쓰이지 않는다(원래 글이 그대로 나온다)."""
+    __tablename__ = "site_text"
+    key: Mapped[str] = mapped_column(String(40), primary_key=True)   # original 의 sha1. 긴 글을 열쇠로 쓰지 않으려고
+    original: Mapped[str] = mapped_column(Text)
+    text: Mapped[str] = mapped_column(Text)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+
+
 class AskLog(Base):
     """화면에서 Agent에게 한 질문의 기록. 하루 질문 수 상한과 방문자별 제한을 세는 데 쓴다."""
     __tablename__ = "ask_log"

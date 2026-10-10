@@ -89,6 +89,14 @@ CREATE TABLE price_daily (
   KEY ix_price_date (trade_date)
 );
 
+-- 화면의 글을 운영자가 고쳐 쓴 것 (화면의 ?edit 에서 고친다). key 는 original 의 sha1
+CREATE TABLE site_text (
+  `key`      CHAR(40) PRIMARY KEY,
+  original   TEXT NOT NULL,
+  `text`     TEXT NOT NULL,
+  updated_at DATETIME NOT NULL
+);
+
 -- 하루 치의 "함께 오른 무리" 계산 결과. 화면은 시세가 아니라 이 표만 읽는다
 CREATE TABLE hot_day (
   trade_date  DATE PRIMARY KEY,

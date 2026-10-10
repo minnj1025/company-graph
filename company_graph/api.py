@@ -20,7 +20,7 @@ from sqlalchemy import func, or_, select
 
 from . import ksic, query
 from .display_names import group_key, group_label
-from .db import AskLog, Base, BusinessSection, Company, Document, HotDay, Product, ProductCode, Relation, get_engine, session
+from .db import AskLog, Base, BusinessSection, Company, Document, HotDay, Product, ProductCode, Relation, SiteText, get_engine, session
 from .product_families import FAMILY_FIELD
 from .stages import sector, stage
 
@@ -37,7 +37,7 @@ _CACHE_DEFAULT = "public, s-maxage=86400, stale-while-revalidate=604800"
 async def cache_reads(request: Request, call_next):
     response = await call_next(request)
     path = request.url.path
-    if request.method == "GET" and response.status_code == 200 and path.startswith("/api/") and not path.startswith(("/api/ask", "/api/health")):
+    if request.method == "GET" and response.status_code == 200 and path.startswith("/api/") and not path.startswith(("/api/ask", "/api/health", "/api/texts")):
         response.headers["Cache-Control"] = next((v for k, v in _CACHED.items() if path.startswith(k)), _CACHE_DEFAULT)
     return response
 _engine = get_engine()
@@ -590,6 +590,40 @@ def company(company_id: int, as_of: date, db=Depends(get_db)):
 
 _insight_cache: dict = {}
 FEED_TYPES = ("supply_contract", "supply_termination", "stake_acquisition", "stake_disposal")
+
+
+# ---------- 화면의 글 고치기: 운영자가 화면에서 고친 글을 모든 방문자에게 보여 준다 ----------
+
+class TextEdit(BaseModel):
+    original: str = Field(min_length=1, max_length=4000)
+    text: str | None = Field(default=None, max_length=4000)   # 없거나 원래 글과 같으면 고친 것을 지운다
+
+
+@app.get("/api/texts")
+def texts(request: Request, db=Depends(get_db)):
+    """고쳐 쓴 글 전부: {원래 글: 고친 글}. owner 는 지금 요청이 고칠 수 있는 사람인지."""
+    try:
+        rows = db.scalars(select(SiteText)).all()
+    except Exception:   # 표가 아직 없다
+        rows = []
+    return {"texts": {row.original: row.text for row in rows}, "owner": _is_owner(request)}
+
+
+@app.put("/api/texts")
+def edit_text(body: TextEdit, request: Request, db=Depends(get_db)):
+    if not _is_owner(request):
+        raise HTTPException(403, "운영자만 글을 고칠 수 있습니다")
+    key = hashlib.sha1(body.original.encode()).hexdigest()
+    row = db.get(SiteText, key)
+    if body.text is None or body.text == body.original:
+        if row is not None:
+            db.delete(row)
+    elif row is None:
+        db.add(SiteText(key=key, original=body.original, text=body.text, updated_at=datetime.now()))
+    else:
+        row.text, row.updated_at = body.text, datetime.now()
+    db.commit()
+    return {"ok": True}
 
 
 @app.get("/api/hot")
