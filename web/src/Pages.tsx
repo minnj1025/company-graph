@@ -23,12 +23,12 @@ const HOT_CHECKS: [string, string, string][] = [
   ["일평균 연관 급등", "1.9건 · 미발생 32일", "1.2건 · 미발생 82일"],
 ];
 
-/** 평가 3판(eval/v3): 정답 / 부분 정답 / 틀림 */
-const V3: [string, string, string, string][] = [
-  ["제품 (10문항)", "7 / 1 / 2", "8 / 1 / 1", "7 / 3 / 0"],
-  ["이슈 (3문항)", "2 / 1 / 0", "2 / 1 / 0", "2 / 1 / 0"],
-  ["회사 (6문항)", "6 / 0 / 0", "5 / 1 / 0", "6 / 0 / 0"],
-  ["이어지는 대화 (10쌍)", "8 / 0 / 2", "10 / 0 / 0", "–"],
+/** 평가 3판(eval/v3)의 가장 최근 결과: 정답, 부분 정답, 오답 */
+const V3: [string, number, number, number][] = [
+  ["제품 (10문항)", 7, 3, 0],
+  ["이슈 (3문항)", 2, 1, 0],
+  ["회사 (6문항)", 6, 0, 0],
+  ["이어지는 대화 (10쌍)", 10, 0, 0],
 ];
 
 /** 긴 페이지 왼쪽의 목차. 지금 읽는 구역에 표시가 따라 내려온다. 작은 제목(sub)은 들여 쓴다 */
@@ -473,16 +473,7 @@ function EvalSection() {
       <div className="stages">
         <div>
           <h4>
-            첫 실행{" "}
-            <span>
-              정답 {pct(tally(before, "correct"), before.length)}% · 부분 정답까지 {pct(tally(before, "correct", "partial"), before.length)}%
-            </span>
-          </h4>
-          <VerdictBar sides={before} />
-        </div>
-        <div>
-          <h4>
-            결함 수정 후{" "}
+            최근 결과{" "}
             <span>
               정답 {pct(correct, sides.length)}% · 부분 정답까지 {pct(hit, sides.length)}%
             </span>
@@ -495,16 +486,16 @@ function EvalSection() {
         <summary>검증 방법과 한계</summary>
         <ul className="notes">
           <li>
-            <b>수정 후 결과</b> 정답 {pct(correct, sides.length)}% (95% 신뢰구간 {low}~{high}%), 부분 정답 포함 {pct(hit, sides.length)}%. 조회 결과에 없는
-            접수번호를 답에 인용한 문항은 두 차례 모두 {invented}개입니다.
+            <b>결과</b> 정답 {pct(correct, sides.length)}% (95% 신뢰구간 {low}~{high}%), 부분 정답 포함 {pct(hit, sides.length)}%. 사실 오류{" "}
+            {tally(sides, "wrong")}문항. 조회 결과에 없는 접수번호를 답에 인용한 문항은 {invented}개입니다.
           </li>
           <li>
-            <b>부분 정답의 원인</b> 첫 실행의 부분 정답 55개는 대부분 DB에는 있으나 조회 도구가 반환하지 않던 값(자기자본 대비 비율, 취득 예정일자, 해지
-            사유) 때문이었습니다. 도구가 해당 값을 반환하도록 수정한 뒤 37개가 정답이 됐습니다.
+            <b>해석상 유의점</b> 이 결과는 첫 실행(정답 {pct(tally(before, "correct"), before.length)}%)에서 드러난 결함을 고친 뒤의 값입니다. 문항을 확인한
+            뒤 개선한 것이므로 새 문항에서 같은 수준이 재현된다는 보장은 없습니다.
           </li>
           <li>
-            <b>해석상 유의점</b> 수정 후 점수는 문항을 확인한 뒤 개선한 결과이므로 새 문항에서 재현된다는 보장이 없습니다. 이 때문에 첫 실행 점수를 함께
-            제시합니다. 사실 오류 문항은 수정 후에도 {tally(sides, "wrong")}개입니다(첫 실행의 10개 중 6개는 해소됐으나, 자릿수 오기 등 6개가 새로 발생).
+            <b>개선 내용</b> 첫 실행의 부분 정답은 대부분 DB에는 있으나 조회 도구가 반환하지 않던 값(자기자본 대비 비율, 취득 예정일자, 해지 사유)
+            때문이었고, 도구가 해당 값을 반환하도록 수정했습니다.
           </li>
         </ul>
       </details>
@@ -513,10 +504,9 @@ function EvalSection() {
       <h2 id="baseline">웹 검색 대비 비교</h2>
       <p className="lead">
         동일한 {shared.length}문항을 이 DB 없이 웹 검색과 페이지 열람만 가능한 Claude({data.baseline_model})에게 풀게 했습니다. Agent는 가장 작은
-        모델({data.agent_model})이고 비교 대상은 훨씬 큰 모델입니다. 아래는 Agent의 첫 실행 기준입니다. 정답 또는 부분 정답 비율은 Agent{" "}
-        {pct(tally(shared.map((i) => i.agent), "correct", "partial"), shared.length)}%, 웹 검색{" "}
-        {pct(tally(shared.map((i) => i.baseline!), "correct", "partial"), shared.length)}%이며, 결함 수정 후 Agent는 같은 {shared.length}문항 중{" "}
-        {tally(shared.map((i) => i.after), "correct")}개가 정답입니다. 문항은 유형별로 5~7개씩 균등하게 추출했습니다.
+        모델({data.agent_model})이고 비교 대상은 훨씬 큰 모델입니다. 같은 {shared.length}문항에서 Agent는{" "}
+        {tally(shared.map((i) => i.after), "correct")}개, 웹 검색은 {tally(shared.map((i) => i.baseline!), "correct")}개가 정답입니다. 문항은 유형별로
+        5~7개씩 균등하게 추출했습니다.
       </p>
       <Compare data={data} />
       <details className="more">
@@ -543,9 +533,9 @@ function EvalSection() {
         <thead>
           <tr>
             <th />
-            <th className="num">첫 실행</th>
-            <th className="num">제품 표 확대 후</th>
-            <th className="num">문항 확인 후 수정</th>
+            <th className="num">정답</th>
+            <th className="num">부분 정답</th>
+            <th className="num">오답</th>
           </tr>
         </thead>
         <tbody>
@@ -565,8 +555,8 @@ function EvalSection() {
         <summary>검증 방법과 한계</summary>
         <ul className="notes">
           <li>
-            <b>표기</b> 각 칸은 정답 / 부분 정답 / 오답입니다. "문항 확인 후 수정"은 오답 문항을 확인하고 개선한 결과이므로 새 문항에서 재현된다는 보장이
-            없습니다.
+            <b>해석상 유의점</b> 오답 문항을 확인하고 개선한 뒤의 결과이므로 새 문항에서 재현된다는 보장이 없습니다. 개선 전에는 제품 문항 10개 중 2개가
+            오답이었습니다.
           </li>
           <li>
             <b>오답 유형과 조치</b> 타사 제품을 매입해 판매하는 기업을 제조사로 답한 경우였습니다. 보고서가 "상품"으로 기재한 줄에 표시를 추가해 해소했습니다.
@@ -595,3 +585,4 @@ export function QuestionsPage() {
     </div>
   );
 }
+

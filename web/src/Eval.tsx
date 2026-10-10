@@ -123,7 +123,7 @@ export function ByType({ data }: { data: EvalData }) {
     <div className="bytype">
       <div className="bytype-head">
         <span>문항 종류</span>
-        <span>Agent (고친 뒤)</span>
+        <span>Agent</span>
         <span>웹 검색</span>
       </div>
       {Object.entries(data.types).map(([type, label]) => {
@@ -208,7 +208,7 @@ function Versus({ title, ours, theirs, unit, note }: { title: string; ours: numb
 /** 같은 문항을 푼 두 쪽을 견준다. */
 export function Compare({ data }: { data: EvalData }) {
   const shared = data.items.filter((item) => item.baseline);
-  const ours = shared.map((item) => item.agent);
+  const ours = shared.map((item) => item.after);
   const theirs = shared.map((item) => item.baseline!);
   const seconds: [number, number] = [median(ours.map((s) => s.seconds)), median(theirs.map((s) => s.seconds))];
   const tokens: [number, number] = [median(ours.map((s) => s.tokens)), median(theirs.map((s) => s.tokens))];
