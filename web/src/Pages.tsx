@@ -51,11 +51,73 @@ export function Credit() {
   );
 }
 
+/** 긴 페이지 왼쪽의 목차. 지금 읽는 구역에 표시가 따라 내려온다. 작은 제목(sub)은 들여 쓴다 */
+const TOC: { id: string; label: string; sub?: boolean }[] = [
+  { id: "what", label: "무엇이 들어 있나" },
+  { id: "relations", label: "1. 관계" },
+  { id: "products", label: "2. 제품" },
+  { id: "taxonomy", label: "제품을 묶는 분류", sub: true },
+  { id: "hot", label: "3. 이슈 종목" },
+  { id: "news", label: "4. 기사 배경" },
+  { id: "agent", label: "5. Agent" },
+  { id: "baseline", label: "웹 검색과 견주면", sub: true },
+  { id: "followups", label: "제품·이어지는 대화", sub: true },
+  { id: "limits", label: "없는 것" },
+];
+
+function Toc() {
+  const [active, setActive] = useState(TOC[0].id);
+  const [present, setPresent] = useState<string[]>([]);
+  useEffect(() => {
+    const root = document.querySelector(".overlay");
+    if (!root) return;
+    // 화면 위쪽을 지나간 마지막 제목이 지금 읽는 구역이다. 늦게 불러오는 구역(분류, 평가)이 생기면 목차에 더한다
+    const where = () => {
+      const found = TOC.map((item) => document.getElementById(item.id)).filter((el): el is HTMLElement => Boolean(el));
+      const line = root.getBoundingClientRect().top + 120;
+      const passed = found.filter((el) => el.getBoundingClientRect().top <= line);
+      const bottom = root.scrollTop + root.clientHeight >= root.scrollHeight - 4;   // 맨 아래에 닿으면 마지막 구역
+      setActive((bottom ? found[found.length - 1] : passed[passed.length - 1] ?? found[0])?.id ?? TOC[0].id);
+      setPresent((old) => (old.length === found.length ? old : found.map((el) => el.id)));
+    };
+    where();
+    root.addEventListener("scroll", where, { passive: true });
+    const changes = new MutationObserver(where);
+    changes.observe(root, { childList: true, subtree: true });
+    return () => {
+      root.removeEventListener("scroll", where);
+      changes.disconnect();
+    };
+  }, []);
+  return (
+    <nav className="toc" aria-label="이 페이지">
+      <p>이 페이지</p>
+      <ul>
+        {TOC.filter((item) => present.includes(item.id)).map((item) => (
+          <li key={item.id} className={`${item.sub ? "sub" : ""} ${active === item.id ? "on" : ""}`}>
+            <a
+              href={`#${item.id}`}
+              onClick={(event) => {
+                event.preventDefault();
+                document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
 export function DataPage({ meta }: { meta: Meta }) {
   const relations = Object.entries(meta.relations).sort((a, b) => b[1] - a[1]);
   return (
-    <div className="page">
-      <h2>무엇이 들어 있나</h2>
+    <div className="with-toc">
+      <Toc />
+      <div className="page">
+      <h2 id="what">무엇이 들어 있나</h2>
       <p className="lead">
         금융감독원 전자공시(DART)에서 기업과 기업의 관계를 뽑아, 언제 성립했고 언제 공개됐고 언제 바뀌었는지를 같이 저장했습니다.
         상장사 2,759곳의 공시를 읽었고, 양식이 정해진 공시만 규칙으로 읽었습니다. 관계 추출에 LLM은 쓰지 않았습니다. 관계 말고 기업이 무엇을
@@ -94,7 +156,7 @@ export function DataPage({ meta }: { meta: Meta }) {
         <p className="muted small">막대 길이는 줄 수의 제곱근에 비례합니다. 가장 많은 것과 적은 것이 700배 차이라 그대로 그리면 작은 것이 보이지 않습니다.</p>
       </div>
 
-      <h2>1. 공시에서 관계를 맞게 뽑았나</h2>
+      <h2 id="relations">1. 공시에서 관계를 맞게 뽑았나</h2>
       <p className="lead">
         지분, 계열, 공급계약, 취득·처분 결정을 공시의 정해진 양식에서 규칙으로 읽었습니다. 수십만 줄을 사람이 다 볼 수 없고 정답지도 없어서, 공시 안에 적힌
         숫자끼리 검산하고 다른 기관의 자료와 대조했습니다.
@@ -124,7 +186,7 @@ export function DataPage({ meta }: { meta: Meta }) {
         </div>
       </div>
 
-      <h2>2. 제품을 맞게 읽고 묶었나</h2>
+      <h2 id="products">2. 제품을 맞게 읽고 묶었나</h2>
       <p className="lead">
         관계 표만으로는 "이 이슈와 닿는 회사"를 찾을 수 없어서, 사업보고서와 반기보고서의 "사업의 내용"을 두 층으로 담았습니다. 뒤의 이슈 종목과 Agent의
         답이 모두 이 제품 이름 위에 서 있습니다.
@@ -203,7 +265,7 @@ export function DataPage({ meta }: { meta: Meta }) {
 
       <TaxonomySection />
 
-      <h2>3. 이슈 종목은 우연이 아닌가</h2>
+      <h2 id="hot">3. 이슈 종목은 우연이 아닌가</h2>
       <p className="lead">
         "이슈 종목" 탭은 테마를 미리 정해 두지 않고, 그날 급등하거나 급락한 종목들이 같은 제품을 팔거나 지분·계열·공급계약으로 이어져 있으면 하나로
         묶습니다. 아무 종목이나 묶어도 이런 묶음이 나오는 것은 아닌지를, 등락률은 그대로 두고 어느 회사의 것인지만 섞은 결과와 견줘 확인했습니다.
@@ -249,7 +311,7 @@ export function DataPage({ meta }: { meta: Meta }) {
         </li>
       </ul>
 
-      <h2>4. 기사가 전한 배경은 믿을 만한가</h2>
+      <h2 id="news">4. 기사가 전한 배경은 믿을 만한가</h2>
       <p className="lead">
         공시에는 그날 무슨 일이 있었는지가 없어서, 뚜렷한 연관 급등·급락마다 Claude Haiku가 웹을 검색해 기사가 전한 배경을 한 줄로 적습니다. 하루에 서너
         건이라 방문자 수와 상관없이 드는 값이 같습니다.
@@ -281,7 +343,7 @@ export function DataPage({ meta }: { meta: Meta }) {
 
       <EvalSection />
 
-      <h2>없는 것</h2>
+      <h2 id="limits">없는 것</h2>
       <ul className="notes">
         <li>분기보고서, 반기보고서의 지분·계열 표(반기보고서는 사업 내용만 읽었습니다), 최대주주와 특수관계인이 아닌 주주, 주요 고객, 합병·분할</li>
         <li>
@@ -296,6 +358,7 @@ export function DataPage({ meta }: { meta: Meta }) {
         설계 기록과 코드는 <a href={REPO}>GitHub</a>에 있습니다.
       </p>
       <Credit />
+      </div>
     </div>
   );
 }
@@ -312,7 +375,7 @@ function TaxonomySection() {
   const count = (families: { companies: number }[]) => families.reduce((sum, f) => sum + f.companies, 0);
   return (
     <>
-      <h2>제품을 묶는 분류</h2>
+      <h2 id="taxonomy">제품을 묶는 분류</h2>
       <p className="lead">
         큰 범주는 {data.source}의 대분류와 중분류를 그대로 씁니다. 그 아래는 공식 분류가 뭉뚱그려지는 곳이 많아서(제품 이름의 35%가 "그 외 기타 …" 항목에
         들어갑니다) 제품 말로 다시 묶은 제품군을 씁니다. 제품군은 이 서비스가 만든 묶음이고 공식 분류가 아닙니다. 대신 제품마다 공식 분류의 세세분류
@@ -394,7 +457,7 @@ function EvalSection() {
   const invented = data.items.filter((item) => item.agent.unverified.length + item.after.unverified.length > 0).length;
   return (
     <>
-      <h2>5. Agent는 얼마나 맞게 답하나</h2>
+      <h2 id="agent">5. Agent는 얼마나 맞게 답하나</h2>
       <p className="lead">
         공시 원문에서 직접 만든 {sides.length}문항으로 쟀습니다({data.agent_model}). 한 칸을 읽으면 끝나는 질문은 빼고, 정정 사이의 시점을 가리거나
         여러 공시를 견주어야 답할 수 있는 질문만 썼습니다. 문항과 정답은 추출기를 거치지 않은 원자료만 보고 썼고, 쓴 쪽과 다른 검토자가 다시 확인했고,
@@ -437,7 +500,7 @@ function EvalSection() {
       </ul>
       <ByType data={data} />
 
-      <h2>웹 검색만 쓰는 Claude와 견주면</h2>
+      <h2 id="baseline">웹 검색만 쓰는 Claude와 견주면</h2>
       <p className="lead">
         같은 문항 {shared.length}개를 이 DB 없이 웹 검색과 페이지 읽기만 쓸 수 있는 Claude({data.baseline_model})에게 풀게 했습니다.
         Agent는 가장 작은 모델({data.agent_model})이고, 견준 쪽은 그보다 훨씬 큰 모델입니다. 아래는 Agent를 처음 돌렸을 때의 답으로 견준 것입니다. 정답이거나 부분 정답인 문항은 Agent{" "}
@@ -456,7 +519,7 @@ function EvalSection() {
 
       <p className="lead">문항과 정답, Agent가 부른 도구와 답, 판정 사유는 위의 "평가 문항" 탭에서 모두 볼 수 있습니다.</p>
 
-      <h2>제품과 이어지는 대화를 묻는 질문</h2>
+      <h2 id="followups">제품과 이어지는 대화를 묻는 질문</h2>
       <p className="lead">
         위의 문항은 모두 관계를 묻습니다. "라면을 만드는 상장사는?" 같은 제품 질문과, 앞의 답을 받아 "그 회사의 최대주주는?"처럼 이어 묻는 대화는 따로
         29문항을 만들어 쟀습니다. 문항이 적어 방향만 보입니다.
