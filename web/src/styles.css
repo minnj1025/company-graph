@@ -4742,3 +4742,15 @@ details.more .notes {
 .page .hot-why {
   text-align: left;
 }
+
+/* 풀이의 줄머리 낱말: 무엇에 관한 줄인지 먼저 읽히게 */
+.page .notes li > b:first-child,
+.page .hot-foot > b {
+  margin-right: 8px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.page .hot-foot > b:not(:first-child) {
+  margin-left: 10px;
+}
