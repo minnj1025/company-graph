@@ -59,6 +59,12 @@ SYSTEM = """당신은 한국 상장사의 공시(DART)에서 뽑은 기업 관�
 - 이 사실에는 접수번호가 없으므로 거래일과 기사 주소를 근거로 적습니다. 함께 움직인 회사의 관계가 궁금할 만하면 get_relations 나 get_products 로 이어 봅니다.
 - 등락률은 장 마감 기준의 지난 값입니다. 앞으로 오를지 내릴지, 지금 사도 되는지는 말하지 않습니다.
 
+화면
+- 사용자는 답 옆에서 기업 관계 그래프를 봅니다. 조회가 끝나 무엇을 답할지 정해지면, 답의 첫 글자를 쓰기 전에 show_on_graph 만 따로 부릅니다. 그 차례에는 글을 쓰지 않고, 결과가 돌아온 다음 차례에 답을 씁니다. 사용자가 답을 읽는 동안 화면이 먼저 준비되게 하려는 것입니다.
+- highlight 에는 답이 가리키는 기업을(많아도 12곳), also 에는 맥락으로 함께 보면 좋은 기업을 넘깁니다.
+- 답에서 제외한다고 적을 기업, 조회만 하고 답에 쓰지 않을 기업은 넣지 않습니다. 기업을 하나도 가리키지 않는 답(거절, 수집 범위 안내)에는 부르지 않습니다.
+- 화면에 표시했다는 말은 답에 적지 않습니다.
+
 없는 것과 모르는 것을 구분합니다
 - 조회 결과가 비었으면 coverage 를 보고, 수집 범위 안이면 "공시된 것이 없다", 범위 밖이면 "이 DB는 그것을 모으지 않았다"고 답합니다.
 - 주주는 최대주주와 그 특수관계인(개인 포함), 그리고 지분 보유를 자기 보고서에 적은 회사만 있습니다. 그 밖의 주주는 없습니다. 개인이 가진 다른 회사 지분은 이 DB로 알 수 없으니 지어내지 않습니다.
@@ -112,7 +118,7 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
     text, stop = "", None
     with session() as db:
         for _ in range(max_turns):
-            request = dict(model=model, max_tokens=16000, system=SYSTEM, tools=agent_tools.TOOLS, messages=messages,
+            request = dict(model=model, max_tokens=16000, system=SYSTEM, tools=agent_tools.tools(), messages=messages,
                            cache_control={"type": "ephemeral"}, output_config={"effort": effort})
             if on_event:
                 with client.messages.stream(**request) as stream:
@@ -128,12 +134,16 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
             if stop != "tool_use":
                 text = "\n".join(block.text for block in response.content if block.type == "text")
                 break
+            # 답을 다 쓴 뒤에 화면 도구만 부른 차례: 쓴 글이 곧 답이다. 화면만 움직이고 여기서 끝낸다 (한 번 더 돌리면 답을 다시 쓰게 된다)
+            wrote = "\n".join(block.text for block in response.content if block.type == "text").strip()
+            used = [block.name for block in response.content if block.type == "tool_use"]
+            closing = len(wrote) > 200 and all(name == agent_tools.SCREEN_TOOL for name in used)
             results = []
             for block in response.content:
                 if block.type != "tool_use":
                     continue
                 if on_event:
-                    on_event("tool", {"name": block.name, "input": dict(block.input)})
+                    on_event("tool", {"name": block.name, "input": dict(block.input), **({"closing": True} if closing else {})})
                 result = agent_tools.call(db, block.name, dict(block.input))
                 if on_result:
                     on_result(block.name, dict(block.input), result)
@@ -144,6 +154,9 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
                               "total": result.get("total"), "chars": len(body)})
                 results.append({"type": "tool_result", "tool_use_id": block.id, "content": body,
                                 "is_error": "error" in result})
+            if closing:
+                text, stop = wrote, "end_turn"
+                break
             messages.append({"role": "user", "content": results})
             if on_event:
                 on_event("turn", None)

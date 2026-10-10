@@ -761,6 +761,7 @@ class _Found:
         self.topics: dict[str, dict[int, int]] = {}       # 사업 낱말 → {기업: 보고서에 나온 횟수}
         self.ranked: list[int] = []                       # 찾은 순서대로의 기업. 상한에 걸리면 앞에서부터 그린다
         self.calls = 0                                    # 도구를 부른 횟수. 0이면 조회 없이 답한 것(거절 등)이라 그릴 것이 없다
+        self.shown: dict | None = None                    # Agent가 show_on_graph 로 정한 것: {"highlight": [...], "also": [...]}. 있으면 어림 대신 이것을 따른다
         self.receipts: set[str] = set()                   # get_filings 로 읽은 공시. 그 공시의 상대 기업을 선으로 잇는다
 
     def relation(self, item: dict):
@@ -794,6 +795,11 @@ class _Found:
             for path in result["paths"]:
                 for item in path:
                     self.relation(item)
+        elif name == "show_on_graph":   # agent_tools.SCREEN_TOOL
+            self.calls -= 1   # 조회가 아니다
+            also = [int(i) for i in arguments.get("also") or []][:40]
+            self.shown = {"highlight": [c["company_id"] for c in result["highlight"]], "also": also}
+            self.companies.update(self.shown["highlight"] + also)
         elif name == "get_price_moves":
             groups = result.get("groups", []) + [g for day in result.get("days", []) for g in day["groups"]]
             for group in groups[:8]:   # 종목군의 종목을 그리고, 그 사이의 관계는 _around 가 잇는다
@@ -908,12 +914,16 @@ class _Found:
                 text = text.replace(name, "\0" * len(name))
                 if company_id in candidates:
                     mentioned.add(company_id)
-        focus = self.focus | mentioned
-        ids = set(focus)
-        for company_id in [*self.ranked, *sorted(self.companies)]:
-            if len(ids) >= GRAPH_COMPANIES:
-                break
-            ids.add(company_id)
+        if self.shown:   # Agent가 정했다: 강조는 그 기업들만, 그릴 것은 강조와 함께 그릴 기업만
+            focus = set(self.shown["highlight"])
+            ids = focus | set(self.shown["also"])
+        else:
+            focus = self.focus | mentioned
+            ids = set(focus)
+            for company_id in [*self.ranked, *sorted(self.companies)]:
+                if len(ids) >= GRAPH_COMPANIES:
+                    break
+                ids.add(company_id)
 
         links, degree = [], Counter()
         for (source, target, rel_type), link in self.links.items():

@@ -64,6 +64,8 @@ const squeeze = (text: string) => text.replace(/\s/g, "").toLowerCase();
 type Turn = { question: string; result?: AskResult; error?: string; steps: string[]; partial: string };
 
 const TOOL_LABELS: Record<string, string> = {
+  show_on_graph: "그래프에 표시",
+  get_price_moves: "주가 움직임 조회",
   find_company: "기업 찾기",
   get_relations: "관계 조회",
   get_filings: "공시 목록 조회",
@@ -155,7 +157,7 @@ function loadChats(): { chats: Conversation[]; current: string } {
 }
 
 /** 질문과 답의 기록. 입력 칸(그래프 아래)과 답이 보이는 칸(오른쪽)이 떨어져 있어서 화면 맨 위에서 쥐고 내려 준다 */
-export function useChat(onShow: (result: AskResult | null) => void) {
+export function useChat(onShow: (result: AskResult | null) => void, onScreen?: (ids: number[]) => void) {
   const [{ chats, current }, setBook] = useState(loadChats);
   const [busy, setBusy] = useState(false);
   const turns = chats.find((chat) => chat.id === current)?.turns ?? [];
@@ -218,7 +220,16 @@ export function useChat(onShow: (result: AskResult | null) => void) {
           (event) => {
             if (event.kind === "text") patch((t) => ({ ...t, partial: t.partial + event.text }));
             // 도구를 부르기 전에 쓴 말은 답이 아니라서, 조회가 시작되면 지운다
-            else if (event.kind === "tool") patch((t) => ({ ...t, partial: "", steps: [...t.steps, describe(event)] }));
+            else if (event.kind === "tool") {
+              // Agent가 화면에 보일 기업을 정했다: 답이 다 오기 전에 지금 그래프에서 그 점들을 먼저 밝힌다
+              if (event.name === "show_on_graph") {
+                const { highlight, also } = event.input as { highlight?: number[]; also?: number[] };
+                onScreen?.([...(highlight ?? []), ...(also ?? [])]);
+              }
+              // 답을 다 쓴 뒤에 화면만 움직인 것이면(closing) 쓴 글을 지우지 않는다
+              const closing = (event as { closing?: boolean }).closing === true;
+              patch((t) => ({ ...t, partial: closing ? t.partial : "", steps: [...t.steps, describe(event)] }));
+            }
             else patch((t) => ({ ...t, partial: "" }));
           },
           context,

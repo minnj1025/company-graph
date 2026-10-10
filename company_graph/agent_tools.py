@@ -39,6 +39,8 @@ _FAMILY_LIST = "; ".join(f"[{field}] " + ", ".join(family for f, family, _ in FA
                          for field in dict.fromkeys(f for f, _, _ in FAMILIES) if field != "기타")
 _AS_OF = {"type": "string", "description": "조회 시점 (YYYY-MM-DD). 이 날짜까지 공시된 것만 본다. 질문에 시점이 없으면 오늘 날짜"}
 _COMPANY = {"type": "integer", "description": "find_company 가 돌려준 company_id"}
+SCREEN_TOOL = "show_on_graph"   # 조회가 아니라 화면을 움직이는 도구. 환경 변수 ASK_SCREEN_TOOL=0 이면 Agent에게 주지 않는다
+
 TOOLS = [
     {"name": "find_company",
      "description": "이름이나 6자리 종목코드로 기업을 찾는다. 다른 도구를 쓰기 전에 반드시 이것으로 company_id 를 얻는다. "
@@ -164,6 +166,14 @@ TOOLS = [
          "direction": {"type": "string", "enum": ["up", "down", "both"], "description": "오른 쪽, 내린 쪽, 둘 다(기본)"},
          "lookback_days": {"type": "integer", "description": "company_id 나 keyword 로 찾을 때 거슬러 볼 날 수(달력 기준). 기본 30, 최대 120"}},
          "required": ["as_of"]}},
+    {"name": SCREEN_TOOL,
+     "description": "화면의 그래프에 무엇을 보일지 정한다. 조회를 마친 뒤, 답의 글을 쓰기 시작하기 전에 이 도구만 따로 한 번 부른다(같은 차례에 글을 쓰지 않는다). 부르면 사용자의 화면에서 그 기업들이 바로 떠오른다. "
+                    "highlight 는 답이 가리키는 기업(이름표가 강조된다), also 는 맥락으로 함께 그릴 기업이다. "
+                    "답에서 제외했다고 적을 기업은 어느 쪽에도 넣지 않는다. 부르지 않으면 조회 결과에 나온 기업이 어림으로 그려진다.",
+     "input_schema": {"type": "object", "properties": {
+         "highlight": {"type": "array", "items": {"type": "integer"}, "description": "강조할 기업의 company_id. 1~12곳"},
+         "also": {"type": "array", "items": {"type": "integer"}, "description": "함께 그릴 기업의 company_id. 최대 40곳. 없어도 된다"}},
+         "required": ["highlight"]}},
     {"name": "get_coverage",
      "description": "이 DB가 무엇을 언제부터 언제까지 모았고 무엇을 모으지 않았는지. 결과가 비었을 때 답하기 전에 확인한다.",
      "input_schema": {"type": "object", "properties": {}}},
@@ -698,7 +708,27 @@ def get_price_moves(db, as_of, day=None, company_id=None, keyword=None, directio
             "fields": note + " moved_alone 은 그 회사가 종목군에 묶이지 않고 혼자 크게 움직인 날입니다(많이 움직인 20곳 안에 든 날만 기록됩니다)."}
 
 
-FUNCTIONS = {"get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
+def show_on_graph(db, highlight, also=None) -> dict:
+    """화면에 보일 기업을 받아 확인만 한다. 실제로 화면을 움직이는 것은 이 호출을 본 서버와 브라우저다 (api._Found, Chat.tsx)."""
+    wanted = [int(i) for i in dict.fromkeys(highlight or [])][:12]
+    extra = [int(i) for i in dict.fromkeys(also or []) if int(i) not in wanted][:40]
+    if not wanted:
+        raise ToolError("highlight 에 강조할 기업의 company_id 를 하나 이상 주세요")
+    known = {c.company_id: c for c in db.scalars(select(Company).where(Company.company_id.in_(wanted + extra)))}
+    missing = [i for i in wanted + extra if i not in known]
+    if missing:
+        raise ToolError(f"company_id {missing} 는 없습니다. find_company 나 앞선 조회 결과의 company_id 를 쓰세요")
+    return {"shown": True, "highlight": [_brief(known[i]) for i in wanted], "also": len(extra),
+            "note": "화면에 표시했습니다. 이어서 답을 쓰세요. 화면에 표시했다는 말은 답에 적지 않아도 됩니다"}
+
+
+def tools() -> list[dict]:
+    """Agent에게 줄 도구 목록."""
+    import os
+    return [t for t in TOOLS if t["name"] != SCREEN_TOOL or os.environ.get("ASK_SCREEN_TOOL", "1") != "0"]
+
+
+FUNCTIONS = {SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
              "search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
              "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}

@@ -174,7 +174,15 @@ export function App() {
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", stop);
   };
-  const chat = useChat(showFound);
+  // Agent가 답하는 도중에 "이 기업들을 보여 줘"라고 하면, 지금 그래프에서 그 점들만 밝게 남긴다. 답이 끝나면 찾은 그래프로 넘어간다
+  const [pointed, setPointed] = useState<Set<number> | null>(null);
+  const chat = useChat(
+    (result) => {
+      setPointed(null);
+      showFound(result);
+    },
+    (ids) => setPointed(new Set(ids)),
+  );
 
   useEffect(() => {
     fetchMeta()
@@ -387,7 +395,7 @@ export function App() {
             groups={groups}
             selectedId={drawn === found ? selectedId : null}
             onSelect={onSelect}
-            spotlight={spotlight}
+            spotlight={spotlight ?? pointed}
             light={theme === "light"}
             fitKey={drawn ? `ask-${drawn.question}` : `${center?.id ?? scope}-${hops}`}
             refit={refit}
