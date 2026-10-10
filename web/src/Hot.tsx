@@ -42,7 +42,7 @@ const OUTLETS: Record<string, string> = {
   "newspim.com": "뉴스핌", "mt.co.kr": "머니투데이", "hankyung.com": "한국경제", "sedaily.com": "서울경제", "etoday.co.kr": "이투데이",
   "fnnews.com": "파이낸셜뉴스", "edaily.co.kr": "이데일리", "mk.co.kr": "매일경제", "sbs.co.kr": "SBS Biz", "asiae.co.kr": "아시아경제",
   "heraldcorp.com": "헤럴드경제", "yna.co.kr": "연합뉴스", "newsis.com": "뉴시스", "cbci.co.kr": "CBC뉴스", "widedaily.com": "와이드경제",
-  "thebell.co.kr": "더벨", "chosun.com": "조선비즈", "donga.com": "동아일보", "joongang.co.kr": "중앙일보", "news1.kr": "뉴스1",
+  "thebell.co.kr": "더벨", "businesspost.co.kr": "비즈니스포스트", "chosun.com": "조선비즈", "donga.com": "동아일보", "joongang.co.kr": "중앙일보", "news1.kr": "뉴스1",
 };
 const outletOf = (url: string) => {
   const host = new URL(url).hostname.replace(/^(www|m|biz|markets|news)\./, "");
