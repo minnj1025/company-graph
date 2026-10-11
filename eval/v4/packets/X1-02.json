@@ -1,0 +1,190 @@
+{
+ "id": "X1-02",
+ "type": "X1",
+ "task": "두 보고서를 대조하는 문항이다. 이 회사(A)의 최대주주는 상장사 B다. A가 자기 사업보고서의 최대주주 현황에 적은 B의 주식 수·지분율(기초, 기말)과, B가 자기 사업보고서의 타법인출자 현황에 적은 A의 주식 수·지분율(기초, 기말)이 같은지, 다르면 어느 값이 어떻게 다른지를 묻는다. 2024·2025 사업연도 가운데 하나를 고르거나 둘을 함께 본다. B의 타법인출자 현황은 A를 적은 줄만 넣었다(전체 줄 수는 rows_total).",
+ "company": {
+  "name": "조선선재(주)",
+  "stock_code": "120030",
+  "group": null
+ },
+ "largest_shareholders": {
+  "2024": [
+   {
+    "rcept_no": "20250715000164",
+    "corp_cls": "Y",
+    "corp_code": "00796994",
+    "corp_name": "조선선재",
+    "stock_knd": "보통주",
+    "nm": "CS홀딩스(주)",
+    "relate": "계열사",
+    "bsis_posesn_stock_co": "570,059",
+    "bsis_posesn_stock_qota_rt": "45.32",
+    "trmend_posesn_stock_co": "570,059",
+    "trmend_posesn_stock_qota_rt": "45.32",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250715000164",
+    "corp_cls": "Y",
+    "corp_code": "00796994",
+    "corp_name": "조선선재",
+    "stock_knd": "보통주",
+    "nm": "장원영",
+    "relate": "임원",
+    "bsis_posesn_stock_co": "81,939",
+    "bsis_posesn_stock_qota_rt": "6.51",
+    "trmend_posesn_stock_co": "81,939",
+    "trmend_posesn_stock_qota_rt": "6.51",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250715000164",
+    "corp_cls": "Y",
+    "corp_code": "00796994",
+    "corp_name": "조선선재",
+    "stock_knd": "보통주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "651,998",
+    "bsis_posesn_stock_qota_rt": "51.84",
+    "trmend_posesn_stock_co": "651,998",
+    "trmend_posesn_stock_qota_rt": "51.84",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250715000164",
+    "corp_cls": "Y",
+    "corp_code": "00796994",
+    "corp_name": "조선선재",
+    "stock_knd": "기 타",
+    "nm": "계",
+    "bsis_posesn_stock_co": "-",
+    "bsis_posesn_stock_qota_rt": "-",
+    "trmend_posesn_stock_co": "-",
+    "trmend_posesn_stock_qota_rt": "-",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   }
+  ],
+  "2025": [
+   {
+    "rcept_no": "20260814002194",
+    "corp_cls": "Y",
+    "corp_code": "00796994",
+    "corp_name": "조선선재",
+    "stock_knd": "보통주",
+    "nm": "CS홀딩스(주)",
+    "relate": "계열사",
+    "bsis_posesn_stock_co": "570,059",
+    "bsis_posesn_stock_qota_rt": "45.32",
+    "trmend_posesn_stock_co": "570,059",
+    "trmend_posesn_stock_qota_rt": "45.32",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260814002194",
+    "corp_cls": "Y",
+    "corp_code": "00796994",
+    "corp_name": "조선선재",
+    "stock_knd": "보통주",
+    "nm": "장원영",
+    "relate": "임원",
+    "bsis_posesn_stock_co": "81,939",
+    "bsis_posesn_stock_qota_rt": "6.51",
+    "trmend_posesn_stock_co": "81,939",
+    "trmend_posesn_stock_qota_rt": "6.51",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260814002194",
+    "corp_cls": "Y",
+    "corp_code": "00796994",
+    "corp_name": "조선선재",
+    "stock_knd": "보통주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "651,998",
+    "bsis_posesn_stock_qota_rt": "51.84",
+    "trmend_posesn_stock_co": "651,998",
+    "trmend_posesn_stock_qota_rt": "51.84",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260814002194",
+    "corp_cls": "Y",
+    "corp_code": "00796994",
+    "corp_name": "조선선재",
+    "stock_knd": "기 타",
+    "nm": "계",
+    "bsis_posesn_stock_co": "-",
+    "bsis_posesn_stock_qota_rt": "-",
+    "trmend_posesn_stock_co": "-",
+    "trmend_posesn_stock_qota_rt": "-",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   }
+  ]
+ },
+ "largest_shareholder": {
+  "name": "CS 홀딩스(주)",
+  "stock_code": "000590",
+  "other_corp_investments_rows_for_company": {
+   "2024": [
+    {
+     "rcept_no": "20250321001425",
+     "corp_cls": "Y",
+     "corp_code": "00149026",
+     "corp_name": "CS홀딩스",
+     "inv_prm": "조선선재(주)",
+     "frst_acqs_de": "2010.02.19",
+     "invstmnt_purps": "경영참여",
+     "frst_acqs_amount": "55,156,000",
+     "bsis_blce_qy": "570,059",
+     "bsis_blce_qota_rt": "45.33",
+     "bsis_blce_acntbk_amount": "33,018,580,000",
+     "incrs_dcrs_acqs_dsps_qy": "-",
+     "incrs_dcrs_acqs_dsps_amount": "-",
+     "incrs_dcrs_evl_lstmn": "-",
+     "trmend_blce_qy": "570,059",
+     "trmend_blce_qota_rt": "45.33",
+     "trmend_blce_acntbk_amount": "33,018,580,000",
+     "recent_bsns_year_fnnr_sttus_tot_assets": "168,292,925,000",
+     "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "16,275,037,000",
+     "stlm_dt": "2024-12-31"
+    }
+   ],
+   "2025": [
+    {
+     "rcept_no": "20260814002107",
+     "corp_cls": "Y",
+     "corp_code": "00149026",
+     "corp_name": "CS홀딩스",
+     "inv_prm": "조선선재(주)",
+     "frst_acqs_de": "2010.02.19",
+     "invstmnt_purps": "경영참여",
+     "frst_acqs_amount": "55,156,000",
+     "bsis_blce_qy": "570,059",
+     "bsis_blce_qota_rt": "45.33",
+     "bsis_blce_acntbk_amount": "33,018,580,000",
+     "incrs_dcrs_acqs_dsps_qy": "-",
+     "incrs_dcrs_acqs_dsps_amount": "-",
+     "incrs_dcrs_evl_lstmn": "-",
+     "trmend_blce_qy": "570,059",
+     "trmend_blce_qota_rt": "45.33",
+     "trmend_blce_acntbk_amount": "33,018,580,000",
+     "recent_bsns_year_fnnr_sttus_tot_assets": "173,665,141,000",
+     "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "9,376,424,000",
+     "stlm_dt": "2025-12-31"
+    }
+   ]
+  },
+  "rows_total": {
+   "2024": 7,
+   "2025": 7
+  }
+ }
+}

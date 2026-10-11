@@ -1,0 +1,250 @@
+{
+ "id": "X1-10",
+ "type": "X1",
+ "task": "두 보고서를 대조하는 문항이다. 이 회사(A)의 최대주주는 상장사 B다. A가 자기 사업보고서의 최대주주 현황에 적은 B의 주식 수·지분율(기초, 기말)과, B가 자기 사업보고서의 타법인출자 현황에 적은 A의 주식 수·지분율(기초, 기말)이 같은지, 다르면 어느 값이 어떻게 다른지를 묻는다. 2024·2025 사업연도 가운데 하나를 고르거나 둘을 함께 본다. B의 타법인출자 현황은 A를 적은 줄만 넣었다(전체 줄 수는 rows_total).",
+ "company": {
+  "name": "(주)파이오링크",
+  "stock_code": "170790",
+  "group": null
+ },
+ "largest_shareholders": {
+  "2024": [
+   {
+    "rcept_no": "20250317000451",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "보통주",
+    "nm": "(주)이글루코퍼레이션",
+    "relate": "최대주주",
+    "bsis_posesn_stock_co": "1,986,000",
+    "bsis_posesn_stock_qota_rt": "28.97",
+    "trmend_posesn_stock_co": "1,986,000",
+    "trmend_posesn_stock_qota_rt": "28.97",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250317000451",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "보통주",
+    "nm": "조영철",
+    "relate": "등기임원",
+    "bsis_posesn_stock_co": "654,407",
+    "bsis_posesn_stock_qota_rt": "9.54",
+    "trmend_posesn_stock_co": "654,407",
+    "trmend_posesn_stock_qota_rt": "9.54",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250317000451",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "보통주",
+    "nm": "김동윤",
+    "relate": "등기임원",
+    "bsis_posesn_stock_co": "40,000",
+    "bsis_posesn_stock_qota_rt": "0.58",
+    "trmend_posesn_stock_co": "40,000",
+    "trmend_posesn_stock_qota_rt": "0.58",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250317000451",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "보통주",
+    "nm": "이성민",
+    "relate": "등기임원",
+    "bsis_posesn_stock_co": "12,585",
+    "bsis_posesn_stock_qota_rt": "0.18",
+    "trmend_posesn_stock_co": "12,585",
+    "trmend_posesn_stock_qota_rt": "0.18",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250317000451",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "보통주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "2,692,992",
+    "bsis_posesn_stock_qota_rt": "39.28",
+    "trmend_posesn_stock_co": "2,692,992",
+    "trmend_posesn_stock_qota_rt": "39.28",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250317000451",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "우선주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "-",
+    "bsis_posesn_stock_qota_rt": "-",
+    "trmend_posesn_stock_co": "-",
+    "trmend_posesn_stock_qota_rt": "-",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   }
+  ],
+  "2025": [
+   {
+    "rcept_no": "20260320000730",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "보통주",
+    "nm": "(주)이글루코퍼레이션",
+    "relate": "최대주주",
+    "bsis_posesn_stock_co": "1,986,000",
+    "bsis_posesn_stock_qota_rt": "28.97",
+    "trmend_posesn_stock_co": "1,986,000",
+    "trmend_posesn_stock_qota_rt": "31.04",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260320000730",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "보통주",
+    "nm": "조영철",
+    "relate": "등기임원",
+    "bsis_posesn_stock_co": "654,407",
+    "bsis_posesn_stock_qota_rt": "9.54",
+    "trmend_posesn_stock_co": "654,407",
+    "trmend_posesn_stock_qota_rt": "10.23",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260320000730",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "보통주",
+    "nm": "김동윤",
+    "relate": "등기임원",
+    "bsis_posesn_stock_co": "40,000",
+    "bsis_posesn_stock_qota_rt": "0.58",
+    "trmend_posesn_stock_co": "40,000",
+    "trmend_posesn_stock_qota_rt": "0.63",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260320000730",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "보통주",
+    "nm": "이성민",
+    "relate": "등기임원",
+    "bsis_posesn_stock_co": "12,585",
+    "bsis_posesn_stock_qota_rt": "0.18",
+    "trmend_posesn_stock_co": "12,585",
+    "trmend_posesn_stock_qota_rt": "0.20",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260320000730",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "보통주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "2,692,992",
+    "bsis_posesn_stock_qota_rt": "39.28",
+    "trmend_posesn_stock_co": "2,692,992",
+    "trmend_posesn_stock_qota_rt": "42.10",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260320000730",
+    "corp_cls": "K",
+    "corp_code": "00492353",
+    "corp_name": "파이오링크",
+    "stock_knd": "우선주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "-",
+    "bsis_posesn_stock_qota_rt": "-",
+    "trmend_posesn_stock_co": "-",
+    "trmend_posesn_stock_qota_rt": "-",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   }
+  ]
+ },
+ "largest_shareholder": {
+  "name": "(주)이글루코퍼레이션",
+  "stock_code": "067920",
+  "other_corp_investments_rows_for_company": {
+   "2024": [
+    {
+     "rcept_no": "20250320001040",
+     "corp_cls": "K",
+     "corp_code": "00364847",
+     "corp_name": "이글루",
+     "inv_prm": "(주)파이오링크",
+     "frst_acqs_de": "2021.10.29",
+     "invstmnt_purps": "경영참여",
+     "frst_acqs_amount": "35,001,000,000",
+     "bsis_blce_qy": "1,986,000",
+     "bsis_blce_qota_rt": "28.97",
+     "bsis_blce_acntbk_amount": "40,258,000,000",
+     "incrs_dcrs_acqs_dsps_qy": "-",
+     "incrs_dcrs_acqs_dsps_amount": "-",
+     "incrs_dcrs_evl_lstmn": "121,000,000",
+     "trmend_blce_qy": "1,986,000",
+     "trmend_blce_qota_rt": "28.97",
+     "trmend_blce_acntbk_amount": "40,379,000,000",
+     "recent_bsns_year_fnnr_sttus_tot_assets": "93,772,000,000",
+     "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "5,398,000,000",
+     "stlm_dt": "2024-12-31"
+    }
+   ],
+   "2025": [
+    {
+     "rcept_no": "20260320000590",
+     "corp_cls": "K",
+     "corp_code": "00364847",
+     "corp_name": "이글루",
+     "inv_prm": "(주)파이오링크",
+     "frst_acqs_de": "2021.10.29",
+     "invstmnt_purps": "경영참여",
+     "frst_acqs_amount": "35,001,000,000",
+     "bsis_blce_qy": "1,986,000",
+     "bsis_blce_qota_rt": "29",
+     "bsis_blce_acntbk_amount": "40,379,000,000",
+     "incrs_dcrs_acqs_dsps_qy": "0",
+     "incrs_dcrs_acqs_dsps_amount": "-16,236,000,000",
+     "incrs_dcrs_evl_lstmn": "-569,000,000",
+     "trmend_blce_qy": "1,986,000",
+     "trmend_blce_qota_rt": "31.84",
+     "trmend_blce_acntbk_amount": "23,574,000,000",
+     "recent_bsns_year_fnnr_sttus_tot_assets": "99,833,000,000",
+     "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "7,518,000,000",
+     "stlm_dt": "2025-12-31"
+    }
+   ]
+  },
+  "rows_total": {
+   "2024": 8,
+   "2025": 11
+  }
+ }
+}

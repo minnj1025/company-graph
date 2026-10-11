@@ -1,0 +1,205 @@
+{
+ "id": "X1-07",
+ "type": "X1",
+ "task": "두 보고서를 대조하는 문항이다. 이 회사(A)의 최대주주는 상장사 B다. A가 자기 사업보고서의 최대주주 현황에 적은 B의 주식 수·지분율(기초, 기말)과, B가 자기 사업보고서의 타법인출자 현황에 적은 A의 주식 수·지분율(기초, 기말)이 같은지, 다르면 어느 값이 어떻게 다른지를 묻는다. 2024·2025 사업연도 가운데 하나를 고르거나 둘을 함께 본다. B의 타법인출자 현황은 A를 적은 줄만 넣었다(전체 줄 수는 rows_total).",
+ "company": {
+  "name": "(주)한울반도체",
+  "stock_code": "320000",
+  "group": null
+ },
+ "largest_shareholders": {
+  "2024": [
+   {
+    "rcept_no": "20250326000965",
+    "corp_cls": "K",
+    "corp_code": "01359815",
+    "corp_name": "한울반도체",
+    "stock_knd": "보통주",
+    "nm": "주식회사 한울소재과학",
+    "relate": "최대주주 본인",
+    "bsis_posesn_stock_co": "0",
+    "bsis_posesn_stock_qota_rt": "0.00",
+    "trmend_posesn_stock_co": "7,150,000",
+    "trmend_posesn_stock_qota_rt": "25.57",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250326000965",
+    "corp_cls": "K",
+    "corp_code": "01359815",
+    "corp_name": "한울반도체",
+    "stock_knd": "보통주",
+    "nm": "주식회사 오브리옹",
+    "relate": "기타특수관계인",
+    "bsis_posesn_stock_co": "0",
+    "bsis_posesn_stock_qota_rt": "0.00",
+    "trmend_posesn_stock_co": "1,280,000",
+    "trmend_posesn_stock_qota_rt": "4.58",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250326000965",
+    "corp_cls": "K",
+    "corp_code": "01359815",
+    "corp_name": "한울반도체",
+    "stock_knd": "보통주",
+    "nm": "주식회사 빛과전자",
+    "relate": "관계기업",
+    "bsis_posesn_stock_co": "2,409,484",
+    "bsis_posesn_stock_qota_rt": "13.02",
+    "trmend_posesn_stock_co": "2,909,484",
+    "trmend_posesn_stock_qota_rt": "10.40",
+    "rm": "장외매수",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250326000965",
+    "corp_cls": "K",
+    "corp_code": "01359815",
+    "corp_name": "한울반도체",
+    "stock_knd": "-",
+    "nm": "계",
+    "bsis_posesn_stock_co": "-",
+    "bsis_posesn_stock_qota_rt": "-",
+    "trmend_posesn_stock_co": "-",
+    "trmend_posesn_stock_qota_rt": "-",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250326000965",
+    "corp_cls": "K",
+    "corp_code": "01359815",
+    "corp_name": "한울반도체",
+    "stock_knd": "보통주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "2,409,484",
+    "bsis_posesn_stock_qota_rt": "13.02",
+    "trmend_posesn_stock_co": "11,339,484",
+    "trmend_posesn_stock_qota_rt": "40.55",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   }
+  ],
+  "2025": [
+   {
+    "rcept_no": "20260320001333",
+    "corp_cls": "K",
+    "corp_code": "01359815",
+    "corp_name": "한울반도체",
+    "stock_knd": "보통주",
+    "nm": "㈜한울소재과학",
+    "relate": "최대주주 본인",
+    "bsis_posesn_stock_co": "7,150,000",
+    "bsis_posesn_stock_qota_rt": "25.57",
+    "trmend_posesn_stock_co": "7,150,000",
+    "trmend_posesn_stock_qota_rt": "21.73",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260320001333",
+    "corp_cls": "K",
+    "corp_code": "01359815",
+    "corp_name": "한울반도체",
+    "stock_knd": "보통주",
+    "nm": "㈜오브리옹",
+    "relate": "기타특수관계인",
+    "bsis_posesn_stock_co": "1,280,000",
+    "bsis_posesn_stock_qota_rt": "4.58",
+    "trmend_posesn_stock_co": "1,280,000",
+    "trmend_posesn_stock_qota_rt": "3.89",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260320001333",
+    "corp_cls": "K",
+    "corp_code": "01359815",
+    "corp_name": "한울반도체",
+    "stock_knd": "-",
+    "nm": "계",
+    "bsis_posesn_stock_co": "-",
+    "bsis_posesn_stock_qota_rt": "-",
+    "trmend_posesn_stock_co": "-",
+    "trmend_posesn_stock_qota_rt": "-",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260320001333",
+    "corp_cls": "K",
+    "corp_code": "01359815",
+    "corp_name": "한울반도체",
+    "stock_knd": "보통주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "8,430,000",
+    "bsis_posesn_stock_qota_rt": "30.14",
+    "trmend_posesn_stock_co": "8,430,000",
+    "trmend_posesn_stock_qota_rt": "26.09",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   }
+  ]
+ },
+ "largest_shareholder": {
+  "name": "(주)한울소재과학",
+  "stock_code": "091440",
+  "other_corp_investments_rows_for_company": {
+   "2024": [
+    {
+     "rcept_no": "20250321002000",
+     "corp_cls": "K",
+     "corp_code": "00560122",
+     "corp_name": "한울소재과학",
+     "inv_prm": "주식회사\n한울반도체",
+     "frst_acqs_de": "2024.06.27",
+     "invstmnt_purps": "경영\n참여",
+     "frst_acqs_amount": "13,993,000,000",
+     "bsis_blce_qy": "-",
+     "bsis_blce_qota_rt": "-",
+     "bsis_blce_acntbk_amount": "-",
+     "incrs_dcrs_acqs_dsps_qy": "7,150,000",
+     "incrs_dcrs_acqs_dsps_amount": "13,993,000,000",
+     "incrs_dcrs_evl_lstmn": "-",
+     "trmend_blce_qy": "7,150,000",
+     "trmend_blce_qota_rt": "26.3",
+     "trmend_blce_acntbk_amount": "13,993,000,000",
+     "recent_bsns_year_fnnr_sttus_tot_assets": "51,424,000,000",
+     "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "-20,850,000,000",
+     "stlm_dt": "2024-12-31"
+    }
+   ],
+   "2025": [
+    {
+     "rcept_no": "20260323001643",
+     "corp_cls": "K",
+     "corp_code": "00560122",
+     "corp_name": "한울소재과학",
+     "inv_prm": "주식회사\n한울반도체",
+     "frst_acqs_de": "2024.06.27",
+     "invstmnt_purps": "경영\n참여",
+     "frst_acqs_amount": "13,993,000,000",
+     "bsis_blce_qy": "7,150,000",
+     "bsis_blce_qota_rt": "26.3",
+     "bsis_blce_acntbk_amount": "13,993,000,000",
+     "incrs_dcrs_acqs_dsps_qy": "-",
+     "incrs_dcrs_acqs_dsps_amount": "-",
+     "incrs_dcrs_evl_lstmn": "-",
+     "trmend_blce_qy": "7,150,000",
+     "trmend_blce_qota_rt": "21.7",
+     "trmend_blce_acntbk_amount": "13,993,000,000",
+     "recent_bsns_year_fnnr_sttus_tot_assets": "130,190,000,000",
+     "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "-18,210,000,000",
+     "stlm_dt": "2025-12-31"
+    }
+   ]
+  },
+  "rows_total": {
+   "2024": 7,
+   "2025": 7
+  }
+ }
+}

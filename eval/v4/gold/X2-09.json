@@ -1,0 +1,13 @@
+{
+  "id": "X2-09",
+  "type": "X2",
+  "question": "",
+  "as_of": "",
+  "gold": "",
+  "must_include": [],
+  "must_not": [],
+  "accept": [],
+  "evidence": [],
+  "why_hard": "",
+  "skip": "백산. 들어오고 빠진 사람이 한 명씩이고 주식 종류도 하나라 X2-01과 같은 꼴이다. 여유분으로 뽑은 묶음이라 남긴다."
+}

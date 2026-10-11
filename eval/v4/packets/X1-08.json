@@ -1,0 +1,160 @@
+{
+ "id": "X1-08",
+ "type": "X1",
+ "task": "두 보고서를 대조하는 문항이다. 이 회사(A)의 최대주주는 상장사 B다. A가 자기 사업보고서의 최대주주 현황에 적은 B의 주식 수·지분율(기초, 기말)과, B가 자기 사업보고서의 타법인출자 현황에 적은 A의 주식 수·지분율(기초, 기말)이 같은지, 다르면 어느 값이 어떻게 다른지를 묻는다. 2024·2025 사업연도 가운데 하나를 고르거나 둘을 함께 본다. B의 타법인출자 현황은 A를 적은 줄만 넣었다(전체 줄 수는 rows_total).",
+ "company": {
+  "name": "(주)하츠",
+  "stock_code": "066130",
+  "group": null
+ },
+ "largest_shareholders": {
+  "2024": [
+   {
+    "rcept_no": "20250318000548",
+    "corp_cls": "K",
+    "corp_code": "00221728",
+    "corp_name": "하츠",
+    "stock_knd": "보통주",
+    "nm": "(주)벽산",
+    "relate": "최대주주",
+    "bsis_posesn_stock_co": "5,929,979",
+    "bsis_posesn_stock_qota_rt": "46.33",
+    "trmend_posesn_stock_co": "5,929,979",
+    "trmend_posesn_stock_qota_rt": "46.33",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250318000548",
+    "corp_cls": "K",
+    "corp_code": "00221728",
+    "corp_name": "하츠",
+    "stock_knd": "보통주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "5,929,979",
+    "bsis_posesn_stock_qota_rt": "46.33",
+    "trmend_posesn_stock_co": "5,929,979",
+    "trmend_posesn_stock_qota_rt": "46.33",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250318000548",
+    "corp_cls": "K",
+    "corp_code": "00221728",
+    "corp_name": "하츠",
+    "stock_knd": "우선주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "-",
+    "bsis_posesn_stock_qota_rt": "-",
+    "trmend_posesn_stock_co": "-",
+    "trmend_posesn_stock_qota_rt": "-",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   }
+  ],
+  "2025": [
+   {
+    "rcept_no": "20260316001275",
+    "corp_cls": "K",
+    "corp_code": "00221728",
+    "corp_name": "하츠",
+    "stock_knd": "보통주",
+    "nm": "(주)벽산",
+    "relate": "최대주주",
+    "bsis_posesn_stock_co": "5,929,979",
+    "bsis_posesn_stock_qota_rt": "46.33",
+    "trmend_posesn_stock_co": "5,929,979",
+    "trmend_posesn_stock_qota_rt": "46.33",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260316001275",
+    "corp_cls": "K",
+    "corp_code": "00221728",
+    "corp_name": "하츠",
+    "stock_knd": "보통주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "5,929,979",
+    "bsis_posesn_stock_qota_rt": "46.33",
+    "trmend_posesn_stock_co": "5,929,979",
+    "trmend_posesn_stock_qota_rt": "46.33",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260316001275",
+    "corp_cls": "K",
+    "corp_code": "00221728",
+    "corp_name": "하츠",
+    "stock_knd": "우선주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "-",
+    "bsis_posesn_stock_qota_rt": "-",
+    "trmend_posesn_stock_co": "-",
+    "trmend_posesn_stock_qota_rt": "-",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   }
+  ]
+ },
+ "largest_shareholder": {
+  "name": "(주)벽산",
+  "stock_code": "007210",
+  "other_corp_investments_rows_for_company": {
+   "2024": [
+    {
+     "rcept_no": "20250321001224",
+     "corp_cls": "Y",
+     "corp_code": "00122898",
+     "corp_name": "벽산",
+     "inv_prm": "(주)하츠",
+     "frst_acqs_de": "-",
+     "invstmnt_purps": "경영참여",
+     "frst_acqs_amount": "40,019",
+     "bsis_blce_qy": "5,929,979",
+     "bsis_blce_qota_rt": "46.33",
+     "bsis_blce_acntbk_amount": "41,481",
+     "incrs_dcrs_acqs_dsps_qy": "-",
+     "incrs_dcrs_acqs_dsps_amount": "-",
+     "incrs_dcrs_evl_lstmn": "-",
+     "trmend_blce_qy": "5,929,979",
+     "trmend_blce_qota_rt": "46.33",
+     "trmend_blce_acntbk_amount": "41,481",
+     "recent_bsns_year_fnnr_sttus_tot_assets": "158,134",
+     "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "8,881",
+     "stlm_dt": "2024-12-31"
+    }
+   ],
+   "2025": [
+    {
+     "rcept_no": "20260323001448",
+     "corp_cls": "Y",
+     "corp_code": "00122898",
+     "corp_name": "벽산",
+     "inv_prm": "(주)하츠",
+     "frst_acqs_de": "-",
+     "invstmnt_purps": "경영참여",
+     "frst_acqs_amount": "40,019,000,000",
+     "bsis_blce_qy": "5,929,979",
+     "bsis_blce_qota_rt": "46.33",
+     "bsis_blce_acntbk_amount": "41,481,000,000",
+     "incrs_dcrs_acqs_dsps_qy": "-",
+     "incrs_dcrs_acqs_dsps_amount": "-",
+     "incrs_dcrs_evl_lstmn": "-",
+     "trmend_blce_qy": "5,929,979",
+     "trmend_blce_qota_rt": "46.33",
+     "trmend_blce_acntbk_amount": "41,481,000,000",
+     "recent_bsns_year_fnnr_sttus_tot_assets": "159,182,000,000",
+     "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "9,065,000,000",
+     "stlm_dt": "2025-12-31"
+    }
+   ]
+  },
+  "rows_total": {
+   "2024": 31,
+   "2025": 29
+  }
+ }
+}

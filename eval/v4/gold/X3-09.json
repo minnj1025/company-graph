@@ -1,0 +1,13 @@
+{
+  "id": "X3-09",
+  "type": "X3",
+  "question": "",
+  "as_of": "",
+  "gold": "",
+  "must_include": [],
+  "must_not": [],
+  "accept": [],
+  "evidence": [],
+  "why_hard": "",
+  "skip": "핑거. 정정이 한 번이고 금액 차이가 단순하다(7,091,280,000 → 7,420,280,000)."
+}

@@ -1,0 +1,243 @@
+{
+ "id": "X4-11",
+ "type": "X4",
+ "task": "두 종류의 관계를 엮는 문항이다. 이 회사가 2025년에 낸 공급계약 공시 전부(정정 포함)와, 사업보고서의 최대주주 현황·타법인출자 현황·계열회사 표다. 2025년에 계약을 공시한 상대 가운데 이 회사와 지분으로 이어진 곳(이 회사의 주주이거나 이 회사가 출자한 곳)이 어디인지, 그 지분율이 얼마인지를 묻는다. 계약 원문의 \"회사와의 관계\" 칸만이 아니라 주주·출자 표와 맞춰 봐야 답할 수 있게 쓴다.",
+ "company": {
+  "name": "(주)넥슨게임즈",
+  "stock_code": "225570",
+  "group": "넥슨"
+ },
+ "year": 2025,
+ "filings": [
+  {
+   "rcept_no": "20250430901571",
+   "filed": "2025-04-30",
+   "report": "[기재정정]단일판매ㆍ공급계약체결",
+   "cells": "넥슨게임즈/단일판매ㆍ공급계약체결/(2025.04.30)단일판매ㆍ공급계약체결 | 정정신고(보고) | 정정일자 | 2025-04-30 | 1. 정정관련 공시서류 | 단일판매ㆍ공급계약체결 | 2. 정정관련 공시서류제출일 | 2021-09-27 | 3. 정정사유 | 유보기한 만료에 따른 유보사항 공시 | 4. 정정사항 | 정정항목 | 정정전 | 정정후 | 2. 계약내역 | 확정계약금액 : | - | 계약금액 총액(원) : | - | 매출액 대비(%) : - | 확정계약금액 : | 15,000,000,000 | 계약금액 총액(원) : | 15,000,000,000 | 매출액 대비(%) : 18.43% | 5. 계약기간 | 종료일 : 2025-04-30 | 종료일 : - | 6. 주요 계약조건 | 계약상대방과의 비밀유지의무 조항에 의거하여 기재하지 않습니다. | - 이니셜 로열티 : | 8,000,000,000원 | - MG : 7,000,000,000원 | 9. 공시유보 관련내용 | 유보기한 : 2025-04-30 | 유보사유 : 계약상대방과의 퍼블리싱 계약 비밀유지 조항에 의거 '2. 계약내역의 계약금액'과 '6. 주요 계약 조건'을 공시유보함 | 유보기한 : - | 유보사유 : - | 10. 기타 투자판단에 참고할 사항 | 1. 상기 당사의 최근 매출액은 2020년도 개별 재무제표 기준 금액입니다. | 2. 본 계약의 계약금액이 최근 사업연도 매출액의 100분의 10이상에 해당되어 수시공시 사항에 해당됩니다. | 3. 상기 계약상대방의 최근 매출액은 2020년도 별도 재무제표 기준 금액입니다. | 4. 상기 계약기간은 개발 진행 상황 및 서비스 런칭 시점에 따라 변경될 수 있습니다. | 1. 상기 당사의 최근 매출액은 2020년도 개별 재무제표 기준 금액입니다. | 2. 본 계약의 계약금액이 최근 사업연도 매출액의 100분의 10이상에 해당되어 수시공시 사항에 해당됩니다. | 3. 상기 계약상대방의 최근 매출액은 2020년도 별도 재무제표 기준 금액입니다. | 4. 상기 계약기간은 개발 진행 상황 및 서비스 런칭 시점에 따라 변경될 수 있습니다. | 5. 상기 계약기간은 계약의 효력이 발생하는 계약체결일로부터 정식 서비스 개시 후 3년까지 이며, 계약만료일 1개월 전까지 계약 당사자 간 별도의 합의가 없을 경우 1년씩 자동 연장되는 조건입니다.(계약기간은 사업추진 상황에 따라 변경될 수 있습니다.) | - | 단일판매ㆍ공급계약체결 | 1. 판매ㆍ공급계약 내용 | 모바일 게임 '프로젝트 XH' 퍼블리싱 계약 | 2. 계약내역 | 조건부 계약여부 | 미해당 | 확정 계약금액 | 15,000,000,000 | 조건부 계약금액 | - | 계약금액 총액(원) | 15,000,000,000 | 최근 매출액(원) | 81,404,202,243 | 매출액 대비(%) | 18.43 | 3. 계약상대방 | (주)넥슨코리아 | - 최근 매출액(원) | 2,155,482,159,790 | - 주요사업 | 게임소프트웨어 개발 및 공급업 | - 회사와의 관계 | 최대주주 | - 회사와 최근 3년간 동종계약 이행여부 | 해당 | 4. 판매ㆍ공급지역 | 전세계 | 5. 계약기간 | 시작일 | 2021-09-27 | 종료일 | - | 6. 주요 계약조건 | 계약금ㆍ선급금 유무 | 유 | 대금지급 조건 등 | - 이니셜 로열티 : 8,000,000,000원 | - MG : 7,000,000,000원 | 7. 판매ㆍ공급방식 | 자체생산 | 해당 | 외주생산 | 미해당 | 기타 | - | 8. 계약(수주)일자 | 2021-09-27 | 9. 공시유보 관련내용 | 유보기한 | - | 유보사유 | - | 1"
+  },
+  {
+   "rcept_no": "20250929900578",
+   "filed": "2025-09-29",
+   "report": "[기재정정]단일판매ㆍ공급계약체결",
+   "cells": "넥슨게임즈/단일판매ㆍ공급계약체결/(2025.09.29)단일판매ㆍ공급계약체결 | 정정신고(보고) | 정정일자 | 2025-09-29 | 1. 정정관련 공시서류 | 단일판매ㆍ공급계약체결 | 2. 정정관련 공시서류제출일 | 2021-07-21 | 3. 정정사유 | 유보기한 만료에 따른 유보사항 공시 | 정식서비스일 확정에 따른 계약기간(종료일) 변경 | 4. 정정사항 | 정정항목 | 정정전 | 정정후 | 2. 계약내역 | 확정계약금액 : | - | 계약금액 총액(원) : | - | 매출액 대비(%) : - | 확정계약금액 : | 30,000,000,000 | 계약금액 총액(원) : | 30,000,000,000 | 매출액 대비(%) :36.85% | 5. 계약기간 | 종료일 : 2025-09-30 | 종료일 : 2027-07-01 | 6. 주요 계약조건 | 계약상대방과의 비밀유지의무 조항에 의거하여 기재하지 않습니다. | - 이니셜 로열티 : | 15,000,000,000원 | - MG : 15,000,000,000원 | 9. 공시유보 관련내용 | 유보기한 : 2025-09-30 | 유보사유 : 계약상대방과의 퍼블리싱 계약 비밀유지 조항에 의거 '2. 계약내역의 계약금액'과 '6. 주요 계약 조건'을 공시유보함 | 유보기한 : - | 유보사유 : - | - | 단일판매ㆍ공급계약체결 | 1. 판매ㆍ공급계약 내용 | 온라인 게임 '프로젝트 매그넘(가칭)' 퍼블리싱 계약 | 2. 계약내역 | 조건부 계약여부 | 미해당 | 확정 계약금액 | 30,000,000,000 | 조건부 계약금액 | - | 계약금액 총액(원) | 30,000,000,000 | 최근 매출액(원) | 81,404,202,243 | 매출액 대비(%) | 36.85 | 3. 계약상대방 | (주)넥슨코리아 | - 최근 매출액(원) | 2,155,482,159,790 | - 주요사업 | 게임소프트웨어 개발 및 공급업 | - 회사와의 관계 | 최대주주 | - 회사와 최근 3년간 동종계약 이행여부 | 해당 | 4. 판매ㆍ공급지역 | 전세계(중국 본토제외) | 5. 계약기간 | 시작일 | 2021-07-20 | 종료일 | 2027-07-01 | 6. 주요 계약조건 | 계약금ㆍ선급금 유무 | 유 | 대금지급 조건 등 | - 이니셜 로열티 : 15,000,000,000원 | - MG : 15,000,000,000원 | 7. 판매ㆍ공급방식 | 자체생산 | 해당 | 외주생산 | 미해당 | 기타 | - | 8. 계약(수주)일자 | 2021-07-20 | 9. 공시유보 관련내용 | 유보기한 | - | 유보사유 | - | 10. 기타 투자판단에 참고할 사항 | 1. 상기 당사의 최근 매출액은 2020년도 개별 재무제표 기준 금액입니다. | 2. 본 계약의 계약금액이 최근사업연도 매출액의 100분의 10이상에 해당되어 수시공시 사항에 해당됩니다. | 3. 상기 계약상대방의 최근 매출액은 2020년도 별도 재무제표 기준 금액입니다. | 4. 상기 계약기간은 계약의 효력이 발생하는 계약체결일로부터 정식 서비스 개시 후 3년까지 이며, 계약만료일 1개월 전까지 계약 당사자 간 별도의 합의가 없을 경우 1년씩 자동 연장되는 조건입니다.(계약기간은 사업추진 상황에 따라 변경될 수 있습니다.) | ※ 관련공시 | -"
+  }
+ ],
+ "largest_shareholders": {
+  "2024": [
+   {
+    "rcept_no": "20250320001202",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "stock_knd": "보통주",
+    "nm": "(주)넥슨코리아",
+    "relate": "최대주주",
+    "bsis_posesn_stock_co": "39,524,879",
+    "bsis_posesn_stock_qota_rt": "60.07",
+    "trmend_posesn_stock_co": "39,524,879",
+    "trmend_posesn_stock_qota_rt": "60.01",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250320001202",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "stock_knd": "보통주",
+    "nm": "박용현",
+    "relate": "대표이사",
+    "bsis_posesn_stock_co": "2,215,549",
+    "bsis_posesn_stock_qota_rt": "3.37",
+    "trmend_posesn_stock_co": "2,215,549",
+    "trmend_posesn_stock_qota_rt": "3.37",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250320001202",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "stock_knd": "보통주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "41,740,428",
+    "bsis_posesn_stock_qota_rt": "63.44",
+    "trmend_posesn_stock_co": "41,740,428",
+    "trmend_posesn_stock_qota_rt": "63.38",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250320001202",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "stock_knd": "-",
+    "nm": "계",
+    "bsis_posesn_stock_co": "-",
+    "bsis_posesn_stock_qota_rt": "-",
+    "trmend_posesn_stock_co": "-",
+    "trmend_posesn_stock_qota_rt": "-",
+    "rm": "-",
+    "stlm_dt": "2024-12-31"
+   }
+  ],
+  "2025": [
+   {
+    "rcept_no": "20260319000472",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "stock_knd": "보통주",
+    "nm": "(주)넥슨코리아",
+    "relate": "최대주주",
+    "bsis_posesn_stock_co": "39,524,879",
+    "bsis_posesn_stock_qota_rt": "60.01",
+    "trmend_posesn_stock_co": "39,524,879",
+    "trmend_posesn_stock_qota_rt": "60.01",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260319000472",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "stock_knd": "보통주",
+    "nm": "박용현",
+    "relate": "대표이사",
+    "bsis_posesn_stock_co": "2,215,549",
+    "bsis_posesn_stock_qota_rt": "3.37",
+    "trmend_posesn_stock_co": "2,215,549",
+    "trmend_posesn_stock_qota_rt": "3.37",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260319000472",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "stock_knd": "보통주",
+    "nm": "계",
+    "bsis_posesn_stock_co": "41,740,428",
+    "bsis_posesn_stock_qota_rt": "63.38",
+    "trmend_posesn_stock_co": "41,740,428",
+    "trmend_posesn_stock_qota_rt": "63.38",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260319000472",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "stock_knd": "-",
+    "nm": "계",
+    "bsis_posesn_stock_co": "-",
+    "bsis_posesn_stock_qota_rt": "-",
+    "trmend_posesn_stock_co": "-",
+    "trmend_posesn_stock_qota_rt": "-",
+    "rm": "-",
+    "stlm_dt": "2025-12-31"
+   }
+  ]
+ },
+ "other_corp_investments": {
+  "2024": [
+   {
+    "rcept_no": "20250320001202",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "inv_prm": "(주)중앙판교개발",
+    "frst_acqs_de": "2017.09.06",
+    "invstmnt_purps": "경영참여",
+    "frst_acqs_amount": "29,918,000,000",
+    "bsis_blce_qy": "81,511,037",
+    "bsis_blce_qota_rt": "99.90",
+    "bsis_blce_acntbk_amount": "29,918,000,000",
+    "incrs_dcrs_acqs_dsps_qy": "-",
+    "incrs_dcrs_acqs_dsps_amount": "-",
+    "incrs_dcrs_evl_lstmn": "-",
+    "trmend_blce_qy": "81,511,037",
+    "trmend_blce_qota_rt": "99.90",
+    "trmend_blce_acntbk_amount": "29,918,000,000",
+    "recent_bsns_year_fnnr_sttus_tot_assets": "123,725,000,000",
+    "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "1,672,000,000",
+    "stlm_dt": "2024-12-31"
+   },
+   {
+    "rcept_no": "20250320001202",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "inv_prm": "합계",
+    "frst_acqs_de": "-",
+    "invstmnt_purps": "-",
+    "frst_acqs_amount": "-",
+    "bsis_blce_qy": "-",
+    "bsis_blce_qota_rt": "-",
+    "bsis_blce_acntbk_amount": "29,918,000,000",
+    "incrs_dcrs_acqs_dsps_qy": "-",
+    "incrs_dcrs_acqs_dsps_amount": "-",
+    "incrs_dcrs_evl_lstmn": "-",
+    "trmend_blce_qy": "-",
+    "trmend_blce_qota_rt": "-",
+    "trmend_blce_acntbk_amount": "29,918,000,000",
+    "recent_bsns_year_fnnr_sttus_tot_assets": "-",
+    "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "-",
+    "stlm_dt": "2024-12-31"
+   }
+  ],
+  "2025": [
+   {
+    "rcept_no": "20260319000472",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "inv_prm": "(주)중앙판교개발",
+    "frst_acqs_de": "2017.09.06",
+    "invstmnt_purps": "경영참여",
+    "frst_acqs_amount": "29,918,000,000",
+    "bsis_blce_qy": "81,511,037",
+    "bsis_blce_qota_rt": "99.90",
+    "bsis_blce_acntbk_amount": "29,918,000,000",
+    "incrs_dcrs_acqs_dsps_qy": "-",
+    "incrs_dcrs_acqs_dsps_amount": "-",
+    "incrs_dcrs_evl_lstmn": "-",
+    "trmend_blce_qy": "81,511,037",
+    "trmend_blce_qota_rt": "99.90",
+    "trmend_blce_acntbk_amount": "29,918,000,000",
+    "recent_bsns_year_fnnr_sttus_tot_assets": "121,720,000,000",
+    "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "1,994,000,000",
+    "stlm_dt": "2025-12-31"
+   },
+   {
+    "rcept_no": "20260319000472",
+    "corp_cls": "K",
+    "corp_code": "01096341",
+    "corp_name": "넥슨게임즈",
+    "inv_prm": "합계",
+    "frst_acqs_de": "-",
+    "invstmnt_purps": "-",
+    "frst_acqs_amount": "-",
+    "bsis_blce_qy": "-",
+    "bsis_blce_qota_rt": "-",
+    "bsis_blce_acntbk_amount": "29,918,000,000",
+    "incrs_dcrs_acqs_dsps_qy": "-",
+    "incrs_dcrs_acqs_dsps_amount": "-",
+    "incrs_dcrs_evl_lstmn": "-",
+    "trmend_blce_qy": "-",
+    "trmend_blce_qota_rt": "-",
+    "trmend_blce_acntbk_amount": "29,918,000,000",
+    "recent_bsns_year_fnnr_sttus_tot_assets": "-",
+    "recent_bsns_year_fnnr_sttus_thstrm_ntpf": "-",
+    "stlm_dt": "2025-12-31"
+   }
+  ]
+ },
+ "annual_report_2025": "20260319000472",
+ "affiliate_table_2025_cells": "(기준일 : | 2025년 12월 31일 | ) | (단위 : 사) | 상장여부 | 회사수 | 기업명 | 법인등록번호 | 상장 | 2 | NEXON Co., Ltd. | 6010001081280 | (주)넥슨게임즈 | 110111-5781277 | 비상장 | 100 | (주)엔엑스씨 | 110111-0666838 | 브이아이피사모주식형펀드일호 | 110111-2775794 | 스토케코리아(유) | 110114-0109618 | 유한책임회사 와이즈키즈 | 110115-0007919 | 유한책임회사 엔엑스프로퍼티스 | 110115-0007901 | (주)엔엑스브이피 | 110111-9159090 | (주)코빗 | 110111-5175975 | (주)코드 | 110111-8019328 | (주)넥슨코리아 | 110111-3320241 | (주)넥슨네트웍스 | 110111-1122392 | (주)넥슨스페이스 | 131111-0349249 | (주)네오플 | 110111-2207268 | (주)넥슨커뮤니케이션즈 | 180111-0777483 | (주)엔미디어플랫폼 | 134111-0134473 | (주)중앙판교개발 | 110111-1269954 | (주)데브캣 | 110111-7586039 | (주)니트로스튜디오 | 110111-7600623 | (주)넥슨유니버스 | 131111-0689504 | (주)버튼스 | 110111-8876463 | (주)민트로켓 | 131111-0749259 | (주)엔진스튜디오 | 110111-4755611 | NXMH B.V. | 0830839345 | NXC, LLC | 81-2073956 | NXC Japan, LLC | 0100-03-023547 | NIS Credit Opportunities Ltd., Class INDIAN OPPORTUNITIES 2 - USD | 616881 | NIS Indra Fund Ltd. | 2027783 | 9293 TITANS LLC | 85-2265049 | 9293 TITANS III, LLC | 86-1474025 | NXC ll, LLC | 86-2418589 | Reasonable Ventures, LLC | 86-2246938 | FGX Mobility Ltd. | 374075 | 9293 TITANS V, LLC | 87-2130899 | NXC III, LLC | 87-2414525 | NXC US, Inc. | 87-2269830 | NXMH LLC | 46-4395753 | NXMH AS | 912 235 823 | Bitstamp Holdings N.V | 0689-668-713 | NXMH CIV | 0741.615.082 | NXMH CIV 2 | 0770.425.270 | VALTUM FUND | 549300HJ622F34I1XT32 | 347 BOWERY COMMERCIAL HOLDINGS, LLC | 35-2572494 | 738 Broadway LLC | 38-4100184 | ALIGNMENT CREDIT FUND II LP | 7681863 | STOKKE AS | 970983325 | STOKKE AMERIKA AS | 968612840 | Stokke Fabriker AB | 556127-2963 | Stokke Danmark ApS | ApS189917 | STOKKE NEDERLAND B.V. | 000020486375 | Stokke GmbH | HRB245516 | Stokke Ges.m.b.H. | 033266313 | Stokke AG | CHE-106.282.257 | STOKKE FRANCE | RCS LYON B 384 717 328 | Stokke UK Limited | 03406887 | Stokke Mobiliario SL | B 20413183 | STOKKE SRL | 01356470037 | Stokke Co., Ltd. | 1010001137310 | STOKKE (CHINA) LIMITED | 310000400700879 | Stokke LLC | 52-2240815 | Stokke Furniture S.R.L | IT11838600960 | Babyzen S.A.S. | 524760923 | EVOMOVE SK s.r.o. | 48 107 204 | STOKKE HONG KONG LIMITED(구, BabyZen Ltd.) | 1271178 | Innovative Fund, LLC | 47-5069625 | Simple Capital Future, LLC | 81-3576976 | Simple Capital Future Two, LLC | 83-1502183 | COLLAB+CURRENCY, L.P. | 0001743330 | Collaboraitve Shared Future 2022, L.P. | 88-0561416 | Collaborative Growth II, L.P. | 88-0614686 | Collab Shared Future 2023, L.P. | 92-1118290 | Simple Capital Diversified Assets, LLC | 99-0562744 | SCHESIR S.P.A. | IT03765340967 | AGRAS DELIC SA | CH-501.3.019.089-8 | Agras Petfoods B.V. | 84048964 | FutureFood, LLC | 47-5024483 | SCF-CH, INC | 6194917 | Collab Q-D, LLC | 6354049 | NEXON America, Inc. | 68-0610552 | Lexian Software Development (Shanghai) Co., Ltd. | 9131000075791412XE | Embark Studios AB | 559172-3019 | Nexon Filmed Entertainment Inc. | 87-3364015 | NEXON TAIWAN LIMITED | 42832174 | NEXON (Thailand) Co., Ltd. | 0105553085241 | Toben Studio Inc. | 92-0610038 | NEXON US Holding Inc. | 81-1366084 | Brothers International, LLC | 30-0950744 | NEXON NETWORKS VINA COMPANY LIMITED | 0315638935 | NEXON DEV VINA LIMITED COMPANY | 0317233733 | methinks Technologies, Inc. | 81-5060965 | NEXON BLOCK SINGAPORE PTE. LTD. | 202300772M | NEXON UNIVERSE GLOBAL LIMITED | 14236 | NEXPACE LIMITED | 14290 | STOKKE CANADA CORP. | 1001250000 | NEXON CREATIVE STUDIO VINA LIMITED COMPANY | 0319144510 | AGF I PS, Inc. | 10155644 | AGF I PS, LP | 10155648 | AGF I SMG, Inc. | 6994021 | AGF I WH, Inc. | 2705519 | AGF I WH, LP | 2732452 | Collab+Air Fund I, L.P. | 39-4824118 | Nexon Animation Development LLC | 6299624"
+}

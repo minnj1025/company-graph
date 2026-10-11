@@ -1,0 +1,13 @@
+{
+  "id": "X1-09",
+  "type": "X1",
+  "question": "",
+  "as_of": "",
+  "gold": "",
+  "must_include": [],
+  "must_not": [],
+  "accept": [],
+  "evidence": [],
+  "why_hard": "",
+  "skip": "에쎈테크·대창. 두 보고서의 값이 모두 같다. 일치 문항은 X1-08 하나로 충분하다."
+}
