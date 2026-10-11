@@ -44,9 +44,26 @@ _FAMILY_LIST = "; ".join(f"[{field}] " + ", ".join(family for f, family, _ in FA
                          for field in dict.fromkeys(f for f, _, _ in FAMILIES) if field != "기타")
 _AS_OF = {"type": "string", "description": "조회 시점 (YYYY-MM-DD). 이 날짜까지 공시된 것만 본다. 질문에 시점이 없으면 오늘 날짜"}
 _COMPANY = {"type": "integer", "description": "find_company 가 돌려준 company_id"}
+COMPOSITE_TOOLS = ("compare_reports", "holder_changes")   # 자주 나오는 비교 절차를 묶은 도구. 환경 변수 ASK_COMPOSITE=1 일 때만 준다
 SCREEN_TOOL = "show_on_graph"   # 조회가 아니라 화면을 움직이는 도구. 환경 변수 ASK_SCREEN_TOOL=0 이면 Agent에게 주지 않는다
 
 TOOLS = [
+    {"name": "compare_reports",
+     "description": "같은 지분을 두 회사가 저마다의 사업보고서에 어떻게 적었는지 한 번에 대조한다. "
+                    "company_id 는 지분을 내준 회사(그 회사의 최대주주 현황), holder_id 는 지분을 가진 회사(그 회사의 타법인출자 현황). "
+                    "두 표의 기초·기말 주식수와 지분율을 나란히 돌려주고, 서로 다른 칸을 differences 에 적는다. "
+                    "두 보고서가 같은 숫자를 적었는지, 한 해 동안 어떻게 바뀌었는지를 물으면 get_relations 를 여러 번 부르지 말고 이것을 쓴다.",
+     "input_schema": {"type": "object", "properties": {"company_id": _COMPANY, "holder_id": _COMPANY, "as_of": _AS_OF},
+                      "required": ["company_id", "holder_id", "as_of"]}},
+    {"name": "holder_changes",
+     "description": "한 회사의 최대주주 현황(최대주주와 특수관계인, 보통주)을 두 시점에서 견주어 명단의 변동을 돌려준다: "
+                    "새로 들어온 주주(entered), 명단에서 빠졌거나 0주가 된 주주(left), 주식수가 바뀐 주주(changed), 그대로인 주주(same), 두 시점의 합계 줄. "
+                    "earlier 와 later 는 조회 시점(YYYY-MM-DD)이고 그날까지 나온 가장 최근 사업보고서를 쓴다. "
+                    "2023 사업연도 말과 2025 사업연도 말을 견주려면 earlier=2024-06-30, later=2026-06-30 처럼 준다.",
+     "input_schema": {"type": "object", "properties": {"company_id": _COMPANY,
+                                                       "earlier": {"type": "string", "description": "앞 시점 (YYYY-MM-DD)"},
+                                                       "later": {"type": "string", "description": "뒤 시점 (YYYY-MM-DD)"}},
+                      "required": ["company_id", "earlier", "later"]}},
     {"name": "find_company",
      "description": "이름이나 6자리 종목코드로 기업을 찾는다. 다른 도구를 쓰기 전에 반드시 이것으로 company_id 를 얻는다. "
                     "후보가 여럿이면 종목코드와 시장을 보고 고르고, 고를 수 없으면 사용자에게 되묻는다.",
@@ -318,6 +335,98 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
             "note": query.NOTICE if not rows else (
                 "이 목록에 조회한 기업 자신은 들어 있지 않습니다. 같은 집단의 회사를 세거나 나열할 때는 자신을 더하세요"
                 if rel_type == "affiliate" and direction == "out" else None)}
+
+
+def _count(text) -> int | None:
+    digits = re.sub(r"[^0-9]", "", str(text or ""))
+    return int(digits) if digits else None
+
+
+def _ratio(text) -> float | None:
+    try:
+        return float(str(text).replace(",", "").strip())
+    except (TypeError, ValueError):
+        return None
+
+
+def compare_reports(db, company_id, holder_id, as_of) -> dict:
+    company, holder, when = _company(db, company_id), _company(db, holder_id), _date(as_of, "as_of", required=True)
+    rows = [r for r in query.current_rows(db, when, [company.company_id], ["equity"], "in")
+            if r.subject_company_id == holder.company_id and not (r.attrs or {}).get("exited")]
+    if not rows:
+        return {"company": _brief(company), "holder": _brief(holder), "reports": [],
+                "note": "그 시점의 사업보고서에서 이 지분을 적은 표를 찾지 못했습니다. find_company 로 두 회사를 다시 확인하거나 get_relations 로 주주 목록을 보세요"}
+    latest = max(r.as_of_date for r in rows)
+    reports = []
+    for r in sorted((r for r in rows if r.as_of_date == latest), key=lambda r: (r.attrs or {}).get("source") != "largest_shareholders"):
+        a = r.attrs or {}
+        mine = a.get("source") == "largest_shareholders"
+        reports.append({"table": _TABLES.get(a.get("source"), a.get("source")), "filer": (company if mine else holder).label,
+                        "rcept_no": r.rcept_no, "as_of_date": r.as_of_date.isoformat(),
+                        "name_in_report": a.get("holder_name_raw") if mine else r.object_name_raw,
+                        "begin": {"shares": _count(a.get("shares_begin")), "pct": _ratio(a.get("pct_begin"))},
+                        "end": {"shares": _count(a.get("shares")), "pct": float(r.value_num)}})
+    tables = {r["table"] for r in reports}
+    differences, same = [], []
+    if len(tables) == 2:
+        first, second = next(r for r in reports if r["table"] == "최대주주 현황"), next(r for r in reports if r["table"] == "타법인출자 현황")
+        for when_name, key in (("기초", "begin"), ("기말", "end")):
+            for what, field in (("주식수", "shares"), ("지분율", "pct")):
+                a, b = first[key][field], second[key][field]
+                label = f"{when_name} {what}"
+                if a is None or b is None:
+                    differences.append(f"{label}: 한쪽 표에 값이 없음 ({first['filer']} {a}, {second['filer']} {b})")
+                elif a != b:
+                    differences.append(f"{label}: {first['filer']}의 최대주주 현황 {a}, {second['filer']}의 타법인출자 현황 {b}")
+                else:
+                    same.append(label)
+    return {"company": _brief(company), "holder": _brief(holder), "as_of": when.isoformat(), "reports": reports,
+            "both_tables_found": len(tables) == 2, "differences": differences, "same": same,
+            "note": "begin 은 그 보고서의 기초 칸, end 는 기말 칸에 적힌 값입니다. 지분율은 표에 적힌 그대로이며 두 회사가 다른 기준(발행주식총수, 의결권 있는 주식)으로 적을 수 있습니다. "
+                    "한쪽 표만 있으면 both_tables_found 가 false 이고 대조할 수 없습니다"}
+
+
+def _holder_list(db, company: Company, when: date) -> tuple[dict, dict | None, str | None]:
+    """그 시점의 최대주주 현황: 이름 → 줄, 합계 줄, 접수번호."""
+    rows = [r for r in query.current_rows(db, when, [company.company_id], ["equity"], "in")
+            if (r.attrs or {}).get("source") == "largest_shareholders"]
+    out, total, rcept = {}, None, None
+    for r in rows:
+        a = r.attrs or {}
+        name = a.get("holder_name_raw") or r.subject_name_raw
+        out[name] = {"name": name, "relation_to_filer": " ".join((a.get("relation_to_filer") or "").split()) or None,
+                     "shares": _count(a.get("shares")) or 0, "pct": float(r.value_num), "shares_begin": _count(a.get("shares_begin")),
+                     "exited": bool(a.get("exited")), "note": a.get("note")}
+        total, rcept = a.get("table_total") or total, r.rcept_no
+    return out, total, rcept
+
+
+def holder_changes(db, company_id, earlier, later) -> dict:
+    company = _company(db, company_id)
+    first, second = _date(earlier, "earlier", required=True), _date(later, "later", required=True)
+    if first >= second:
+        raise ToolError("earlier 는 later 보다 앞선 날짜여야 합니다")
+    (before, total_a, rcept_a), (after, total_b, rcept_b) = _holder_list(db, company, first), _holder_list(db, company, second)
+    if not before or not after:
+        return {"company": _brief(company), "found": {"earlier": bool(before), "later": bool(after)},
+                "note": "두 시점 가운데 최대주주 현황이 없는 쪽이 있습니다. 주주 자료는 사업보고서에서만 옵니다"}
+    if rcept_a == rcept_b:
+        return {"company": _brief(company), "note": f"두 시점이 같은 사업보고서({rcept_a})를 가리킵니다. 날짜를 한 해 이상 벌려 주세요"}
+    held = lambda row: row is not None and row["shares"] > 0
+    moved = lambda n: (before[n]["shares"], before[n]["pct"]) != (after[n]["shares"], after[n]["pct"])
+    both = [n for n in after if held(after[n]) and held(before.get(n))]
+    return {"company": _brief(company),
+            "earlier": {"as_of": first.isoformat(), "rcept_no": rcept_a, "table_total": total_a},
+            "later": {"as_of": second.isoformat(), "rcept_no": rcept_b, "table_total": total_b},
+            "entered": [after[n] for n in after if held(after[n]) and not held(before.get(n))],
+            "left": [{**before[n], "later": "명단에 없음" if n not in after else "0주"} for n in before if held(before[n]) and not held(after.get(n))],
+            "changed": [{"name": n, "relation_to_filer": after[n]["relation_to_filer"], "shares_earlier": before[n]["shares"],
+                         "shares_later": after[n]["shares"], "pct_earlier": before[n]["pct"], "pct_later": after[n]["pct"]} for n in both if moved(n)],
+            "same": [{"name": n, "shares": after[n]["shares"], "pct": after[n]["pct"], "relation_to_filer": after[n]["relation_to_filer"]}
+                     for n in both if not moved(n)],
+            "already_zero_at_earlier": [n for n in before if not held(before[n])],
+            "note": "보통주 줄만 견줍니다(우선주·종류주 줄은 들어 있지 않습니다). 이름은 보고서에 적힌 그대로 맞추므로, 회사가 이름을 바꿨으면 entered 와 left 에 따로 나올 수 있습니다. "
+                    "already_zero_at_earlier 는 앞 시점에 이미 0주였던 이름으로, 빠진 사람으로 세지 않습니다. 지분율 0.0 은 반올림한 값입니다"}
 
 
 def get_filings(db, company_id, as_of, doc_type: str, filed_from=None, filed_to=None) -> dict:
@@ -762,10 +871,11 @@ def show_on_graph(db, highlight, also=None) -> dict:
 def tools() -> list[dict]:
     """Agent에게 줄 도구 목록."""
     import os
-    return [t for t in TOOLS if t["name"] != SCREEN_TOOL or os.environ.get("ASK_SCREEN_TOOL", "1") != "0"]
+    return [t for t in TOOLS if (t["name"] != SCREEN_TOOL or os.environ.get("ASK_SCREEN_TOOL", "1") != "0")
+            and (t["name"] not in COMPOSITE_TOOLS or os.environ.get("ASK_COMPOSITE", "0") == "1")]
 
 
-FUNCTIONS = {SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
+FUNCTIONS = {"compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
              "search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
              "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}

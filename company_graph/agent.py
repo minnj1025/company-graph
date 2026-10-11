@@ -8,13 +8,14 @@ Claude API를 부른다(유료). 실행: python -m company_graph.agent "질문" 
 """
 import argparse
 import json
+import os
 import re
 import time
 from datetime import date
 
 import anthropic
 
-from . import agent_tools
+from . import agent_tools, verify
 from .config import secret
 from .db import session
 
@@ -117,6 +118,21 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
     usage = {"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}
     calls, seen, started = [], set(), time.time()
     text, stop = "", None
+    # 답의 숫자를 조회 결과와 대조하고, 어긋나면 한 번만 다시 쓰게 한다 (ASK_VERIFY=1 일 때만)
+    checking = os.environ.get("ASK_VERIFY", "0") == "1"
+    bodies, checked = [], {"flagged": [], "retried": False, "left": []}
+
+    def doubt(written: str) -> list[str]:
+        """검증에 걸린 값. 이미 한 번 다시 쓰게 했으면 남은 것만 적어 두고 넘어간다."""
+        if not checking:
+            return []
+        found = verify.unsupported(split_followups(written)[0], bodies, when, question)
+        if checked["retried"]:
+            checked["left"] = found
+            return []
+        checked["flagged"] = found
+        checked["retried"] = bool(found)
+        return found
     with session() as db:
         for _ in range(max_turns):
             request = dict(model=model, max_tokens=16000, system=SYSTEM, tools=agent_tools.tools(), messages=messages,
@@ -134,7 +150,13 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
             messages.append({"role": "assistant", "content": response.content})
             if stop != "tool_use":
                 text = "\n".join(block.text for block in response.content if block.type == "text")
-                break
+                wrong = doubt(text)
+                if not wrong:
+                    break
+                messages.append({"role": "user", "content": verify.feedback(wrong)})
+                if on_event:
+                    on_event("turn", None)   # 흘려보낸 답을 지우고 다시 쓴다
+                continue
             # 답을 다 쓴 뒤에 화면 도구만 부른 차례: 쓴 글이 곧 답이다. 화면만 움직이고 여기서 끝낸다 (한 번 더 돌리면 답을 다시 쓰게 된다)
             wrote = "\n".join(block.text for block in response.content if block.type == "text").strip()
             used = [block.name for block in response.content if block.type == "tool_use"]
@@ -151,13 +173,17 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
                 # 이름이 _ 로 시작하는 값은 화면용이라 모델에게 보내지 않는다
                 body = json.dumps({k: v for k, v in result.items() if not k.startswith("_")}, ensure_ascii=False, default=str)
                 seen.update(re.findall(r"\b\d{14}\b", body))
+                bodies.append(body)
                 calls.append({"tool": block.name, "input": dict(block.input), "error": result.get("error"),
                               "total": result.get("total"), "chars": len(body)})
                 results.append({"type": "tool_result", "tool_use_id": block.id, "content": body,
                                 "is_error": "error" in result})
             if closing:
-                text, stop = wrote, "end_turn"
-                break
+                wrong = doubt(wrote)
+                if not wrong:
+                    text, stop = wrote, "end_turn"
+                    break
+                results.append({"type": "text", "text": verify.feedback(wrong)})
             messages.append({"role": "user", "content": results})
             if on_event:
                 on_event("turn", None)
@@ -165,7 +191,7 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
     cited = set(re.findall(r"\b\d{14}\b", text))
     return {"question": question, "as_of": when.isoformat(), "model": model, "answer": text, "followups": followups, "stop_reason": stop,
             "tool_calls": calls, "cited": sorted(cited), "cited_not_in_results": sorted(cited - seen),
-            "usage": usage, "seconds": round(time.time() - started, 1)}
+            "usage": usage, "seconds": round(time.time() - started, 1), **({"verify": checked} if checking else {})}
 
 
 def main():

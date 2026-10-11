@@ -140,6 +140,13 @@ def relations(db, as_of: date, *, company_ids=None, rel_types=None, direction: s
     return _reduce(rows, _latest_reports(db, as_of, filers) if filers else {}, as_of, include_exited)
 
 
+def current_rows(db, as_of: date, company_ids, rel_types, direction: str) -> list[Relation]:
+    """그 시점에 보이는 줄 가운데 회사마다 가장 최근 사업보고서의 것만. 선으로 합치지 않고 줄 그대로 돌려준다 (두 표를 나란히 볼 때 쓴다)."""
+    rows = _rows(db, as_of, company_ids, rel_types, direction)
+    latest = _latest_reports(db, as_of, {_filer(r) for r in rows if r.rel_type in ("equity", "affiliate")})
+    return [r for r in rows if r.rel_type not in ("equity", "affiliate") or latest.get(_filer(r)) == r.rcept_no]
+
+
 def coverage(db) -> dict:
     """무엇을 얼마나 모았는지. 빈 결과가 "관계 없음"인지 "모으지 않음"인지 구분하는 데 쓴다."""
     kinds = {}

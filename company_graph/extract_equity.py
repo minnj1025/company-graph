@@ -25,7 +25,7 @@ from .names import clean_reported, normalize
 
 YEARS = (2023, 2024, 2025)
 LISTED = ("Y", "K", "N")
-VERSION = "equity-4"  # 4: 최대주주 현황에서 0.00%로 찍힌 주주와 기간 중 빠진 주주, 기초 값, 합계 줄을 남기고 종류주 줄을 뺌. 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
+VERSION = "equity-5"  # 5: 타법인출자 현황의 기초 주식수·지분율도 남김. 4: 최대주주 현황에서 0.00%로 찍힌 주주와 기간 중 빠진 주주, 기초 값, 합계 줄을 남기고 종류주 줄을 뺌. 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
 
 
 TOTAL_NAMES = ("합계", "계", "소계")
@@ -175,7 +175,8 @@ def load_investments(db, company: Company, year: int, index, affiliates, names: 
             attrs={"source": "other_corp_investments", "link_reason": reason,
                    "raw_pct": (row.get("trmend_blce_qota_rt") or "").strip(), "purpose": row.get("invstmnt_purps"),
                    "first_acquired": row.get("frst_acqs_de"), "shares": row.get("trmend_blce_qy"),
-                   "book_value": row.get("trmend_blce_acntbk_amount")}))
+                   "book_value": row.get("trmend_blce_acntbk_amount"),
+                   "shares_begin": row.get("bsis_blce_qy"), "pct_begin": (row.get("bsis_blce_qota_rt") or "").strip()}))
     # 같은 보고서에서 extract_invest_detail 이 넣은 줄(표준 표 밖의 출자)은 건드리지 않는다
     counts = loader.sync(db, [Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
                               Relation.subject_company_id == company.company_id,
