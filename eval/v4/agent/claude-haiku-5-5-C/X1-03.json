@@ -1,0 +1,145 @@
+{
+ "question": "티사이언티픽의 2024 사업연도 최대주주 현황에 적힌 최대주주(회사)의 기초·기말 주식 수와 지분율이, 그 최대주주 회사의 2024 사업연도 타법인출자 현황에 적힌 티사이언티픽 주식 수·지분율과 같은지 대조해 주세요. 다른 값이 있으면 어느 것인지 짚어 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "결론: 주식 수는 기초·기말 모두 같습니다. 다른 값은 기초 지분율 하나이고, 티사이언티픽 보고서에는 27.61%, 위지트 보고서에는 27.68%로 적혀 있습니다.\n\n2024 사업연도 기준으로 두 표를 나란히 놓았습니다. 최대주주는 위지트(주)입니다.\n\n| 항목 | 티사이언티픽 「최대주주 현황」 (접수번호 20250814003224, 기재정정) | 위지트 「타법인출자 현황」 (접수번호 20250321001992) | 같은지 |\n|---|---|---|---|\n| 기초 주식 수 | 18,963,698 | 18,963,698 | 같음 |\n| 기초 지분율 | 27.61% | 27.68% | **다름** |\n| 기말 주식 수 | 21,923,424 | 21,923,424 | 같음 |\n| 기말 지분율 | 30.77% | 30.77% | 같음 |\n\n- 기초 지분율만 다릅니다. 같은 기초 주식 수 18,963,698주를 한쪽은 27.61%, 다른 쪽은 27.68%로 적었습니다. 두 회사가 발행주식총수 등 서로 다른 기준을 썼을 가능성이 있지만, 이 DB만으로는 어느 쪽이 맞는지 확정할 수 없습니다.\n- 티사이언티픽의 2024 사업연도 사업보고서는 DB에 기재정정본(20250814003224)만 있습니다. 정정 전 원본은 DB에 없어서, 정정으로 기초 지분율이 바뀌었는지는 확인하지 못했습니다.\n- 2025년 6월 30일 시점으로 보면 2024 사업연도 값이 아직 나타나지 않습니다. 기재정정본이 2025년 8월 14일에 공시되었기 때문입니다.",
+ "followups": [
+  "티사이언티픽의 2025 사업연도 최대주주 현황과 위지트 타법인출자 현황은 같은가?",
+  "티사이언티픽의 최대주주 및 특수관계인 지분 변동(2023년 말 대 2025년 말)은 어떻게 바뀌었나?",
+  "위지트의 주요 제품과 매출 비중은 무엇인가?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "티사이언티픽"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1755,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 4930
+  },
+  {
+   "tool": "compare_reports",
+   "input": {
+    "company_id": 1755,
+    "holder_id": 3604,
+    "as_of": "2025-06-30"
+   },
+   "error": null,
+   "total": null,
+   "chars": 685
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1755,
+    "as_of": "2025-06-30",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 2446
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1755,
+    "as_of": "2025-06-30",
+    "doc_type": "annual"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1133
+  },
+  {
+   "tool": "compare_reports",
+   "input": {
+    "company_id": 1755,
+    "holder_id": 3604,
+    "as_of": "2026-06-30"
+   },
+   "error": null,
+   "total": null,
+   "chars": 937
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1755,
+    "as_of": "2026-06-30",
+    "doc_type": "annual"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1636
+  },
+  {
+   "tool": "compare_reports",
+   "input": {
+    "company_id": 1755,
+    "holder_id": 3604,
+    "as_of": "2025-12-31"
+   },
+   "error": null,
+   "total": null,
+   "chars": 979
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1755,
+    "as_of": "2025-12-31",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 4380
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1755,
+     3604
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 292
+  }
+ ],
+ "cited": [
+  "20250321001992",
+  "20250814003224"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 20,
+  "output_tokens": 3992,
+  "cache_read_input_tokens": 171094,
+  "cache_creation_input_tokens": 13774
+ },
+ "seconds": 24.7,
+ "verify": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "X1-03",
+ "gold": "최대주주는 (주)위지트다. 티사이언티픽 보고서: 기초 18,963,698주 27.61% → 기말 21,923,424주 30.77%. 위지트의 타법인출자 현황: 기초 18,963,698주 27.68% → (2,959,726주 증가) → 기말 21,923,424주 30.77%. 주식 수는 기초·기말 모두 같고 기말 지분율(30.77%)도 같지만, 기초 지분율만 27.61%와 27.68%로 다르다."
+}

@@ -1,0 +1,153 @@
+{
+ "question": "한울반도체의 최대주주(회사)가 가진 한울반도체 지분을 2024 사업연도 말과 2025 사업연도 말 각각에 대해, 한울반도체의 최대주주 현황과 그 최대주주 회사의 타법인출자 현황에서 찾아 견주어 주세요. 주식 수와 지분율이 두 보고서에서 같은가요?",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "결론: 두 사업연도 모두 최대주주 회사는 주식회사 한울소재과학(091440)입니다. 주식 수는 두 보고서에서 같았지만, 지분율은 두 해 모두 한울반도체 보고서와 한울소재과학 보고서가 다르게 적었습니다.\n\n| 사업연도 말 | 항목 | 한울반도체 최대주주 현황 | 한울소재과학 타법인출자 현황 | 주식 수 | 지분율 |\n|---|---|---|---|---|---|\n| 2024 | 기말 | 7,150,000주, 25.57% (접수번호 20250326000965) | 7,150,000주, 26.3% (접수번호 20250321002000) | 같음 | 다름 (25.57% vs 26.3%) |\n| 2025 | 기말 | 7,150,000주, 21.73% (접수번호 20260320001333) | 7,150,000주, 21.7% (접수번호 20260323001643) | 같음 | 다름 (21.73% vs 21.7%) |\n\n- 2025 사업연도 말의 기초값(2024 말)도 같은 방식으로 적혀 있습니다. 한울반도체 보고서는 25.57%, 한울소재과학 보고서는 26.3%입니다.\n- 두 보고서의 지분율 차이는 기준이 다를 수 있다는 도구 안내에 따른 것입니다. 원인이 무엇인지는 이 DB로 확인되지 않습니다.\n- 참고로 기준일 2024-12-31 시점으로 조회하면 2024년 3월 제출된 FY2023 보고서가 나와 최대주주가 ㈜라이트론(13.02%, 2,409,484주, 접수번호 20240328001838)으로 보입니다. 이는 2023 사업연도 말 값이므로, 위 표는 2025년 3월 제출된 FY2024 보고서를 기준으로 했습니다.\n- ㈜라이트론은 원장에 없어 그 회사의 타법인출자 현황은 확인할 수 없었습니다.",
+ "followups": [
+  "한울소재과학의 타법인출자 현황 전체를 2025 사업연도 말 기준으로 보여줘",
+  "한울반도체의 2025 사업연도 말 최대주주 특수관계인 현황은?",
+  "한울반도체의 최대주주 변동을 2023 사업연도 말과 2024 사업연도 말로 견주면?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한울반도체"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "holder_changes",
+   "input": {
+    "company_id": 3222,
+    "earlier": "2024-12-31",
+    "later": "2025-12-31"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1288
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "㈜라이트론"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한울소재과학"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "라이트론"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "compare_reports",
+   "input": {
+    "company_id": 3222,
+    "holder_id": 3439,
+    "as_of": "2026-06-30"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1025
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3222,
+    "as_of": "2024-12-31",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1888
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3222,
+    "as_of": "2025-06-30",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 3622
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3439,
+    "as_of": "2025-06-30",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 4019
+  },
+  {
+   "tool": "compare_reports",
+   "input": {
+    "company_id": 3222,
+    "holder_id": 3439,
+    "as_of": "2025-06-30"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1047
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3222,
+     3439
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 294
+  }
+ ],
+ "cited": [
+  "20240328001838",
+  "20250321002000",
+  "20250326000965",
+  "20260320001333",
+  "20260323001643"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 20,
+  "output_tokens": 4855,
+  "cache_read_input_tokens": 158612,
+  "cache_creation_input_tokens": 12270
+ },
+ "seconds": 29.2,
+ "verify": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "X1-07",
+ "gold": "최대주주는 (주)한울소재과학이다. 주식 수는 두 해 모두 두 보고서에서 7,150,000주로 같다. 지분율은 2024 사업연도 말에 한울반도체 보고서 25.57%, 한울소재과학 타법인출자 현황 26.3%로 다르고, 2025 사업연도 말에는 한울반도체 보고서 21.73%, 한울소재과학 보고서 21.7%로 소수 자릿수만 다르다(2025 사업연도 기초 값도 25.57% 대 26.3%로 엇갈린다)."
+}

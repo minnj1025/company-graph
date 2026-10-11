@@ -1,0 +1,79 @@
+{
+ "question": "일양약품이 2025년 6월에 공시한 2025-2026절기 인플루엔자 백신 공급계약(조달청)의 계약금액과 매출액 대비 비율은 지금 얼마로 공시되어 있나요?",
+ "as_of": "2026-03-31",
+ "model": "claude-haiku-5-5",
+ "answer": "일양약품의 2025-2026절기 인플루엔자 백신 공급계약은 2026-03-31 기준으로 계약금액 14296800000원, 매출액 대비 5.31%로 공시되어 있습니다. 정정된 내용은 없습니다.\n\n- 계약: 대한민국 조달청, 「2025-2026절기 인플루엔자 백신 공급계약」\n- 계약일: 2025-06-02, 계약기간: 2025-06-02 ~ 2026-06-30\n- 접수번호: 20250602800546\n\n2025년 9월에 나온 정정 공시(접수번호 20250905800301)는 R-pharm(러시아) 라도티닙 공급계약의 계약기간 종료일 변경을 다룬 것이라, 이 인플루엔자 백신 계약과는 관계가 없습니다.",
+ "followups": [
+  "일양약품의 최근 1년 공급계약과 취득·처분 결정을 모두 보여줘",
+  "일양약품의 매출 비중이 큰 제품은 무엇인가요?",
+  "일양약품의 최대주주와 특수관계인은 누구인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "일양약품"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3104,
+    "as_of": "2026-03-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-06-01",
+    "filed_to": "2025-06-30"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1412
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3104,
+    "as_of": "2026-03-31",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-06-01",
+    "filed_to": "2026-03-31"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 2084
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3104
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20250602800546",
+  "20250905800301"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1004,
+  "cache_read_input_tokens": 76438,
+  "cache_creation_input_tokens": 1792
+ },
+ "seconds": 8.6,
+ "verify": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "X3-02",
+ "gold": "조회 시점(2026-03-31)에는 2025-06-02 최초 공시만 나와 있어, 계약금액은 14,296,800,000원이고 매출액 대비 5.31%다. (이후 2026-06-30 정정 공시에서 13,838,722,800원, 5.15%로 458,077,200원 줄지만 조회 시점 뒤의 일이다.)"
+}

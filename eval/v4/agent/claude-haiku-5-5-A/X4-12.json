@@ -1,0 +1,113 @@
+{
+ "question": "SK디앤디가 2025년에 정정 공시한 군포역 복합개발사업 신축공사 도급계약의 상대 회사에 대해 SK디앤디가 가진 지분은 얼마인가요? 주식 수와 지분율, 출자 목적을 사업보고서 기준으로 알려 주세요.",
+ "as_of": "2026-06-30",
+ "model": "claude-haiku-5-5",
+ "answer": "SK디앤디가 가진 지분은 군포복합개발피에프브이의 주식 1,260,000주, 지분율 25%이고, 출자 목적은 \"일반투자\"입니다. 2025-12-31 기준 사업보고서(접수번호 20260317000411)에 적힌 값입니다.\n\n- **계약 상대:** 2025-09-25에 정정 공시된 (가칭)군포역 복합개발사업 신축공사 도급계약(접수번호 20250925800384)의 상대는 주식회사 군포복합개발피에프브이입니다.\n- **지분 출처:** 같은 사업보고서의 타법인 출자현황 기준입니다. 지분율은 표에 적힌 값이며, 우선주를 포함한 발행주식총수 기준일 수 있습니다.\n- **기초 대비:** 기초(2025-01-01)에도 1,260,000주, 25%로 같아 기간 중 변동은 없었습니다.\n- **정정 공시와의 차이:** 정정 공시 본문에는 \"당사가 지분 29.8% 투자한 회사\"라고 적혀 있습니다. 사업보고서의 25%와 다르므로, 두 값을 함께 보실 때 기준 시점과 산정 방식을 확인하시기 바랍니다.\n- **다른 주주:** 같은 보고서에서 태영건설(company_id 3689)이 1,770,000주, 47.2%를 \"경영참여\" 목적으로 보유한 것으로 나옵니다(접수번호 20260318001574). 이 회사는 원장에 상장 정보가 없고 SK디앤디와 같은 기업집단에 속하지 않습니다.",
+ "followups": [
+  "군포복합개발피에프브이의 주주 구성은 어떻게 되나요?",
+  "SK디앤디의 2026년 공급계약 공시에는 무엇이 있나요?",
+  "태영건설이 보유한 다른 회사 지분은 무엇인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK디앤디"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 0,
+    "as_of": "2026-06-30",
+    "doc_type": "supply_contract"
+   },
+   "error": "company_id=0 인 기업이 없습니다. find_company 로 먼저 찾으세요",
+   "total": null,
+   "chars": 60
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1711,
+    "as_of": "2026-06-30",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 3962
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1711,
+    "as_of": "2026-06-30",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 5,
+   "chars": 4492
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1711,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "out",
+    "counterparty_id": 11379
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1709
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 11379,
+    "as_of": "2026-06-30",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 2243
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1711,
+     11379
+    ],
+    "also": [
+     3689
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 304
+  }
+ ],
+ "cited": [
+  "20250925800384",
+  "20260317000411",
+  "20260318001574"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2042,
+  "cache_read_input_tokens": 68587,
+  "cache_creation_input_tokens": 22847
+ },
+ "seconds": 14.4,
+ "number": "X4-12",
+ "gold": "상대는 주식회사 군포복합개발피에프브이다(2025-09-25 정정 공시, 계약금액 185,700,000,000원 → 183,900,000,000원). 계약 원문의 '회사와의 관계' 칸은 '-'이지만 SK디앤디의 2025 사업연도 타법인출자 현황에 일반투자 목적, 1,260,000주, 지분율 25%로 적혀 있다(2024 사업연도 말에도 같다). 정정 공시의 주석에는 '당사가 지분 25.2% 투자한 회사'로 적혀 있다(정정 전 주석은 29.8%)."
+}
