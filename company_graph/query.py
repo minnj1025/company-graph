@@ -29,6 +29,7 @@ DART_VIEWER = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo="
 # 사업보고서는 1년에 한 번 나온다. 기준일이 이보다 오래된 지분·계열은 "그 뒤 보고서가 없다"는 뜻이다
 STALE_AFTER = timedelta(days=548)
 # 최대주주 현황에만 있는 칸. 가진 쪽의 출자현황 줄을 대표로 쓸 때도 이것은 옮겨 싣는다
+TABLE_ONLY = ("exited", "share_class", "treasury")   # 이 표시가 붙은 지분 줄은 그래프의 선으로 쓰지 않는다
 HOLDER_KEYS = ("relation_to_filer", "holder_name_raw", "shares_begin", "pct_begin", "note", "table_total")
 NOTICE ="공시된 관계만 보여 줍니다. 여기에 없다고 해서 관계가 없다는 뜻은 아닙니다."
 
@@ -103,13 +104,14 @@ def _reduce(rows: list[Relation], latest_report: dict[int, str], as_of: date, ex
     """위 규칙 2~4를 적용해 줄을 선으로 줄인다."""
     edges = []
     current = [r for r in rows if r.rel_type not in ("equity", "affiliate") or latest_report.get(_filer(r)) == r.rcept_no]
-    if not exited:   # 기간 중에 주식을 다 내놓은 주주의 0% 줄은 주주 명단의 변동을 물을 때만 쓴다
-        current = [r for r in current if not (r.attrs or {}).get("exited")]
+    if not exited:   # 관계가 아니라 표의 줄인 것(다 내놓은 주주의 0% 줄, 우선주·종류주 줄, 자기주식 줄)은 주주 명단을 물을 때만 쓴다
+        current = [r for r in current if not any((r.attrs or {}).get(k) for k in TABLE_ONLY)]
 
     equity = defaultdict(list)
     for r in current:
-        if r.rel_type == "equity":
-            equity[(r.subject_company_id or r.subject_name_raw, r.object_company_id or r.object_name_raw)].append(r)
+        if r.rel_type == "equity":   # 같은 주주의 보통주 줄과 우선주 줄은 합치지 않는다
+            equity[(r.subject_company_id or r.subject_name_raw, r.object_company_id or r.object_name_raw,
+                    (r.attrs or {}).get("share_class"))].append(r)
     for group in equity.values():
         latest = max(r.as_of_date for r in group)
         same_date = sorted((r for r in group if r.as_of_date == latest),

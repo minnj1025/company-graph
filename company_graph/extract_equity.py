@@ -25,7 +25,7 @@ from .names import clean_reported, normalize
 
 YEARS = (2023, 2024, 2025)
 LISTED = ("Y", "K", "N")
-VERSION = "equity-5"  # 5: 타법인출자 현황의 기초 주식수·지분율도 남김. 4: 최대주주 현황에서 0.00%로 찍힌 주주와 기간 중 빠진 주주, 기초 값, 합계 줄을 남기고 종류주 줄을 뺌. 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
+VERSION = "equity-6"  # 6: 최대주주 현황의 우선주·종류주 줄(share_class)과 자기주식 줄(treasury), 기간 중에 다 처분한 출자(exited)를 표시해 남김. 5: 타법인출자 현황의 기초 주식수·지분율도 남김. 4: 최대주주 현황에서 0.00%로 찍힌 주주와 기간 중 빠진 주주, 기초 값, 합계 줄을 남기고 종류주 줄을 뺌. 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
 
 
 TOTAL_NAMES = ("합계", "계", "소계")
@@ -161,9 +161,15 @@ def load_investments(db, company: Company, year: int, index, affiliates, names: 
         pct = to_decimal(row.get("trmend_blce_qota_rt"))
         if not name or name in ("합계", "계"):
             continue
-        if pct is None:
+        # 기말에는 없지만 기초에는 있던 출자(기간 중에 다 처분한 것)는 0% 줄로 남긴다. 조회에서는 따로 청해야 나온다
+        exited = (not pct and not to_decimal(row.get("trmend_blce_qy"))
+                  and (bool(to_decimal(row.get("bsis_blce_qy"))) or bool(to_decimal(row.get("bsis_blce_qota_rt")))))
+        if pct is None and not exited:
             stats["출자현황: 기말 지분 없음(처분 등)"] += 1
             continue
+        if exited:
+            stats["출자현황: 기간 중에 다 처분한 출자"] += 1
+            pct = Decimal(0)
         if not in_range(db, pct, rcept_no, f"{company.name} → {name}"):
             continue
         object_id, reason = link_in_context(index, affiliates, name)
@@ -176,7 +182,8 @@ def load_investments(db, company: Company, year: int, index, affiliates, names: 
                    "raw_pct": (row.get("trmend_blce_qota_rt") or "").strip(), "purpose": row.get("invstmnt_purps"),
                    "first_acquired": row.get("frst_acqs_de"), "shares": row.get("trmend_blce_qy"),
                    "book_value": row.get("trmend_blce_acntbk_amount"),
-                   "shares_begin": row.get("bsis_blce_qy"), "pct_begin": (row.get("bsis_blce_qota_rt") or "").strip()}))
+                   "shares_begin": row.get("bsis_blce_qy"), "pct_begin": (row.get("bsis_blce_qota_rt") or "").strip(),
+                   **({"exited": True} if exited else {})}))
     # 같은 보고서에서 extract_invest_detail 이 넣은 줄(표준 표 밖의 출자)은 건드리지 않는다
     counts = loader.sync(db, [Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
                               Relation.subject_company_id == company.company_id,
@@ -192,14 +199,18 @@ def load_shareholders(db, company: Company, year: int, index, affiliates, names:
     rcept_no = rows[0]["rcept_no"]
     doc = upsert_document(db, company, rcept_no, year, names)
     new_rows = []
-    # 보통주만 넣는다. 우선주·종류주 줄까지 넣으면 한 주주가 두 줄이 된다
-    rows = [row for row in rows if is_common(row.get("stock_knd"))]
-    # 표의 합계 줄. 줄마다 반올림한 지분율을 더한 값과 다를 수 있어 적힌 그대로 둔다
-    total = next(({"shares": row.get("trmend_posesn_stock_co"), "pct": (row.get("trmend_posesn_stock_qota_rt") or "").strip(),
-                   "shares_begin": row.get("bsis_posesn_stock_co"), "pct_begin": (row.get("bsis_posesn_stock_qota_rt") or "").strip()}
-                  for row in rows if "".join((row.get("nm") or "").split()) in ("합계", "계")
-                  and to_decimal(row.get("trmend_posesn_stock_qota_rt")) is not None), None)
+    # 우선주·종류주 줄도 넣되 share_class 로 표시한다. 조회는 기본으로 보통주 줄만 쓰고, 주주 목록을 물을 때만 함께 내준다
+    kind_of = lambda row: " ".join((row.get("stock_knd") or "").split())
+    # 표의 합계 줄(주식 종류마다). 줄마다 반올림한 지분율을 더한 값과 다를 수 있어 적힌 그대로 둔다
+    totals = {}
     for row in rows:
+        if "".join((row.get("nm") or "").split()) in ("합계", "계") and to_decimal(row.get("trmend_posesn_stock_qota_rt")) is not None:
+            totals.setdefault("" if is_common(row.get("stock_knd")) else kind_of(row), {
+                "shares": row.get("trmend_posesn_stock_co"), "pct": (row.get("trmend_posesn_stock_qota_rt") or "").strip(),
+                "shares_begin": row.get("bsis_posesn_stock_co"), "pct_begin": (row.get("bsis_posesn_stock_qota_rt") or "").strip()})
+    for row in rows:
+        common = is_common(row.get("stock_knd"))
+        total = totals.get("" if common else kind_of(row))
         name = " ".join((row.get("nm") or "").split())
         pct = to_decimal(row.get("trmend_posesn_stock_qota_rt"))
         held, held_before = to_decimal(row.get("trmend_posesn_stock_co")), to_decimal(row.get("bsis_posesn_stock_co"))
@@ -211,8 +222,10 @@ def load_shareholders(db, company: Company, year: int, index, affiliates, names:
         if not name or "".join(name.split()) in TOTAL_NAMES or pct is None or not (pct or held or exited):
             continue
         holder_id, reason = link_in_context(index, affiliates, name)
-        if holder_id == company.company_id or not in_range(db, pct, rcept_no, f"{name} → {company.name}"):
+        if not in_range(db, pct, rcept_no, f"{name} → {company.name}"):
             continue
+        # 회사가 가진 자기 주식. 관계는 아니지만 표의 한 줄이라 남긴다
+        treasury = holder_id == company.company_id or any(word in name.replace(" ", "") for word in ("자기주식", "자사주"))
         # 원장에 없는 주주(개인, 정부, 비상장·해외 법인)도 이름 그대로 넣는다. 최대주주가 개인인 회사가 많다
         stats[f"최대주주 현황: 주주를 연결 ({reason})" if holder_id else "최대주주 현황: 주주가 원장에 없음(개인, 정부, 비상장 등)"] += 1
         new_rows.append(Relation(
@@ -226,12 +239,13 @@ def load_shareholders(db, company: Company, year: int, index, affiliates, names:
                    "shares_begin": row.get("bsis_posesn_stock_co"),
                    "pct_begin": (row.get("bsis_posesn_stock_qota_rt") or "").strip(),
                    **({"exited": True} if exited else {}),
+                   **({} if common else {"share_class": kind_of(row) or "보통주 아님"}),
+                   **({"treasury": True} if treasury else {}),
                    **({"note": row["rm"].strip()} if (row.get("rm") or "").strip() not in ("", "-") else {}),
                    **({"table_total": total} if total else {})}))
     counts = loader.sync(db, [Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
                               Relation.object_company_id == company.company_id,
-                              or_(Relation.subject_company_id.is_(None),
-                                  Relation.subject_company_id != company.company_id)], new_rows, VERSION)
+                              Relation.attrs["source"].as_string() == "largest_shareholders"], new_rows, VERSION)
     stats.update({f"최대주주 현황 줄: {k}": v for k, v in counts.items()})
 
 

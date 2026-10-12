@@ -39,6 +39,8 @@ def cross_check(db):
     for r in db.scalars(select(Relation).where(Relation.rel_type == "equity", Relation.object_company_id.is_not(None),
                                                Relation.subject_company_id.is_not(None),
                                                Relation.retired_at.is_(None))):
+        if any(r.attrs.get(k) for k in ("exited", "share_class", "treasury")):   # 보통주를 실제로 가진 줄만 견준다
+            continue
         by_source[r.attrs["source"]][(r.subject_company_id, r.object_company_id, r.as_of_date.year)] = r.attrs["raw_pct"]
     held, holders = by_source["other_corp_investments"], by_source["largest_shareholders"]
 

@@ -74,7 +74,7 @@ def load_links(db, as_of: date | None = None) -> Links:
         relations = relations.where(Relation.invalidated_date.is_(None))
     rel = collections.defaultdict(set)
     for subject, target, kind, attrs in db.execute(relations.add_columns(Relation.attrs)):
-        if (attrs or {}).get("exited"):   # 기간 중에 주식을 다 내놓은 주주의 0% 줄은 관계로 치지 않는다
+        if any((attrs or {}).get(k) for k in ("exited", "share_class", "treasury")):   # 표의 줄일 뿐 관계가 아닌 것 (다 내놓은 주주, 우선주 줄, 자기주식)
             continue
         if subject != target and subject in listed and target in listed:
             rel[(min(subject, target), max(subject, target))].add(REL_NAMES.get(kind, kind))

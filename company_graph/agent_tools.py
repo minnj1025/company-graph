@@ -28,7 +28,7 @@ ATTRS = ("title", "kind", "period_start", "period_end", "party_hidden", "party_r
          "recent_sales", "region", "purpose", "method", "pct_after", "shares", "shares_after", "equity_ratio_pct",
          "expected_date", "business", "nationality", "relation", "ratio_check", "correction_reason", "changes",
          "amount_from", "reason", "listed", "relation_to_filer",
-         "holder_name_raw", "shares_begin", "pct_begin", "exited", "note")
+         "holder_name_raw", "shares_begin", "pct_begin", "exited", "note", "share_class", "treasury")
 # detail 에 나오는 이름의 뜻. 도구 결과에 같이 실어 Agent가 값을 헷갈리지 않게 한다
 FIELDS = ("as_of_date: 계약일·결의일·해지일·보고서 기준일. period_start~period_end: 계약기간(시작일~종료일). "
           "ratio_pct: 최근 매출액 대비(%). equity_ratio_pct: 자기자본 대비(%). expected_date: 취득·처분 예정일자. "
@@ -36,7 +36,9 @@ FIELDS = ("as_of_date: 계약일·결의일·해지일·보고서 기준일. per
           "changes: 정정 공시의 [항목, 정정 전, 정정 후]. reason: 해지·철회 사유. correction_reason: 정정 사유. "
           "주주 목록(equity 의 in)에서: shares 는 기말 주식수, shares_begin·pct_begin 은 기초 주식수·지분율, "
           "holder_name_raw 는 그 보고서에 적힌 주주 이름(회사가 그 뒤 이름을 바꿨으면 지금 이름과 다르다. 그 시점을 묻는 답에는 이 이름을 쓴다), "
-          "exited=true 는 기초에는 주식이 있었으나 기말에 0주가 된 주주, note 는 표의 비고. 지분율 0.0 은 반올림한 값이고 shares 가 있으면 주주다. "
+          "exited=true 는 기초에는 주식이 있었으나 기말에 0주가 된 주주(출자 목록에서는 기간 중에 다 처분한 출자), note 는 표의 비고. "
+          "share_class 가 있으면 보통주가 아닌 줄(우선주·종류주·의결권 없는 주식)이고 그 값이 표에 적힌 주식 종류다. 보통주 기준을 물으면 share_class 가 없는 줄만 쓴다. "
+          "treasury=true 는 회사가 가진 자기주식 줄이다(주주가 아니다). 지분율 0.0 은 반올림한 값이고 shares 가 있으면 주주다. "
           "reports: 같은 지분을 두 회사가 저마다 보고서에 적었을 때 표별 값. differs=true 면 두 보고서의 지분율이 서로 다르다")
 
 # 제품군 목록을 도구 설명에 싣는다. Agent가 질문의 뜻에 맞는 제품군을 여기서 골라 넘긴다
@@ -287,15 +289,16 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
     else:
         edges = query.relations(db, when, company_ids=[company.company_id], rel_types=[rel_type], direction=direction,
                                 include_superseded=bool(include_superseded) and rel_type not in ("equity", "affiliate"),
-                                include_exited=rel_type == "equity" and direction == "in")
+                                include_exited=rel_type == "equity")
     if counterparty_id is not None:
         other = _company(db, counterparty_id).company_id
         edges = [e for e in edges if other in (e["subject_id"], e["object_id"])]
     edges = [e for e in edges if (start is None or e["disclosed_date"] >= start) and (end is None or e["disclosed_date"] <= end)]
     rows = [_edge(db, e) for e in edges]
     # 최대주주 현황 표의 합계 줄 (그 표가 적은 값. 줄마다의 지분율을 더한 값과 다를 수 있다)
-    holder_total = next((e["attrs"]["table_total"] for e in edges if e["type"] == "equity" and e["object_id"] == company.company_id
-                         and e["attrs"].get("table_total")), None) if direction == "in" else None
+    mine = [e for e in edges if e["type"] == "equity" and e["object_id"] == company.company_id and e["attrs"].get("table_total")] if direction == "in" else []
+    holder_total = next((e["attrs"]["table_total"] for e in mine if not e["attrs"].get("share_class")), None)
+    class_totals = {e["attrs"]["share_class"]: e["attrs"]["table_total"] for e in mine if e["attrs"].get("share_class")}
     unknown_listing = None
     if listed_only:
         other = "object" if direction != "in" else "subject"
@@ -326,6 +329,7 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
     return {"company": _brief(company), "as_of": when.isoformat(), "total": len(rows), "truncated": len(rows) > LIMIT,
             "affiliate_summary": summary,
             **({"holder_table_total": {**holder_total, "note": "최대주주와 특수관계인의 합계(보통주). pct 는 기말, pct_begin 은 기초"}} if holder_total else {}),
+            **({"holder_table_total_other_classes": class_totals} if class_totals else {}),
             "relations": rows[:LIMIT],
             "fields": FIELDS,
             "unknown_listing": unknown_listing and f"원장에 없는 상대 {unknown_listing}곳은 상장 여부를 알 수 없어 뺐습니다. "
@@ -352,7 +356,7 @@ def _ratio(text) -> float | None:
 def compare_reports(db, company_id, holder_id, as_of) -> dict:
     company, holder, when = _company(db, company_id), _company(db, holder_id), _date(as_of, "as_of", required=True)
     rows = [r for r in query.current_rows(db, when, [company.company_id], ["equity"], "in")
-            if r.subject_company_id == holder.company_id and not (r.attrs or {}).get("exited")]
+            if r.subject_company_id == holder.company_id and not any((r.attrs or {}).get(k) for k in query.TABLE_ONLY)]
     if not rows:
         return {"company": _brief(company), "holder": _brief(holder), "reports": [],
                 "note": "그 시점의 사업보고서에서 이 지분을 적은 표를 찾지 못했습니다. find_company 로 두 회사를 다시 확인하거나 get_relations 로 주주 목록을 보세요"}
@@ -389,7 +393,7 @@ def compare_reports(db, company_id, holder_id, as_of) -> dict:
 def _holder_list(db, company: Company, when: date) -> tuple[dict, dict | None, str | None]:
     """그 시점의 최대주주 현황: 이름 → 줄, 합계 줄, 접수번호."""
     rows = [r for r in query.current_rows(db, when, [company.company_id], ["equity"], "in")
-            if (r.attrs or {}).get("source") == "largest_shareholders"]
+            if (r.attrs or {}).get("source") == "largest_shareholders" and not (r.attrs or {}).get("share_class") and not (r.attrs or {}).get("treasury")]
     out, total, rcept = {}, None, None
     for r in rows:
         a = r.attrs or {}
