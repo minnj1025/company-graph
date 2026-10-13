@@ -91,6 +91,25 @@ SYSTEM = """당신은 한국 상장사의 공시(DART)에서 뽑은 기업 관�
 
 FOLLOWUP_MARK = "<<이어서>>"
 
+# 원인·평가를 묻는 질문에 거절 대신 사실을 모아 답하게 하는 지시. 환경 변수 ASK_WHY=1 일 때만 지시문에 넣는다 (평가 5판에서 전과 후를 견준다)
+WHY = """원인이나 평가를 묻는 질문 ("○○ 주가가 왜 못 오르나", "○○ 전망 어때", "이 계약이 실적에 얼마나 도움이 돼", "○○와 △△ 중 어디가 나아")
+- 거절하지 않습니다. 원인을 판단하거나 전망하지는 않되, 그 질문을 따져 보는 데 쓸 사실을 이 DB에서 찾아 근거와 함께 모아 줍니다.
+- 먼저 질문을 조회할 수 있는 사실로 나눕니다: 무슨 사업으로 매출을 내는가(get_products), 올해 공시한 계약과 그 크기(get_relations 의 supply_contract 와 ratio_pct), 해지·정정(get_filings), 지분 취득·처분 결정, 최대주주와 계열, 지난 거래일의 움직임(get_price_moves 에 company_id). 질문과 관계있는 것만 고릅니다(대개 서너 가지).
+- 답의 첫 줄에 원인(또는 전망, 우열)은 판단하지 않고 확인되는 사실을 정리한다고 밝힙니다. 그다음 사실을 항목별로 적고 근거를 붙입니다.
+- 사실을 원인처럼 잇지 않습니다. "~때문에", "~해서 올랐다", "~해서 못 오른다", "긍정적이다", "부정적이다", "부담이다" 같은 말을 쓰지 않습니다. 사실은 사실로만 적습니다.
+- 마지막에 "이 DB로 알 수 없는 것"을 한두 줄로 적습니다. 실적(매출·영업이익의 추이), 업황과 원자재 가격, 증권사 의견, 수급은 이 DB에 없습니다. 없는 수치를 지어내지 않습니다.
+- 사실로 답이 나오는 비교("어디가 ○○ 비중이 큰가", "어디가 지분율이 높은가")는 조회해서 값을 견주어 답합니다. "어디가 더 낫나"는 견줄 수 있는 사실만 나란히 놓고 우열은 말하지 않습니다.
+- "지금 사도 돼", "목표가 얼마", "언제 팔까"처럼 매매 판단 자체를 묻는 질문은 여전히 거절하고, 조회해 줄 수 있는 사실을 제안합니다.
+"""
+
+
+def system() -> str:
+    """Agent에게 줄 지시문."""
+    if os.environ.get("ASK_WHY", "0") != "1":
+        return SYSTEM
+    assert "\n화면\n" in SYSTEM
+    return SYSTEM.replace("\n화면\n", "\n" + WHY + "\n화면\n", 1)
+
 
 def split_followups(text: str) -> tuple[str, list[str]]:
     """답의 글과, 그 끝에 붙은 "이어서 물을 질문"을 나눈다."""
@@ -135,7 +154,7 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
         return found
     with session() as db:
         for _ in range(max_turns):
-            request = dict(model=model, max_tokens=16000, system=SYSTEM, tools=agent_tools.tools(), messages=messages,
+            request = dict(model=model, max_tokens=16000, system=system(), tools=agent_tools.tools(), messages=messages,
                            cache_control={"type": "ephemeral"}, output_config={"effort": effort})
             if on_event:
                 with client.messages.stream(**request) as stream:
