@@ -107,7 +107,13 @@ export function App() {
   /** "화면 맞추기"를 누를 때마다 올린다. 그래프가 전체가 보이게 다시 맞춘다 */
   const [refit, setRefit] = useState(0);
   const [drawer, setDrawer] = useState<Drawer>(null);
-  const [drawerWidth, setDrawerWidth] = useState(520);
+  // 오른쪽 칸은 넓힐 수 있는 가장 큰 너비로 연다. 사용자가 경계를 끌어 바꾼 뒤에는 그 너비를 따른다
+  const widest = () => Math.round(Math.min(760, window.innerWidth * 0.6));
+  const [drawerWidth, setDrawerWidth] = useState(widest);
+  const resized = useRef(false);
+  useEffect(() => {
+    if (drawer === "answer" && !resized.current) setDrawerWidth(widest());
+  }, [drawer]);
   const [level, setLevel] = useState<Level>("family");
   const [settingsOpen, setSettingsOpen] = useState(false);
   /** 보기 설정에서 옆에 목록을 펴 둔 제품 범주 */
@@ -201,6 +207,7 @@ export function App() {
       const dx = startX - e.clientX;
       if (Math.abs(dx) > 4) moved = true;
       if (!moved) return;
+      resized.current = true;
       setDrawerWidth(Math.round(Math.min(Math.max(startWidth + dx, 340), Math.min(760, window.innerWidth * 0.6))));
     };
     const stop = () => {

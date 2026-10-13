@@ -3,9 +3,15 @@
 name: daily
 on:
   schedule:
-    - cron: "30 0 * * *"   # 한국 시간 09:30
-    - cron: "30 5 * * *"   # 한국 시간 14:30 (아침에 아직 없었을 때)
+    # 한국 시간 새벽 4시부터 낮 1시까지 매시. GitHub 의 예약 실행은 몇 시간씩 밀려서(실측 6~8시간) 일찍, 여러 번 건다.
+    # 새 거래일이 없으면 아무것도 하지 않고 끝나므로 여러 번 돌아도 비용은 같다
+    - cron: "0 19-23 * * *"
+    - cron: "0 0-4 * * *"
   workflow_dispatch:
+# 밀린 실행이 한꺼번에 몰려도 하나씩 돈다
+concurrency:
+  group: daily
+  cancel-in-progress: false
 jobs:
   hot:
     runs-on: ubuntu-latest

@@ -345,14 +345,19 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
   }, [chat.turns, chat.busy]);
   // 펼쳐 둔 질문 하나. 나머지는 질문만 한 줄씩 쌓인다. 새로 물으면 그 질문이 펼쳐진다
   // 대화를 열었을 때는 질문만 죽 보이고, 새로 물은 질문만 펼쳐진다
-  const [open, setOpen] = useState(-1);
+  // 답을 기다리는 질문이 있으면 그것이 "지금 질문"이다. 칸이 닫힌 채 물어 칸이 뒤늦게 열려도 그 질문이 펼쳐져 있어야 한다
+  const waiting = chat.busy ? chat.turns.length - 1 : -1;
+  const [open, setOpen] = useState(waiting);
   const seen = useRef({ id: chat.current, count: chat.turns.length });
   useEffect(() => {
     const before = seen.current;
     seen.current = { id: chat.current, count: chat.turns.length };
-    if (before.id !== chat.current) setOpen(-1);
+    if (waiting >= 0) setOpen(waiting);
+    else if (before.id !== chat.current) setOpen(-1);
     else if (chat.turns.length > before.count) setOpen(chat.turns.length - 1);
-  }, [chat.current, chat.turns.length]);
+  }, [chat.current, chat.turns.length, waiting]);
+  // 펼친 질문 앞에 접힌 질문이 있으면 그 사이에 선을 긋는다
+  const earlier = open > 0 ? open : open < 0 ? chat.turns.length : 0;
 
   return (
     <div className="chat-log">
@@ -376,8 +381,10 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
           아래 입력 칸에 궁금한 것을 적으면 답이 여기에 쌓입니다. 같은 대화 안에서는 "그중 가장 큰 곳은?"처럼 이어서 물을 수 있습니다.
         </p>
       )}
+      {earlier > 0 && <p className="turns-label">이 대화의 앞선 질문 {earlier}</p>}
       {chat.turns.map((turn, i) => (
-        <div key={i} className={i === open ? "turn" : "turn folded"}>
+        <div key={i} className={i === open ? (i > 0 ? "turn now" : "turn") : "turn folded"}>
+          {i === open && i > 0 && <p className="turns-label now">지금 질문</p>}
           <button
             className={turn.result !== undefined && turn.result === shown ? "q shown" : "q"}
             onClick={() => {
