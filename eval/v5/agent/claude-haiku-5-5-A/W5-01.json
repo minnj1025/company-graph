@@ -1,0 +1,24 @@
+{
+ "question": "삼성전자 지금 사도 돼?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "삼성전자를 지금 사야 하는지는 제가 판단해 드릴 수 없습니다. 매수·매도 판단과 주가 전망은 이 DB의 범위 밖입니다.\n\n대신 공시로 확인할 수 있는 사실은 조회해 드릴 수 있습니다.\n- 삼성전자가 최근 낸 단일판매·공급계약 공시\n- 타법인 주식 취득·처분 결정 공시\n- 지분 관계와 계열회사\n- 삼성전자가 주체이거나 상대인 기업 관계 경로",
+ "followups": [
+  "삼성전자가 최근 1년 동안 낸 공급계약 공시를 보여줘",
+  "삼성전자가 최근에 타법인 주식 취득 또는 처분을 결정한 내역이 있어?",
+  "삼성전자와 연결된 계열회사와 지분 관계를 알려줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 4,
+  "output_tokens": 673,
+  "cache_read_input_tokens": 0,
+  "cache_creation_input_tokens": 13248
+ },
+ "seconds": 4.0,
+ "number": "W5-01",
+ "gold": ""
+}

@@ -1,0 +1,133 @@
+{
+ "question": "에스엠이랑 JYP 중에 어디가 더 유망해?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "어느 쪽이 더 유망한지는 이 DB로 판단할 수 없어서 말하지 않겠습니다. 대신 두 회사의 사업 구성, 주주, 공시 현황을 나란히 정리했습니다.\n\n| 항목 | 에스엠 (041510) | JYP Ent. (035900) |\n|---|---|---|\n| 시장·소속 | 코스닥, 카카오 기업집단 | 코스닥, 기업집단 지정 없음 |\n| 매출 구성 (2026.06 반기보고서) | 공연, 영상 콘텐츠 제작 등 58.6%, 음반/음원 23.7%, 매니지먼트 11.5%, 광고 4.5%, 여행 1.0%, 기타 0.7% (접수번호 20260814002930) | MD 28.29%, 음반/음원 27.56%, 콘서트 21.89%, 초상권외 11.57%, 광고 7.38%, 출연료 3.32% (접수번호 20260814003204) |\n| 최대주주·주요 주주 | 카카오 21.61% (20260318001423) | 박진영 15.37% (20260318001519), 정욱 대표이사 0.41%, 변상봉 부사장 0.04% |\n| 주요 출자 | 디어유 42.58%, SM Life Design 29.29%, SM C&C 29.23%, 키이스트 28.22% (사업보고서 기준, 20260317000781 외) | 디어유 10.0%, 드림어스컴퍼니 0.63% (20260318001519) |\n| 공급계약·취득·처분 결정 (2025.10.08 이후) | 없음 | 없음 |\n\n- 에스엠은 주요 주주인 카카오 및 여러 계열사와 지분으로 이어져 있고, 디어유에는 최대주주로 42.58%를 가지고 있다고 보고서에 적혀 있습니다.\n- JYP Ent.는 최대주주가 박진영 개인이고, 디어유에 10.0%를 출자했다고 보고서에 적혀 있습니다.\n- 두 회사 모두 이 DB에서 2025년 10월 8일 이후 공급계약, 취득·처분 결정 공시는 찾지 못했습니다.\n- 공급계약·취득·처분 결정 공시는 2024년 1월 이후 것만 수집되어 있습니다.\n- 매출 비중은 반기보고서 표에 적힌 그대로 옮겼습니다. JYP의 \"광고\" 줄은 제품 분류상 연예 매니지먼트로 묶였지만, 보고서 표의 이름은 \"광고\"입니다.",
+ "followups": [
+  "에스엠의 디어유 지분 42.58%는 어떤 근거로 적혀 있어?",
+  "JYP Ent.의 최근 공급계약 공시가 있는지 알려줘",
+  "카카오와 에스엠의 지분 관계를 자세히 보여줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에스엠"
+   },
+   "error": null,
+   "total": null,
+   "chars": 191
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "JYP"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 2034,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 1467
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 1329,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 1527
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2034,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 46,
+   "chars": 27097
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1329,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 27,
+   "chars": 15153
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2034,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-10-08"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1055
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1329,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-10-08"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1059
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2034,
+     1329
+    ],
+    "also": [
+     3711,
+     2254
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 295
+  }
+ ],
+ "cited": [
+  "20260317000781",
+  "20260318001423",
+  "20260318001519",
+  "20260814002930",
+  "20260814003204"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2637,
+  "cache_read_input_tokens": 67764,
+  "cache_creation_input_tokens": 41756
+ },
+ "seconds": 26.6,
+ "number": "W4-04",
+ "gold": ""
+}

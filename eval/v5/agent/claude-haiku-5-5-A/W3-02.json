@@ -1,0 +1,89 @@
+{
+ "question": "카카오가 두나무 지분 판 건 왜 그런 거야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "공시에 적힌 처분 사유는 \"미래 투자 재원 확보\"입니다. 다만 공시에는 이 한 줄뿐이고, 왜 그 시점에 팔았는지에 대한 더 자세한 설명은 이 DB에 없습니다.\n\n처분 주체는 카카오의 자회사 주식회사 카카오인베스트먼트입니다. 공시는 카카오 이름으로 나갔습니다(접수번호 20260515800058).\n\n| 항목 | 내용 |\n|---|---|\n| 처분 주체 | 카카오인베스트먼트 (카카오 자회사) |\n| 상대 | 두나무 주식회사 |\n| 처분 주식 수 | 2,284,000주 |\n| 거래 뒤 보유 주식 수 | 1,406,050주 |\n| 거래 뒤 지분율 | 4.03% |\n| 처분 금액 | 1,003,251,568,000원 |\n| 계약일(기준일) | 2026-05-14 |\n| 공시일 | 2026-05-15 |\n| 예정일 | 2026-06-15 |\n| 처분 사유 | 미래 투자 재원 확보 |\n\n- 두나무는 이 DB에서 상장사로 조회되지 않아, 두나무 쪽의 다른 관계나 사업 내용은 확인하지 못했습니다.\n- 이 공시는 2024년 1월 이후 카카오가 낸 타법인 지분 처분 결정 중 유일하게 잡힌 건이고, 정정이나 철회는 없습니다.",
+ "followups": [
+  "카카오인베스트먼트가 낸 다른 지분 취득·처분 결정이 있는지",
+  "카카오가 최근 1년에 낸 타법인 주식 취득 결정",
+  "카카오의 계열회사 목록"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "두나무"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "stake_disposal",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1815
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "doc_type": "event"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1635
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오인베스트먼트"
+   },
+   "error": null,
+   "total": null,
+   "chars": 199
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2254,
+     7649
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 300
+  }
+ ],
+ "cited": [
+  "20260515800058"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1655,
+  "cache_read_input_tokens": 60060,
+  "cache_creation_input_tokens": 17067
+ },
+ "seconds": 11.5,
+ "number": "W3-02",
+ "gold": ""
+}

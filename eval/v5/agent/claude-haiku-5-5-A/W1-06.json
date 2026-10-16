@@ -1,0 +1,81 @@
+{
+ "question": "한샘 주가는 왜 이렇게 못 오르는 거야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "한샘이 \"못 오르는\" 이유는 이 DB로는 설명할 수 없습니다. 최근 60일(2026-08-09~2026-10-08) 동안 한샘이 시장보다 크게 움직인 날이 조회되지 않았고, 주가 수준이나 추세도 이 DB에 없습니다.\n\n조회된 내용은 다음과 같습니다.\n\n- **주가 움직임**: 같은 기간에 시장 대비 크게 오르거나 내린 날이 없었습니다. 그래서 어떤 종목군과 함께 움직였는지, 원인이 무엇인지도 확인되지 않습니다. 기사도 조회되지 않았으므로 원인을 짐작해서 적지 않겠습니다.\n- **사업 구성**: 2026년 반기보고서(접수번호 20260813001668) 기준으로 '리하우스/홈퍼니싱' 아이템이 매출의 56.3%, 'B2B/기타(건설사 특판 및 자재판매 등)'가 43.7%입니다.\n- **최근 1년 공시**: 2025-10-08부터 2026-10-08까지 이벤트성 공시(공급계약, 취득·처분 결정 등)는 없었습니다.\n\n주가 흐름의 원인을 알려면 증권사 리포트나 실적 발표, 당일 기사 같은 DB 밖의 자료를 확인하셔야 합니다. 주가 전망이나 매수·매도 판단은 이 DB로 답할 수 없습니다.",
+ "followups": [
+  "한샘의 최근 반기보고서에서 제품별 매출 비중과 사업 개요는 어떻게 적혀 있나?",
+  "한샘과 같은 홈퍼니싱·건자재 분야에서 제품을 파는 상장사는 어디인가?",
+  "한샘의 지분 구조와 계열 관계는 어떻게 되나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한샘"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-10-08",
+    "company_id": 1853,
+    "direction": "both",
+    "lookback_days": 60
+   },
+   "error": null,
+   "total": null,
+   "chars": 690
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1005
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08",
+    "doc_type": "event",
+    "filed_from": "2025-10-08"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1054
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1853
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  }
+ ],
+ "cited": [
+  "20260813001668"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1517,
+  "cache_read_input_tokens": 42677,
+  "cache_creation_input_tokens": 16456
+ },
+ "seconds": 9.8,
+ "number": "W1-06",
+ "gold": ""
+}

@@ -1,0 +1,93 @@
+{
+ "question": "엘앤에프가 삼성SDI랑 맺은 LFP 양극재 공급 계약, 실적에 얼마나 도움이 돼?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "사업보고서나 손익 자료가 이 DB에 없어서, 계약이 실적에 얼마나 보탬이 되는지는 계산할 수 없습니다. 공시된 계약 금액과 기간, 최근 매출 대비 비율까지만 확인됩니다.\n\n**삼성SDI와의 LFP 양극재 계약 (공시 확인)**\n- 공시: 리튬인산철(LFP) 양극재 중장기 공급 및 구매합의서 (접수번호 20260324800257, 계약일 2026-03-23)\n- 계약 금액: 1606718520000 원\n- 계약 기간: 2026-03-30 ~ 2029-12-31\n- 최근 매출액 대비: 84.23% (공시의 최근 매출액 1907478512809 원 기준)\n- 지역: 미국 등\n- 이 공시는 정정·해지되지 않았습니다 (get_filings 기준).\n\n공시의 \"최근 매출액 대비 84.23%\"는 계약 총액을 직전 매출과 비교한 값입니다. 이 계약으로 기간 중 실제 매출이 얼마나 잡힐지는 공시에 없습니다. 계약 기간이 3년 반 이상이어서 연도별로 나누어 본 금액도 이 DB에서는 알 수 없습니다.\n\n**참고: 엘앤에프의 다른 LFP 관련 공시**\n- 2026-09-17에 SK온과 LFP 양극재 중장기 공급 및 구매합의서를 냈습니다 (접수번호 20260917800658). 금액은 161733060000 원, 최근 매출 대비 7.51%, 기간 2026-09-17 ~ 2028-12-31입니다.\n\n**사업 구성**\n- 반기보고서(2026.06, 접수번호 20260814000995)의 제품 표에는 \"양극활물질외\" 한 줄이 매출의 100.0%로 적혀 있습니다. 그 줄에서 LFP가 얼마인지는 표에 나오지 않으니, LFP 비중은 공시에 없다고 봐야 합니다.",
+ "followups": [
+  "엘앤에프의 SK온 LFP 양극재 계약 조건을 자세히 보여줘",
+  "엘앤에프가 2024년 이후 낸 공급계약 전체 목록은?",
+  "삼성SDI와 엘앤에프가 맺은 다른 공급 관계가 있는지 알려줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "엘앤에프"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "삼성SDI"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 3730
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "counterparty_id": 3217
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1216
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 754
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3336,
+     3217
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 294
+  }
+ ],
+ "cited": [
+  "20260324800257",
+  "20260814000995",
+  "20260917800658"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2281,
+  "cache_read_input_tokens": 62201,
+  "cache_creation_input_tokens": 18351
+ },
+ "seconds": 14.5,
+ "number": "W3-01",
+ "gold": ""
+}

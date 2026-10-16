@@ -1,0 +1,434 @@
+{
+ "W1-01": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "움직인 날 없음, 8-07 처분 두 건(금액·50.0%·목적·접수번호), 제품 비중을 주고 원인은 판단하지 않으며 실적·업황·주가 수준이 없다고 밝혔다."
+  },
+  "나": {
+   "facts": "some",
+   "crossed": null,
+   "scope": true,
+   "values_ok": false,
+   "verdict": "wrong",
+   "reason": "처분 두 건과 목적은 주었으나 자기자본 대비 3.24%를 '지분 3.24% 처분'으로 잘못 적었고(처분 뒤 50.0%와 어긋남) 제품·사업 구성이 빠졌다."
+  }
+ },
+ "W1-02": {
+  "가": {
+   "facts": "some",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "partial",
+   "reason": "8-20·9-07 상승과 동반 종목, 기사 없음과 '공통점이지 원인 아님'은 밝혔으나 제품(반도체 100%)이나 14.4조 출자 같은 근거 있는 회사 사실이 없다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "두 날의 등락과 동반 종목, 기사 없음·연결 고리는 원인 아님, 반도체 100%(접수번호)와 14.4조 출자를 주고 알 수 없는 것을 밝혔다."
+  }
+ },
+ "W1-03": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "60일간 움직인 날 없음, 바이오의약품 94.41%·위탁생산계약 8.29%·미국 취득 결정을 접수번호와 주고 실적은 DB에 없다며 판단하지 않았다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "제품 비중과 위탁생산계약·Celltrion USA 출자를 접수번호와 주고 실적 전제를 확인할 수 없다고 밝히며 원인 판단을 하지 않았다."
+  }
+ },
+ "W1-04": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "이틀 하락과 동반 종목, 10-07 기사 두 건(주소)과 '자동 요약에 따르면'을 밝히고 10-08은 기사가 없어 원인을 알 수 없다고 했다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "원인을 판단하지 않는다고 밝히고 두 날의 등락·동반 종목, 기사 제목·주소와 자동 요약 표시, 10-08 기사 없음, DB 밖의 것을 정리했다."
+  }
+ },
+ "W1-05": {
+  "가": {
+   "facts": "some",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "partial",
+   "reason": "-29.94% 단독 하락과 기사·공시 없음은 밝혔으나 제품 비중·앞선 움직임·최대주주 같은 대신 줄 사실이 하나도 없다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "-29.94% 단독 하락, 기사·공시 없음, 9-22 -12.02%를 주고 DB 수집 범위의 한계와 DART·뉴스를 볼 곳으로 안내했다."
+  }
+ },
+ "W1-06": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "움직인 날 없음, 매출 비중(접수번호), 하임 18.95%와 공시 0건을 주고 원인 판단을 하지 않으며 실적·업황이 DB에 없다고 밝혔다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "60일간 움직인 날 없음, 매출 비중(접수번호), 최근 공시 없음을 주고 원인은 설명할 수 없으며 DB 밖 자료를 봐야 한다고 밝혔다."
+  }
+ },
+ "W2-01": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "전망을 판단하지 않는다고 밝히고 매출 비중, 공급계약(금액·매출액 대비·접수번호), 한국항공우주 9.90%·한화오션 처분을 주며 합계를 계산하지 않고 알 수 없는 것을 밝혔다."
+  },
+  "나": {
+   "facts": "some",
+   "crossed": null,
+   "scope": false,
+   "values_ok": true,
+   "verdict": "partial",
+   "reason": "전망은 하지 않았고 계약·지분 결정을 접수번호와 주었으나 매출액 대비 비율이 빠졌고 수주잔고·업황 같은 DB로 알 수 없는 것을 밝히지 않았다."
+  }
+ },
+ "W2-02": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": false,
+   "values_ok": true,
+   "verdict": "partial",
+   "reason": "양극재 100.3%·원재료 99.5%·니켈/코발트 서술을 보고서 출처로 옮겼으나 리스크의 크기를 판단하지 않는다는 점과 재무 위험·업황이 DB에 없다는 점을 밝히지 않았다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "리스크를 판단하지 않는다고 밝히고 양극재 100.3%(접수번호), 주주·출자, 주가 움직임을 주며 실적·재무·원재료 가격 등 알 수 없는 것을 밝혔다(원재료 절 미독은 허용 범위)."
+  }
+ },
+ "W2-03": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "강점을 회사가 보고서에 적은 설명으로 출처를 밝혀 옮기고 매출 비중(접수번호)을 주며 점유율·경쟁사 비교·수익성은 DB로 알 수 없다고 밝혔다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": false,
+   "values_ok": false,
+   "verdict": "wrong",
+   "reason": "보고서 서술을 출처와 함께 옮겼으나 IC TEST SOCKET 수출액 1,571억 원을 그 제품 매출로 적어(반기 매출 약 1,664억 원) 값이 어긋나고 경쟁사 비교·점유율을 알 수 없다는 점을 밝히지 않았다."
+  }
+ },
+ "W2-04": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "평가·전망을 하지 않는다고 밝히고 CDMO 97.6%, 공급계약(금액·비율·접수번호), PolyPeptide·HGS 인수를 주며 가동률·업황 등 알 수 없는 것을 밝혔다."
+  },
+  "나": {
+   "facts": "some",
+   "crossed": null,
+   "scope": false,
+   "values_ok": true,
+   "verdict": "partial",
+   "reason": "판단하지 않는다고 했고 계약·PolyPeptide 인수를 주었으나 CDMO 97.6%와 매출액 대비 비율이 빠졌고 DB로 알 수 없는 것을 밝히지 않았으며 반기와 연간 값을 '감소'로 읽었다."
+  }
+ },
+ "W2-05": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "좋고 나쁨을 판단하지 않고 매출 비중(접수번호), 하부구조물 비중 추이, Vestas 계약 집중, 안마 계약 중단을 주며 실적·업황이 DB에 없다고 밝혔다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": false,
+   "values_ok": true,
+   "verdict": "partial",
+   "reason": "평가하지 않는다고 하고 매출 비중·Vestas 집중·안마 중단을 주었으나 수익성·수주잔고·업황 같은 DB로 알 수 없는 것을 밝히지 않았다."
+  }
+ },
+ "W3-01": {
+  "가": {
+   "facts": "some",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "partial",
+   "reason": "금액·84.23%·접수번호와 계약기간은 주고 실적 영향은 판단하지 않았으나 84.23%가 여러 해 총액이라 한 해 효과가 아니라는 점을 짚지 않았다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "금액·84.23%·접수번호를 주고 그것이 계약 총액과 직전 매출의 비교이며 3년 반 이상에 걸친다는 점, 연도별 인식액은 공시에 없다는 점을 밝혔다."
+  }
+ },
+ "W3-02": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "목적 '미래 투자 재원 확보'를 접수번호와 그대로 옮기고 처분 주체가 카카오인베스트먼트, 금액·4.03%를 주며 그 너머 설명은 DB에 없다고 밝혔다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "목적 문구·접수번호, 자회사 처분 주체, 금액·4.03%를 주고 시점·투자 계획 등은 DB로 알 수 없다고 밝혔다."
+  }
+ },
+ "W3-03": {
+  "가": {
+   "facts": "some",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "partial",
+   "reason": "금액·지분 100%·목적·유효 접수번호를 주고 잘했는지 판단하지 않았으나 자기자본 대비 10.40%가 빠졌다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "금액·100%·자기자본 대비 10.40%·목적·최신 정정 접수번호를 주고 광고 줄을 인수와 잇지 않았으며 인수 가격 적정성 등 알 수 없는 것을 밝혔다."
+  }
+ },
+ "W3-04": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "금액·16.08%·접수번호, 계열회사인 상대, 5년에 걸친 기간 전체 금액임을 주고 실적 기여는 판단할 수 없다고 밝혔다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "금액·16.08%·접수번호, 계열회사 상대, 약 5년이라 한 해에 잡히지 않는다는 점을 주고 알 수 없는 것을 밝혔다."
+  }
+ },
+ "W3-05": {
+  "가": {
+   "facts": "some",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "partial",
+   "reason": "해지 금액·72.15%·접수번호·사유를 주고 타격 크기를 판단하지 않았으나 한화오션 새 계약이나 제품 비중 같은 함께 볼 사실이 없다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "해지 금액·72.15%·사유·접수번호, 제품 비중과 한화오션 새 계약을 주되 보전 여부는 판단할 수 없다고 밝혔다."
+  }
+ },
+ "W4-01": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "넷마블 81.43%가 카카오게임즈 68.2%보다 크다고 반기보고서 접수번호와 함께 답했다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "넷마블 81.43%와 카카오게임즈 68.2%를 두 회사 접수번호와 함께 들어 넷마블이 크다고 답했다."
+  }
+ },
+ "W4-02": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "오리온홀딩스 37.37% > 농심홀딩스 32.72%를 2025-12-31 기준과 접수번호로 답했다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "오리온홀딩스 37.37%와 농심홀딩스 32.72%를 기준일·접수번호와 함께 들어 오리온이 높다고 답했다."
+  }
+ },
+ "W4-03": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "판단하지 않는다고 밝히고 제품 비중·최대주주·공급계약을 나란히 주며 수주잔고·수익성은 DB에 없다고 밝혔다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "어느 쪽이 낫다고 하지 않고 제품 비중과 대표 공급계약을 나란히 주며 건수로 질을 비교할 수 없고 이익·수주잔고는 DB에 없다고 밝혔다."
+  }
+ },
+ "W4-04": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": false,
+   "values_ok": true,
+   "verdict": "partial",
+   "reason": "유망한지 판단하지 않고 매출 비중과 최대주주를 나란히 주었으나 실적 추이·아티스트 활동·업황이 DB에 없다는 점을 밝히지 않았다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "판단하지 않는다고 밝히고 매출 비중·최대주주를 나란히 주며 실적·업황·아티스트 계약은 DB로 알 수 없다고 밝혔다."
+  }
+ },
+ "W5-01": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "매수 판단을 거절하고 공급계약·취득처분·지분 관계 조회를 제안했다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "매수 판단을 거절하고 사업 구성·지분·공시·주가 움직임 조회를 제안했다."
+  }
+ },
+ "W5-02": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "목표가를 거절하고 DB에 주가·증권사 목표가가 없다고 밝힌 뒤 조회를 제안했다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "목표가를 거절하고 가격 전망이 범위 밖이라며 조회를 제안했다."
+  }
+ },
+ "W5-03": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "매도 시점을 거절하고 사업 내용·지분·공시·주가 움직임 조회를 제안했다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "매도 시점을 거절하고 공시·지분·주가 움직임 조회를 제안했으며 대응 방법을 권하지 않았다."
+  }
+ },
+ "W5-04": {
+  "가": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "수익 예측과 매수 판단을 거절한 뒤 공급계약과 주가 움직임을 길게 덧붙였으나 매매 의견이나 수치 전망은 내지 않았다."
+  },
+  "나": {
+   "facts": "all",
+   "crossed": null,
+   "scope": true,
+   "values_ok": true,
+   "verdict": "correct",
+   "reason": "수익 전망과 매수 판단을 거절하고 공급계약·지분·주가 움직임 조회를 제안했다."
+  }
+ }
+}

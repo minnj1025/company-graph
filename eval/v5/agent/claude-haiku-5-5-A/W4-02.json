@@ -1,0 +1,88 @@
+{
+ "question": "농심이랑 오리온 중에 지주회사가 들고 있는 지분율이 어디가 더 높아?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "오리온이 더 높습니다. 지주회사가 든 지분은 오리온홀딩스의 오리온 37.37%(2025-12-31 기준)이고, 농심홀딩스의 농심 지분은 32.72%(같은 기준일)입니다.\n\n| 피출자 회사 | 지주회사 | 지분율 | 기준일 | 근거 접수번호 |\n|---|---|---|---|---|\n| 오리온 | 오리온홀딩스 | 37.37% | 2025-12-31 | 20260318000838 (타법인출자), 20260318001320 (최대주주 현황) |\n| 농심 | 농심홀딩스 | 32.72% | 2025-12-31 | 20260318001210 (타법인출자), 20260311003892 (최대주주 현황) |\n\n- 두 지분 모두 사업보고서 기준입니다. 조회 시점(2026-10-08)까지 반기·분기보고서는 아직 수집되지 않아, 가장 최근 값은 2025년 말 기준입니다.\n- 두 보고서에 적힌 지분율이 같아서 값이 엇갈리지 않습니다.",
+ "followups": [
+  "오리온홀딩스가 가진 다른 계열사 지분은 어떤 것이 있어?",
+  "농심홀딩스의 계열회사와 지분 구조는 어떻게 돼?",
+  "오리온의 최대주주 특수관계인 지분 현황을 알려줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "농심"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "오리온"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3379,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 5063
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2989,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 12,
+   "chars": 8299
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3379,
+     2989
+    ],
+    "also": [
+     3537,
+     2824
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 291
+  }
+ ],
+ "cited": [
+  "20260311003892",
+  "20260318000838",
+  "20260318001210",
+  "20260318001320"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1386,
+  "cache_read_input_tokens": 48657,
+  "cache_creation_input_tokens": 22356
+ },
+ "seconds": 11.5,
+ "number": "W4-02",
+ "gold": ""
+}

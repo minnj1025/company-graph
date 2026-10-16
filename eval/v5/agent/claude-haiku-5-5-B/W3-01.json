@@ -1,0 +1,108 @@
+{
+ "question": "엘앤에프가 삼성SDI랑 맺은 LFP 양극재 공급 계약, 실적에 얼마나 도움이 돼?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "이 DB는 실적 기여도를 계산할 수 없습니다. 아래는 공시에 적힌 계약 사실이고, 실적 영향은 이 DB로 판단하지 않습니다.\n\n**삼성SDI와의 LFP 양극재 계약 (공시 1건)**\n\n| 항목 | 공시 내용 |\n|---|---|\n| 계약명 | 리튬인산철(LFP) 양극재 중장기 공급 및 구매합의서 |\n| 계약 상대 | 삼성에스디아이(\"삼성SDI\") |\n| 계약 금액 | 1606718520000 (원) |\n| 최근 매출액 대비 | 84.23% (최근 매출액 1907478512809 원 기준) |\n| 계약기간 | 2026-03-30 ~ 2029-12-31 |\n| 계약일(as_of_date) | 2026-03-23 |\n| 지역 | 미국 등 |\n| 근거 | 접수번호 20260324800257 |\n\n- 계약은 해지·정정 공시가 없고, 2026-03-01 이후 event 공시에도 해지 건은 없습니다 (조회 시점 2026-10-08 기준).\n- 엘앤에프의 매출 구성은 반기보고서(2026.06) 기준 \"양극활물질외\" 줄이 100%이며, 그 안에 양극재가 있습니다 (접수번호 20260814000995). 이 줄 전체 비중이 100%라서 LFP 제품만의 비중은 표에 없습니다.\n\n**같은 기간의 다른 LFP 공급 계약 (참고)**\n\n- 2026-09-17 공시: SK온(SKON) 및 지정업체와 LFP 양극재 중장기 공급 계약, 금액 161733060000 (원), 최근 매출액 대비 7.51%, 계약기간 2026-09-17 ~ 2028-12-31 (접수번호 20260917800658).\n- 2025-03-11 공시: 하이니켈 양극재 중장기 공급 계약, 금액 3518436000000 (원), 최근 매출액 대비 75.76%. 상대방은 공시에서 밝히지 않아 확인되지 않았고, LFP 계약이 아닙니다 (접수번호 20250311800798).\n\n**이 DB로 알 수 없는 것**\n- 매출·영업이익 추이, 계약 물량과 단가, 계약 이행 기간별 매출 인식액은 공시에 없어 이 DB에 없습니다.\n- 양극재 업황, 리튬·니켈 등 원재료 가격, 증권사 의견, 주가 수급도 이 DB에 없습니다.",
+ "followups": [
+  "엘앤에프의 공급계약 전체 목록을 보여줘",
+  "삼성SDI가 공급계약을 맺은 다른 양극재 회사는 어디야?",
+  "엘앤에프의 사업 내용과 제품 매출 비중을 알려줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "엘앤에프"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "삼성SDI"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "counterparty_id": 3217,
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1216
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-01-01"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 2637
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 754
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08",
+    "doc_type": "event",
+    "filed_from": "2026-03-01"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1056
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3336,
+     3217
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 294
+  }
+ ],
+ "cited": [
+  "20250311800798",
+  "20260324800257",
+  "20260814000995",
+  "20260917800658"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2906,
+  "cache_read_input_tokens": 66356,
+  "cache_creation_input_tokens": 19768
+ },
+ "seconds": 17.1,
+ "number": "W3-01",
+ "gold": ""
+}

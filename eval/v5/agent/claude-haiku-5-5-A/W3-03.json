@@ -1,0 +1,95 @@
+{
+ "question": "크래프톤이 일본 ADK 인수한 거 잘한 결정이야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "DB로는 잘한 결정이었는지 판단할 수 없습니다. 이 DB에는 인수 목적과 조건, 정정 이력까지는 있지만 인수 뒤 ADK의 실적이나 성과는 없습니다. 아래는 공시된 사실입니다.\n\n**인수 공시 내용**\n- 크래프톤은 2025년 6월 24일 일본 ADK 인수를 결정했다고 공시했습니다 (접수번호 20250624800424). 인수 상대는 K.K. BCJ-31이고, 목적은 ADK Holdings Inc.(ADK그룹 모회사)의 지배권 확보입니다.\n- 공시 목적: \"일본시장 진출 및 미디어, 콘텐츠/IP 분야로의 사업 다각화\". 이 인수로 확보하는 지분은 132,000,000주이며 지분율은 100%입니다.\n- 거래 금액은 710370000000원(공시 기준)이고, 정정 공시에는 JPY 75,000,000,000으로 적혀 있습니다. 최종 금액은 취득예정일 환율과 주식매매계약상 순부채 및 거래비용에 따라 정해지는 구조입니다.\n\n**정정 이력 (모두 같은 건)**\n\n| 접수일 | 접수번호 | 정정 내용 |\n|---|---|---|\n| 2025-09-22 | 20250922800276 | 취득예정일 2025-10-01로 확정 |\n| 2026-02-27 | 20260227801286 | 취득금액 조정 시기 문구 변경 |\n| 2026-06-30 | 20260630800855 | 취득금액 조정 시기 문구 변경(현재 유효본) |\n\n**확인되지 않은 것**\n- 거래가 실제로 종결됐다는 공시(거래 완료 보고)는 조회되지 않았습니다. 현재 유효본의 취득예정일은 2025-10-01이지만, 종결 여부는 이 DB로 확인되지 않습니다.\n- ADK의 인수 후 실적, 기업가치 변화, 시너지 실현 여부는 DB에 없습니다.\n- K.K. BCJ-31과 ADK는 DB에 기업으로 등록되어 있지 않아 그 관계와 재무는 조회되지 않습니다.\n\n\"잘한 결정\"인지는 ADK의 실적과 시너지가 공시로 드러나야 평가할 수 있습니다. 공시된 사실만으로는 결론을 내릴 수 없습니다.",
+ "followups": [
+  "크래프톤이 같은 기간에 낸 다른 취득 결정(넵튠, Eleventh Hour Games)은 무엇인가?",
+  "크래프톤의 최근 공급계약 공시는 어떤 것들이 있나?",
+  "크래프톤과 넵튠의 관계(지분, 계열)는 어떻게 되어 있나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "크래프톤"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "ADK"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4218,
+    "as_of": "2026-10-08",
+    "rel_type": "stake_acquisition",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 4496
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 4218,
+    "as_of": "2026-10-08",
+    "rel_type": "stake_disposal",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1242
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 4218,
+    "as_of": "2026-10-08",
+    "doc_type": "event",
+    "filed_from": "2025-06-01"
+   },
+   "error": null,
+   "total": 8,
+   "chars": 8553
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     4218
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20250624800424",
+  "20250922800276",
+  "20260227801286",
+  "20260630800855"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2594,
+  "cache_read_input_tokens": 69094,
+  "cache_creation_input_tokens": 24689
+ },
+ "seconds": 17.6,
+ "number": "W3-03",
+ "gold": ""
+}
