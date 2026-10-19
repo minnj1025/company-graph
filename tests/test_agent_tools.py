@@ -192,3 +192,28 @@ def test_common_stock_rows():
     from company_graph.extract_equity import is_common
     assert all(is_common(k) for k in ("보통주", "보통주식", "의결권 있는 주식", "-", None, "의결권 없는 보통주"))
     assert not any(is_common(k) for k in ("우선주", "종류주", "종류주식", "기타주식", "기 타", "의결권 없는 주식", "2우선주"))
+
+
+def test_price_history_returns_changes_against_market():
+    """기간 수익률은 종가로 계산하고, 시장의 중앙값과 견준다. 가격 자체는 내보내지 않는다."""
+    from datetime import date
+    from decimal import Decimal
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import Session
+    from company_graph import agent_tools as t
+    from company_graph.db import Base, Company, PriceDaily
+    engine = create_engine("sqlite://")
+    Base.metadata.create_all(engine)
+    with Session(engine) as db:
+        for i, code in enumerate(("000001", "000002", "000003"), 1):
+            db.add(Company(company_id=i, name=f"회사{i}", stock_code=code, corp_cls="Y", in_scope=True))
+        closes = {"000001": (100, 90), "000002": (100, 110), "000003": (100, 120)}
+        for code, (first, last) in closes.items():
+            db.add(PriceDaily(stock_code=code, trade_date=date(2026, 9, 1), close_price=Decimal(first), volume=1))
+            db.add(PriceDaily(stock_code=code, trade_date=date(2026, 10, 2), close_price=Decimal(last), volume=1))
+        db.commit()
+        t._PEERS.clear()
+        out = t.get_price_history(db, 1, "2026-10-02")
+        month = next(p for p in out["periods"] if p["period"] == "1개월")
+        assert month["change_pct"] == -10.0 and month["market_median_pct"] == 10.0 and month["vs_market_pp"] == -20.0
+        assert "close" not in str(out) and "90" not in str(month)

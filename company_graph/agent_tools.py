@@ -8,15 +8,16 @@
   - 모든 줄에 근거 공시의 접수번호가 있다
 """
 import re
+import statistics
 from datetime import date, timedelta
 
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import aliased
 
-from . import query
+from . import hot, query
 from . import ksic as ksic_table
 from .display_names import group_key, group_label
-from .db import BusinessSection, Company, Document, HotDay, Product, ProductCode, Relation
+from .db import BusinessSection, Company, Document, HotDay, PriceDaily, Product, ProductCode, Relation
 from .product_families import FAMILIES, FAMILY_FIELD
 
 LIMIT = 50
@@ -177,6 +178,11 @@ TOOLS = [
                     "읽지 못한 회사는 read=false 로 나오고, 그때는 get_business 로 표의 글을 직접 읽는다.",
      "input_schema": {"type": "object", "properties": {"company_id": _COMPANY, "as_of": _AS_OF},
                       "required": ["company_id", "as_of"]}},
+    {"name": "get_price_history",
+     "description": "한 회사의 기간 수익률을 시장, 같은 제품을 파는 종목들과 견준다: 최근 1주, 1개월, 3개월. "
+                    "\"요즘 주가가 어땠나\", \"정말 못 올랐나\", \"시장보다 나았나\"를 확인할 때 쓴다. 가격 자체는 주지 않고 수익률(%)만 준다. "
+                    "장 마감 뒤의 일별 값이며 장중 값이 아니다. 보관한 시세는 최근 약 90일이라 그보다 긴 기간은 없다.",
+     "input_schema": {"type": "object", "properties": {"company_id": _COMPANY, "as_of": _AS_OF}, "required": ["company_id", "as_of"]}},
     {"name": "get_price_moves",
      "description": "거래일의 주가 움직임을 관계와 제품으로 설명한다. 그날 시장보다 크게 오르거나 내린 종목 가운데, 같은 제품을 팔거나 "
                     "지분·계열·공급계약으로 이어진 종목을 묶은 '종목군'과, 어디에도 묶이지 않은 '개별 종목'을 준다. 장 마감 뒤의 일별 값이며 장중 값이 아니다. "
@@ -803,6 +809,67 @@ def _move_group(group: dict, direction: str, when: date) -> dict:
     return out
 
 
+PERIODS = (("1주", 7), ("1개월", 30), ("3개월", 91))
+_PEERS: dict[date, "hot.Links"] = {}   # 같은 제품을 파는 종목 무리. 날마다 한 번만 만든다 (무거운 조회라서)
+
+
+def _peer_links(db, when: date):
+    if when not in _PEERS:
+        _PEERS.clear()
+        _PEERS[when] = hot.load_links(db, when)
+    return _PEERS[when]
+
+
+def _closes(db, day: date, codes=None) -> dict[str, float]:
+    rows = select(PriceDaily.stock_code, PriceDaily.close_price).where(PriceDaily.trade_date == day)
+    if codes is not None:
+        rows = rows.where(PriceDaily.stock_code.in_(list(codes)))
+    return {code: float(close) for code, close in db.execute(rows) if close}
+
+
+def _median(values: list[float]) -> float | None:
+    return round(statistics.median(values), 2) if values else None
+
+
+def get_price_history(db, company_id, as_of) -> dict:
+    company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
+    if not company.stock_code:
+        raise ToolError(f"{company.label} 은(는) 상장 종목이 아니어서 시세가 없습니다")
+    days = list(db.scalars(select(PriceDaily.trade_date).where(PriceDaily.trade_date <= when, PriceDaily.trade_date >= when - timedelta(days=130))
+                           .group_by(PriceDaily.trade_date).order_by(PriceDaily.trade_date.desc())))
+    if not days:
+        return {"company": _brief(company), "periods": [], "note": "그 시점 이전의 시세가 없습니다. 시세는 2026년부터 최근 약 90일만 보관합니다"}
+    end = days[0]
+    market = {c.stock_code: c.corp_cls for c in db.scalars(select(Company).where(Company.corp_cls == company.corp_cls, Company.stock_code.isnot(None)))}
+    links = _peer_links(db, when)
+    products = sorted(name for name, members in links.holders.items() if company.company_id in members)
+    peer_ids = set().union(*(links.holders[name] for name in products)) - {company.company_id} if products else set()
+    peer_codes = {c.stock_code: c.label for c in db.scalars(select(Company).where(Company.company_id.in_(peer_ids)))} if peer_ids else {}
+    last = _closes(db, end)
+    periods = []
+    for label, span in PERIODS:
+        start = next((d for d in days if d <= end - timedelta(days=span)), None)
+        if start is None:
+            periods.append({"period": label, "note": "보관한 시세가 이 기간을 다 덮지 못합니다"})
+            continue
+        first = _closes(db, start)
+        change = lambda code: round((last[code] / first[code] - 1) * 100, 2) if code in last and code in first else None
+        mine = change(company.stock_code)
+        market_values = [v for v in (change(code) for code in market) if v is not None]
+        peer_values = [v for v in (change(code) for code in peer_codes) if v is not None]
+        periods.append({"period": label, "from": start.isoformat(), "to": end.isoformat(), "change_pct": mine,
+                        "market_median_pct": _median(market_values), "market": MARKETS.get(company.corp_cls),
+                        "peers_median_pct": _median(peer_values), "peers_counted": len(peer_values),
+                        "vs_market_pp": None if mine is None or not market_values else round(mine - statistics.median(market_values), 2)})
+    return {"company": _brief(company), "as_of": when.isoformat(), "last_trading_day": end.isoformat(), "periods": periods,
+            "peers": {"basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+                      "products": products[:6], "names": sorted(peer_codes.values())[:12], "total": len(peer_codes)},
+            "fields": "change_pct 는 그 기간의 종가 기준 수익률(%), market_median_pct 는 같은 시장 상장 종목 수익률의 중앙값, "
+                      "peers_median_pct 는 같은 제품을 파는 종목들의 중앙값, vs_market_pp 는 시장 중앙값과의 차이(%p). "
+                      "수익률은 지난 사실이며 원인을 말해 주지 않는다. 앞으로의 주가에 대해서는 말하지 않는다. "
+                      "출처는 한국거래소(KRX) 통계정보의 일별 시세를 가공한 값이다"}
+
+
 def get_price_moves(db, as_of, day=None, company_id=None, keyword=None, direction: str = "both", lookback_days: int = 30) -> dict:
     when = _date(as_of, "as_of", required=True)
     if direction not in ("up", "down", "both"):
@@ -879,7 +946,7 @@ def tools() -> list[dict]:
             and (t["name"] not in COMPOSITE_TOOLS or os.environ.get("ASK_COMPOSITE", "0") == "1")]
 
 
-FUNCTIONS = {"compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
+FUNCTIONS = {"get_price_history": get_price_history, "compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
              "search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
              "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}

@@ -66,6 +66,7 @@ type Turn = { question: string; result?: AskResult; error?: string; steps: strin
 const TOOL_LABELS: Record<string, string> = {
   show_on_graph: "그래프에 표시",
   get_price_moves: "주가 움직임 조회",
+  get_price_history: "기간 수익률 조회",
   find_company: "기업 찾기",
   get_relations: "관계 조회",
   get_filings: "공시 목록 조회",
