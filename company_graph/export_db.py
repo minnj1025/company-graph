@@ -17,7 +17,7 @@ from .db import Base, BusinessSection, Company, CompanyAlias, Document, HotDay, 
 
 TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection, Product, ProductCode)
 # 대상 DB에서 날마다 채워지는 표(.github/workflows/daily.yml). 비우면 그동안 쌓인 날이 사라지므로, 대상에 없는 날만 채운다
-DAILY = ((HotDay, None), (PriceDaily, 90))   # (표, 최근 며칠 치만 옮길지). 시세는 무리 계산에 쓰는 최근 것만 둔다
+DAILY = ((HotDay, None), (PriceDaily, 100))   # (표, 최근 며칠 치만 옮길지). 시세는 무리 계산에 쓰는 최근 것만 둔다
 CHUNK = 5000
 
 
