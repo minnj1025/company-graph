@@ -196,6 +196,19 @@ TOOLS = [
          "direction": {"type": "string", "enum": ["up", "down", "both"], "description": "오른 쪽, 내린 쪽, 둘 다(기본)"},
          "lookback_days": {"type": "integer", "description": "company_id 나 keyword 로 찾을 때 거슬러 볼 날 수(달력 기준). 기본 30, 최대 120"}},
          "required": ["as_of"]}},
+    {"name": "show_view",
+     "description": "답 옆에 시각화 카드를 하나 띄운다. 카드의 숫자는 서버가 DB에서 직접 채우므로 이 도구는 보기의 종류와 대상만 정한다. "
+                    "kind: ownership(지분 구조도: 주주와 그 위의 주주, 출자 대상), group(계열 지도: 계열회사, 상장사는 시가총액 크기), "
+                    "supply_flow(공급망 흐름: 누가 누구에게 얼마의 공급계약을 맺었나), path(연결 경로: other_company_id 까지 이어지는 관계), "
+                    "timeline(공시 타임라인: 공급계약·정정·해지·지분 취득·처분 공시를 시간 순으로), contracts(계약 기간: 계약마다 시작~종료 막대), "
+                    "revenue(매출 구성: 제품별 매출 비중), returns(수익률 비교: 1주·1개월·3개월 수익률을 시장·같은 제품 종목과). "
+                    "since 는 supply_flow·timeline·contracts 의 시작일(기본은 as_of 의 1년 전). 결과의 summary 를 답에 옮겨도 되고 카드에는 근거 공시가 붙는다.",
+     "input_schema": {"type": "object", "properties": {
+         "kind": {"type": "string", "enum": ["ownership", "group", "supply_flow", "path", "timeline", "contracts", "revenue", "returns"]},
+         "company_id": _COMPANY, "as_of": _AS_OF,
+         "other_company_id": {"type": "integer", "description": "path 일 때 이어 볼 상대 기업의 company_id"},
+         "since": {"type": "string", "description": "supply_flow·timeline·contracts 의 시작일 YYYY-MM-DD"}},
+         "required": ["kind", "company_id", "as_of"]}},
     {"name": SCREEN_TOOL,
      "description": "화면의 그래프에 무엇을 보일지 정한다. 조회를 마친 뒤, 답의 글을 쓰기 시작하기 전에 이 도구만 따로 한 번 부른다(같은 차례에 글을 쓰지 않는다). 부르면 사용자의 화면에서 그 기업들이 바로 떠오른다. "
                     "highlight 는 답이 가리키는 기업(이름표가 강조된다), also 는 맥락으로 함께 그릴 기업이다. "
@@ -925,6 +938,13 @@ def get_price_moves(db, as_of, day=None, company_id=None, keyword=None, directio
             "fields": note + " moved_alone 은 그 회사가 종목군에 묶이지 않고 혼자 크게 움직인 날입니다(많이 움직인 20곳 안에 든 날만 기록됩니다)."}
 
 
+def show_view(db, kind, company_id, as_of, other_company_id=None, since=None) -> dict:
+    import sys
+    from . import views
+    view = views.build(db, sys.modules[__name__], kind, company_id, as_of, other_company_id, since)
+    return {"shown": view["title"], "summary": view.get("summary"), "notes": view.get("notes"), "_view": view}
+
+
 def show_on_graph(db, highlight, also=None) -> dict:
     """화면에 보일 기업을 받아 확인만 한다. 실제로 화면을 움직이는 것은 이 호출을 본 서버와 브라우저다 (api._Found, Chat.tsx)."""
     wanted = [int(i) for i in dict.fromkeys(highlight or [])][:12]
@@ -946,7 +966,7 @@ def tools() -> list[dict]:
             and (t["name"] not in COMPOSITE_TOOLS or os.environ.get("ASK_COMPOSITE", "0") == "1")]
 
 
-FUNCTIONS = {"get_price_history": get_price_history, "compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
+FUNCTIONS = {"show_view": show_view, "get_price_history": get_price_history, "compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
              "search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
              "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}

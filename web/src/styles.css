@@ -5033,3 +5033,185 @@ details.more .notes {
   padding: 0;
   color: var(--text-2);
 }
+
+/* 시각화 카드 (Agent의 show_view). 값은 서버가 채우고 여기서는 그리기만 한다 */
+.views {
+  display: grid;
+  gap: 12px;
+  margin: 4px 0 14px;
+}
+.view-card {
+  margin: 0;
+  padding: 12px 14px 10px;
+  border: 1px solid rgb(var(--ink) / 0.12);
+  border-radius: 8px;
+  background: var(--raised);
+}
+.view-card figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.view-card figcaption b {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+.view-card figcaption span {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.view-chart {
+  width: 100%;
+}
+.view-legend,
+.view-list,
+.view-empty {
+  margin: 6px 0 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.view-list b {
+  color: var(--text-2);
+  font-weight: 600;
+  margin-right: 6px;
+}
+.view-legend .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 3px 0 6px;
+  border-radius: 2px;
+  vertical-align: 0;
+}
+.view-legend .dot.accent { background: var(--accent); }
+.view-legend .dot.muted { background: var(--muted); }
+.view-legend .dot.info { background: var(--info); }
+.view-foot {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgb(var(--ink) / 0.08);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.view-foot p {
+  margin: 0;
+}
+.view-sources {
+  margin-top: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-2);
+  font: inherit;
+  cursor: pointer;
+}
+.view-receipts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: 4px !important;
+  font-variant-numeric: tabular-nums;
+}
+.view-receipts a {
+  color: var(--muted);
+}
+.view-paths {
+  display: grid;
+  gap: 8px;
+}
+.view-path {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+}
+.view-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.view-node {
+  padding: 3px 8px;
+  border: 1px solid rgb(var(--ink) / 0.16);
+  border-radius: 5px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.view-node.plain {
+  cursor: default;
+  color: var(--text-2);
+}
+.view-node:hover:not(.plain) {
+  border-color: var(--accent);
+}
+.view-edge {
+  color: var(--muted);
+  font-size: 11.5px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.view-edge[href]:hover {
+  color: var(--text);
+}
+.view-sub {
+  margin: 12px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.view-bars {
+  display: grid;
+  gap: 3px;
+}
+.view-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 190px) 1fr 52px;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.view-bar:disabled {
+  cursor: default;
+  color: var(--text-2);
+}
+.view-bar:hover:not(:disabled) {
+  background: rgb(var(--ink) / 0.06);
+}
+.view-bar .name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.view-bar .track {
+  height: 8px;
+  border-radius: 3px;
+  background: rgb(var(--ink) / 0.08);
+  overflow: hidden;
+}
+.view-bar .track i {
+  display: block;
+  height: 100%;
+  background: var(--info);
+}
+.view-bar .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-2);
+}

@@ -18,7 +18,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
-from . import ksic, query
+from . import agent_tools, ksic, query
 from .display_names import group_key, group_label
 from .db import AskLog, Base, BusinessSection, Company, Document, HotDay, Product, ProductCode, Relation, SiteText, get_engine, session
 from .product_families import FAMILY_FIELD
@@ -573,6 +573,17 @@ def business_json(db, company_id: int, as_of: date) -> dict | None:
             "cut": bool((overview and len(overview.text) > 1500) or (products and len(products.text) > 2500))}
 
 
+@app.get("/api/view")
+def view(kind: str, company_id: int, as_of: date, other_company_id: int | None = None, since: date | None = None, db=Depends(get_db)):
+    """시각화 카드 하나 (Agent의 show_view 와 같은 것). 보고서나 링크에서 Agent 없이 바로 그릴 때 쓴다."""
+    result = agent_tools.call(db, "show_view", {"kind": kind, "company_id": company_id, "as_of": as_of.isoformat(),
+                                                **({"other_company_id": other_company_id} if other_company_id else {}),
+                                                **({"since": since.isoformat()} if since else {})})
+    if "error" in result:
+        raise HTTPException(400, result["error"])
+    return result["_view"]
+
+
 @app.get("/api/company/{company_id}")
 def company(company_id: int, as_of: date, db=Depends(get_db)):
     found = db.get(Company, company_id)
@@ -816,6 +827,7 @@ class _Found:
         self.calls = 0                                    # 도구를 부른 횟수. 0이면 조회 없이 답한 것(거절 등)이라 그릴 것이 없다
         self.shown: dict | None = None                    # Agent가 show_on_graph 로 정한 것: {"highlight": [...], "also": [...]}. 있으면 어림 대신 이것을 따른다
         self.receipts: set[str] = set()                   # get_filings 로 읽은 공시. 그 공시의 상대 기업을 선으로 잇는다
+        self.views: list[dict] = []                       # Agent가 show_view 로 띄운 시각화 카드 (값은 서버가 채운 것)
 
     def relation(self, item: dict):
         subject, obj = item["subject"].get("company_id"), item["object"].get("company_id")
@@ -836,6 +848,9 @@ class _Found:
     def take(self, name: str, arguments: dict, result: dict):
         self.calls += 1
         if "error" in result:
+            return
+        if name == "show_view" and result.get("_view"):
+            self.views.append(result["_view"])
             return
         if name == "find_company" and len(result["candidates"]) == 1:
             self.focus.add(result["candidates"][0]["company_id"])
@@ -1072,6 +1087,7 @@ def _answered(db, question: str, visitor: str, ask_id: int, result: dict, found:
             "unverified_citations": result["cited_not_in_results"],
             "sources": sources,
             "graph": found.graph(db, result["answer"]),
+            "views": found.views,
             "left_for_you": None if visitor == OWNER else max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}
 
 
@@ -1108,7 +1124,11 @@ def ask_stream(body: Ask, request: Request, db=Depends(get_db)):
     def work():
         found = _Found()
         try:
-            result = agent.answer(question, model=ASK_MODEL, as_of=date.today(), max_turns=8, on_result=found.take,
+            def took(name, arguments, result):
+                found.take(name, arguments, result)
+                if name == "show_view" and result.get("_view"):
+                    events.put(("view", result["_view"]))   # 답의 글보다 먼저 카드를 그릴 수 있게 바로 보낸다
+            result = agent.answer(question, model=ASK_MODEL, as_of=date.today(), max_turns=8, on_result=took,
                                   history=history, on_event=lambda kind, value: events.put((kind, value)))
             with session(_engine) as own:   # 요청의 DB 연결은 응답을 흘려보내는 동안 닫힐 수 있어서 따로 연다
                 events.put(("done", _answered(own, question, visitor, ask_id, result, found)))

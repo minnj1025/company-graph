@@ -212,6 +212,18 @@ export interface ToolCall {
   error: string | null;
 }
 
+/** Agent가 show_view 로 띄운 시각화 카드. 값은 서버가 DB에서 채운다 (company_graph/views.py) */
+export interface View {
+  kind: string;
+  title: string;
+  company: { id: number; name: string };
+  as_of: string;
+  sources: string[];
+  notes: string[];
+  summary?: string;
+  [key: string]: unknown;
+}
+
 export interface AskResult {
   question: string;
   answer: string;
@@ -226,6 +238,8 @@ export interface AskResult {
   /** 답이 근거로 든 공시. 조회 결과에 실제로 있었던 것만 */
   sources: { rcept_no: string; url: string; company: string | null; report: string | null; filed: string | null }[];
   graph: GraphData;
+  /** 답과 함께 띄운 시각화 카드 */
+  views?: View[];
   /** 운영자에게는 한도가 없어서 null */
   left_for_you: number | null;
 }

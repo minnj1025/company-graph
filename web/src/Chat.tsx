@@ -1,9 +1,12 @@
-import { Children, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Children, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { askAgentStream, fetchAskStatus, fetchSuggest, searchCompanies, type AskEvent } from "./api";
 import { shortName } from "./Graph";
-import type { AskResult, AskStatus, Company, GraphNode, Suggestion } from "./types";
+import type { AskResult, AskStatus, Company, GraphNode, Suggestion, View } from "./types";
+
+// 차트 라이브러리는 무거워서 카드가 처음 필요할 때 받는다
+const Views = lazy(() => import("./Views"));
 
 const DART = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=";
 /** 처음 화면의 입력 칸 위에 보이는 예시. 이 DB로 답할 수 있는 질문의 종류가 하나씩 다르다 */
@@ -61,10 +64,11 @@ function Cell({ children }: { children?: ReactNode }) {
 const squeeze = (text: string) => text.replace(/\s/g, "").toLowerCase();
 
 /** steps 와 partial 은 답이 오는 동안에만 쓴다: Agent가 지금까지 한 조회와, 흘러나오고 있는 답의 글 */
-type Turn = { question: string; result?: AskResult; error?: string; steps: string[]; partial: string };
+type Turn = { question: string; result?: AskResult; error?: string; steps: string[]; partial: string; views?: View[] };
 
 const TOOL_LABELS: Record<string, string> = {
   show_on_graph: "그래프에 표시",
+  show_view: "시각화 카드",
   get_price_moves: "주가 움직임 조회",
   get_price_history: "기간 수익률 조회",
   find_company: "기업 찾기",
@@ -220,6 +224,8 @@ export function useChat(onShow: (result: AskResult | null) => void, onScreen?: (
           clean,
           (event) => {
             if (event.kind === "text") patch((t) => ({ ...t, partial: t.partial + event.text }));
+            // 시각화 카드는 답의 글보다 먼저 온다. 받는 대로 붙인다
+            else if (event.kind === "view") patch((t) => ({ ...t, views: [...(t.views ?? []), event.view] }));
             // 도구를 부르기 전에 쓴 말은 답이 아니라서, 조회가 시작되면 지운다
             else if (event.kind === "tool") {
               // Agent가 화면에 보일 기업을 정했다: 답이 다 오기 전에 지금 그래프에서 그 점들을 먼저 밝힌다
@@ -403,6 +409,11 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
           {turn.result && (
             <div className={turn.result === shown ? "a shown" : "a"}>
               <Tools result={turn.result} />
+              {(turn.result.views?.length ?? 0) > 0 && (
+                <Suspense fallback={null}>
+                  <Views views={turn.result.views!} onCompany={(id) => onCompany(turn.result!, id)} />
+                </Suspense>
+              )}
               <Answer result={turn.result} onCompany={(id) => onCompany(turn.result!, id)} />
               {turn.result.sources.length === 0 ? (
                 <div className="sources">
@@ -449,6 +460,11 @@ export function ChatLog({ chat, shown, onShow, onCompany }: LogProps) {
                 </div>
               )}
             </div>
+          )}
+          {!turn.result && !turn.error && (turn.views?.length ?? 0) > 0 && (
+            <Suspense fallback={null}>
+              <Views views={turn.views!} onCompany={() => undefined} />
+            </Suspense>
           )}
           {!turn.result && !turn.error && <Waiting turn={turn} />}
         </div>

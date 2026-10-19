@@ -1,4 +1,4 @@
-import type { AskResult, AskStatus, Company, CompanyDetail, GraphData, HotDay, Insights, Meta, RelType, Suggestion, Taxonomy } from "./types";
+import type { AskResult, AskStatus, Company, CompanyDetail, GraphData, HotDay, Insights, Meta, RelType, Suggestion, Taxonomy, View } from "./types";
 
 /** 운영자 열쇠. 주소 끝에 #owner=열쇠 를 붙여 한 번 열면 이 브라우저에 적어 두고, 질문할 때 같이 보낸다 (횟수 한도를 받지 않는다) */
 function ownerKey(): string | null {
@@ -47,7 +47,7 @@ export const fetchInsights = (asOf: string) => get<Insights>("/insights", { as_o
 export const fetchAskStatus = () => get<AskStatus>("/ask/status");
 
 /** 답이 만들어지는 동안 서버가 보내는 것: 지금 부르는 도구, 답의 글 조각, 도구 결과를 받고 새로 쓰기 시작 */
-export type AskEvent = { kind: "tool"; name: string; input: Record<string, unknown> } | { kind: "text"; text: string } | { kind: "turn" };
+export type AskEvent = { kind: "tool"; name: string; input: Record<string, unknown> } | { kind: "text"; text: string } | { kind: "turn" } | { kind: "view"; view: View };
 
 const REFUSED = "지금은 답할 수 없습니다. 잠시 뒤에 다시 시도해 주세요.";
 
@@ -86,6 +86,7 @@ export async function askAgentStream(
       if (kind === "text") onEvent({ kind, text: parsed });
       else if (kind === "tool") onEvent({ kind, name: parsed.name, input: parsed.input });
       else if (kind === "turn") onEvent({ kind });
+      else if (kind === "view") onEvent({ kind, view: parsed as View });
     }
     if (done) throw new Error(REFUSED);
   }

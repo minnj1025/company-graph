@@ -22,7 +22,7 @@ from . import agent_tools
 from .db import session
 
 SITE = os.environ.get("SITE_URL", "https://company-graph-nu.vercel.app")
-HIDDEN = {agent_tools.SCREEN_TOOL, "get_price_moves", "get_price_history", *agent_tools.COMPOSITE_TOOLS}
+HIDDEN = {agent_tools.SCREEN_TOOL, "show_view", "get_price_moves", "get_price_history", *agent_tools.COMPOSITE_TOOLS}
 LONG = 30000   # 결과가 이보다 길면 목록을 줄인다 (쓰는 쪽의 토큰을 아끼려고)
 
 INSTRUCTIONS = """Corpath: 한국 상장사의 공시(DART)에서 뽑은 기업 관계 DB. 지분, 계열, 공급계약, 지분 취득·처분 결정, 제품과 매출 비중, 사업보고서의 사업 내용을 조회한다.
