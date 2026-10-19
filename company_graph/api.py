@@ -25,6 +25,10 @@ from .product_families import FAMILY_FIELD
 from .stages import sector, stage
 
 app = FastAPI(title="기업 관계 그래프")
+# MCP: 다른 사람의 Claude 가 이 DB의 조회 도구를 쓰는 입구 (company_graph/mcp_server.py)
+from starlette.routing import Route  # noqa: E402
+from . import mcp_server  # noqa: E402
+app.router.routes.append(Route("/api/mcp", endpoint=mcp_server.App(), methods=["GET", "POST", "DELETE"]))
 
 # 읽기만 하는 응답은 CDN 이 들고 있다가 바로 내준다. 첫 화면의 그래프(/api/overview)는 만드는 데 1~4초가 걸린다.
 # 공시 자료는 DB를 다시 옮기고 배포할 때만 바뀌고(배포하면 CDN 의 것은 버려진다), 이슈 종목만 날마다 바뀌어 짧게 둔다.

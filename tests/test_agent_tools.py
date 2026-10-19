@@ -217,3 +217,11 @@ def test_price_history_returns_changes_against_market():
         month = next(p for p in out["periods"] if p["period"] == "1개월")
         assert month["change_pct"] == -10.0 and month["market_median_pct"] == 10.0 and month["vs_market_pp"] == -20.0
         assert "close" not in str(out) and "90" not in str(month)
+
+
+def test_mcp_hides_price_and_screen_tools():
+    """MCP 로 내놓는 도구에 주가 도구(거래소 약관)와 화면 도구는 없다."""
+    from company_graph import mcp_server
+    names = mcp_server.tool_names()
+    assert "find_company" in names and "get_relations" in names
+    assert not {"get_price_moves", "get_price_history", "show_on_graph"} & set(names)

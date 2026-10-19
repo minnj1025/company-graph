@@ -3,3 +3,4 @@ fastapi==0.142.2
 SQLAlchemy==2.1.3
 psycopg[binary]
 anthropic
+mcp==2.3.0

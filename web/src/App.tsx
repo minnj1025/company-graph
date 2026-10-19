@@ -222,6 +222,21 @@ export function App() {
   // Agent가 답을 쓰기 전에 "이 기업들을 보여 줘"라고 하면, 그 기업들만으로 먼저 모여들게 한다(전체 그래프에서 아는 점과 선으로).
   // 답이 끝나 완성된 그래프가 오면, 이미 모여 있는 점은 그 자리에 두고 새 점(제품 등)만 더한다
   const early = useRef<GraphData | null>(null);
+  /** 이 기업들만 지금 그래프의 점과 선으로 모아 보인다. Agent의 화면 도구와, 주소의 ?show= 로 연 링크(MCP 결과의 "그래프로 보기")가 쓴다 */
+  const focusOn = (question: string, highlight: number[], also: number[], waiting = true) => {
+      const wanted = new Set([...highlight, ...also]);
+      const strong = new Set(highlight);
+      const nodes = data.nodes.filter((node) => wanted.has(node.id)).map(({ x: _x, y: _y, z: _z, ...node }) => ({ ...node, vx: undefined, vy: undefined, vz: undefined, focus: strong.has(node.id) }));
+      if (nodes.length === 0) return false;   // 지금 그래프에 없는 기업들이다. 답이 끝날 때까지 기다린다
+      const kept = new Set(nodes.map((node) => node.id));
+      const end = (value: unknown) => (typeof value === "object" && value !== null ? (value as GraphNode).id : (value as number));
+      const links = data.links.filter((link) => kept.has(end(link.source)) && kept.has(end(link.target))).map((link) => ({ ...link, source: end(link.source), target: end(link.target) }));
+      const graph = { nodes, links } as GraphData;
+      if (waiting) early.current = graph;   // 답이 끝나면 이 자리에 이어 그린다
+      seed(graph);
+      go({ found: { question, graph, early: true } });
+      return true;
+  };
   const chat = useChat(
     (result) => {
       const before = early.current;
@@ -238,20 +253,18 @@ export function App() {
       }
       showFound(result);
     },
-    (question, highlight, also) => {
-      const wanted = new Set([...highlight, ...also]);
-      const strong = new Set(highlight);
-      const nodes = data.nodes.filter((node) => wanted.has(node.id)).map(({ x: _x, y: _y, z: _z, ...node }) => ({ ...node, vx: undefined, vy: undefined, vz: undefined, focus: strong.has(node.id) }));
-      if (nodes.length === 0) return;   // 지금 그래프에 없는 기업들이다. 답이 끝날 때까지 기다린다
-      const kept = new Set(nodes.map((node) => node.id));
-      const end = (value: unknown) => (typeof value === "object" && value !== null ? (value as GraphNode).id : (value as number));
-      const links = data.links.filter((link) => kept.has(end(link.source)) && kept.has(end(link.target))).map((link) => ({ ...link, source: end(link.source), target: end(link.target) }));
-      const graph = { nodes, links } as GraphData;
-      early.current = graph;
-      seed(graph);
-      go({ found: { question, graph, early: true } });
-    },
+    focusOn,
   );
+
+  // MCP 결과의 "그래프로 보기" 링크(?show=기업 번호들)로 들어오면, 전체 그래프가 그려진 뒤 그 기업들을 한 번 모아 보인다
+  const shown = useRef(false);
+  useEffect(() => {
+    if (shown.current || data.nodes.length === 0) return;
+    const ids = (new URLSearchParams(window.location.search).get("show") ?? "").split(",").map(Number).filter((id) => id > 0).slice(0, 40);
+    if (ids.length === 0) return;
+    shown.current = true;
+    focusOn("링크로 연 기업", ids.slice(0, 12), ids.slice(12), false);
+  }, [data]);
 
   useEffect(() => {
     fetchMeta()
