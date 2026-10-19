@@ -25,7 +25,7 @@ from .names import clean_reported, normalize
 
 YEARS = (2023, 2024, 2025)
 LISTED = ("Y", "K", "N")
-VERSION = "equity-6"  # 6: 최대주주 현황의 우선주·종류주 줄(share_class)과 자기주식 줄(treasury), 기간 중에 다 처분한 출자(exited)를 표시해 남김. 5: 타법인출자 현황의 기초 주식수·지분율도 남김. 4: 최대주주 현황에서 0.00%로 찍힌 주주와 기간 중 빠진 주주, 기초 값, 합계 줄을 남기고 종류주 줄을 뺌. 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
+VERSION = "equity-7"  # 7: 이름만으로 이은 상장사 출자 대상에 과반 지분이 나오는데 그 회사의 최대주주 현황에 이 주주가 없으면 이름만 같은 다른 회사로 보고 잇지 않음. 6: 최대주주 현황의 우선주·종류주 줄(share_class)과 자기주식 줄(treasury), 기간 중에 다 처분한 출자(exited)를 표시해 남김. 5: 타법인출자 현황의 기초 주식수·지분율도 남김. 4: 최대주주 현황에서 0.00%로 찍힌 주주와 기간 중 빠진 주주, 기초 값, 합계 줄을 남기고 종류주 줄을 뺌. 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
 
 
 TOTAL_NAMES = ("합계", "계", "소계")
@@ -36,6 +36,29 @@ def is_common(kind: str | None) -> bool:
     """최대주주 현황의 '주식의 종류' 칸이 보통주인가. 회사마다 적는 말이 달라(보통주식, 의결권 있는 주식, 빈칸) 아닌 것을 가려낸다."""
     text = "".join((kind or "").split())
     return "보통" in text or not any(word in text for word in _NOT_COMMON)
+
+
+def impossible_stake(db, holder: Company, target_id: int, pct: Decimal, year: int, shares: str | None = None) -> bool:
+    """이름만으로 이은 출자 대상이 상장사인데 과반 지분을 가졌다고 나오고, 그 회사가 스스로 적은 최대주주 현황에
+    이 주주의 이름이 없으면 이름이 같은 다른 회사다 (예: 비상장 '주식회사 에스엠'을 에스엠엔터테인먼트로 잇는 것).
+    과반 주주는 반드시 최대주주 현황에 오르므로 이 경우만 끊는다. 5~50%는 최대주주 현황에 없는 주주도 많아 건드리지 않는다."""
+    target = db.get(Company, target_id)
+    if not target or not target.corp_code or target.corp_cls not in ("Y", "K", "N") or pct < 50:
+        return False
+    if holder.ftc_group and holder.ftc_group == target.ftc_group:   # 같은 기업집단이면 이름 표기만 다른 것이다 (CJ / 씨제이(주))
+        return False
+    rows = [r for r in dart.largest_shareholders(target.corp_code, year) if is_common(r.get("stock_knd"))]
+    named = [r for r in rows if "".join((r.get("nm") or "").split()) not in ("합계", "계")]
+    top = max((to_decimal(r.get("trmend_posesn_stock_qota_rt")) or Decimal(0) for r in named), default=None)
+    if top is None:
+        return False
+    listed = {normalize(clean_reported(r.get("nm") or "")) for r in named}
+    # 같은 주식 수를 적은 주주가 있으면 같은 회사다
+    if shares and to_decimal(shares) and any(to_decimal(r.get("trmend_posesn_stock_co")) == to_decimal(shares) for r in named):
+        return False
+    # 주주 이름은 회사마다 다르게 적는다(CJ / 씨제이(주)). 이 주주의 모든 별칭으로 맞춰 본다
+    names = {normalize(clean_reported(holder.name))} | set(db.scalars(select(CompanyAlias.alias).where(CompanyAlias.company_id == holder.company_id)))
+    return not (names & listed)
 
 
 def to_decimal(text: str | None) -> Decimal | None:
@@ -173,6 +196,9 @@ def load_investments(db, company: Company, year: int, index, affiliates, names: 
         if not in_range(db, pct, rcept_no, f"{company.name} → {name}"):
             continue
         object_id, reason = link_in_context(index, affiliates, name)
+        if object_id and reason == "alias_exact" and impossible_stake(db, company, object_id, pct, year, row.get("trmend_blce_qy")):
+            stats["출자현황: 이름만 같은 다른 회사로 보여 연결하지 않음"] += 1
+            object_id, reason = None, "alias_conflict"
         stats[f"출자현황: 상대를 연결 ({reason})" if object_id else "출자현황: 상대가 원장에 없음"] += 1
         new_rows.append(Relation(
             subject_company_id=company.company_id, object_company_id=object_id, object_name_raw=name,
