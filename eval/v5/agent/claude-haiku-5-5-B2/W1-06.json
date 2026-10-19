@@ -1,0 +1,128 @@
+{
+ "question": "한샘 주가는 왜 이렇게 못 오르는 거야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "한샘(009240)의 주가가 못 오르는 이유는 이 DB로 판단할 수 없습니다. 대신 조회된 사실을 정리하면, 최근 기간 수익률은 오름세였습니다. 원인이나 전망은 말하지 않습니다.\n\n**1. 최근 수익률 (2026-10-08 기준, 종가 기준)**\n\n| 기간 | 한샘 | 시장 중앙값 | 같은 제품 종목 중앙값 | 시장과의 차이 |\n|---|---|---|---|---|\n| 1주 (10-01~10-08) | 5.26% | -0.76% | 2.47% | 6.02%p |\n| 1개월 (09-08~10-08) | 5.53% | -2.27% | 1.66% | 7.80%p |\n| 3개월 (07-09~10-08) | 16.62% | 2.99% | -0.16% | 13.63%p |\n\n같은 제품 종목은 노루페인트, 현대리바트, 현대지에프홀딩스 3곳입니다. 이 값은 DB에 보관된 최근 약 90일 시세에서 나왔습니다. 따라서 \"요즘 못 올랐다\"는 전제는 이 기간에서는 확인되지 않습니다. 기간을 더 길게 보려면 이 DB의 시세 범위 밖입니다.\n\n**2. 최근 90일 안의 큰 움직임**\n- 시장이나 관계 있는 종목과 묶여 크게 움직인 날은 조회되지 않았습니다. 당일 기사도 확인되지 않았습니다.\n\n**3. 사업 구조 (반기보고서, 접수번호 20260813001668)**\n- 리하우스/홈퍼니싱 아이템: 56.3% (리모델링, 홈퍼니싱)\n- B2B/기타 (건설사 특판 및 자재판매 등): 43.7% (빌트인 가구, 인테리어 자재)\n\n**4. 지분 구조 (사업보고서 기준일 2025-12-31, 접수번호 20260319001167)**\n- 최대주주와 특수관계인 합계 지분은 35.96%입니다 (기말 기준, 8,462,071주).\n- 하임 유한회사 18.95%(본인), 하임2호 유한회사 15.19%, 하임1호 유한회사 1.3%, 한샘넥서스 0.52%가 특수관계인으로 보고되어 있습니다.\n\n**5. 최근 1년 공시**\n- 공급계약 공시: 없음\n- 타법인 주식 처분 결정 공시: 없음\n- 주요 사건 공시(event): 없음\n\n이 DB로 알 수 없는 것은 실적(매출·영업이익 추이), 업황과 원자재 가격, 증권사 의견, 수급입니다. 이런 요인은 이 DB에 없으므로 주가 원인으로 이어 말할 수 없습니다.",
+ "followups": [
+  "한샘의 최대주주 특수관계인 지분 구조를 더 자세히 보여줘",
+  "한샘과 같은 제품(빌트인 가구, 인테리어 자재)을 파는 회사는 어디야?",
+  "한샘의 최근 1년 공급계약 공시를 다시 확인해줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한샘"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1174
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1005
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 4842
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08",
+    "doc_type": "event",
+    "filed_from": "2025-10-08"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1054
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08",
+    "lookback_days": 90
+   },
+   "error": null,
+   "total": null,
+   "chars": 690
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_contract",
+    "filed_from": "2025-10-08"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1054
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08",
+    "rel_type": "stake_disposal",
+    "direction": "out",
+    "disclosed_from": "2025-10-08"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1238
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1853
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  }
+ ],
+ "cited": [
+  "20260319001167",
+  "20260813001668"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2715,
+  "cache_read_input_tokens": 73740,
+  "cache_creation_input_tokens": 23831
+ },
+ "seconds": 17.8,
+ "number": "W1-06",
+ "gold": ""
+}

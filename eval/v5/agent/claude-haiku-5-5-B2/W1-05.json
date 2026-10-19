@@ -1,0 +1,79 @@
+{
+ "question": "펩트론 오늘 왜 하한가 갔어?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "펩트론이 2026-10-08에 하한가에 갔는지는 확인되지만, 원인은 이 DB로 확인되지 않습니다. 원인을 판단하지 않고 조회된 사실만 정리합니다.\n\n**확인된 사실**\n- 2026-10-08 등락률은 전 거래일 종가 대비 **-29.94%**입니다. 같은 날 시장 중앙값은 -0.78%였고, 펩트론은 관계 있는 다른 종목과 묶이지 않고 혼자 크게 내렸습니다.\n- 당일 기사(articles)는 조회되지 않아 원인으로 적을 기사가 없습니다.\n- 2026-09-01부터 10-08까지 펩트론이 낸 주요 사항보고(event) 공시는 0건입니다.\n\n**최근 흐름 (장 마감 종가 기준)**\n\n| 기간 | 펩트론 | 코스닥 시장 중앙값 | 같은 제품(펩타이드 원료) 종목 중앙값 |\n|---|---|---|---|\n| 최근 1주 (10-01~10-08) | -35.79% | 0.00% | 13.85% (1곳) |\n| 최근 1개월 (09-08~10-08) | -37.84% | 0.69% | 25.48% (1곳) |\n| 최근 3개월 (07-09~10-08) | -42.56% | 7.14% | 11.54% (1곳) |\n\n- 2026-09-22에도 **-12.02%**로 혼자 내린 날이 있었습니다. 당일 기사와 공시는 확인되지 않았습니다.\n- 같은 제품을 파는 상장사는 DB상 HLB펩 1곳뿐이라 비교 기준이 좁습니다.\n\n**이 DB로 알 수 없는 것**\n- 하한가의 직접 원인(기사, 임상·실적 발표, 수급, 매매 정지 등)은 이 DB에 없습니다.\n- 실적(매출·영업이익 추이), 업황, 증권사 의견, 수급도 이 DB에 없습니다.",
+ "followups": [
+  "펩트론의 최근 사업보고서에서 주요 제품과 매출 비중은 무엇인가?",
+  "펩트론의 지분 구조와 최대주주는 어떻게 되는가?",
+  "펩트론과 같은 펩타이드 원료를 파는 HLB펩의 최근 주가 흐름은 어떤가?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "펩트론"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-10-08",
+    "company_id": 3823,
+    "direction": "down"
+   },
+   "error": null,
+   "total": null,
+   "chars": 986
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 3823,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1148
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3823,
+    "as_of": "2026-10-08",
+    "doc_type": "event",
+    "filed_from": "2026-09-01",
+    "filed_to": "2026-10-08"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1054
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3823
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1845,
+  "cache_read_input_tokens": 63540,
+  "cache_creation_input_tokens": 18068
+ },
+ "seconds": 13.0,
+ "number": "W1-05",
+ "gold": ""
+}
