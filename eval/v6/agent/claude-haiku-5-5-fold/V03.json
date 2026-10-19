@@ -1,0 +1,94 @@
+{
+ "question": "HD현대 계열사 중에 상장된 데는 어디어디고 시총은 얼마나 돼?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "HD현대의 상장 계열회사는 **HD현대 자신을 빼고 8곳**, 자신을 넣으면 **9곳**입니다. 다만 이 DB로는 시가총액 금액을 알 수 없어서 시총은 적지 못합니다.\n\n계열 목록은 HD현대 사업보고서의 계열회사 표(기준일 2025-12-31, 접수번호 20260320000872)에 따른 것입니다.\n\n| 기업 | 종목코드 | 시장 |\n|---|---|---|\n| HD현대 (기준 회사) | 267250 | 유가증권 |\n| HD한국조선해양 | 009540 | 유가증권 |\n| HD현대중공업 | 329180 | 유가증권 |\n| HD현대마린엔진 | 071970 | 유가증권 |\n| HD현대마린솔루션 | 443060 | 유가증권 |\n| HD현대일렉트릭 | 267260 | 유가증권 |\n| HD현대에너지솔루션 | 322000 | 유가증권 |\n| HD건설기계 | 267270 | 유가증권 |\n| 에이치디현대인프라코어 | 042670 | 표에는 \"상장\"으로 적혀 있음 |\n\n- 에이치디현대인프라코어는 계열 표에서 상장으로 분류됐지만, DB의 기업 정보에는 시장이 \"비상장 등\"이고 HD현대 기업집단 소속으로 잡혀 있지 않습니다. 지금의 상장·집단 소속 상태는 따로 확인이 필요합니다.\n- 시가총액은 도구 결과에 금액으로 나오지 않습니다. 그래프에서는 상장사 칸의 크기가 시가총액을 반영하지만, 숫자는 그래프에 없습니다. 시총 숫자는 거래소 시세 자료에서 따로 확인해야 합니다.\n\n화면의 계열 지도에는 이 9곳이 강조되어 있습니다.",
+ "followups": [
+  "HD현대일렉트릭의 최대주주와 지분 구조는 어떻게 되나?",
+  "HD한국조선해양과 HD현대중공업의 계열 관계는 어떻게 이어지나?",
+  "HD현대 최근 1개월 수익률을 같은 제품을 파는 종목과 비교하면?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "HD현대"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "list_companies",
+   "input": {
+    "group": "HD현대",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 8,
+   "chars": 1069
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3434,
+    "as_of": "2026-10-16",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 29,
+   "chars": 14514
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 3434,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1216
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3434,
+     3540,
+     3609,
+     2924,
+     2894,
+     1930,
+     2150,
+     3436,
+     3842
+    ],
+    "views": [
+     {
+      "kind": "group",
+      "company_id": 3434,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1198
+  }
+ ],
+ "cited": [
+  "20260320000872"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2361,
+  "cache_read_input_tokens": 81526,
+  "cache_creation_input_tokens": 26739
+ },
+ "seconds": 21.2,
+ "number": "V03",
+ "gold": ""
+}

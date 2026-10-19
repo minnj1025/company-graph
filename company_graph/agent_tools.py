@@ -49,6 +49,17 @@ _AS_OF = {"type": "string", "description": "조회 시점 (YYYY-MM-DD). 이 날�
 _COMPANY = {"type": "integer", "description": "find_company 가 돌려준 company_id"}
 COMPOSITE_TOOLS = ("compare_reports", "holder_changes")   # 자주 나오는 비교 절차를 묶은 도구. 환경 변수 ASK_COMPOSITE=1 일 때만 준다
 SCREEN_TOOL = "show_on_graph"   # 조회가 아니라 화면을 움직이는 도구. 환경 변수 ASK_SCREEN_TOOL=0 이면 Agent에게 주지 않는다
+# 화면 도구의 views 로 띄우는 시각화 카드 (값은 views.py 가 채운다)
+VIEW_KINDS = {
+    "ownership": "지분 구조도. 주주와 그 위의 주주, 출자 대상",
+    "group": "계열 지도. 계열회사, 상장사는 시가총액 크기",
+    "supply_flow": "공급망 흐름. 누가 누구에게 얼마의 공급계약을 맺었나",
+    "path": "연결 경로. other_company_id 까지 두 기업이 어떻게 이어지나",
+    "timeline": "공시 타임라인. 공급계약·정정·해지·지분 취득·처분 공시를 시간 순으로",
+    "contracts": "계약 기간. 계약마다 시작~종료 막대",
+    "revenue": "매출 구성. 제품별 매출 비중",
+    "returns": "수익률 비교. 1주·1개월·3개월 수익률을 시장·같은 제품 종목과",
+}
 
 TOOLS = [
     {"name": "compare_reports",
@@ -196,26 +207,22 @@ TOOLS = [
          "direction": {"type": "string", "enum": ["up", "down", "both"], "description": "오른 쪽, 내린 쪽, 둘 다(기본)"},
          "lookback_days": {"type": "integer", "description": "company_id 나 keyword 로 찾을 때 거슬러 볼 날 수(달력 기준). 기본 30, 최대 120"}},
          "required": ["as_of"]}},
-    {"name": "show_view",
-     "description": "답 옆에 시각화 카드를 하나 띄운다. 카드의 숫자는 서버가 DB에서 직접 채우므로 이 도구는 보기의 종류와 대상만 정한다. "
-                    "kind: ownership(지분 구조도: 주주와 그 위의 주주, 출자 대상), group(계열 지도: 계열회사, 상장사는 시가총액 크기), "
-                    "supply_flow(공급망 흐름: 누가 누구에게 얼마의 공급계약을 맺었나), path(연결 경로: other_company_id 까지 이어지는 관계), "
-                    "timeline(공시 타임라인: 공급계약·정정·해지·지분 취득·처분 공시를 시간 순으로), contracts(계약 기간: 계약마다 시작~종료 막대), "
-                    "revenue(매출 구성: 제품별 매출 비중), returns(수익률 비교: 1주·1개월·3개월 수익률을 시장·같은 제품 종목과). "
-                    "since 는 supply_flow·timeline·contracts 의 시작일(기본은 as_of 의 1년 전). 결과의 summary 를 답에 옮겨도 되고 카드에는 근거 공시가 붙는다.",
-     "input_schema": {"type": "object", "properties": {
-         "kind": {"type": "string", "enum": ["ownership", "group", "supply_flow", "path", "timeline", "contracts", "revenue", "returns"]},
-         "company_id": _COMPANY, "as_of": _AS_OF,
-         "other_company_id": {"type": "integer", "description": "path 일 때 이어 볼 상대 기업의 company_id"},
-         "since": {"type": "string", "description": "supply_flow·timeline·contracts 의 시작일 YYYY-MM-DD"}},
-         "required": ["kind", "company_id", "as_of"]}},
     {"name": SCREEN_TOOL,
-     "description": "화면의 그래프에 무엇을 보일지 정한다. 조회를 마친 뒤, 답의 글을 쓰기 시작하기 전에 이 도구만 따로 한 번 부른다(같은 차례에 글을 쓰지 않는다). 부르면 사용자의 화면에서 그 기업들이 바로 떠오른다. "
+     "description": "화면에 무엇을 보일지 정한다. 조회를 마친 뒤, 답의 글을 쓰기 시작하기 전에 이 도구만 따로 한 번 부른다(같은 차례에 글을 쓰지 않는다). 부르면 사용자의 화면에서 그 기업들이 바로 떠오른다. "
                     "highlight 는 답이 가리키는 기업(이름표가 강조된다), also 는 맥락으로 함께 그릴 기업이다. "
-                    "답에서 제외했다고 적을 기업은 어느 쪽에도 넣지 않는다. 부르지 않으면 조회 결과에 나온 기업이 어림으로 그려진다.",
+                    "답에서 제외했다고 적을 기업은 어느 쪽에도 넣지 않는다. 부르지 않으면 조회 결과에 나온 기업이 어림으로 그려진다. "
+                    "views 는 답 위에 띄울 시각화 카드(둘까지)다. 답이 구조나 흐름, 여러 줄의 목록을 다루면 그 모양에 맞는 카드를 고른다. "
+                    "카드의 숫자는 서버가 DB에서 채우므로 종류와 대상만 정한다. 값 하나나 둘로 끝나는 답이면 views 를 비운다.",
      "input_schema": {"type": "object", "properties": {
          "highlight": {"type": "array", "items": {"type": "integer"}, "description": "강조할 기업의 company_id. 1~12곳"},
-         "also": {"type": "array", "items": {"type": "integer"}, "description": "함께 그릴 기업의 company_id. 최대 40곳. 없어도 된다"}},
+         "also": {"type": "array", "items": {"type": "integer"}, "description": "함께 그릴 기업의 company_id. 최대 40곳. 없어도 된다"},
+         "views": {"type": "array", "maxItems": 2, "description": "답 위에 띄울 카드. 없어도 된다", "items": {"type": "object", "properties": {
+             "kind": {"type": "string", "enum": list(VIEW_KINDS),
+                      "description": "; ".join(f"{k}: {v}" for k, v in VIEW_KINDS.items())},
+             "company_id": _COMPANY, "as_of": _AS_OF,
+             "other_company_id": {"type": "integer", "description": "path 일 때 이어 볼 상대 기업의 company_id"},
+             "since": {"type": "string", "description": "supply_flow·timeline·contracts 의 시작일 YYYY-MM-DD (기본은 as_of 의 1년 전)"}},
+             "required": ["kind", "company_id", "as_of"]}}},
          "required": ["highlight"]}},
     {"name": "get_coverage",
      "description": "이 DB가 무엇을 언제부터 언제까지 모았고 무엇을 모으지 않았는지. 결과가 비었을 때 답하기 전에 확인한다.",
@@ -945,8 +952,10 @@ def show_view(db, kind, company_id, as_of, other_company_id=None, since=None) ->
     return {"shown": view["title"], "summary": view.get("summary"), "notes": view.get("notes"), "_view": view}
 
 
-def show_on_graph(db, highlight, also=None) -> dict:
-    """화면에 보일 기업을 받아 확인만 한다. 실제로 화면을 움직이는 것은 이 호출을 본 서버와 브라우저다 (api._Found, Chat.tsx)."""
+def show_on_graph(db, highlight, also=None, views=None, as_of=None, company_id=None) -> dict:
+    """화면에 보일 기업을 받아 확인만 한다. 실제로 화면을 움직이는 것은 이 호출을 본 서버와 브라우저다 (api._Found, Chat.tsx).
+    views 가 있으면 카드의 값을 여기서 채워 _views 로 돌려준다. 카드 하나가 실패해도 그래프 표시는 그대로 한다.
+    as_of, company_id 는 스키마에 없지만 모델이 카드의 값을 밖에 적는 일이 잦아서, 카드에 빠진 값의 기본으로 받는다."""
     wanted = [int(i) for i in dict.fromkeys(highlight or [])][:12]
     extra = [int(i) for i in dict.fromkeys(also or []) if int(i) not in wanted][:40]
     if not wanted:
@@ -955,8 +964,23 @@ def show_on_graph(db, highlight, also=None) -> dict:
     missing = [i for i in wanted + extra if i not in known]
     if missing:
         raise ToolError(f"company_id {missing} 는 없습니다. find_company 나 앞선 조회 결과의 company_id 를 쓰세요")
-    return {"shown": True, "highlight": [_brief(known[i]) for i in wanted], "also": len(extra),
-            "note": "화면에 표시했습니다. 이어서 답을 쓰세요. 화면에 표시했다는 말은 답에 적지 않아도 됩니다"}
+    out = {"shown": True, "highlight": [_brief(known[i]) for i in wanted], "also": len(extra),
+           "note": "화면에 표시했습니다. 이어서 답을 쓰세요. 화면에 표시했다는 말은 답에 적지 않아도 됩니다"}
+    built, cards = [], []
+    for spec in (views or [])[:2]:
+        spec = {"as_of": as_of, "company_id": company_id, **{k: v for k, v in dict(spec).items() if v is not None}}
+        card = call(db, "show_view", {k: v for k, v in spec.items() if k in ("kind", "company_id", "as_of", "other_company_id", "since") and v is not None})
+        if "error" in card:
+            cards.append({"kind": spec.get("kind"), "error": card["error"]})
+        else:
+            built.append(card["_view"])
+            cards.append({k: card[k] for k in ("shown", "summary", "notes") if card.get(k)})
+    if cards:
+        out["views"] = cards
+        out["note"] += ". 카드에 나온 값을 답에서 다시 표로 늘어놓지 말고 요점과 해석만 적으세요"
+    if built:
+        out["_views"] = built
+    return out
 
 
 def tools() -> list[dict]:

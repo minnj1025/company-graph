@@ -1,0 +1,97 @@
+{
+ "question": "현대차랑 HD현대일렉트릭 사이에 엮인 게 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "현대차와 HD현대일렉트릭은 직접 거래한 공시는 없고, **지분으로 이어진 간접 관계**가 있습니다. 현대차가 HD현대(267250)에 2.2%를 가지고, HD현대가 HD현대일렉트릭의 최대주주(35.74%)입니다. 기준일은 모두 2025-12-31(사업보고서 기준)입니다.\n\n| 연결 | 관계 | 지분율 | 근거 접수번호 |\n|---|---|---|---|\n| 현대자동차 → HD현대 | 지분 보유(단순투자), 보유 1,734,770주 | 2.2% | 20260318001394 |\n| HD현대 → HD현대일렉트릭 | 최대주주(경영참여), 보유 12,883,087주 | 35.74% | 20260316000940, 20260320000872 |\n\n- 두 회사는 HD현대를 거쳐 이어지고, HD현대일렉트릭은 HD현대 계열의 상장사로 공시됐습니다(계열 공시 20260316000940, 20260320000872).\n- 현대차와 HD현대일렉트릭 사이의 단일판매·공급계약 공시는 조회되지 않았습니다.\n- 이 DB의 지분은 사업보고서에 적힌 값입니다. 2025-12-31 이후 지분이 바뀌었다면 이 DB에는 반영되지 않았을 수 있습니다.",
+ "followups": [
+  "HD현대일렉트릭의 공급계약 상대는 누구인가?",
+  "HD현대의 계열회사는 어디인가?",
+  "현대자동차의 최근 공급계약 공시는 무엇인가?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대자동차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "HD현대일렉트릭"
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  },
+  {
+   "tool": "find_paths",
+   "input": {
+    "from_company_id": 54,
+    "to_company_id": 2150,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 3590
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "counterparty_id": 2150
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1218
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2150,
+    "as_of": "2026-10-16",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "counterparty_id": 54
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1222
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     54,
+     3434,
+     2150
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 398
+  }
+ ],
+ "cited": [
+  "20260316000940",
+  "20260318001394",
+  "20260320000872"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1725,
+  "cache_read_input_tokens": 52007,
+  "cache_creation_input_tokens": 20760
+ },
+ "seconds": 18.8,
+ "number": "V07",
+ "gold": ""
+}

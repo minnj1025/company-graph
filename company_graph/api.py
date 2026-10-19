@@ -827,7 +827,7 @@ class _Found:
         self.calls = 0                                    # 도구를 부른 횟수. 0이면 조회 없이 답한 것(거절 등)이라 그릴 것이 없다
         self.shown: dict | None = None                    # Agent가 show_on_graph 로 정한 것: {"highlight": [...], "also": [...]}. 있으면 어림 대신 이것을 따른다
         self.receipts: set[str] = set()                   # get_filings 로 읽은 공시. 그 공시의 상대 기업을 선으로 잇는다
-        self.views: list[dict] = []                       # Agent가 show_view 로 띄운 시각화 카드 (값은 서버가 채운 것)
+        self.views: list[dict] = []                       # Agent가 화면 도구의 views 로 띄운 시각화 카드 (값은 서버가 채운 것)
 
     def relation(self, item: dict):
         subject, obj = item["subject"].get("company_id"), item["object"].get("company_id")
@@ -849,9 +849,7 @@ class _Found:
         self.calls += 1
         if "error" in result:
             return
-        if name == "show_view" and result.get("_view"):
-            self.views.append(result["_view"])
-            return
+        self.views += result.get("_views", [])   # 화면 도구의 views 로 띄운 시각화 카드
         if name == "find_company" and len(result["candidates"]) == 1:
             self.focus.add(result["candidates"][0]["company_id"])
         elif name == "get_relations":
@@ -1126,8 +1124,8 @@ def ask_stream(body: Ask, request: Request, db=Depends(get_db)):
         try:
             def took(name, arguments, result):
                 found.take(name, arguments, result)
-                if name == "show_view" and result.get("_view"):
-                    events.put(("view", result["_view"]))   # 답의 글보다 먼저 카드를 그릴 수 있게 바로 보낸다
+                for view in result.get("_views", []):
+                    events.put(("view", view))   # 답의 글보다 먼저 카드를 그릴 수 있게 바로 보낸다
             result = agent.answer(question, model=ASK_MODEL, as_of=date.today(), max_turns=8, on_result=took,
                                   history=history, on_event=lambda kind, value: events.put((kind, value)))
             with session(_engine) as own:   # 요청의 DB 연결은 응답을 흘려보내는 동안 닫힐 수 있어서 따로 연다

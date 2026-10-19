@@ -1,0 +1,57 @@
+{
+ "question": "에코프로비엠 종목코드가 뭐야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "에코프로비엠의 종목코드는 **247540**입니다. 시장은 코스닥이고, 공정위 지정 대규모기업집단 에코프로 소속으로 조회됩니다.",
+ "followups": [
+  "에코프로비엠이 무슨 제품을 팔고 매출 비중이 어떤지 알려줘",
+  "에코프로비엠의 최대주주와 지분 구조는 어떻게 돼?",
+  "에코프로비엠이 올해 낸 공급계약 공시 목록 보여줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에코프로비엠"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3793
+    ],
+    "as_of": "2026-10-16"
+   },
+   "error": "인자가 맞지 않습니다: show_on_graph() got an unexpected keyword argument 'as_of'",
+   "total": null,
+   "chars": 84
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3793
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 201
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 467,
+  "cache_read_input_tokens": 47596,
+  "cache_creation_input_tokens": 16269
+ },
+ "seconds": 4.9,
+ "number": "V16",
+ "gold": ""
+}
