@@ -1,0 +1,13 @@
+{
+  "id": "V04",
+  "question": "LG그룹에는 어떤 회사들이 있어?",
+  "as_of": "2026-10-16",
+  "expected_kinds": [
+    "group"
+  ],
+  "acceptable_kinds": [
+    "ownership"
+  ],
+  "company": "LG",
+  "note": "기업집단의 계열회사 목록을 묻는 질문이다(계열회사 51곳 가운데 상장 12곳)."
+}

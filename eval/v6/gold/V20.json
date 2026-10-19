@@ -1,0 +1,9 @@
+{
+  "id": "V20",
+  "question": "여기는 공시를 언제부터 언제까지 모은 거야?",
+  "as_of": "2026-10-16",
+  "expected_kinds": [],
+  "acceptable_kinds": [],
+  "company": "",
+  "note": "특정 기업이 아니라 DB의 범위(get_coverage)를 묻는 질문이라 카드가 필요 없다."
+}

@@ -1,0 +1,14 @@
+{
+  "id": "V10",
+  "question": "삼성바이오로직스 요즘 무슨 공시들 나왔어?",
+  "as_of": "2026-10-16",
+  "expected_kinds": [
+    "timeline"
+  ],
+  "acceptable_kinds": [
+    "supply_flow",
+    "contracts"
+  ],
+  "company": "삼성바이오로직스",
+  "note": "최근 공시의 흐름을 묻는 질문이라 공시 타임라인이 맞다(최근 1년 공시 26건)."
+}

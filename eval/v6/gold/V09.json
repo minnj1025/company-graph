@@ -1,0 +1,14 @@
+{
+  "id": "V09",
+  "question": "HD한국조선해양 최근 1년 동안 낸 공시들 순서대로 정리해 줘",
+  "as_of": "2026-10-16",
+  "expected_kinds": [
+    "timeline"
+  ],
+  "acceptable_kinds": [
+    "supply_flow",
+    "contracts"
+  ],
+  "company": "HD한국조선해양",
+  "note": "공시를 시간 순으로 묻는 질문이라 공시 타임라인이 맞다(최근 1년 공시 50건)."
+}

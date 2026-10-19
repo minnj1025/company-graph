@@ -1,0 +1,13 @@
+{
+  "id": "V07",
+  "question": "현대차랑 HD현대일렉트릭 사이에 엮인 게 있어?",
+  "as_of": "2026-10-16",
+  "expected_kinds": [
+    "path"
+  ],
+  "acceptable_kinds": [
+    "ownership"
+  ],
+  "company": "현대자동차",
+  "note": "두 기업의 연결을 묻는 질문이라 연결 경로가 맞다(현대자동차 → HD현대 지분 2.2% → HD현대일렉트릭 35.74% 등 경로 3개, other: HD현대일렉트릭)."
+}

@@ -1,0 +1,14 @@
+{
+  "id": "V05",
+  "question": "한화오션이 올해 누구랑 계약했어?",
+  "as_of": "2026-10-16",
+  "expected_kinds": [
+    "supply_flow"
+  ],
+  "acceptable_kinds": [
+    "contracts",
+    "timeline"
+  ],
+  "company": "한화오션",
+  "note": "공급계약의 상대와 금액을 묻는 질문이라 공급망 흐름이 맞다(최근 1년 공급계약 41건, 상대 22쌍)."
+}

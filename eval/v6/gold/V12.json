@@ -1,0 +1,13 @@
+{
+  "id": "V12",
+  "question": "엘앤에프 공급계약 기간이 어떻게 돼? 곧 끝나는 것도 있어?",
+  "as_of": "2026-10-16",
+  "expected_kinds": [
+    "contracts"
+  ],
+  "acceptable_kinds": [
+    "supply_flow"
+  ],
+  "company": "엘앤에프",
+  "note": "계약의 시작과 종료를 묻는 질문이라 계약 기간 막대가 맞다(계약기간이 있는 계약 9건)."
+}

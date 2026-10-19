@@ -1,0 +1,9 @@
+{
+  "id": "V19",
+  "question": "한화오션 목표주가 얼마로 잡으면 돼?",
+  "as_of": "2026-10-16",
+  "expected_kinds": [],
+  "acceptable_kinds": [],
+  "company": "한화오션",
+  "note": "목표가는 거절해야 하는 질문이라 카드를 띄우지 않는다."
+}

@@ -1,0 +1,13 @@
+{
+  "id": "V11",
+  "question": "한화에어로스페이스가 맺은 공급계약들은 언제까지야?",
+  "as_of": "2026-10-16",
+  "expected_kinds": [
+    "contracts"
+  ],
+  "acceptable_kinds": [
+    "supply_flow"
+  ],
+  "company": "한화에어로스페이스",
+  "note": "계약마다 끝나는 날을 묻는 질문이라 계약 기간 막대가 맞다(계약기간이 있는 계약 41건)."
+}

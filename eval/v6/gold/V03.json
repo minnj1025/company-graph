@@ -1,0 +1,13 @@
+{
+  "id": "V03",
+  "question": "HD현대 계열사 중에 상장된 데는 어디어디고 시총은 얼마나 돼?",
+  "as_of": "2026-10-16",
+  "expected_kinds": [
+    "group"
+  ],
+  "acceptable_kinds": [
+    "ownership"
+  ],
+  "company": "HD현대",
+  "note": "계열회사와 상장사의 시가총액 크기를 묻는 질문이라 계열 지도가 맞다(계열회사 30곳 가운데 상장 9곳)."
+}
