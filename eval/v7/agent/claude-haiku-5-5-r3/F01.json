@@ -1,0 +1,57 @@
+{
+ "question": "삼성전자 올해 2분기 영업이익 얼마야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "삼성전자의 2026년 2분기(4~6월) 영업이익은 89,492,400,000,000원(89조 4,924억 원)입니다. 연결 기준이며, 전년 같은 분기 대비 증감률은 1813.84%입니다.\n\n- 영업이익률: 52.18%\n- 근거: 2026년 2분기 보고서 (접수번호 20260814003699)",
+ "followups": [
+  "삼성전자 2026년 1분기 영업이익은 얼마야?",
+  "삼성전자 2026년 상반기 누적 영업이익은 얼마야?",
+  "삼성전자 부채비율과 유동비율은 어떻게 돼?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "삼성전자"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 3506,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5671
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3506
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20260814003699"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 919,
+  "cache_read_input_tokens": 55692,
+  "cache_creation_input_tokens": 21448
+ },
+ "seconds": 19.9,
+ "number": "F01",
+ "gold": ""
+}

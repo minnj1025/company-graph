@@ -1,0 +1,57 @@
+{
+ "question": "카카오 올해 1분기 순이익 얼마 났어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "카카오의 2026년 1분기 순이익은 2,268억 원입니다(연결 기준, 전년 같은 분기 대비 13.23% 증가). 근거는 2026년 1분기 보고서(접수번호 20260515001802)입니다.\n\n참고로 같은 분기 매출은 1조 9,421억 원, 영업이익은 2,114억 원입니다.",
+ "followups": [
+  "카카오의 2026년 2분기 실적은 어땠어?",
+  "카카오의 2025년 연간 실적 추이를 보여줘",
+  "카카오의 부채비율과 유동비율은 얼마야?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5285
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2254
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20260515001802"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 572,
+  "cache_read_input_tokens": 55471,
+  "cache_creation_input_tokens": 20902
+ },
+ "seconds": 5.4,
+ "number": "F06",
+ "gold": ""
+}

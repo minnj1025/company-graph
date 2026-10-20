@@ -231,7 +231,11 @@ TOOLS = [
      "input_schema": {"type": "object", "properties": {
          "highlight": {"type": "array", "items": {"type": "integer"}, "description": "강조할 기업의 company_id. 1~12곳"},
          "also": {"type": "array", "items": {"type": "integer"}, "description": "함께 그릴 기업의 company_id. 최대 40곳. 없어도 된다"},
-         "views": {"type": "array", "maxItems": 2, "description": "답 위에 띄울 카드. 없어도 된다", "items": {"type": "object", "properties": {
+         "views": {"type": "array", "maxItems": 2,
+                   "description": "답 위에 띄울 카드. 넣는 때: 답이 여러 기간의 흐름, 여러 회사·주주·계약의 목록이나 구조, 두 회사의 비교를 다룰 때. "
+                                  "비우는 때: 한 기간의 값 하나나 둘을 묻는 질문(예: 작년 순이익, 1분기 매출, 유동비율, 본사 주소), "
+                                  "이 DB에 없는 것을 물어 대신 다른 사실을 알려 주는 답(예: 배당, 목표주가, 다음 해 전망), 매매 판단을 묻는 질문. "
+                                  "그 경우 조회 결과에 추이가 있어도 카드를 넣지 않는다", "items": {"type": "object", "properties": {
              "kind": {"type": "string", "enum": list(VIEW_KINDS),
                       "description": "; ".join(f"{k}: {v}" for k, v in VIEW_KINDS.items())},
              "company_id": _COMPANY, "as_of": _AS_OF,
