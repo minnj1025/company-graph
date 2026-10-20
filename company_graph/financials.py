@@ -14,7 +14,6 @@ from datetime import date, datetime
 
 from sqlalchemy import delete, select
 
-from . import dart
 from .cache import cached_json
 from .db import Company, Financial, session
 
@@ -55,6 +54,8 @@ def _dates(text: str) -> tuple[date | None, date | None]:
 
 def fetch(corp_codes: list[str], year: int, report: str) -> list[dict]:
     """한 묶음(100곳까지)의 주요계정. 두 해 전까지는 캐시에 둔다 (지난해 사업보고서는 이듬해 봄까지 늦게 내거나 정정하는 회사가 있다)."""
+    from . import dart   # 수집할 때만. 배포된 서버에는 requests 가 없고 조회만 한다
+
     def call():
         return dart._json("fnlttMultiAcnt.json", corp_code=",".join(corp_codes), bsns_year=str(year),
                           reprt_code=REPORTS[report]).get("list", [])
@@ -108,6 +109,7 @@ def listed(db) -> dict[str, int]:
 
 
 def load(start_year: int = 2023) -> None:
+    from . import dart
     with session() as db:
         ids = listed(db)
         codes = sorted(ids)
