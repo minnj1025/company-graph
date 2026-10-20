@@ -384,7 +384,8 @@ def payout(db, tools, company: dict, when: str) -> dict:
     return {"years": rows, "sources": sources, "notes": [
         "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
         "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."],
-        "summary": "; ".join(f"{r['year']} 주당 {r['dps']:,.0f}원, 배당성향 {r['payout_ratio']}%" for r in rows if r["dps"] is not None) or "배당 기록 없음"}
+        "summary": "; ".join(f"{r['year']} 주당 {r['dps']:,.0f}원" + (f", 배당성향 {r['payout_ratio']}%" if r["payout_ratio"] is not None else "") for r in rows if r["dps"])
+                   or ("현금배당 없음, 자기주식 취득 결정만" if buys else "배당 기록 없음")}
 
 
 def build(db, tools, kind: str, company_id: int, as_of: str, other_company_id: int | None = None, since: str | None = None) -> dict:
