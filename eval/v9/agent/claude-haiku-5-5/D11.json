@@ -1,0 +1,57 @@
+{
+ "question": "신한지주 작년 배당수익률 몇 %였어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "신한지주의 작년(2025 사업연도) 현금배당수익률은 **3.01%**입니다. 보통주 주당 배당금은 2,590원입니다.\n\n- 2025 사업연도: 현금배당수익률 3.01%, 보통주 주당 현금배당금 2,590원, 현금배당성향 25.06%(연결 기준), 주당순이익 9,812원, 현금배당금 총액 1조 2,457억 원 (근거: 사업보고서 접수번호 20261007000218)\n- 참고로 2024 사업연도는 4.26%, 2023 사업연도는 4.87%였습니다. 같은 보고서(20261007000218)에 실려 있습니다.",
+ "followups": [
+  "신한지주의 2025 사업연도 배당성향과 주당순이익은 어떻게 되나?",
+  "신한지주가 2024~2026년에 공시한 자기주식 취득 결정 금액은 얼마인가?",
+  "신한지주의 최근 1년 5% 이상 대량보유 보고 내역은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "신한지주"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_dividends",
+   "input": {
+    "company_id": 3361,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1561
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3361
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20261007000218"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 765,
+  "cache_read_input_tokens": 64055,
+  "cache_creation_input_tokens": 22425
+ },
+ "seconds": 5.9,
+ "number": "D11",
+ "gold": ""
+}

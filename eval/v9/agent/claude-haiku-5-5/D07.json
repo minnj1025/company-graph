@@ -1,0 +1,57 @@
+{
+ "question": "삼성전자 작년 주당 배당금 얼마였어? 우선주도 알려줘",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "삼성전자의 작년(2025 사업연도) 주당 현금배당금은 보통주 1,668원, 우선주 1,669원입니다.\n\n| 구분 | 2025 사업연도 주당 현금배당금 |\n|---|---|\n| 보통주 | 1,668원 |\n| 우선주 | 1,669원 |\n\n- 같은 사업연도의 현금배당금 총액은 11조 1,079억 원, 현금배당성향은 25.1%(연결 기준), 보통주 현금배당수익률은 1.5%입니다. 주당순이익(EPS)은 6,605원입니다.\n- 근거는 2025 사업보고서(접수번호 20260310002820)입니다.",
+ "followups": [
+  "삼성전자 2024 사업연도 배당금은 얼마였어?",
+  "삼성전자 2026년 자기주식 취득 결정 내역은?",
+  "삼성전자 최근 자본 변동 결정(증자·사채·자사주)을 알려줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "삼성전자"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_dividends",
+   "input": {
+    "company_id": 3506,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1440
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3506
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20260310002820"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 782,
+  "cache_read_input_tokens": 64059,
+  "cache_creation_input_tokens": 22430
+ },
+ "seconds": 8.9,
+ "number": "D07",
+ "gold": ""
+}

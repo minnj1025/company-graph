@@ -1,0 +1,72 @@
+{
+ "question": "LG화학이 작년에 낸 교환사채는 뭘로 바꿔 주는 거야? 교환가액은?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "LG화학이 2025년에 낸 교환사채는 **LG에너지솔루션 기명식 보통주식**으로 바꿀 수 있는 사채입니다. 교환가액은 **337,700원**입니다.\n\n- 교환 대상: (주)LG에너지솔루션 기명식 보통주식 (LG에너지솔루션, 373220)\n- 교환가액: 337,700원 (결정 공시에 적힌 가액)\n- 사채 종류: 제3회 기명식 무보증 해외교환사채 (사모)\n- 결정일(접수일): 2025-05-16, 접수번호 20250516000280\n- 교환 가능 기간: 2025-07-27 ~ 2028-06-09\n- 만기: 2028년 06월 16일, 표면이자율 1.75%, 만기수익률 1.75%\n- 권면총액: 1조 3,945억 원, 자금 용도는 채무상환자금\n- 교환으로 생길 수 있는 주식 수: 4,129,404주 (발행주식총수 대비 1.76%)\n\n이 값은 결정 공시에 적힌 내용입니다. 실제로 발행됐는지, 교환이 실제로 이루어졌는지는 이 DB에 없습니다. 조회 기준(2026-10-16)에서 철회나 정정 공시는 확인되지 않았습니다.",
+ "followups": [
+  "LG화학 2025년 교환사채 발행 조건을 더 자세히 알려줘",
+  "LG에너지솔루션의 최대주주와 지분 구조는 어떻게 돼?",
+  "LG화학의 최근 자본 변동 공시(유상증자, 전환사채 등)를 모두 보여줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LG화학"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_capital_events",
+   "input": {
+    "company_id": 3409,
+    "as_of": "2026-10-16",
+    "kinds": [
+     "eb"
+    ],
+    "since": "2025-01-01"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 989
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LG에너지솔루션"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3409,
+     3915
+    ],
+    "views": []
+   },
+   "error": null,
+   "total": null,
+   "chars": 297
+  }
+ ],
+ "cited": [
+  "20250516000280"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1184,
+  "cache_read_input_tokens": 86150,
+  "cache_creation_input_tokens": 22567
+ },
+ "seconds": 10.3,
+ "number": "D06",
+ "gold": ""
+}
