@@ -64,6 +64,8 @@ VIEW_KINDS = {
     "compare": "실적 비교. other_company_id 와 같은 분기의 매출·영업이익·이익률·부채비율을 나란히",
     "holders": "주주 분포. 최대주주와 특수관계인 합계, 5% 이상 보고자, 나머지를 한 막대에",
     "insiders": "내부자 매매. 기간(since, 기본 90일) 동안 임원·주요주주가 늘리고 줄인 주식 수를 날짜별로, 주가 수익률 선과 함께",
+    "dilution": "희석 이력. 유상증자·전환사채·신주인수권부사채·교환사채·무상증자·감자 결정을 시간 축에, 주식 수와 금액",
+    "payout": "주주 환원. 사업연도마다 배당총액과 자기주식 취득 결정 금액, 주당배당금과 배당성향",
 }
 
 TOOLS = [
@@ -224,6 +226,25 @@ TOOLS = [
          "since": {"type": "string", "description": "기간 시작일 YYYY-MM-DD (기본 as_of 의 89일 전, 그래서 as_of 까지 90일)"},
          "until": {"type": "string", "description": "기간 끝날 YYYY-MM-DD (기본 as_of). '9월 한 달'처럼 물으면 since 와 until 을 함께 준다"}},
          "required": ["company_id", "as_of"]}},
+    {"name": "get_capital_events",
+     "description": "한 회사의 자본 변동 결정 공시: 유상증자, 무상증자, 감자, 전환사채(CB), 신주인수권부사채(BW), 교환사채(EB), 자기주식 취득·취득 신탁계약·처분. "
+                    "events: 결정마다 접수일, 종류, 주식 수(새 주식, 사채가 전환될 주식, 취득·처분·감자 주식), 결정 전 발행주식총수, 금액(조달액, 사채 권면총액, 취득·처분 예정액), "
+                    "전환·교환·처분 가액, 발행주식총수 대비 비율, 방식(공모·사모·제3자배정, 장내매수), 목적, 기간. by_kind: 종류마다 건수와 합계. "
+                    "결정이지 실행 결과가 아니다: 실제 납입·전환·취득 결과, 철회는 없다. 자기주식 소각은 감자결정으로 공시한 것만 있다(treasury_cancel). "
+                    "date 는 마지막 정정 공시의 접수일일 수 있다. 2024-01 부터 모았다.",
+     "input_schema": {"type": "object", "properties": {
+         "company_id": _COMPANY, "as_of": _AS_OF,
+         "since": {"type": "string", "description": "시작일 YYYY-MM-DD (기본 2024-01-01, 수집 시작)"},
+         "kinds": {"type": "array", "items": {"type": "string", "enum": ["rights_issue", "bonus_issue", "rights_bonus_issue", "capital_reduction",
+                                                                       "cb", "bw", "eb", "buyback", "buyback_trust", "treasury_sale"]},
+                   "description": "볼 종류. 없으면 모두"}},
+         "required": ["company_id", "as_of"]}},
+    {"name": "get_dividends",
+     "description": "한 회사의 배당(사업보고서의 배당에 관한 사항)과 자기주식 취득 결정을 사업연도마다. "
+                    "years: 주당 현금배당금(보통주·우선주), 현금배당금총액, 현금배당성향(%), 현금배당수익률(%), 주당순이익. "
+                    "buybacks: 그해 공시한 자기주식 취득 결정과 취득 신탁계약의 예정 금액 합계(결정 금액이지 실제 취득액이 아니다). "
+                    "2023~2025 사업연도. 분기·중간배당의 회차별 금액과 앞으로의 배당 예상은 없다.",
+     "input_schema": {"type": "object", "properties": {"company_id": _COMPANY, "as_of": _AS_OF}, "required": ["company_id", "as_of"]}},
     {"name": "get_price_history",
      "description": "한 회사의 기간 수익률을 시장, 같은 제품을 파는 종목들과 견준다: 최근 1주, 1개월, 3개월. "
                     "\"요즘 주가가 어땠나\", \"정말 못 올랐나\", \"시장보다 나았나\"를 확인할 때 쓴다. 가격 자체는 주지 않고 수익률(%)만 준다. "
@@ -593,6 +614,8 @@ def get_coverage(db) -> dict:
                                        "rows": v["rows"]} for v in covered["relations"].values()},
             "business": "사업 내용(search_business, get_business)과 제품(find_by_product, get_products)은 상장사의 2025 사업보고서와 2026 반기보고서에서 왔다. "
                         "제품은 매출 비중 표를 읽을 수 있었던 회사만 있다",
+            "capital": "증자·감자·사채·자기주식 결정(get_capital_events)은 상장사의 2024-01 이후 주요사항보고서, 배당(get_dividends)은 2025 사업보고서의 2023~2025 사업연도다. "
+                       "실제 납입·전환·취득 결과, 철회, 자기주식 소각 결정, 분기배당 회차별 금액은 없다",
             "holdings": "5% 대량보유 보고(get_major_holders)와 임원·주요주주 소유보고(get_insider_trades)는 상장사의 2024-10 이후 보고다(OpenDART 가 주는 범위). "
                         "거래 단가·금액, 실제 거래일, 매매 사유, 기관·외국인 수급, 공매도는 없다",
             "financials": "실적과 재무 상태(get_financials)는 상장사의 2022년 1분기보고서부터 가장 최근 정기보고서까지의 주요계정(매출, 영업이익, 순이익, 자산·부채·자본)이다. "
@@ -968,6 +991,88 @@ def get_insider_trades(db, company_id, as_of, since=None, until=None) -> dict:
                       "거래 단가와 금액, 실제 거래일, 장내·장외, 증여·상속 같은 사유는 이 자료에 없다."}
 
 
+def _event_json(row, unit_name: str = "억원") -> dict:
+    from . import capital, financials as fin
+    out = {"date": row.report_date.isoformat(), "kind": row.kind, "kind_name": capital.LABELS.get(row.kind, row.kind), "rcept_no": [row.rcept_no]}
+    if capital.is_cancel(row):
+        out["kind_name"], out["treasury_cancel"] = "감자(자기주식 소각)", True
+    if row.shares is not None:
+        out["shares"] = row.shares
+    if row.shares_before:
+        out["shares_before"] = row.shares_before
+        if row.shares and row.kind in ("rights_issue", "bonus_issue", "rights_bonus_issue"):
+            out["new_shares_pct_of_before"] = round(row.shares / row.shares_before * 100, 2)
+    if row.amount is not None:
+        out["amount"] = fin.readable(row.amount / 1e8)
+    if row.price is not None:
+        out["price_won"] = float(row.price)
+    if row.ratio_pct is not None:
+        out["ratio_pct"] = float(row.ratio_pct)
+    for key in ("method", "purpose"):
+        if getattr(row, key):
+            out[key] = getattr(row, key)
+    if row.period_start or row.period_end:
+        out["period"] = f"{row.period_start or ''}~{row.period_end or ''}"
+    attrs = row.attrs or {}
+    for key, name in (("bd_tm", "round"), ("bd_mtd", "maturity"), ("bd_intr_ex", "coupon_pct"), ("bd_intr_sf", "yield_to_maturity_pct"),
+                      ("funds", "use_of_funds"), ("cr_std", "reduction_date"), ("nstk_lstprd", "listing_date")):
+        if attrs.get(key):
+            out[name] = {k: fin.readable(v / 1e8) for k, v in attrs[key].items()} if key == "funds" else attrs[key]
+    return out
+
+
+def get_capital_events(db, company_id, as_of, since=None, kinds=None) -> dict:
+    from . import capital, financials as fin
+    company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
+    start = _date(since, "since") or capital.SINCE
+    rows = capital.events(db, company.company_id, start, when, kinds)
+    by_kind = {}
+    for row in rows:
+        item = by_kind.setdefault(row.kind, {"kind_name": capital.LABELS.get(row.kind, row.kind), "count": 0, "shares": 0, "amount_won": 0})
+        item["count"] += 1
+        item["shares"] += row.shares or 0
+        item["amount_won"] += row.amount or 0
+    for item in by_kind.values():
+        won = item.pop("amount_won")
+        item["amount"] = fin.readable(won / 1e8) if won else None
+    return {"company": _brief(company), "from": start.isoformat(), "to": when.isoformat(), "total": len(rows),
+            "by_kind": by_kind, "events": [_event_json(r) for r in reversed(rows)][:40], "truncated": len(rows) > 40,
+            "note": capital.NOT_HERE + " shares 는 사채의 경우 전환·행사·교환으로 생길 수 있는 주식 수다."}
+
+
+def get_dividends(db, company_id, as_of) -> dict:
+    from . import capital, financials as fin
+    company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
+    years = capital.dividends(db, company.company_id, when)
+    cancels = {}
+    for row in capital.events(db, company.company_id, capital.SINCE, when, ["capital_reduction"]):
+        if capital.is_cancel(row):
+            item = cancels.setdefault(row.report_date.year, {"decisions": 0, "shares": 0, "rcept_no": []})
+            item["decisions"] += 1
+            item["shares"] += row.shares or 0
+            item["rcept_no"].append(row.rcept_no)
+    buys = {}
+    for row in capital.events(db, company.company_id, capital.SINCE, when, ["buyback", "buyback_trust"]):
+        item = buys.setdefault(row.report_date.year, {"decisions": 0, "amount_won": 0, "rcept_no": []})
+        item["decisions"] += 1
+        item["amount_won"] += row.amount or 0
+        item["rcept_no"].append(row.rcept_no)
+    num = lambda v: float(v) if v is not None else None
+    out = {"company": _brief(company), "years": [{
+        "fiscal_year": r.fiscal_year, "dps_common_won": num(r.dps_common), "dps_preferred_won": num(r.dps_preferred),
+        "cash_total": fin.readable(r.cash_total / 1e8) if r.cash_total is not None else None,
+        "payout_ratio_pct": num(r.payout_ratio), "payout_basis": fin.BASIS_NAME.get(r.basis or "", r.basis),
+        "yield_common_pct": num(r.yield_common), "eps_won": num(r.eps), "rcept_no": [r.rcept_no]} for r in years],
+        "buybacks": [{"year": y, "decisions": b["decisions"], "amount": fin.readable(b["amount_won"] / 1e8), "rcept_no": b["rcept_no"][:5]}
+                     for y, b in sorted(buys.items())],
+        "treasury_cancellations": [{"year": y, "decisions": c["decisions"], "shares": c["shares"], "rcept_no": c["rcept_no"][:5]} for y, c in sorted(cancels.items())],
+        "fields": "years 는 2025 사업보고서의 당기·전기·전전기 값이다(그래서 rcept_no 가 같다). buybacks 는 자기주식 취득 결정과 신탁계약의 예정 금액 합계로, 실제 취득액이 아니다. "
+                  "treasury_cancellations 는 감자결정으로 공시한 자기주식 소각이다(거래소에만 낸 소각 결정은 없다). 분기·중간배당의 회차별 금액, 앞으로의 배당은 없다."}
+    if not years:
+        out["empty"] = f"{when} 까지 접수된 사업보고서에 배당 표가 없습니다"
+    return out
+
+
 def get_price_history(db, company_id, as_of) -> dict:
     company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
     if not company.stock_code:
@@ -1107,7 +1212,7 @@ def tools() -> list[dict]:
             and (t["name"] not in COMPOSITE_TOOLS or os.environ.get("ASK_COMPOSITE", "0") == "1")]
 
 
-FUNCTIONS = {"get_major_holders": get_major_holders, "get_insider_trades": get_insider_trades, "get_financials": get_financials, "show_view": show_view, "get_price_history": get_price_history, "compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
+FUNCTIONS = {"get_capital_events": get_capital_events, "get_dividends": get_dividends, "get_major_holders": get_major_holders, "get_insider_trades": get_insider_trades, "get_financials": get_financials, "show_view": show_view, "get_price_history": get_price_history, "compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
              "search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
              "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}

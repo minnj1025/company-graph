@@ -189,6 +189,42 @@ class InsiderReport(Base):
     pct_change: Mapped[Decimal | None] = mapped_column(Numeric(7, 2))
 
 
+class CapitalEvent(Base):
+    """자본 변동 결정 공시 한 건: 증자, 감자, 사채(CB·BW·EB) 발행, 자기주식 취득·신탁·처분 (capital.py). 결정이지 실행 결과가 아니다."""
+    __tablename__ = "capital_event"
+    __table_args__ = (Index("ix_capital_company", "company_id", "report_date"),)
+    company_id: Mapped[int] = mapped_column(ForeignKey("company.company_id"), primary_key=True)
+    rcept_no: Mapped[str] = mapped_column(String(14), primary_key=True)
+    kind: Mapped[str] = mapped_column(String(20), primary_key=True)          # capital.KINDS 의 종류
+    report_date: Mapped[date] = mapped_column(Date)
+    shares: Mapped[int | None] = mapped_column(BigInteger)                  # 새로 낼 주식, 사채가 전환될 주식, 취득·처분·감자할 주식
+    shares_before: Mapped[int | None] = mapped_column(BigInteger)           # 결정 전 발행주식총수 (증자·감자)
+    amount: Mapped[int | None] = mapped_column(BigInteger)                  # 원: 조달 금액, 사채 권면총액, 취득·처분 예정 금액, 신탁 계약금액
+    price: Mapped[Decimal | None] = mapped_column(Numeric(16, 2))           # 전환·교환·행사 가액, 처분 가액
+    ratio_pct: Mapped[Decimal | None] = mapped_column(Numeric(9, 2))        # 발행주식총수 대비 비율, 감자 비율
+    method: Mapped[str | None] = mapped_column(String(300))                 # 공모·사모·제3자배정, 장내매수 등
+    purpose: Mapped[str | None] = mapped_column(String(300))
+    period_start: Mapped[date | None] = mapped_column(Date)                 # 전환 청구·취득·처분·신탁 기간
+    period_end: Mapped[date | None] = mapped_column(Date)
+    attrs: Mapped[dict | None] = mapped_column(JSON)
+
+
+class Dividend(Base):
+    """사업보고서 '배당에 관한 사항'의 한 사업연도 (capital.py). 금액은 원."""
+    __tablename__ = "dividend"
+    company_id: Mapped[int] = mapped_column(ForeignKey("company.company_id"), primary_key=True)
+    fiscal_year: Mapped[int] = mapped_column(SmallInteger, primary_key=True)
+    rcept_no: Mapped[str] = mapped_column(String(14))                       # 값을 읽은 사업보고서 (전기·전전기 값도 이 보고서에서 읽었다)
+    basis: Mapped[str | None] = mapped_column(String(3))                    # 배당성향·주당순이익이 연결(CFS)인지 별도(OFS)인지
+    dps_common: Mapped[float | None] = mapped_column(Numeric(14, 2))        # 주당 현금배당금(원), 보통주
+    dps_preferred: Mapped[float | None] = mapped_column(Numeric(14, 2))
+    cash_total: Mapped[int | None] = mapped_column(BigInteger)              # 현금배당금총액(원, 표는 백만원)
+    stock_total: Mapped[int | None] = mapped_column(BigInteger)
+    payout_ratio: Mapped[float | None] = mapped_column(Numeric(9, 2))       # 현금배당성향(%)
+    yield_common: Mapped[float | None] = mapped_column(Numeric(9, 2))       # 현금배당수익률(%), 보통주
+    eps: Mapped[float | None] = mapped_column(Numeric(16, 2))               # 주당순이익(원)
+
+
 class QualityLog(Base):
     __tablename__ = "quality_log"
     log_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True,

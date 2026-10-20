@@ -24,6 +24,8 @@ KINDS = {
     "compare": "실적 비교",
     "holders": "주주 분포",
     "insiders": "내부자 매매",
+    "dilution": "희석 이력",
+    "payout": "주주 환원",
 }
 TABLE_ONLY = ("exited", "share_class", "treasury")
 
@@ -344,6 +346,47 @@ def insiders(db, tools, company: dict, when: str, start: str) -> dict:
                        f"줄인 보고 {t['decreased_reports']}건 {t['decreased_shares']:,}주, 순증감 {t['net_shares']:+,}주 ({t['reporters']}명)"}
 
 
+def dilution(db, tools, company: dict, when: str, start: str | None) -> dict:
+    """주식 수를 늘리거나 줄이는 결정(증자, 사채, 감자)을 시간 축에. 사채는 전환·행사되면 생길 수 있는 주식 수다."""
+    from datetime import date as _date_type
+    from . import capital
+    begin = _date_type.fromisoformat(start) if start else capital.SINCE
+    rows = capital.events(db, company["company_id"], begin, _date_type.fromisoformat(when), list(capital.DILUTIVE))
+    items = [{"date": r.report_date.isoformat(), "kind": r.kind, "label": capital.LABELS[r.kind], "cancel": capital.is_cancel(r), "shares": r.shares,
+              "amount_eok": round(r.amount / 1e8, 1) if r.amount else None, "ratio_pct": float(r.ratio_pct) if r.ratio_pct is not None else None,
+              "pct_of_before": round(r.shares / r.shares_before * 100, 2) if r.shares and r.shares_before else None,
+              "method": r.method, "price": float(r.price) if r.price is not None else None, "rcept_no": r.rcept_no} for r in rows]
+    counts = {}
+    for item in items:
+        counts[item["label"]] = counts.get(item["label"], 0) + 1
+    return {"from": begin.isoformat(), "events": items, "sources": [i["rcept_no"] for i in items][-20:],
+            "notes": ["결정 공시입니다. 실제 납입·발행, 사채의 실제 전환, 철회 여부는 이 자료에 없습니다.",
+                      "사채의 주식 수는 전환·행사·교환되면 생길 수 있는 주식 수입니다. 감자 가운데 자기주식 소각은 따로 표시했습니다."],
+            "summary": ", ".join(f"{k} {v}건" for k, v in counts.items()) or "결정 없음"}
+
+
+def payout(db, tools, company: dict, when: str) -> dict:
+    """사업연도마다 배당총액과 자기주식 취득 결정 금액, 주당배당금과 배당성향."""
+    from datetime import date as _date_type
+    from . import capital
+    years = capital.dividends(db, company["company_id"], _date_type.fromisoformat(when))
+    buys = {}
+    for row in capital.events(db, company["company_id"], capital.SINCE, _date_type.fromisoformat(when), ["buyback", "buyback_trust"]):
+        buys[row.report_date.year] = buys.get(row.report_date.year, 0) + (row.amount or 0)
+    rows = [{"year": r.fiscal_year, "cash_eok": round(r.cash_total / 1e8, 1) if r.cash_total else 0,
+             "buyback_eok": round(buys.get(r.fiscal_year, 0) / 1e8, 1),
+             "dps": float(r.dps_common) if r.dps_common is not None else None,
+             "payout_ratio": float(r.payout_ratio) if r.payout_ratio is not None else None} for r in years]
+    for year in sorted(set(buys) - {r["year"] for r in rows}):
+        rows.append({"year": year, "cash_eok": None, "buyback_eok": round(buys[year] / 1e8, 1), "dps": None, "payout_ratio": None})
+    rows.sort(key=lambda r: r["year"])
+    sources = list(dict.fromkeys([r.rcept_no for r in years]))
+    return {"years": rows, "sources": sources, "notes": [
+        "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
+        "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."],
+        "summary": "; ".join(f"{r['year']} 주당 {r['dps']:,.0f}원, 배당성향 {r['payout_ratio']}%" for r in rows if r["dps"] is not None) or "배당 기록 없음"}
+
+
 def build(db, tools, kind: str, company_id: int, as_of: str, other_company_id: int | None = None, since: str | None = None) -> dict:
     """보기 하나를 만든다. tools 는 agent_tools 모듈(서로 가져오면 순환하므로 넘겨받는다)."""
     company = tools._brief(tools._company(db, company_id))
@@ -356,11 +399,13 @@ def build(db, tools, kind: str, company_id: int, as_of: str, other_company_id: i
         body = (path if kind == "path" else compare)(db, tools, company, other_company_id, as_of)
     elif kind == "insiders":
         body = insiders(db, tools, company, as_of, since)
+    elif kind == "dilution":
+        body = dilution(db, tools, company, as_of, since)
     elif kind in ("supply_flow", "timeline", "contracts"):
         body = {"supply_flow": supply_flow, "timeline": timeline, "contracts": contracts}[kind](db, tools, company, as_of, start)
     elif kind in KINDS:
         body = {"ownership": ownership, "group": group, "revenue": revenue, "returns": returns,
-                "financials": financials, "health": health, "holders": holders}[kind](db, tools, company, as_of)
+                "financials": financials, "health": health, "holders": holders, "payout": payout}[kind](db, tools, company, as_of)
     else:
         raise tools.ToolError(f"kind 는 {', '.join(KINDS)} 가운데 하나입니다")
     title = f"{company['name']} ↔ {body['to']['name']} {KINDS[kind]}" if kind in ("path", "compare") else f"{company['name']} {KINDS[kind]}"

@@ -132,6 +132,25 @@ CREATE TABLE insider_report (
   FOREIGN KEY (company_id) REFERENCES company (company_id)
 );
 
+-- 자본 변동 결정 공시 한 건 (capital.py): 증자, 감자, 사채, 자기주식. 결정이지 실행 결과가 아니다
+CREATE TABLE capital_event (
+  company_id INT NOT NULL, rcept_no VARCHAR(14) NOT NULL, kind VARCHAR(20) NOT NULL, report_date DATE NOT NULL,
+  shares BIGINT, shares_before BIGINT, amount BIGINT, price DECIMAL(16, 2), ratio_pct DECIMAL(9, 2),
+  method VARCHAR(300), purpose VARCHAR(300), period_start DATE, period_end DATE, attrs JSON,
+  PRIMARY KEY (company_id, rcept_no, kind),
+  KEY ix_capital_company (company_id, report_date),
+  FOREIGN KEY (company_id) REFERENCES company (company_id)
+);
+
+-- 사업보고서 '배당에 관한 사항'의 한 사업연도 (capital.py). 금액은 원
+CREATE TABLE dividend (
+  company_id INT NOT NULL, fiscal_year SMALLINT NOT NULL, rcept_no VARCHAR(14) NOT NULL, basis VARCHAR(3),
+  dps_common DECIMAL(14, 2), dps_preferred DECIMAL(14, 2), cash_total BIGINT, stock_total BIGINT,
+  payout_ratio DECIMAL(9, 2), yield_common DECIMAL(9, 2), eps DECIMAL(16, 2),
+  PRIMARY KEY (company_id, fiscal_year),
+  FOREIGN KEY (company_id) REFERENCES company (company_id)
+);
+
 -- 화면의 글을 운영자가 고쳐 쓴 것 (화면의 ?edit 에서 고친다). key 는 original 의 sha1
 CREATE TABLE site_text (
   `key`      CHAR(40) PRIMARY KEY,

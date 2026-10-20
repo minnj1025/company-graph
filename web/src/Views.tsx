@@ -773,6 +773,108 @@ function Insiders({ view }: CardProps) {
   );
 }
 
+/* ── 14. 희석 이력: 결정을 시간 축에, 점 크기는 금액 ── */
+const DILUTION_LANES = ["유상증자", "전환사채", "신주인수권부사채", "교환사채", "무상증자", "유무상증자", "감자"];
+function Dilution({ view }: CardProps) {
+  const events = view.events as { date: string; label: string; cancel?: boolean; shares: number | null; amount_eok: number | null; pct_of_before: number | null; ratio_pct: number | null; method: string | null; price: number | null }[];
+  if (events.length === 0) return <p className="view-empty">{String(view.from)} 이후 증자·사채·감자 결정이 없습니다.</p>;
+  const lanes = DILUTION_LANES.filter((l) => events.some((e) => e.label === l));
+  const biggest = Math.max(...events.map((e) => e.amount_eok ?? 0), 1);
+  const make = (p: Palette): echarts.EChartsCoreOption => ({
+    tooltip: {
+      ...tooltip(p),
+      formatter: (e: { data: { e: (typeof events)[number] } }) => {
+        const x = e.data.e;
+        return [`<b>${x.date} ${x.label}${x.cancel ? "(자기주식 소각)" : ""}</b>`, x.method ?? "", x.shares ? `주식 ${x.shares.toLocaleString()}주` : "", x.pct_of_before !== null ? `기존 주식의 ${x.pct_of_before}%` : x.ratio_pct !== null ? `비율 ${x.ratio_pct}%` : "", x.amount_eok ? `금액 ${eok(x.amount_eok)} 원` : "", x.price ? `가액 ${x.price.toLocaleString()}원` : ""].filter(Boolean).join("<br/>");
+      },
+    },
+    grid: { left: 92, right: 16, top: 10, bottom: 24 },
+    xAxis: { type: "time", axisLabel: { color: p.muted, fontSize: 10 }, axisLine: { lineStyle: { color: p.line } }, splitLine: { show: false } },
+    yAxis: { type: "category", data: lanes, inverse: true, axisLabel: { color: p.text, fontSize: 11 }, axisLine: { show: false }, axisTick: { show: false }, splitLine: { show: true, lineStyle: { color: p.line } } },
+    series: [{
+      type: "scatter",
+      data: events.map((e) => ({ value: [e.date, e.label], e, symbolSize: 8 + 22 * Math.sqrt((e.amount_eok ?? 0) / biggest) })),
+      itemStyle: { color: (x: { data: { e: { label: string } } }) => (x.data.e.label === "감자" ? p.down : x.data.e.label === "무상증자" ? p.good : p.warn), opacity: 0.85 },
+    }],
+  });
+  return (
+    <>
+      <Chart height={40 + 34 * lanes.length} make={make} />
+      <p className="view-legend">점 크기는 금액 · {String(view.from)} 이후 결정 공시 · 접수일 기준</p>
+      <table className="view-table">
+        <tbody>
+          {events.slice(-6).reverse().map((e, i) => (
+            <tr key={`${e.date}-${i}`}>
+              <th>
+                {e.date} {e.label}
+                {e.cancel ? <small> 자기주식 소각</small> : e.method && <small> {e.method.slice(0, 16)}</small>}
+              </th>
+              <td>{e.shares ? `${e.shares.toLocaleString()}주` : "–"}</td>
+              <td>{e.pct_of_before !== null ? `기존의 ${e.pct_of_before}%` : e.ratio_pct !== null ? `${e.ratio_pct}%` : ""}</td>
+              <td>{e.amount_eok ? eok(e.amount_eok) : ""}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+}
+
+/* ── 15. 주주 환원: 연도별 배당총액과 자기주식 취득 결정, 주당배당금 ── */
+function Payout({ view }: CardProps) {
+  const rows = view.years as { year: number; cash_eok: number | null; buyback_eok: number; dps: number | null; payout_ratio: number | null }[];
+  if (rows.length === 0) return <p className="view-empty">배당이나 자기주식 취득 결정 기록이 없습니다.</p>;
+  const make = (p: Palette): echarts.EChartsCoreOption => ({
+    tooltip: {
+      ...tooltip(p),
+      trigger: "axis",
+      formatter: (items: { dataIndex: number }[]) => {
+        const r = rows[items[0].dataIndex];
+        return [`<b>${r.year}</b>`, r.cash_eok !== null ? `배당총액 ${eok(r.cash_eok)} 원` : "배당 기록 없음", r.buyback_eok ? `자기주식 취득 결정 ${eok(r.buyback_eok)} 원` : "", r.dps !== null ? `주당 ${r.dps.toLocaleString()}원` : "", r.payout_ratio !== null ? `배당성향 ${r.payout_ratio}%` : ""].filter(Boolean).join("<br/>");
+      },
+    },
+    grid: { left: 56, right: 12, top: 16, bottom: 24 },
+    xAxis: { type: "category", data: rows.map((r) => String(r.year)), axisLabel: { color: p.text, fontSize: 11 }, axisLine: { lineStyle: { color: p.line } }, axisTick: { show: false } },
+    yAxis: { type: "value", axisLabel: { color: p.muted, fontSize: 10, formatter: (v: number) => (Math.abs(v) >= 10000 ? `${v / 10000}조` : `${v}억`) }, splitLine: { lineStyle: { color: p.line } } },
+    series: [
+      { name: "배당총액", type: "bar", stack: "s", barMaxWidth: 36, data: rows.map((r) => r.cash_eok), itemStyle: { color: p.accent } },
+      { name: "자기주식 취득 결정", type: "bar", stack: "s", barMaxWidth: 36, data: rows.map((r) => r.buyback_eok || null), itemStyle: { color: p.info } },
+    ],
+  });
+  return (
+    <>
+      <Chart height={200} make={make} />
+      <p className="view-legend">
+        <i className="dot accent" /> 배당총액 <i className="dot info" /> 자기주식 취득 결정(예정 금액)
+      </p>
+      <table className="view-table">
+        <thead>
+          <tr>
+            <th />
+            {rows.map((r) => (
+              <th key={r.year}>{r.year}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>주당 배당금</th>
+            {rows.map((r) => (
+              <td key={r.year}>{r.dps !== null ? `${r.dps.toLocaleString()}원` : "–"}</td>
+            ))}
+          </tr>
+          <tr>
+            <th>배당성향</th>
+            {rows.map((r) => (
+              <td key={r.year}>{pct(r.payout_ratio, 1)}</td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+    </>
+  );
+}
+
 type CardProps = { view: View; onCompany: (id: number) => void };
 const pick = (data: unknown, onCompany: (id: number) => void) => {
   const id = (data as { company?: number | null } | undefined)?.company;
@@ -792,6 +894,8 @@ const CARDS: Record<string, (props: CardProps) => React.ReactElement> = {
   compare: Compare,
   holders: Holders,
   insiders: Insiders,
+  dilution: Dilution,
+  payout: Payout,
 };
 
 function Card({ view, onCompany }: CardProps) {
