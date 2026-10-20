@@ -23,20 +23,24 @@ from .extract_equity import alias_index, link_in_context, own_affiliates, rcept_
 from .names import clean_reported, normalize
 from .stake_parser import StakeDecision, original_filing_date, parse, withdrawal_notes
 
-VERSION = "stake-4"  # 4: 주식 수를 담음. 3: 철회 내용을 줄로 남김, 대상 이름을 고친 정정을 이음.
+VERSION = "stake-5"  # 5: 정정 표를 줄(tr)·칸(td)으로 읽어 정정 전·후가 어긋나지 않게 함. 4: 주식 수를 담음. 3: 철회 내용을 줄로 남김, 대상 이름을 고친 정정을 이음.
 # stake-2  # 2: 주석이 "1. 발행회사..."로 시작하는 공시를 읽음, 비율이 맞지 않는 줄에 표시, 철회 처리
 REPORTS = {"타법인주식및출자증권취득결정": "acquisition", "타법인주식및출자증권처분결정": "disposal"}
 REL_TYPE = {"acquisition": "stake_acquisition", "disposal": "stake_disposal"}
 
 
 def stake_filings() -> dict[str, list[tuple[dict, str]]]:
-    """캐시에 있는 수시공시 목록에서 취득·처분 결정만 회사별로."""
+    """캐시에 있는 수시공시 목록에서 취득·처분 결정만 회사별로.
+    마지막 기간은 받은 날마다 파일이 따로 남아(20260917_20261005, ..._20261008) 기간이 겹친다. 같은 공시가 두 번 들어가면
+    뒤의 것이 앞의 것을 정정한 것으로 이어져 자기 자신을 무효로 만드므로 접수번호로 한 번만 넣는다."""
     by_company: dict[str, list[tuple[dict, str]]] = defaultdict(list)
+    seen: set[str] = set()
     for path in sorted((CACHE_DIR / "dart_filings_I001_market").glob("*.json")):
         for row in json.loads(path.read_text(encoding="utf-8")):
             name = re.sub(r"^\[[^\]]+\]", "", re.sub(r"\s+", "", row["report_nm"]))
             for prefix, action in REPORTS.items():
-                if name.startswith(prefix):
+                if name.startswith(prefix) and row["rcept_no"] not in seen:
+                    seen.add(row["rcept_no"])
                     by_company[row["corp_code"]].append((row, action))
     return {code: sorted(rows, key=lambda x: x[0]["rcept_no"]) for code, rows in by_company.items()}
 

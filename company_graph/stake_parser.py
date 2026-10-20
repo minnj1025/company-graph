@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 
-from .supply_parser import cells, to_date, to_decimal
+from .supply_parser import cells, correction_rows, to_date, to_decimal
 
 _BODY_START = re.compile(r"^1\.\s*발행회사$")
 _BODY_START_LOOSE = re.compile(r"^1\.\s*발행회사")
@@ -136,10 +136,5 @@ def parse(raw: bytes, action: str) -> StakeDecision | None:
         d.is_correction = True
         d.original_date = to_date(_value(cs, r"^2\.\s*정정관련 공시서류제출일", 0, body, free_text=True))
         d.correction_reason = _value(cs, r"^3\.\s*정정사유", 0, body, free_text=True)
-        header = next((i for i in range(body) if cs[i] == "정정후"), None)
-        if header is not None:
-            rows = cs[header + 1:body]
-            while len(rows) >= 3 and not rows[0].startswith("-") and not rows[0].startswith("※"):
-                d.changes.append((rows[0], rows[1], rows[2]))
-                rows = rows[3:]
+        d.changes = correction_rows(raw)
     return d

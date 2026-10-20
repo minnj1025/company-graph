@@ -6,6 +6,8 @@
 - 건수·합계·가장 큰 것은 summary 에 계산해 둔다
 - 금액은 모두 '조·억 원' 글로 준다
 """
+import re
+
 from .financials import readable
 
 ROLE_NOTE = ("role 은 이 회사 쪽에서 본 관계다. 그대로 옮기고 뒤집지 않는다. 건수·합계·가장 큰 것은 summary 의 값만 쓰고 직접 세거나 더하지 않는다. "
@@ -70,6 +72,23 @@ def _side(company_id: int, r: dict, mine: str, theirs: str) -> str:
     return mine if (r.get("subject") or {}).get("company_id") == company_id else theirs
 
 
+def _amount_text(cell: str) -> str:
+    """정정 표의 원 단위 금액("114,802,880,000")은 '1,148억 원' 글로. 비율·날짜·문장은 그대로."""
+    if re.fullmatch(r"[\d,]{9,}", cell):
+        return won(cell.replace(",", "")) or cell
+    return cell
+
+
+def corrections(changes: list) -> list[str]:
+    """정정 내역을 '항목: 정정 전 X → 정정 후 Y' 글로. 방향을 글에 박아 두어 모델이 뒤집지 않게 한다. 긴 설명 칸은 줄인다."""
+    out = []
+    for label, before, after in changes[:6]:
+        before, after = _amount_text(str(before)), _amount_text(str(after))
+        if before != after:
+            out.append(f"{label}: 정정 전 {before[:80]} → 정정 후 {after[:80]}")
+    return out
+
+
 def _contract(company_id: int, r: dict) -> dict:
     detail = r.get("detail") or {}
     seller = (r.get("subject") or {}).get("company_id") == company_id
@@ -78,8 +97,9 @@ def _contract(company_id: int, r: dict) -> dict:
             "amount": won(r.get("value")), "date": r.get("as_of_date") or r.get("disclosed_date"),
             "title": detail.get("title"), "kind": detail.get("kind"), "period": f"{detail.get('period_start') or ''}~{detail.get('period_end') or ''}",
             "ratio_pct_of_sales": detail.get("ratio_pct"), "rcept_no": r.get("rcept_no")}
-    if detail.get("changes"):   # 정정 내역 표는 칸이 어긋나게 읽힌 것이 있어(정정 전·후가 뒤바뀜) 값은 넘기지 않는다
+    if detail.get("changes"):
         item["corrected"] = "정정 공시가 있었다. 금액은 정정된 뒤의 값이다"
+        item["corrections"] = corrections(detail["changes"])
     return {k: v for k, v in item.items() if v not in (None, "", "~")}
 
 
@@ -91,7 +111,8 @@ def _stake(company_id: int, r: dict, verb: str) -> dict:
                       f"다른 회사가 이 회사 지분을 {verb}기로 한 결정 — 그 회사가 공시. 이 회사가 {verb}는 것이 아니다"),
         "actor": _name(r.get("subject")), "target": _name(r.get("object")), "amount": won(r.get("value")),
         "shares": detail.get("shares"), "pct_after": detail.get("pct_after"), "date": r.get("as_of_date") or r.get("disclosed_date"),
-        "purpose": detail.get("purpose"), "rcept_no": r.get("rcept_no")}.items() if v not in (None, "")}
+        "purpose": detail.get("purpose"), "rcept_no": r.get("rcept_no"),
+        "corrections": corrections(detail["changes"]) if detail.get("changes") else None}.items() if v not in (None, "", [])}
 
 
 def deals(company_id: int, supply: dict, acquisitions: dict, disposals: dict, capital_events: int, since: str = "") -> dict:
@@ -115,6 +136,7 @@ def deals(company_id: int, supply: dict, acquisitions: dict, disposals: dict, ca
         "contracts": contracts[:15], "stake_decisions": stakes[:10],
         "corrections_of_older_contracts": [{"counterparty": _contract(company_id, r).get("counterparty"), "contract_date": r.get("as_of_date"),
                                             "filed": r.get("disclosed_date"), "rcept_no": r.get("rcept_no"),
+                                            "corrections": corrections((r.get("detail") or {}).get("changes") or []),
                                             "role": "1년보다 오래된 계약을 이 기간에 정정한 공시. 새 계약이 아니다"} for r in older][:8],
     }
 

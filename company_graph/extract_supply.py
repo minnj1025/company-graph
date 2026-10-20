@@ -27,7 +27,7 @@ from .names import clean_reported, normalize
 from .supply_parser import SupplyContract, Termination, parse, parse_termination
 
 SINCE = "20240101"
-VERSION = "supply-4"  # 4: 본문이 정정 전 값이면 머리 표의 정정 후 금액을 씀, 해지 공시의 비율·계약기간을 담고 관련공시 날짜로 계약을 가림. 3: 해지 공시를 줄로 넣고 해지된 계약을 무효로. 2: 자기 계열회사 표를 먼저 보고 연결, 비율 검산을 반올림 구간으로, 줄을 지우지 않음
+VERSION = "supply-5"  # 5: 정정 표를 줄(tr)·칸(td)으로 읽어 정정 전·후가 어긋나지 않게 함. 4: 본문이 정정 전 값이면 머리 표의 정정 후 금액을 씀, 해지 공시의 비율·계약기간을 담고 관련공시 날짜로 계약을 가림. 3: 해지 공시를 줄로 넣고 해지된 계약을 무효로. 2: 자기 계열회사 표를 먼저 보고 연결, 비율 검산을 반올림 구간으로, 줄을 지우지 않음
 _AND_OTHERS = re.compile(r"\s*외\s*(\d+\s*(개사|개|사|인|곳))?\s*$")
 _SPLIT = re.compile(r"\s*[,，、/]\s*|\s+및\s+")
 

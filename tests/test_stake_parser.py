@@ -36,12 +36,17 @@ def test_disposal_form_uses_the_other_verb():
 
 
 def test_subsidiary_and_correction_headers():
-    header = ("정정신고(보고)", "정정일자", "2026-09-01", "2. 정정관련 공시서류제출일", "2026-08-21", "3. 정정사유", "취득금액 정정",
-              "4. 정정사항", "정정항목", "정정전", "정정후", "2. 취득내역 / 취득금액(원)", "20,000,000,000", "27,465,026,262",
-              "- 정정 설명", "타법인 주식 및 출자증권 취득결정", "종속회사인", "(주)자회사", "의 주요경영사항 신고")
-    d = parse(table(*header, *ACQUISITION), "acquisition")
+    # 정정 표는 줄(tr)과 칸(td)으로 읽는다. 항목 칸이 두 줄이어도 정정 전·후가 밀리지 않는다
+    header = ("<TABLE><TR><TD>정정신고(보고)</TD></TR><TR><TD>정정일자</TD><TD>2026-09-01</TD></TR></TABLE>"
+              "<TABLE><TR><TD>2. 정정관련 공시서류제출일</TD><TD colspan=2>2026-08-21</TD></TR>"
+              "<TR><TD>3. 정정사유</TD><TD colspan=2>취득금액 정정</TD></TR><TR><TD colspan=3>4. 정정사항</TD></TR>"
+              "<TR><TD>정정항목</TD><TD>정정전</TD><TD>정정후</TD></TR>"
+              "<TR><TD>2. 취득내역<br>- 취득금액(원)</TD><TD>20,000,000,000</TD><TD>27,465,026,262</TD></TR>"
+              "<TR><TD colspan=3>- 정정 설명</TD></TR></TABLE>").encode("utf-8")
+    d = parse(header + table("타법인 주식 및 출자증권 취득결정", "종속회사인", "(주)자회사", "의 주요경영사항 신고", *ACQUISITION),
+              "acquisition")
     assert d.is_correction and d.original_date == date(2026, 8, 21) and d.correction_reason == "취득금액 정정"
-    assert d.changes == [("2. 취득내역 / 취득금액(원)", "20,000,000,000", "27,465,026,262")]
+    assert d.changes == [("2. 취득내역 - 취득금액(원)", "20,000,000,000", "27,465,026,262")]
     assert d.subsidiary == "(주)자회사" and d.amount == Decimal("27465026262")
 
 
