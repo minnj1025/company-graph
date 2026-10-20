@@ -1,6 +1,6 @@
 """10판: 기업 분석 보고서를 검산 켬·끔으로 만들어 둔다 (유료: 보고서 하나에 Haiku 를 8~15번 부른다).
 
-사용: python -m eval.v10.run [on|off|both] [R01,R02,...]
+사용: python -m eval.v10.run [on|off|both] [R01,R02,...|all] [holdout]
 결과: eval/v10/reports/<번호>-<on|off>.json 과 .md. 이미 있으면 건너뛴다.
 채점은 이 결과를 읽는 별도 채점자가 한다(README 의 기준). 채점자에게는 on/off 를 가린 사본을 준다.
 """
@@ -20,10 +20,10 @@ def cost(usage: dict) -> float:
     return sum(usage.get(k, 0) * p for k, p in PRICE.items()) / 1e6
 
 
-def main(modes: list[str], only: set[str]) -> None:
-    companies = json.load(open(HERE / "companies.json", encoding="utf-8"))
+def main(modes: list[str], only: set[str], folder: Path = HERE) -> None:
+    companies = json.load(open(folder / "companies.json", encoding="utf-8"))
     companies = companies.get("companies", companies) if isinstance(companies, dict) else companies
-    out = HERE / "reports"
+    out = folder / "reports"
     out.mkdir(exist_ok=True)
     total = 0.0
     for number, item in enumerate(companies, 1):
@@ -49,4 +49,6 @@ def main(modes: list[str], only: set[str]) -> None:
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "both"
-    main(["on", "off"] if mode == "both" else [mode], set(sys.argv[2].split(",")) if len(sys.argv) > 2 else set())
+    only = set(sys.argv[2].split(",")) if len(sys.argv) > 2 and sys.argv[2] != "all" else set()
+    folder = HERE / sys.argv[3] if len(sys.argv) > 3 else HERE   # 예: holdout
+    main(["on", "off"] if mode == "both" else [mode], only, folder)
