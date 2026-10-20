@@ -1,0 +1,1034 @@
+{
+ "company": {
+  "company_id": 1604,
+  "name": "LG",
+  "stock_code": "003550",
+  "market": "유가증권",
+  "group": "LG"
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "LG(003550)는 2026년 2분기 매출 2조 1,396억 원, 영업이익 5,330억 원으로 전년 같은 분기보다 크게 늘었고, 2026년 상반기 누적 영업이익은 9,468억 원입니다(접수번호 20260814002972). 2026년 6월 말 연결 부채비율은 9.81%, 유동비율은 288.59%입니다(접수번호 20260814002972). 최대주주 및 특수관계인 합계는 2025년 말 기준 보통주 42.54%입니다(접수번호 20260318001025). 최근 1년 안에 직접 매매된 주식이나 자본 결정(증자·사채·자기주식)은 이 DB의 조회 결과에 없어 확인되지 않습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "LG(003550)의 사업 구성은 2026년 6월 반기보고서(접수번호 20260814002972, 2026-08-14 공시) 기준입니다.\n\n- **지주회사 수익**: 배당금수익 7.0%, 상표권사용수익 4.0%, 임대수익 등 2.0%입니다(접수번호 20260814002972). 같은 보고서 본문에서 별도 영업수익 5,163억 원 중 배당금수익 53.3%, 상표권 사용수익 35.0%, 임대수익 등 11.7%라고 밝혀, 표의 비중과 기준이 다릅니다(접수번호 20260814002972).\n- **IT서비스**: 비중 62.0%로 가장 큽니다. LG CNS China Inc.는 2.0%, LG CNS Europe B.V. 외는 14.0%로 적혀 있으며, 두 줄은 제품 분류가 사람이 전부 확인하지 않은 상태입니다(접수번호 20260814002972). 본문에 따르면 LG씨엔에스 2026년 상반기 연결 매출은 2조 8,358억 원입니다(접수번호 20260814002972).\n- **부동산 자산관련 종합서비스**: AM 등 1.0%, 레저(리조트·골프장) 2.0%, CM 1.0%, 호텔운영은 비중이 0.0%로 적혀 있습니다(접수번호 20260814002972).\n- **교육 및 경영자문**: 교육·경영컨설팅 4.0%입니다. 본문에서 LG경영개발원의 반기 누적 매출은 1,423억 원입니다(접수번호 20260814002972).\n- **스포츠구단 운영**: 1.0%입니다(접수번호 20260814002972).\n- **부동산 임대**: 임대수익 비중은 0.0%로 적혀 있습니다(접수번호 20260814002972).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 7765,
+    "output_tokens": 661,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "LG 매출 구성",
+     "company": {
+      "id": 1604,
+      "name": "LG"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "배당금수익",
+       "segment": "지주회사",
+       "share_pct": 7.0,
+       "family": null
+      },
+      {
+       "name": "상표권사용수익",
+       "segment": "지주회사",
+       "share_pct": 4.0,
+       "family": null
+      },
+      {
+       "name": "임대수익 등",
+       "segment": "지주회사",
+       "share_pct": 2.0,
+       "family": null
+      },
+      {
+       "name": "IT서비스",
+       "segment": null,
+       "share_pct": 62.0,
+       "family": "IT 서비스"
+      },
+      {
+       "name": "LG CNS China Inc.",
+       "segment": "IT서비스",
+       "share_pct": 2.0,
+       "family": "IT 서비스"
+      },
+      {
+       "name": "LG CNS Europe B.V. 외",
+       "segment": "IT서비스",
+       "share_pct": 14.0,
+       "family": "IT 서비스"
+      },
+      {
+       "name": "장애인표준사업 등",
+       "segment": "IT서비스",
+       "share_pct": 0.0,
+       "family": null
+      },
+      {
+       "name": "AM 등",
+       "segment": "부동산 자산관련종합서비스",
+       "share_pct": 1.0,
+       "family": "보안·시설관리 서비스"
+      },
+      {
+       "name": "레저(리조트,골프장)",
+       "segment": "부동산 자산관련종합서비스",
+       "share_pct": 2.0,
+       "family": "호텔·레저·여행"
+      },
+      {
+       "name": "CM",
+       "segment": "부동산 자산관련종합서비스",
+       "share_pct": 1.0,
+       "family": "엔지니어링·시험·연구 용역"
+      },
+      {
+       "name": "호텔운영",
+       "segment": "부동산 자산관련종합서비스",
+       "share_pct": 0.0,
+       "family": null
+      },
+      {
+       "name": "교육, 경영컨설팅",
+       "segment": "교육 및 경영자문",
+       "share_pct": 4.0,
+       "family": "교육 서비스"
+      },
+      {
+       "name": "스포츠구단 운영",
+       "segment": null,
+       "share_pct": 1.0,
+       "family": "스포츠 구단·e스포츠"
+      },
+      {
+       "name": "임대수익",
+       "segment": "부동산 임대",
+       "share_pct": 0.0,
+       "family": null
+      }
+     ],
+     "sources": [
+      "20260814002972"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 14줄, 비중 합 100.0%"
+    }
+   ],
+   "sources": [
+    "20260814002972"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "**실적과 재무 (LG, 연결 기준, 최근 보고서 2026 상반기)**\n\n- **최근 분기(2026 2분기)**: 매출 2조 1,396억 원(전년 동기 대비 19.02% 증가), 영업이익 5,330억 원(92.49% 증가), 순이익 5,338억 원(118.63% 증가), 영업이익률 24.91%. 전년 같은 분기는 매출 1조 7,978억 원, 영업이익 2,769억 원, 순이익 2,442억 원이었습니다 (접수번호 20260814002972, 20250814003006).\n- **2026 상반기 누적**: 매출 3조 9,402억 원(5.53% 증가), 영업이익 9,468억 원(3.48% 증가), 순이익 9,128억 원(7.06% 증가) (접수번호 20260814002972).\n- **2025년 분기 흐름**: 1분기 영업이익 6,380억 원, 2분기 2,769억 원, 3분기 4,189억 원, 4분기 영업손실 4,217억 원으로 4분기는 적자 지속입니다. 4분기 값은 공시가 아닌 연간값에서 3분기 누적을 뺀 계산값입니다 (접수번호 20250515001604, 20250814003006, 20251114002247, 20260318001025).\n- **2025 연간**: 매출 7조 2,526억 원(1.07% 증가), 영업이익 9,122억 원(5.65% 감소), 순이익 1조 1억 원(26.52% 증가). 영업이익률 12.58%, 순이익률 13.79% (접수번호 20260318001025).\n- **재무상태(2026년 6월 말, 연결)**: 자산총계 35조 9,315억 원, 부채총계 3조 2,090억 원, 자본총계 32조 7,224억 원. 부채비율 9.81%, 유동비율 288.59%로 2025년 말(부채비율 12.03%, 유동비율 243.72%)보다 개선되었습니다 (접수번호 20260814002972, 20260318001025).\n- **시장 비교**: 이 DB의 유가증권 상장사 827곳 중앙값은 부채비율 96.7%, 유동비율 133.47%, 영업이익률 5.1%입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3527,
+    "output_tokens": 795,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "LG 실적 추이",
+     "company": {
+      "id": 1604,
+      "name": "LG"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114001541"
+       ],
+       "revenue": 19442.1,
+       "revenue_yoy_pct": 4.43,
+       "operating_income": 4767.1,
+       "operating_income_yoy_pct": -6.49,
+       "net_income": 4428.9,
+       "net_income_yoy_pct": -4.85,
+       "operating_margin_pct": 24.52
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250318001070",
+        "20241114001541"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 17834.6,
+       "revenue_yoy_pct": -12.37,
+       "operating_income": -2419.1,
+       "operating_income_yoy": "적자 전환",
+       "net_income": -3112.0,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": -13.56
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250515001604"
+       ],
+       "revenue": 19361.0,
+       "revenue_yoy_pct": 19.23,
+       "operating_income": 6380.4,
+       "operating_income_yoy_pct": 50.97,
+       "net_income": 6084.7,
+       "net_income_yoy_pct": 65.19,
+       "operating_margin_pct": 32.96
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250814003006"
+       ],
+       "revenue": 17977.5,
+       "revenue_yoy_pct": -1.44,
+       "operating_income": 2768.9,
+       "operating_income_yoy_pct": -10.51,
+       "net_income": 2441.7,
+       "net_income_yoy_pct": -15.93,
+       "operating_margin_pct": 15.4
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251114002247"
+       ],
+       "revenue": 19961.8,
+       "revenue_yoy_pct": 2.67,
+       "operating_income": 4189.4,
+       "operating_income_yoy_pct": -12.12,
+       "net_income": 3734.1,
+       "net_income_yoy_pct": -15.69,
+       "operating_margin_pct": 20.99
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260318001025",
+        "20251114002247"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 15225.2,
+       "revenue_yoy_pct": -14.63,
+       "operating_income": -4217.0,
+       "operating_income_yoy": "적자 지속",
+       "net_income": -2259.4,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -27.7
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260515002383"
+       ],
+       "revenue": 18006.2,
+       "revenue_yoy_pct": -7.0,
+       "operating_income": 4138.3,
+       "operating_income_yoy_pct": -35.14,
+       "net_income": 3789.7,
+       "net_income_yoy_pct": -37.72,
+       "operating_margin_pct": 22.98
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260814002972"
+       ],
+       "revenue": 21396.2,
+       "revenue_yoy_pct": 19.02,
+       "operating_income": 5329.8,
+       "operating_income_yoy_pct": 92.49,
+       "net_income": 5338.4,
+       "net_income_yoy_pct": 118.63,
+       "operating_margin_pct": 24.91
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230321001235"
+       ],
+       "revenue": 71859.9,
+       "revenue_yoy_pct": 4.77,
+       "operating_income": 19413.8,
+       "operating_income_yoy_pct": -21.09,
+       "net_income": 21157.5,
+       "net_income_yoy_pct": -21.17,
+       "operating_margin_pct": 27.02,
+       "net_margin_pct": 29.44
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240319000703"
+       ],
+       "revenue": 74453.4,
+       "revenue_yoy_pct": 3.61,
+       "operating_income": 15890.1,
+       "operating_income_yoy_pct": -18.15,
+       "net_income": 14142.6,
+       "net_income_yoy_pct": -33.16,
+       "operating_margin_pct": 21.34,
+       "net_margin_pct": 19.0
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250318001070"
+       ],
+       "revenue": 71755.1,
+       "revenue_yoy_pct": -3.62,
+       "operating_income": 9668.4,
+       "operating_income_yoy_pct": -39.15,
+       "net_income": 7904.8,
+       "net_income_yoy_pct": -44.11,
+       "operating_margin_pct": 13.47,
+       "net_margin_pct": 11.02
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260318001025"
+       ],
+       "revenue": 72525.5,
+       "revenue_yoy_pct": 1.07,
+       "operating_income": 9121.7,
+       "operating_income_yoy_pct": -5.65,
+       "net_income": 10001.2,
+       "net_income_yoy_pct": 26.52,
+       "operating_margin_pct": 12.58,
+       "net_margin_pct": 13.79
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260814002972"
+       ],
+       "revenue": 39402.4,
+       "revenue_yoy_pct": 5.53,
+       "operating_income": 9468.1,
+       "operating_income_yoy_pct": 3.48,
+       "net_income": 9128.0,
+       "net_income_yoy_pct": 7.06,
+       "operating_margin_pct": 24.03,
+       "net_margin_pct": 23.17
+      }
+     ],
+     "sources": [
+      "20241114001541",
+      "20250318001070",
+      "20250515001604",
+      "20250814003006",
+      "20251114002247",
+      "20260318001025",
+      "20260515002383",
+      "20260814002972"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 2조 1,396억 원, 영업이익 5,330억 원, 영업이익 전년 동기 대비 +92.5%"
+    },
+    {
+     "kind": "health",
+     "title": "LG 재무 체력",
+     "company": {
+      "id": 1604,
+      "name": "LG"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 9.81,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 288.59,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 24.03,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260814002972"
+      ],
+      "total_assets": 359314.6,
+      "total_liabilities": 32090.4,
+      "total_equity": 327224.2,
+      "current_assets": 52134.8,
+      "current_liabilities": 18065.6,
+      "debt_ratio_pct": 9.81,
+      "current_ratio_pct": 288.59
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260318001025"
+      ],
+      "total_assets": 339828.9,
+      "total_liabilities": 36480.8,
+      "total_equity": 303348.1,
+      "current_assets": 56977.5,
+      "current_liabilities": 23378.5,
+      "debt_ratio_pct": 12.03,
+      "current_ratio_pct": 243.72
+     },
+     "market": "유가증권",
+     "sources": [
+      "20241114001541",
+      "20250318001070",
+      "20250515001604",
+      "20250814003006",
+      "20251114002247",
+      "20260318001025",
+      "20260515002383",
+      "20260814002972"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 9.81% (시장 중앙값 96.7%), 유동비율 288.59% (시장 중앙값 133.47%), 영업이익률 24.03% (시장 중앙값 5.1%)"
+    }
+   ],
+   "sources": [
+    "20250515001604",
+    "20250814003006",
+    "20251114002247",
+    "20260318001025",
+    "20260814002972"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "## LG(003550) 지배 구조와 주주\n\n**최대주주 및 특수관계인 (2025-12-31 기준, 사업보고서 기준)**\n- 최대주주 및 특수관계인 합계는 보통주 기준 42.54%이며, 기초 41.70%에서 올랐습니다 (접수번호 20260318001025).\n- 개별로는 구광모 16.27%가 가장 크고, 구본식 4.57%, 김영식 4.29%, 구본능 3.11%, 구연경 2.97%가 뒤를 잇습니다 (접수번호 20260318001025).\n- 특수관계인은 이 표에 15명이 있습니다. 이 DB에는 최대주주 지위를 잃은 사례나 그 이유가 없습니다.\n\n**5% 대량보유 보고 (이 회사 주식을 가졌다고 보고한 자)**\n- 학교법인LG연암학원 43.39%: 2026-07-03 보고, 사유는 주식담보계약 변경입니다 (접수번호 20260703000591). 이 비율은 대표보고자와 특별관계자를 합친 값이라 위 최대주주 표와 다를 수 있습니다.\n- 국민연금공단 6.29%: 2026-07-01 보고, 사유는 단순추가취득/처분입니다 (접수번호 20260701000325).\n- Silchester International Investors LLP 7.03%: 2025-03-04 보고, 사유는 단순 취득/처분에 따른 보유비율 변동입니다 (접수번호 20250304000433). 이 보고는 이 DB에서 가장 오래된 기록입니다.\n\n**이 회사가 지분을 가진 회사 (타법인출자, 2025-12-31 기준)**\n- 35건이 조회되며, 그중 4건은 100% 지분 보유입니다. 100%인 곳은 LG Holdings Japan Co., Ltd., LG경영개발원, LG스포츠, 디앤오입니다.\n- 상장사 지분 가운데 가장 큰 것은 LG씨엔에스 45.0%이고, LG유플러스 38.0%, HS애드 36.0%, LG생활건강 35.0%, LG전자 35.0%, LG화학 35.0%가 그 뒤입니다 (접수번호 20260318001025 외 다수).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4069,
+    "output_tokens": 805,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "LG 지분 구조도",
+     "company": {
+      "id": 1604,
+      "name": "LG"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": null,
+       "name": "구광모",
+       "listed": false,
+       "pct": 16.27,
+       "role": "최대주주 본인",
+       "rcept": "20260318001025",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구본식",
+       "listed": false,
+       "pct": 4.57,
+       "role": "최대주주의 친인척",
+       "rcept": "20260318001025",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "김영식",
+       "listed": false,
+       "pct": 4.29,
+       "role": "최대주주의 친인척",
+       "rcept": "20260318001025",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구본능",
+       "listed": false,
+       "pct": 3.11,
+       "role": "최대주주의 친인척",
+       "rcept": "20260318001025",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구연경",
+       "listed": false,
+       "pct": 2.97,
+       "role": "최대주주의 친인척",
+       "rcept": "20260318001025",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "LG연암학원",
+       "listed": false,
+       "pct": 2.17,
+       "role": "최대주주의 특수관계법인",
+       "rcept": "20260318001025",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구형모",
+       "listed": false,
+       "pct": 1.64,
+       "role": "최대주주의 친인척",
+       "rcept": "20260318001025",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "LG연암문화재단",
+       "listed": false,
+       "pct": 1.14,
+       "role": "최대주주의 특수관계법인",
+       "rcept": "20260318001025",
+       "up": []
+      }
+     ],
+     "more_holders": 19,
+     "investees": [
+      {
+       "id": 3991,
+       "name": "LG씨엔에스",
+       "listed": true,
+       "pct": 45.0,
+       "purpose": "경영참가",
+       "rcept": "20260316000832"
+      },
+      {
+       "id": 2207,
+       "name": "LG유플러스",
+       "listed": true,
+       "pct": 38.0,
+       "purpose": "경영참가",
+       "rcept": "20260313000442"
+      },
+      {
+       "id": 2427,
+       "name": "HS애드",
+       "listed": true,
+       "pct": 36.0,
+       "purpose": "경영참가",
+       "rcept": "20260318001025"
+      },
+      {
+       "id": 2757,
+       "name": "LG생활건강",
+       "listed": true,
+       "pct": 35.0,
+       "purpose": "경영참가",
+       "rcept": "20260316000985"
+      },
+      {
+       "id": 2972,
+       "name": "LG전자",
+       "listed": true,
+       "pct": 35.0,
+       "purpose": "경영참가",
+       "rcept": "20260318001025"
+      },
+      {
+       "id": 3409,
+       "name": "LG화학",
+       "listed": true,
+       "pct": 35.0,
+       "purpose": "경영참가",
+       "rcept": "20260313001195"
+      },
+      {
+       "id": 2196,
+       "name": "엘에스일렉트릭",
+       "listed": true,
+       "pct": 2.0,
+       "purpose": "단순투자",
+       "rcept": "20260318001025"
+      },
+      {
+       "id": null,
+       "name": "LG Holdings Japan Co., Ltd.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참가",
+       "rcept": "20260318001025"
+      },
+      {
+       "id": 5399,
+       "name": "LG경영개발원",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참가",
+       "rcept": "20260318001025"
+      },
+      {
+       "id": 5398,
+       "name": "LG스포츠",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참가",
+       "rcept": "20260318001025"
+      },
+      {
+       "id": 5402,
+       "name": "디앤오",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참가",
+       "rcept": "20260318001025"
+      },
+      {
+       "id": null,
+       "name": "General Atlantic (GRSH) Bermuda Coinvest, L.P.(*3)",
+       "listed": false,
+       "pct": 50.0,
+       "purpose": "단순투자",
+       "rcept": "20260318001025"
+      }
+     ],
+     "more_investees": 21,
+     "sources": [
+      "20260318001025",
+      "20260316000832",
+      "20260313000442",
+      "20260413002635",
+      "20260316000985",
+      "20260706000276",
+      "20260313001195"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 27곳(위 8곳 표시), 출자 대상 33곳(위 12곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "LG 주주 분포",
+     "company": {
+      "id": 1604,
+      "name": "LG"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 42.54,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "학교법인LG연암학원",
+       "id": null,
+       "pct": 43.39,
+       "date": "2026-07-03",
+       "overlap": false
+      },
+      {
+       "name": "SilchesterInternationalInvestorsLLP",
+       "id": null,
+       "pct": 7.03,
+       "date": "2025-03-04",
+       "overlap": false
+      },
+      {
+       "name": "국민연금공단",
+       "id": null,
+       "pct": 6.29,
+       "date": "2026-07-01",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 0.75,
+     "sources": [
+      "20260703000591",
+      "20250304000433",
+      "20260701000325",
+      "20260318001025"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 42.54%, 학교법인LG연암학원 43.39%, SilchesterInternationalInvestorsLLP 7.03%, 국민연금공단 6.29%"
+    }
+   ],
+   "sources": [
+    "20250304000433",
+    "20260318001025",
+    "20260701000325",
+    "20260703000591"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "## 최근 1년 계약과 결정 (LG, 003550)\n\n- **공급계약 1건**: 2025-11-12 공시된 \"EV용 양극재 중장기 공급계약 체결\"은 자회사 (주)LG화학이 체결한 계약으로, 이 회사가 대신 공시했습니다. 금액은 3조 7,619억 원, 계약 기간은 2025-11-15~2029-07-31이며, 매출 대비 비율은 7.69%입니다 (접수번호 20251113800695). 상대방은 공시에 적혀 있지 않습니다.\n- **지분 취득 결정 1건**: 2025-12-17 공시된 LG Chem Hungary Battery Separator Kft. 관련 결정입니다. 취득 금액은 7,122억 원이고, 결정일은 2021-10-27로 적혀 있습니다. 목적은 \"유럽지역 이차전지용 분리막 시장 진출\"입니다 (접수번호 20251217800329). 이 역시 자회사 (주)LG화학의 결정을 이 회사가 대신 공시한 것입니다.\n- 최근 1년 안에 이 회사가 직접 매도하거나 매수한 주식 거래와, 옛 계약에 대한 정정 공시는 조회 결과에 없습니다. 자본 결정(증자·사채·자기주식)은 이 항목에 포함되지 않아 다른 항목을 확인해야 합니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 918,
+    "output_tokens": 503,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "LG 공급망 흐름",
+     "company": {
+      "id": 1604,
+      "name": "LG"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 1604,
+        "name": "LG",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "비공개 상대",
+        "listed": false
+       },
+       "amount": 3761948654400,
+       "count": 1
+      }
+     ],
+     "more": 0,
+     "sources": [
+      "20251113800695"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 1건, 상대 1쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "LG 공시 타임라인",
+     "company": {
+      "id": 1604,
+      "name": "LG"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-11-13",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "-",
+       "title": "EV용 양극재 중장기 공급계약 체결",
+       "amount": 3761948654400.0,
+       "superseded": false,
+       "rcept": "20251113800695"
+      },
+      {
+       "date": "2025-12-17",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "LG Chem Hungary Battery Separator Kft.",
+       "title": null,
+       "amount": 712221679115.0,
+       "superseded": false,
+       "rcept": "20251217800329"
+      }
+     ],
+     "sources": [
+      "20251113800695",
+      "20251217800329"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 2건"
+    }
+   ],
+   "sources": [
+    "20251113800695",
+    "20251217800329"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "**자본 변동과 주주 환원 (LG, 조회 시점 2026-10-16)**\n\n- **자기주식 소각**: 2025년 2월 21일 감자 결정(자기주식 소각)을 공시했다. 소각 주식 수는 60,249주이며 발행주식총수의 0.03%다. 소각 목적은 (주)LX홀딩스 분할 과정에서 발생한 자기주식을 소각해 주주가치를 높이는 것이다. 감자 기일은 2025년 4월 29일로 적혀 있고, 감자 후 주식 수는 157,251,165주다 (접수번호 20250221002248). 이 공시는 결정 사항이며 소각이 실제로 실행됐는지는 이 자료로 확인되지 않는다.\n- **배당**: 2023~2025 사업연도 모두 보통주 주당 3,100원, 우선주 주당 3,150원이다. 현금배당 총액은 2023년 4,837억 원, 2024년과 2025년 각 4,782억 원이다. 배당성향(연결 기준)은 2023년 38.35%, 2024년 83.2%, 2025년 64.86%다 (접수번호 20260318001025).\n- **보통주 배당수익률**: 2023년 3.57%, 2024년 4.25%, 2025년 3.41%다.\n- **자사주 매입·신탁계약**: 이 DB에는 해당 연도 기록이 없다.\n- **유상증자·사채 등 자본 조달 결정**: 이 DB에는 해당 기록이 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1235,
+    "output_tokens": 540,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "dilution",
+     "title": "LG 희석 이력",
+     "company": {
+      "id": 1604,
+      "name": "LG"
+     },
+     "as_of": "2026-10-16",
+     "from": "2024-01-01",
+     "events": [
+      {
+       "date": "2025-02-21",
+       "kind": "capital_reduction",
+       "label": "감자",
+       "cancel": true,
+       "shares": 60249,
+       "amount_eok": null,
+       "ratio_pct": 0.03,
+       "pct_of_before": 0.04,
+       "method": "자기주식 소각",
+       "price": null,
+       "rcept_no": "20250221002248"
+      }
+     ],
+     "sources": [
+      "20250221002248"
+     ],
+     "notes": [
+      "결정 공시입니다. 실제 납입·발행, 사채의 실제 전환, 철회 여부는 이 자료에 없습니다.",
+      "사채의 주식 수는 전환·행사·교환되면 생길 수 있는 주식 수입니다. 감자 가운데 자기주식 소각은 따로 표시했습니다."
+     ],
+     "summary": "감자 1건"
+    },
+    {
+     "kind": "payout",
+     "title": "LG 주주 환원",
+     "company": {
+      "id": 1604,
+      "name": "LG"
+     },
+     "as_of": "2026-10-16",
+     "years": [
+      {
+       "year": 2023,
+       "cash_eok": 4837.4,
+       "buyback_eok": 0.0,
+       "dps": 3100.0,
+       "payout_ratio": 38.35
+      },
+      {
+       "year": 2024,
+       "cash_eok": 4781.8,
+       "buyback_eok": 0.0,
+       "dps": 3100.0,
+       "payout_ratio": 83.2
+      },
+      {
+       "year": 2025,
+       "cash_eok": 4781.8,
+       "buyback_eok": 0.0,
+       "dps": 3100.0,
+       "payout_ratio": 64.86
+      }
+     ],
+     "sources": [
+      "20260318001025"
+     ],
+     "notes": [
+      "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
+      "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."
+     ],
+     "summary": "2023 주당 3,100원, 배당성향 38.35%; 2024 주당 3,100원, 배당성향 83.2%; 2025 주당 3,100원, 배당성향 64.86%"
+    }
+   ],
+   "sources": [
+    "20250221002248",
+    "20260318001025"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "**LG(003550, 유가증권) 주가 흐름 (기준일 2026-10-16, 최근 거래일 2026-10-16)**\n\n- **1주(10-08~10-16):** 종가 기준 -4.53%. 같은 시장 상장 종목 중앙값은 -2.74%로, 시장 대비 -1.79%p다.\n- **1개월(09-16~10-16):** -8.02%. 시장 중앙값은 -3.73%로, 시장 대비 -4.29%p다.\n- **3개월(07-16~10-16):** +4.45%. 시장 중앙값은 -0.97%로, 시장 대비 +5.42%p다.\n- **동종 비교:** 같은 제품을 매출의 10% 이상으로 파는 상장사를 이 DB에서 찾지 못해 동종 중앙값은 계산하지 않았다.\n\n이 수치는 지난 기간의 사실이며, 수익률의 원인은 이 조회 결과로 알 수 없다. 출처는 한국거래소(KRX) 일별 시세를 가공한 값이다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 732,
+    "output_tokens": 374,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "LG 수익률 비교",
+     "company": {
+      "id": 1604,
+      "name": "LG"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": -4.53,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": null,
+       "peers_counted": 0,
+       "vs_market_pp": -1.79
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": -8.02,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": null,
+       "peers_counted": 0,
+       "vs_market_pp": -4.29
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": 4.45,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": null,
+       "peers_counted": 0,
+       "vs_market_pp": 5.42
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [],
+      "names": [],
+      "total": 0
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 -4.53% (시장 -2.74%); 1개월 -8.02% (시장 -3.73%); 3개월 4.45% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)",
+  "내부자 매매: 조회 시점까지 공시된 것이 없거나 모으지 않음"
+ ],
+ "usage": {
+  "input_tokens": 22141,
+  "output_tokens": 3949,
+  "cache_read_input_tokens": 7483,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 25.6,
+ "cost_usd": 0.0043
+}

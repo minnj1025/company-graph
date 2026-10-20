@@ -1,0 +1,973 @@
+{
+ "grader": "Claude 서브에이전트(채점 전용). 보고서 생성 코드(company_graph/report*.py)와 이전 채점(r1, r2), results.md, holdout 은 읽지 않음. 유료 API 를 쓰지 않고 로컬 DB(agent_tools, query.relations)와 gold 로 대조",
+ "round": "평가 10판 3차",
+ "graded_at": "2026-10-20",
+ "inputs": "eval/v10/reports/R01-off.md ~ R10-off.md (보고서 JSON 의 verified=false)",
+ "rules": {
+  "unsourced": "숫자가 든 글머리표에 접수번호도, 보고서 이름도, 공시 종류(예: 공급계약 공시, 내부자 보고)도 없으면 1건. 요약은 제외. 주가는 한국거래소·시세 자료를 밝히면 근거 있음. 시장 중앙값은 DB 계산이라 밝히면 근거 있음",
+  "wrong_fact_severity": "경미 = 결정·계약일을 공시일로 적음, 정정 접수일을 결정일처럼 적음, 표 양식의 표기를 그대로 옮김 등 값 자체는 맞는 경우. 보통 = 건수·기간·주체·방향·합계가 근거와 다름"
+ },
+ "reports": {
+  "R01": {
+   "company": "삼성전자",
+   "file": "reports/R01-off.md",
+   "sections_filled": {
+    "요약": "○",
+    "사업 구성": "○",
+    "실적과 재무": "○",
+    "지배 구조와 주주": "○",
+    "최근 1년의 계약과 결정": "○",
+    "자본 변동과 주주 환원": "○",
+    "내부자 매매": "○",
+    "주가": "○",
+    "이 DB로 알 수 없는 것": "○"
+   },
+   "must_include": [
+    {
+     "index": 1,
+     "result": "맞음",
+     "note": "89조 4,924억 원"
+    },
+    {
+     "index": 2,
+     "result": "맞음",
+     "note": "171조 4,995억 원"
+    },
+    {
+     "index": 3,
+     "result": "맞음",
+     "note": "4조 6,761억 원"
+    },
+    {
+     "index": 4,
+     "result": "맞음",
+     "note": "부채비율 31.1%, 유동비율 282.97%"
+    },
+    {
+     "index": 5,
+     "result": "맞음",
+     "note": "삼성생명 8.51%(2025-12-31). '최대주주'라고 명시하지는 않고 주요 개별 주주 첫째로 적음"
+    },
+    {
+     "index": 6,
+     "result": "맞음",
+     "note": "19.84%, 기준일 2025-12-31"
+    },
+    {
+     "index": 7,
+     "result": "맞음",
+     "note": "삼성물산 19.69%"
+    },
+    {
+     "index": 8,
+     "result": "맞음",
+     "note": "53,285,968주, 15조 원, 임직원 주식보상, 결정으로 씀"
+    },
+    {
+     "index": 9,
+     "result": "맞음",
+     "note": "7건"
+    },
+    {
+     "index": 10,
+     "result": "맞음",
+     "note": "보통주 1,668원"
+    }
+   ],
+   "wrong_facts": [
+    {
+     "section": "자본 변동과 주주 환원",
+     "report_says": "자기주식 처분 결정 8건을 '2025년 10월부터 2026년 7월까지'로 적음",
+     "correct": "8건은 2025-05-23 ~ 2026-07-13 결정이다(2025-10 이후는 6건). 합계 2조 6,701억 원·18,177,033주는 8건 기준",
+     "severity": "보통",
+     "source": "get_capital_events"
+    },
+    {
+     "section": "최근 1년의 계약과 결정",
+     "report_says": "코오롱글로벌 관련 계약(평택 P5정수장 1,048억 원, 평택2단지 부대동 841억 원)을 '이 회사가 대신 공시한 것이며 이 회사 자신의 계약이 아님'",
+     "correct": "대리 공시한 쪽은 코오롱(지주)이고 당사자는 자회사 코오롱글로벌이다. 삼성전자는 두 계약의 발주처(당사자)다",
+     "severity": "보통",
+     "source": "supply_contract 20260818800175, 20260709800102 (subsidiary=코오롱글로벌)"
+    },
+    {
+     "section": "내부자 매매",
+     "report_says": "2026-07-21 보고가 '등기·비등기 임원 25명 중심', '보고자 대부분이 사장·부사장급'",
+     "correct": "그날 보고는 742건(보고자 약 742명)이다. 25명은 조회 결과에 표시된 상위 보고자 수일 뿐이다",
+     "severity": "보통",
+     "source": "get_insider_trades by_day"
+    },
+    {
+     "section": "요약",
+     "report_says": "최근 1년 공급계약 '66건, 합계 7조 4,233억 원'",
+     "correct": "66건의 합은 7조 6,122억 원이고, 7조 4,233억 원은 자회사 대리공시 2건을 뺀 64건의 합이다(본문은 64건으로 바르게 씀)",
+     "severity": "보통",
+     "source": "supply_contract as_of_date 2025-10-16~2026-10-16"
+    },
+    {
+     "section": "요약·최근 1년의 계약과 결정",
+     "report_says": "삼성물산 P5 계약을 '2026-03-25 공시'",
+     "correct": "접수일은 2026-03-26(20260326800003), 3/25 는 계약일",
+     "severity": "경미",
+     "source": ""
+    },
+    {
+     "section": "최근 1년의 계약과 결정",
+     "report_says": "삼성생명 지분 매각 결정을 '2026-03-19에 공시'",
+     "correct": "접수일은 2026-03-20(20260320800109), 3/19 는 결정일",
+     "severity": "경미",
+     "source": ""
+    }
+   ],
+   "unsourced": [],
+   "over_the_line": [],
+   "notes": "재무·지분·자기주식·배당 값은 모두 맞다. 틀린 사실은 기간 경계(처분 결정의 시작월), 대리공시 주체, 표시된 상위 25명을 전체로 읽은 것, 건수와 합계의 기준 불일치. 내부자 순증을 매수 신호로 해석하지 않았다. 내부자 문단은 접수번호 대신 'summary.reports_total' 같은 칸 이름을 근거로 적었다(출처 종류는 밝혀 근거 없는 사실로는 세지 않음). '전년 대비 130.0% 늘었다고 보고서에 적혀 있다'는 DB 계산값을 보고서 문구처럼 적은 것(수치는 맞음).",
+   "summary": {
+    "sections": "9/9",
+    "must_correct": 10,
+    "must_wrong": 0,
+    "must_missing": 0,
+    "must_total": 10,
+    "wrong_facts": 6,
+    "wrong_facts_substantive": 4,
+    "unsourced": 0,
+    "over_the_line": 0
+   }
+  },
+  "R02": {
+   "company": "LG",
+   "file": "reports/R02-off.md",
+   "sections_filled": {
+    "요약": "○",
+    "사업 구성": "○",
+    "실적과 재무": "○",
+    "지배 구조와 주주": "○",
+    "최근 1년의 계약과 결정": "○",
+    "자본 변동과 주주 환원": "○",
+    "내부자 매매": "○",
+    "주가": "○",
+    "이 DB로 알 수 없는 것": "○"
+   },
+   "must_include": [
+    {
+     "index": 1,
+     "result": "맞음",
+     "note": "5,330억 원(연결)"
+    },
+    {
+     "index": 2,
+     "result": "맞음",
+     "note": "2,769억 원"
+    },
+    {
+     "index": 3,
+     "result": "맞음",
+     "note": "2조 1,396억 원"
+    },
+    {
+     "index": 4,
+     "result": "맞음",
+     "note": "9.81%"
+    },
+    {
+     "index": 5,
+     "result": "맞음",
+     "note": "구광모 16.27%(2025-12-31), '가장 크고'로 최대주주임을 드러냄"
+    },
+    {
+     "index": 6,
+     "result": "맞음",
+     "note": "42.54%"
+    },
+    {
+     "index": 7,
+     "result": "맞음",
+     "note": "국민연금 6.29%, Silchester 7.03%"
+    },
+    {
+     "index": 8,
+     "result": "맞음",
+     "note": "2023~2025 모두 3,100원"
+    },
+    {
+     "index": 9,
+     "result": "맞음",
+     "note": "자기주식 소각 감자결정, 소각 60,249주(=보통주 49,828 + 우선주 10,421). 종류별로 나누지 않고 합계로 적음"
+    }
+   ],
+   "wrong_facts": [
+    {
+     "section": "지배 구조와 주주",
+     "report_says": "'특수관계인은 이 표에 15명이 있습니다'",
+     "correct": "2025 사업보고서 최대주주 표에는 구광모 외 29줄(친인척 24명, 특수관계법인 4곳, 등기임원 1명)이 있다",
+     "severity": "보통",
+     "source": "get_relations equity in (20260318001025)"
+    },
+    {
+     "section": "최근 1년의 계약과 결정",
+     "report_says": "EV용 양극재 계약을 '2025-11-12 공시된'",
+     "correct": "접수일은 2025-11-13(20251113800695), 11/12 는 계약일",
+     "severity": "경미",
+     "source": ""
+    }
+   ],
+   "unsourced": [
+    {
+     "section": "자본 변동과 주주 환원",
+     "text": "보통주 배당수익률: 2023년 3.57%, 2024년 4.25%, 2025년 3.41%다."
+    }
+   ],
+   "over_the_line": [],
+   "notes": "연결·별도를 섞지 않았고 자회사(LG화학) 대리공시 2건을 자회사의 계약·결정으로 바르게 밝혔다. 연암학원 43.39%를 최대주주 합계와 더하지 않았다.",
+   "summary": {
+    "sections": "9/9",
+    "must_correct": 9,
+    "must_wrong": 0,
+    "must_missing": 0,
+    "must_total": 9,
+    "wrong_facts": 2,
+    "wrong_facts_substantive": 1,
+    "unsourced": 1,
+    "over_the_line": 0
+   }
+  },
+  "R03": {
+   "company": "KB금융",
+   "file": "reports/R03-off.md",
+   "sections_filled": {
+    "요약": "○",
+    "사업 구성": "○",
+    "실적과 재무": "○",
+    "지배 구조와 주주": "○",
+    "최근 1년의 계약과 결정": "○",
+    "자본 변동과 주주 환원": "○",
+    "내부자 매매": "○",
+    "주가": "○",
+    "이 DB로 알 수 없는 것": "○"
+   },
+   "must_include": [
+    {
+     "index": 1,
+     "result": "맞음",
+     "note": "보고서 2조 7,126억 원, gold 2조 7,125.48억 원(1억 원 안)",
+     "rounding_only": true
+    },
+    {
+     "index": 2,
+     "result": "맞음",
+     "note": "2조 105억 원"
+    },
+    {
+     "index": 3,
+     "result": "맞음",
+     "note": "2조 1,330억 원"
+    },
+    {
+     "index": 4,
+     "result": "맞음",
+     "note": "국민연금 8.68%, 합계도 같은 수치"
+    },
+    {
+     "index": 5,
+     "result": "맞음",
+     "note": "9.33%, 7.05%, 6.82%"
+    },
+    {
+     "index": 6,
+     "result": "맞음",
+     "note": "신탁계약 7,000억 원(2026-07-23)"
+    },
+    {
+     "index": 7,
+     "result": "빠짐",
+     "note": "2026-04-23 결정을 2026-02-05 결정과 합쳐 '합계 1조 2,000억 원'으로만 적음. 3,811,944주·6,000억 원 없음"
+    },
+    {
+     "index": 8,
+     "result": "맞음",
+     "note": "4,367원"
+    }
+   ],
+   "wrong_facts": [
+    {
+     "section": "자본 변동과 주주 환원",
+     "report_says": "'직접 취득 9건이 아니라 직접 취득 8건 … 과 신탁계약 9건'",
+     "correct": "2024 이후 직접 취득 결정은 4건(2조 200억 원, 17,259,242주)",
+     "severity": "보통",
+     "source": "get_capital_events by_kind"
+    },
+    {
+     "section": "자본 변동과 주주 환원",
+     "report_says": "신탁계약 9건",
+     "correct": "신탁계약 체결 결정은 5건(2조 1,800억 원)",
+     "severity": "보통",
+     "source": "get_capital_events by_kind"
+    }
+   ],
+   "unsourced": [
+    {
+     "section": "자본 변동과 주주 환원",
+     "text": "배당성향(연결)은 25.5%, 23.6%, 27.0%입니다. 배당수익률(보통주)은 4.9%, 3.5%, 3.2%입니다."
+    }
+   ],
+   "over_the_line": [],
+   "notes": "매출액·유동비율을 지어내지 않았고 부채비율 1,282.56%를 '단순 비교하기 어렵다'고만 적었다. 직접 취득과 신탁계약 금액은 따로 적었지만 건수는 틀렸다(합계 금액은 맞음). 주가 항목은 한국거래소 대신 '주가 시세 자료'라고 적었다.",
+   "summary": {
+    "sections": "9/9",
+    "must_correct": 7,
+    "must_wrong": 0,
+    "must_missing": 1,
+    "must_total": 8,
+    "wrong_facts": 2,
+    "wrong_facts_substantive": 2,
+    "unsourced": 1,
+    "over_the_line": 0
+   }
+  },
+  "R04": {
+   "company": "현대약품",
+   "file": "reports/R04-off.md",
+   "sections_filled": {
+    "요약": "○",
+    "사업 구성": "○",
+    "실적과 재무": "○",
+    "지배 구조와 주주": "○",
+    "최근 1년의 계약과 결정": "○",
+    "자본 변동과 주주 환원": "○",
+    "내부자 매매": "○",
+    "주가": "○",
+    "이 DB로 알 수 없는 것": "○"
+   },
+   "must_include": [
+    {
+     "index": 1,
+     "result": "맞음",
+     "note": "2026-08-31 종료 11월 결산 3분기, 영업이익 24.4억 원(gold 24.39억 원)",
+     "rounding_only": true
+    },
+    {
+     "index": 2,
+     "result": "맞음",
+     "note": "563억 원"
+    },
+    {
+     "index": 3,
+     "result": "맞음",
+     "note": "34.6억 원(gold 34.55억 원)",
+     "rounding_only": true
+    },
+    {
+     "index": 4,
+     "result": "맞음",
+     "note": "이한구 17.88%, 합계 24.26%"
+    },
+    {
+     "index": 5,
+     "result": "맞음",
+     "note": "신풍제약 7.21%, 자기주식 교환"
+    },
+    {
+     "index": 6,
+     "result": "맞음",
+     "note": "4,780,654주, 12,810원, 612억 원"
+    },
+    {
+     "index": 7,
+     "result": "빠짐",
+     "note": "현대약품이 신풍제약 주식 2,437,310주(296억 원, 양수 후 4.6%)를 양수한 결정은 없음. 반대 방향(신풍제약이 현대약품 주식 296억 원 취득, 7.21%)만 적었고 이는 신풍제약 공시와 맞는 사실"
+    },
+    {
+     "index": 8,
+     "result": "맞음",
+     "note": "2025 사업연도 30원"
+    }
+   ],
+   "wrong_facts": [
+    {
+     "section": "자본 변동과 주주 환원",
+     "report_says": "'배당 (연결 기준, 보통주)'",
+     "correct": "현대약품은 연결 재무제표가 없다(별도만). 배당 표 양식의 '(연결)' 표기를 그대로 옮긴 것",
+     "severity": "경미",
+     "source": "README 결산월 11월 항목"
+    }
+   ],
+   "unsourced": [
+    {
+     "section": "실적과 재무",
+     "text": "분기 흐름: 2025년 11월 결산 1분기는 영업적자 4.1억 원, 2분기는 영업이익 10.8억 원, … 2026년 … 3분기는 24.4억 원입니다(4분기 값은 … 계산값입니다)."
+    }
+   ],
+   "over_the_line": [],
+   "notes": "분기를 '2026년 11월 결산 3분기(2026-08-31 종료)'로 바르게 불렀고 재무 항목은 별도라고 밝혔다. 자기주식 처분(교환)을 주주 환원이라 부르지 않았다. 배당의 '연결 기준'은 must_not('연결 재무제표 값이라고 씀')의 경계지만 재무 항목이 아니라 배당성향 표기라 틀린 사실(경미)로만 셈.",
+   "summary": {
+    "sections": "9/9",
+    "must_correct": 7,
+    "must_wrong": 0,
+    "must_missing": 1,
+    "must_total": 8,
+    "wrong_facts": 1,
+    "wrong_facts_substantive": 0,
+    "unsourced": 1,
+    "over_the_line": 0
+   }
+  },
+  "R05": {
+   "company": "HLB",
+   "file": "reports/R05-off.md",
+   "sections_filled": {
+    "요약": "○",
+    "사업 구성": "○",
+    "실적과 재무": "○",
+    "지배 구조와 주주": "○",
+    "최근 1년의 계약과 결정": "○",
+    "자본 변동과 주주 환원": "○",
+    "내부자 매매": "○",
+    "주가": "○",
+    "이 DB로 알 수 없는 것": "○"
+   },
+   "must_include": [
+    {
+     "index": 1,
+     "result": "맞음",
+     "note": "영업손실 225억 원"
+    },
+    {
+     "index": 2,
+     "result": "맞음",
+     "note": "당기순손실 804억 원"
+    },
+    {
+     "index": 3,
+     "result": "맞음",
+     "note": "진양곤 7.16%, 합계 9.75%"
+    },
+    {
+     "index": 4,
+     "result": "맞음",
+     "note": "10.01%, 전환사채 인수·콜옵션 계약, 7.16%와 기준이 다름을 밝힘"
+    },
+    {
+     "index": 5,
+     "result": "빠짐",
+     "note": "2026-08-05 제44회 300억 원은 있으나 전환가액 33,361원이 없음(also 값 누락)"
+    },
+    {
+     "index": 6,
+     "result": "맞음",
+     "note": "1,998억 원"
+    },
+    {
+     "index": 7,
+     "result": "맞음",
+     "note": "전환사채 6건"
+    },
+    {
+     "index": 8,
+     "result": "맞음",
+     "note": "현금배당 없음"
+    },
+    {
+     "index": 9,
+     "result": "맞음",
+     "note": "1건, 진양곤 -27,196주"
+    }
+   ],
+   "wrong_facts": [
+    {
+     "section": "요약",
+     "report_says": "'최근 1년간 자본 결정은 전환사채 6건과 신주인수권부사채 1건'",
+     "correct": "최근 1년(2025-10-16 이후) 자본 결정은 3건(신주인수권부사채 2025-11-03, 전환사채 2026-04-07·2026-08-05). 6건은 2024-01 이후 전체",
+     "severity": "보통",
+     "source": "get_capital_events"
+    }
+   ],
+   "unsourced": [],
+   "over_the_line": [],
+   "notes": "적자 원인·임상 전망을 쓰지 않았다. 5% 보고 10.01%와 사업보고서 7.16%의 기준 차이를 밝혔다. 본문(계약과 결정)은 1년 자본 결정을 3건으로 바르게 적어 요약과 어긋난다.",
+   "summary": {
+    "sections": "9/9",
+    "must_correct": 8,
+    "must_wrong": 0,
+    "must_missing": 1,
+    "must_total": 9,
+    "wrong_facts": 1,
+    "wrong_facts_substantive": 1,
+    "unsourced": 0,
+    "over_the_line": 0
+   }
+  },
+  "R06": {
+   "company": "프리티",
+   "file": "reports/R06-off.md",
+   "sections_filled": {
+    "요약": "○",
+    "사업 구성": "○",
+    "실적과 재무": "○",
+    "지배 구조와 주주": "○",
+    "최근 1년의 계약과 결정": "○",
+    "자본 변동과 주주 환원": "○",
+    "내부자 매매": "○",
+    "주가": "○",
+    "이 DB로 알 수 없는 것": "○"
+   },
+   "must_include": [
+    {
+     "index": 1,
+     "result": "맞음",
+     "note": "13.1억 원(gold 13.12억 원)",
+     "rounding_only": true
+    },
+    {
+     "index": 2,
+     "result": "맞음",
+     "note": "3주→1주, 감자 예정일 2026-11-24, 17,746,333주 중 11,831,480주(=66.67%). 비율 %는 따로 적지 않음"
+    },
+    {
+     "index": 3,
+     "result": "맞음",
+     "note": "5주→3주(=40.00%), 2026-07-10 공시"
+    },
+    {
+     "index": 4,
+     "result": "맞음",
+     "note": "2026-03-31 2,000만 주, 100억 원"
+    },
+    {
+     "index": 5,
+     "result": "빠짐",
+     "note": "2026-10-12 정정 전환사채의 권면 51억 원·전환가액 2,500원이 없음(8건 합계 350억 원만)"
+    },
+    {
+     "index": 6,
+     "result": "맞음",
+     "note": "KS인더스트리 13.79%"
+    },
+    {
+     "index": 7,
+     "result": "맞음",
+     "note": "밀레니엄홀딩스 7.64%"
+    },
+    {
+     "index": 8,
+     "result": "맞음",
+     "note": "밀레니엄홀딩스 3.86%, 합계 9.89%, 기준일 2025-12-31 명시"
+    },
+    {
+     "index": 9,
+     "result": "맞음",
+     "note": "현금배당 없음"
+    }
+   ],
+   "wrong_facts": [
+    {
+     "section": "내부자 매매",
+     "report_says": "KS인더스트리 보고를 '전부 지분을 줄인 쪽이었습니다'",
+     "correct": "-16,671,636주는 5:1 주식병합으로 줄어든 수가 섞인 값이다(20,915,000주 → 병합 뒤 4,183,000주 → 4,243,364주). 지분율은 13.79%(4월)에서 14.35%로 올랐다",
+     "severity": "보통",
+     "source": "README 주식병합과 소유보고, get_major_holders"
+    },
+    {
+     "section": "자본 변동과 주주 환원",
+     "report_says": "유상증자 '2026-10-14 (1,600,004주, 40억 원)'를 2026-10-14 결정처럼 나열",
+     "correct": "2026-04-30 결정의 정정 공시 접수일이다(도구의 date 는 마지막 정정 접수일)",
+     "severity": "경미",
+     "source": "README, get_capital_events note"
+    }
+   ],
+   "unsourced": [],
+   "over_the_line": [],
+   "notes": "as_of 뒤 정정(20261020000255)을 쓰지 않았고, 11-24 감자를 '예정'으로 적었다. 2025 최대주주를 기준일과 함께 적었다. 내부자 문단은 매도라고 쓰지는 않았으나('시장에서 팔았는지 … 확인할 수 없습니다') 병합 효과를 짚지 못하고 '지분을 줄인' 것으로 적었다.",
+   "summary": {
+    "sections": "9/9",
+    "must_correct": 8,
+    "must_wrong": 0,
+    "must_missing": 1,
+    "must_total": 9,
+    "wrong_facts": 2,
+    "wrong_facts_substantive": 1,
+    "unsourced": 0,
+    "over_the_line": 0
+   }
+  },
+  "R07": {
+   "company": "삼성중공업",
+   "file": "reports/R07-off.md",
+   "sections_filled": {
+    "요약": "○",
+    "사업 구성": "○",
+    "실적과 재무": "○",
+    "지배 구조와 주주": "○",
+    "최근 1년의 계약과 결정": "○",
+    "자본 변동과 주주 환원": "○",
+    "내부자 매매": "○",
+    "주가": "○",
+    "이 DB로 알 수 없는 것": "○"
+   },
+   "must_include": [
+    {
+     "index": 1,
+     "result": "맞음",
+     "note": "영업이익 3,250억 원, 매출 3조 2,307억 원"
+    },
+    {
+     "index": 2,
+     "result": "맞음",
+     "note": "2,048억 원"
+    },
+    {
+     "index": 3,
+     "result": "맞음",
+     "note": "부채비율 281.27%, 유동비율 87.76%"
+    },
+    {
+     "index": 4,
+     "result": "맞음",
+     "note": "삼성전자 15.23%, 합계 20.86%"
+    },
+    {
+     "index": 5,
+     "result": "맞음",
+     "note": "국민연금 7.98%, BlackRock 5.01%"
+    },
+    {
+     "index": 6,
+     "result": "맞음",
+     "note": "이 회사가 수주한 계약 29건"
+    },
+    {
+     "index": 7,
+     "result": "맞음",
+     "note": "해양생산설비 1기 4조 3,301억 원, 북미 지역 선주(정정 뒤 값, 계약일 2026-06-01)"
+    },
+    {
+     "index": 8,
+     "result": "빠짐",
+     "note": "가장 최근 계약(LNG운반선 2척 6,722억 원, 2026-10-02)이 없음"
+    },
+    {
+     "index": 9,
+     "result": "맞음",
+     "note": "현금배당 없음, 자본 변동 결정 없음"
+    },
+    {
+     "index": 10,
+     "result": "맞음",
+     "note": "9건, +17,804주, 모두 증가"
+    }
+   ],
+   "wrong_facts": [
+    {
+     "section": "최근 1년의 계약과 결정",
+     "report_says": "'1년보다 오래된 계약 8건(삼성전자 2건, 동성화인텍 4건, 아프리카 지역 선주 1건 등)', '정정 날짜는 2025-12-26부터'",
+     "correct": "옛 계약 정정은 9건(삼성전자 4건, 동성화인텍 4건, 아프리카 지역 선주 1건), 접수일 2025-12-12 ~ 2026-08-31. 같은 항목 첫 줄의 '9건'과도 어긋남",
+     "severity": "보통",
+     "source": "supply_contract 공시일 창 안·계약일 창 밖 9줄"
+    },
+    {
+     "section": "요약",
+     "report_says": "부채비율 281.27%가 '동종 상장사 중앙값 96.7%보다 높습니다'",
+     "correct": "96.7%는 같은 시장(유가증권 827곳) 중앙값이다. 동종(조선 2곳) 중앙값이 아니다",
+     "severity": "보통",
+     "source": "get_financials market_median"
+    }
+   ],
+   "unsourced": [],
+   "over_the_line": [],
+   "notes": "계약 상대를 지어내지 않았고(지역 선주), 수주 금액을 매출로 쓰지 않았으며, 정정 공시를 새 계약으로 세지 않았다. 계약해지(2026-03-16)는 언급하지 않음.",
+   "summary": {
+    "sections": "9/9",
+    "must_correct": 9,
+    "must_wrong": 0,
+    "must_missing": 1,
+    "must_total": 10,
+    "wrong_facts": 2,
+    "wrong_facts_substantive": 2,
+    "unsourced": 0,
+    "over_the_line": 0
+   }
+  },
+  "R08": {
+   "company": "케이티앤지",
+   "file": "reports/R08-off.md",
+   "sections_filled": {
+    "요약": "○",
+    "사업 구성": "○",
+    "실적과 재무": "○",
+    "지배 구조와 주주": "○",
+    "최근 1년의 계약과 결정": "○",
+    "자본 변동과 주주 환원": "○",
+    "내부자 매매": "○",
+    "주가": "○",
+    "이 DB로 알 수 없는 것": "○"
+   },
+   "must_include": [
+    {
+     "index": 1,
+     "result": "맞음",
+     "note": "보고서 4,144억 원, gold 4,144.52억 원(1억 원 안)",
+     "rounding_only": true
+    },
+    {
+     "index": 2,
+     "result": "맞음",
+     "note": "3,499억 원"
+    },
+    {
+     "index": 3,
+     "result": "맞음",
+     "note": "기업은행 8.06%, 특수관계인 합계도 같음"
+    },
+    {
+     "index": 4,
+     "result": "맞음",
+     "note": "기업은행 9.16, First Eagle IM 8.61, Capital Research 8.22, 국민연금 7.5, BlackRock 6.15 (First Eagle Global 5.02 도 적음, 더하지 않음)"
+    },
+    {
+     "index": 5,
+     "result": "맞음",
+     "note": "2,071,346주, 3,600억 원, 주주가치제고 및 주식소각, 취득 기간 명시"
+    },
+    {
+     "index": 6,
+     "result": "맞음",
+     "note": "5건"
+    },
+    {
+     "index": 7,
+     "result": "맞음",
+     "note": "6,000원(5,400원·5,200원)"
+    }
+   ],
+   "wrong_facts": [
+    {
+     "section": "최근 1년의 계약과 결정",
+     "report_says": "'이 기간에 매각한 계약이나 지분은 없다'",
+     "correct": "같은 항목 위에 적은 Another Snus Factory International Holding Company AB 지분 처분 결정(1,027억 원, 처분 후 51.00%, 20251124800626)이 있다",
+     "severity": "보통",
+     "source": "get_relations stake_disposal out"
+    }
+   ],
+   "unsourced": [],
+   "over_the_line": [],
+   "notes": "5% 보고 비율을 더하지 않았고, 자기주식 처분(경영진 보상)을 주주 환원이라 부르지 않았고, 2026-09-22 취득을 결정으로 적었다.",
+   "summary": {
+    "sections": "9/9",
+    "must_correct": 7,
+    "must_wrong": 0,
+    "must_missing": 0,
+    "must_total": 7,
+    "wrong_facts": 1,
+    "wrong_facts_substantive": 1,
+    "unsourced": 0,
+    "over_the_line": 0
+   }
+  },
+  "R09": {
+   "company": "STX",
+   "file": "reports/R09-off.md",
+   "sections_filled": {
+    "요약": "○",
+    "사업 구성": "○",
+    "실적과 재무": "○",
+    "지배 구조와 주주": "○",
+    "최근 1년의 계약과 결정": "○",
+    "자본 변동과 주주 환원": "○",
+    "내부자 매매": "○",
+    "주가": "○",
+    "이 DB로 알 수 없는 것": "○"
+   },
+   "must_include": [
+    {
+     "index": 1,
+     "result": "맞음",
+     "note": "영업손실 189억 원"
+    },
+    {
+     "index": 2,
+     "result": "맞음",
+     "note": "자본총계 -1,478억 원, 부채비율 계산 안 함"
+    },
+    {
+     "index": 3,
+     "result": "맞음",
+     "note": "99.14%, 무상소각과 103주→1주 병합"
+    },
+    {
+     "index": 4,
+     "result": "맞음",
+     "note": "139,507,887주"
+    },
+    {
+     "index": 5,
+     "result": "맞음",
+     "note": "27,200,000주, 680억 원"
+    },
+    {
+     "index": 6,
+     "result": "맞음",
+     "note": "범한산업 94.89%"
+    },
+    {
+     "index": 7,
+     "result": "맞음",
+     "note": "한국산업은행 29.54%"
+    },
+    {
+     "index": 8,
+     "result": "맞음",
+     "note": "에이피씨 머큐리(유) 38.67%, 기준일 2025-12-31"
+    },
+    {
+     "index": 9,
+     "result": "맞음",
+     "note": "현금배당 없음"
+    }
+   ],
+   "wrong_facts": [
+    {
+     "section": "내부자 매매",
+     "report_says": "서울보증보험 '증가 269,135주 기준 …', '같은 날 줄인 27,451,781주는 … 누가 줄였는지는 확인되지 않습니다'",
+     "correct": "2026-10-15 보고 2건은 모두 서울보증보험이다: +27,720,916주 뒤 -27,451,781주(순 +269,135주). 줄인 쪽은 서울보증보험",
+     "severity": "보통",
+     "source": "get_insider_trades by_day·reporters (reports=2)"
+    }
+   ],
+   "unsourced": [],
+   "over_the_line": [
+    {
+     "section": "자본 변동과 주주 환원",
+     "text": "2026년 10월 6일 감자가 이루어졌다고 적혀 있고, 감자 후 주식 수는 1,465,787주다(접수번호 20261013000426).",
+     "reason": "감자결정 공시의 감자 기준일을 감자가 실행된 것처럼 씀(must_not '감자·증자 결정을 끝난 일처럼 씀'). 같은 항목 머리말 '실행 여부 미확인'과도 어긋남"
+    }
+   ],
+   "notes": "부채비율을 숫자로 적지 않았고 5% 보고 비율을 더하지 않았으며 오래된 5% 보고(에이피씨머큐리, 에스티엑스썬에이스해운)에 보고일을 붙였다. 출자전환 변동을 장내 매매로 쓰지 않았다. 사업 구성의 부문 금액을 백만원 단위 그대로 옮김(조·억 원 규칙 위반, 값은 맞음).",
+   "summary": {
+    "sections": "9/9",
+    "must_correct": 9,
+    "must_wrong": 0,
+    "must_missing": 0,
+    "must_total": 9,
+    "wrong_facts": 1,
+    "wrong_facts_substantive": 1,
+    "unsourced": 0,
+    "over_the_line": 1
+   }
+  },
+  "R10": {
+   "company": "삼성에피스홀딩스",
+   "file": "reports/R10-off.md",
+   "sections_filled": {
+    "요약": "○",
+    "사업 구성": "○",
+    "실적과 재무": "○",
+    "지배 구조와 주주": "○",
+    "최근 1년의 계약과 결정": "○",
+    "자본 변동과 주주 환원": "○",
+    "내부자 매매": "○",
+    "주가": "○",
+    "이 DB로 알 수 없는 것": "○"
+   },
+   "must_include": [
+    {
+     "index": 1,
+     "result": "맞음",
+     "note": "영업이익 587억 원, 매출 3,919억 원"
+    },
+    {
+     "index": 2,
+     "result": "맞음",
+     "note": "'같은 기간 전년 비교치는 이 DB에 없습니다'"
+    },
+    {
+     "index": 3,
+     "result": "맞음",
+     "note": "31.42%"
+    },
+    {
+     "index": 4,
+     "result": "맞음",
+     "note": "삼성물산 43.06%, 삼성전자 31.22%, 합계 74.30%"
+    },
+    {
+     "index": 5,
+     "result": "맞음",
+     "note": "삼성물산 74.32%, 국민연금 5.70%"
+    },
+    {
+     "index": 6,
+     "result": "맞음",
+     "note": "자본 변동 결정 없음, 현금배당 없음"
+    },
+    {
+     "index": 7,
+     "result": "맞음",
+     "note": "2건 +1,274주(대표이사 1,000주, 부사장 274주)"
+    }
+   ],
+   "wrong_facts": [
+    {
+     "section": "자본 변동과 주주 환원",
+     "report_says": "'2023~2025 사업연도 모두 보통주 주당 배당금 0원'",
+     "correct": "회사는 2025-11-03 분할 설립이라 2023·2024 사업연도가 없다(배당 표 전기·전전기는 '-'). 2025 사업연도 현금배당 없음만 맞다",
+     "severity": "경미",
+     "source": "README 최근 상장 항목"
+    }
+   ],
+   "unsourced": [
+    {
+     "section": "실적과 재무",
+     "text": "재무상태 (2026-06-30, 연결): … 부채비율은 31.42%, 유동비율은 138.86%입니다. 2025-12-31과 비교하면 부채비율은 30.64%, 유동비율은 135.59%였습니다."
+    }
+   ],
+   "over_the_line": [],
+   "notes": "별도(지주회사) 영업손실을 쓰지 않았고 분할 전 삼성바이오로직스 값을 섞지 않았다. 최근 1년 계약과 결정은 DB 에 없어 '없음'으로 둔 것이 맞다(자회사 투자판단 공시는 DB 에 없음). '생산 거점 등' 소제목 아래 R&D 법인(삼성바이오에피스 차이나)을 둔 것은 표현 문제로만 봄.",
+   "summary": {
+    "sections": "9/9",
+    "must_correct": 7,
+    "must_wrong": 0,
+    "must_missing": 0,
+    "must_total": 7,
+    "wrong_facts": 1,
+    "wrong_facts_substantive": 0,
+    "unsourced": 1,
+    "over_the_line": 0
+   }
+  }
+ },
+ "totals": {
+  "sections_filled": 90,
+  "sections_total": 90,
+  "must_total": 86,
+  "correct": 81,
+  "wrong": 0,
+  "missing": 5,
+  "wrong_facts": 19,
+  "wrong_facts_substantive": 13,
+  "reports_with_wrong_facts": 10,
+  "reports_with_substantive_wrong_facts": 8,
+  "unsourced": 4,
+  "over_the_line": 1,
+  "must_correct_pct": 94.2,
+  "sections_pct": 100.0
+ },
+ "adoption": {
+  "핵심 사실 80% 이상": {
+   "value": 94.2,
+   "pass": true
+  },
+  "틀린 사실이 있는 보고서 2개 이하": {
+   "value": 10,
+   "value_excluding_minor": 8,
+   "pass": false,
+   "pass_excluding_minor": false
+  },
+  "선을 넘은 문장 0": {
+   "value": 1,
+   "pass": false
+  },
+  "항목 채움 95% 이상": {
+   "value": 100.0,
+   "pass": true
+  },
+  "note": "README 의 채택 기준은 검산 켬 기준이나 이번 입력은 검산 끔(-off) 보고서뿐이라 같은 기준을 이 보고서들에 적용했다"
+ }
+}

@@ -1,0 +1,1614 @@
+{
+ "company": {
+  "company_id": 2239,
+  "name": "대우건설",
+  "stock_code": "047040",
+  "market": "유가증권",
+  "group": "중흥건설"
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "대우건설의 2026년 상반기는 매출이 줄었지만 영업이익과 순이익은 전년보다 크게 늘었습니다. 2분기 매출은 2조 435억 원으로 전년 대비 -10.11%였고, 영업이익은 2,322억 원으로 182.56% 증가했습니다(접수번호 20260814002161). 최대주주 및 특수관계인 합계는 2025-12-31 기준 50.75%이며(접수번호 20260318001029), 2023~2025 사업연도에는 현금배당이 없었습니다. 최근 1년간 공급계약 25건, 합계 11조 2,669억 원이 공시되었고, 최근 1개월 주가 수익률은 -20.68%로 같은 기간 시장 중앙값을 크게 밑돌았습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "- 대우건설의 사업은 토목, 건축, 플랜트, 기타 4개 부문으로 나뉘며, 2026년 반기보고서(접수번호 20260814002161) 기준 각 부문의 매출 비중은 건축 66.7%, 토목 18.6%, 플랜트 12.8%, 기타 7.2%입니다. 부문 간 조정 및 제거는 -5.3%입니다 (접수번호 20260814002161).\n- 건축 부문의 매출액은 2,665,610백만 원, 토목은 743,299백만 원, 플랜트는 511,515백만 원, 기타는 288,462백만 원이며, 조정 및 제거는 -213,977백만 원, 합계는 3,994,909백만 원입니다. 이 금액은 2026년 상반기(제27기 반기) 실적입니다 (접수번호 20260814002161).\n- 주요 제품은 토목 부문의 도로·교량·항만·철도·지하철·수자원·환경·신재생에너지 시설 공사, 건축 부문의 아파트·주상복합·오피스텔·상업·업무시설·데이터센터 건설, 플랜트 부문의 석유·가스, LNG, 석유화학, 발전소, 원자력 발전소 건설, 기타 부문의 부동산 개발, 자산 운용, 부동산 임대 운영, 호텔입니다 (접수번호 20260814002161).\n- 보고서 본문에 따르면 토목 부문에서는 검단2일반산업단지 단지조성공사를 수주했고, 가덕도신공항 부지조성공사 수주를 전망한다고 밝혔습니다. 플랜트 부문은 나이지리아·모잠비크 LNG 액화플랜트 프로젝트를 기반으로 추가 수주를 추진 중이며, 체코 원전 사업 참여 기회를 확대하고 있다고 적었습니다 (접수번호 20260814002161).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 5465,
+    "output_tokens": 679,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "대우건설 매출 구성",
+     "company": {
+      "id": 2239,
+      "name": "대우건설"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "도로, 교량, 항만, 철도, 지하철, 수자원, 환경, 신재생에너지 등",
+       "segment": "토 목",
+       "share_pct": 18.6,
+       "family": "토목 공사"
+      },
+      {
+       "name": "아파트, 주상복합, 오피스텔, 비주거시설(상업시설, 오피스, 데이터센터 등) 등",
+       "segment": "건 축",
+       "share_pct": 66.7,
+       "family": "건축 공사"
+      },
+      {
+       "name": "Oil&Gas, LNG, Petrochemical, 복합화력발전, 원자력발전 및 유관사업, 신재생에너지, 산업설비 등",
+       "segment": "플 랜 트",
+       "share_pct": 12.8,
+       "family": "플랜트·설비 공사"
+      },
+      {
+       "name": "국내외 투자개발(부동산, IPP, PPP), 투자자산운용, 부동산 임대, 호텔업 등",
+       "segment": "기 타",
+       "share_pct": 7.2,
+       "family": "부동산 개발·분양"
+      },
+      {
+       "name": "조정 및 제거",
+       "segment": "기 타",
+       "share_pct": -5.3,
+       "family": null
+      }
+     ],
+     "sources": [
+      "20260814002161"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 5줄, 비중 합 100.0%"
+    }
+   ],
+   "sources": [
+    "20260814002161"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "- **2026년 2분기(연결)**: 매출 2조 435억 원으로 전년 같은 분기 대비 -10.11%, 영업이익 2,322억 원으로 182.56% 증가, 당기순이익 1,671억 원으로 적자이던 전년 2분기(-429억 원)에서 흑자로 전환했습니다(접수번호 20260814002161, 20250813001556). 영업이익률은 11.36%입니다.\n- **2026년 상반기 누적(연결)**: 매출 3조 9,949억 원(-8.16%), 영업이익 4,879억 원(108.92%), 당기순이익 3,630억 원(2,312.25%)입니다(접수번호 20260814002161).\n- **2025년 연간(연결)**: 매출 8조 546억 원(-23.32%), 영업손실 8조 154억 원이 아닌 **영업손실 -8,154억 원**, 당기순손실 -9,161억 원으로 영업과 순이익이 모두 적자 전환했습니다(접수번호 20260318001029). 2025년 4분기만 따로 보면 영업손실 -1조 1,055억 원, 당기순손실 -8,782억 원이며, 이는 사업보고서 연간 값에서 3분기 누적 값을 뺀 계산값입니다(접수번호 20260318001029, 20251114001603).\n- **2026년 1분기(연결)**: 매출 1조 9,514억 원(-6.03%), 영업이익 2,556억 원(68.93%), 당기순이익 1,958억 원(237.89%)입니다(접수번호 20260515001883).\n- **재무구조(연결, 2026년 6월 말)**: 자산 14조 3,852억 원, 부채 10조 4,607억 원, 자본 3조 9,246억 원입니다. 부채비율은 266.54%로 2025년 말의 284.46%보다 낮아졌고, 유동비율은 183.88%입니다(접수번호 20260814002161).\n- **시장 비교**: 이 DB가 유가증권 상장사 827곳으로 계산한 중앙값은 부채비율 96.7%, 유동비율 133.47%, 영업이익률 5.1%입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3499,
+    "output_tokens": 764,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "대우건설 실적 추이",
+     "company": {
+      "id": 2239,
+      "name": "대우건설"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114003057"
+       ],
+       "revenue": 25478.1,
+       "revenue_yoy_pct": -14.79,
+       "operating_income": 623.3,
+       "operating_income_yoy_pct": -67.23,
+       "net_income": 403.3,
+       "net_income_yoy_pct": -63.31,
+       "operating_margin_pct": 2.45
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250813000868",
+        "20241114003057"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 26469.9,
+       "revenue_yoy_pct": -4.72,
+       "operating_income": 1212.3,
+       "operating_income_yoy_pct": 55.59,
+       "net_income": 145.1,
+       "net_income_yoy_pct": -86.72,
+       "operating_margin_pct": 4.58
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250515002566"
+       ],
+       "revenue": 20766.7,
+       "revenue_yoy_pct": -16.51,
+       "operating_income": 1513.3,
+       "operating_income_yoy_pct": 31.83,
+       "net_income": 579.6,
+       "net_income_yoy_pct": -36.65,
+       "operating_margin_pct": 7.29
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250813001556"
+       ],
+       "revenue": 22733.2,
+       "revenue_yoy_pct": -19.43,
+       "operating_income": 821.9,
+       "operating_income_yoy_pct": -21.55,
+       "net_income": -429.1,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": 3.62
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251114001603"
+       ],
+       "revenue": 19906.1,
+       "revenue_yoy_pct": -21.87,
+       "operating_income": 565.7,
+       "operating_income_yoy_pct": -9.25,
+       "net_income": -529.7,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": 2.84
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260318001029",
+        "20251114001603"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 17140.3,
+       "revenue_yoy_pct": -35.25,
+       "operating_income": -11055.2,
+       "operating_income_yoy": "적자 전환",
+       "net_income": -8781.5,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": -64.5
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260515001883"
+       ],
+       "revenue": 19514.1,
+       "revenue_yoy_pct": -6.03,
+       "operating_income": 2556.3,
+       "operating_income_yoy_pct": 68.93,
+       "net_income": 1958.4,
+       "net_income_yoy_pct": 237.89,
+       "operating_margin_pct": 13.1
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260814002161"
+       ],
+       "revenue": 20435.0,
+       "revenue_yoy_pct": -10.11,
+       "operating_income": 2322.4,
+       "operating_income_yoy_pct": 182.56,
+       "net_income": 1671.4,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": 11.36
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230320000675"
+       ],
+       "revenue": 104192.1,
+       "revenue_yoy_pct": 19.97,
+       "operating_income": 7600.1,
+       "operating_income_yoy_pct": 2.94,
+       "net_income": 5080.1,
+       "net_income_yoy_pct": 4.76,
+       "operating_margin_pct": 7.29,
+       "net_margin_pct": 4.88
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240320001313"
+       ],
+       "revenue": 116478.0,
+       "revenue_yoy_pct": 11.79,
+       "operating_income": 6625.2,
+       "operating_income_yoy_pct": -12.83,
+       "net_income": 5214.8,
+       "net_income_yoy_pct": 2.65,
+       "operating_margin_pct": 5.69,
+       "net_margin_pct": 4.48
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250813000868"
+       ],
+       "revenue": 105036.1,
+       "revenue_yoy_pct": -9.82,
+       "operating_income": 4031.3,
+       "operating_income_yoy_pct": -39.15,
+       "net_income": 2428.5,
+       "net_income_yoy_pct": -53.43,
+       "operating_margin_pct": 3.84,
+       "net_margin_pct": 2.31
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260318001029"
+       ],
+       "revenue": 80546.3,
+       "revenue_yoy_pct": -23.32,
+       "operating_income": -8154.3,
+       "operating_income_yoy": "적자 전환",
+       "net_income": -9160.8,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": -10.12,
+       "net_margin_pct": -11.37
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260814002161"
+       ],
+       "revenue": 39949.1,
+       "revenue_yoy_pct": -8.16,
+       "operating_income": 4878.7,
+       "operating_income_yoy_pct": 108.92,
+       "net_income": 3629.8,
+       "net_income_yoy_pct": 2312.25,
+       "operating_margin_pct": 12.21,
+       "net_margin_pct": 9.09
+      }
+     ],
+     "sources": [
+      "20241114003057",
+      "20250813000868",
+      "20250515002566",
+      "20250813001556",
+      "20251114001603",
+      "20260318001029",
+      "20260515001883",
+      "20260814002161"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 2조 435억 원, 영업이익 2,322억 원, 영업이익 전년 동기 대비 +182.6%"
+    },
+    {
+     "kind": "health",
+     "title": "대우건설 재무 체력",
+     "company": {
+      "id": 2239,
+      "name": "대우건설"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 266.54,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 183.88,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 12.21,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260814002161"
+      ],
+      "total_assets": 143852.3,
+      "total_liabilities": 104606.7,
+      "total_equity": 39245.6,
+      "current_assets": 108568.4,
+      "current_liabilities": 59042.2,
+      "debt_ratio_pct": 266.54,
+      "current_ratio_pct": 183.88
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260318001029"
+      ],
+      "total_assets": 133585.0,
+      "total_liabilities": 98839.0,
+      "total_equity": 34746.1,
+      "current_assets": 99226.0,
+      "current_liabilities": 51109.4,
+      "debt_ratio_pct": 284.46,
+      "current_ratio_pct": 194.14
+     },
+     "market": "유가증권",
+     "sources": [
+      "20241114003057",
+      "20250813000868",
+      "20250515002566",
+      "20250813001556",
+      "20251114001603",
+      "20260318001029",
+      "20260515001883",
+      "20260814002161"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 266.54% (시장 중앙값 96.7%), 유동비율 183.88% (시장 중앙값 133.47%), 영업이익률 12.21% (시장 중앙값 5.1%)"
+    }
+   ],
+   "sources": [
+    "20250813001556",
+    "20251114001603",
+    "20260318001029",
+    "20260515001883",
+    "20260814002161"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "- **최대주주 및 특수관계인 합계**: 2025-12-31 기준 보통주 210,946,209주, 지분율 50.75%입니다(기초 50.75%, 210,931,209주). 최대주주 현황은 사업보고서(접수번호 20260318001029) 기준입니다.\n- **개별 보유 현황**: 중흥토건 40.6%(168,744,967주), 중흥건설 10.15%(42,186,242주), 김보현 0.0%(15,000주)입니다(접수번호 20260318001029, 기준일 2025-12-31).\n- **5% 이상 보고자**: 이 DB에는 5% 이상 보고 자료가 없습니다. 최대주주 현황과 별개로 봐야 합니다.\n- **타 회사의 보유 공시**: 금호석유화학이 자기 사업보고서(타법인출자 현황)에 이 회사 주식 7,929,000주(1.91%, 2025-12-31 기준)를 보유한다고 적었습니다(접수번호 20260318001268). 이 회사의 최대주주나 특수관계인은 아닙니다.\n- **이 회사가 지분을 가진 회사**: 타법인출자 현황에 122건이 있으며, 그중 16건은 지분율 100%입니다(접수번호 20260318001029, 기준일 2025-12-31). 100% 지분 가운데 DAEWOO E & C IRAN, DW AMERICA DEVEL'T INC., Daewoo E&C SPC 등 13곳은 상장 여부가 비상장으로 표시되어 있습니다. 나머지 3곳은 원장에 이름만 있습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2609,
+    "output_tokens": 575,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "대우건설 지분 구조도",
+     "company": {
+      "id": 2239,
+      "name": "대우건설"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": 9692,
+       "name": "중흥토건",
+       "listed": false,
+       "pct": 40.6,
+       "role": "최대주주",
+       "rcept": "20260318001029",
+       "up": []
+      },
+      {
+       "id": 9689,
+       "name": "중흥건설",
+       "listed": false,
+       "pct": 10.15,
+       "role": "계열회사",
+       "rcept": "20260318001029",
+       "up": []
+      },
+      {
+       "id": 1497,
+       "name": "금호석유화학",
+       "listed": true,
+       "pct": 1.91,
+       "role": null,
+       "rcept": "20260318001268",
+       "up": []
+      }
+     ],
+     "more_holders": 0,
+     "investees": [
+      {
+       "id": null,
+       "name": "DAEWOO E & C IRAN",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": null,
+       "name": "DW AMERICA DEVEL'T INC.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": null,
+       "name": "Daewoo E&C SPC",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": null,
+       "name": "Daewoo E&C USA Investment INC.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": null,
+       "name": "Daewoo Engineering & Construction VIETNAM CO.,LTD.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": null,
+       "name": "T&C INVESTMENT GLOBAL PTE. LTD.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": null,
+       "name": "THT DEVELOPMENT CO.,LTD.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": 9675,
+       "name": "대우송도호텔",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": 9673,
+       "name": "대우에스티",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": 9685,
+       "name": "세중이엔씨",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": 14116,
+       "name": "스튜디오푸르지오",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      },
+      {
+       "id": 14114,
+       "name": "안산그린파워",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001029"
+      }
+     ],
+     "more_investees": 38,
+     "sources": [
+      "20260318001029",
+      "20260318001268"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 3곳(위 3곳 표시), 출자 대상 50곳(위 12곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "대우건설 주주 분포",
+     "company": {
+      "id": 2239,
+      "name": "대우건설"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 50.75,
+     "group_date": "2025-12-31",
+     "holders": [],
+     "rest_pct": 49.25,
+     "sources": [
+      "20260318001029",
+      "20260318001268"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 50.75%, "
+    }
+   ],
+   "sources": [
+    "20260318001029",
+    "20260318001268"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "- **수주 규모**: 최근 1년 동안 공급계약 25건이 공시되었고, 이 회사가 수주한 계약의 합계는 11조 2,669억 원입니다. 이 회사가 상대방에게 계약을 판매한 방향이며, 이 회사가 상대방으로부터 사들인 계약은 없습니다. 계약일 기준은 2025-10-16 이후입니다.\n- **가장 큰 계약**: 2026-04-16 공시된 '신흥3구역 공공참여 재개발사업'(한국토지주택공사 발주, 1조 2,687억 원, 매출 대비 15.75%)입니다(접수번호 20260416800364).\n- **주요 계약 흐름**: 1조 원 이상 계약은 이 한 건이며, 9,409억 원 김포한강시네폴리스 주상복합(접수번호 20251112800360), 8,181억 원 청라 국제업무단지 M5 주상복합(접수번호 20260708800371) 등이 뒤를 잇습니다.\n- **정정 공시**: 4,611억 원 광명시흥 통합형 민간참여 공공주택건설사업은 정정 공시가 있었으며, 아래 금액은 정정 후 값입니다(접수번호 20251211800721).\n- **옛 계약의 정정**: 2019년에서 2024년 사이에 체결된 계약 8건(예: 산성구역 주택재개발정비사업조합, 2020-07-31 계약, 접수번호 20260831800597)이 이 기간에 정정 공시되었습니다. 이는 새 계약이 아니며 위 25건과 합산하지 않았습니다.\n- **지분 취득·처분 및 자본 결정**: 이 기간에 지분 취득·처분 결정은 없었습니다. 다른 항목에 해당하는 자본 결정 공시는 이 DB에 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3702,
+    "output_tokens": 658,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "대우건설 공급망 흐름",
+     "company": {
+      "id": 2239,
+      "name": "대우건설"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "한국토지주택공사",
+        "listed": false
+       },
+       "amount": 2101753870230,
+       "count": 3
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "General Electricity Company of Libya",
+        "listed": false
+       },
+       "amount": 1046363500000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "The General Company for Ports of Iraq (이라크 교통부 산하 항만공사)",
+        "listed": false
+       },
+       "amount": 968826636000,
+       "count": 2
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "(주)한강시네폴리스개발",
+        "listed": false
+       },
+       "amount": 940874573200,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "주식회사 청라스마트시티",
+        "listed": false
+       },
+       "amount": 818056000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "장위10구역 주택재개발정비사업조합",
+        "listed": false
+       },
+       "amount": 787188080000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "두산우성한신 리모델링주택조합 정비사업조합",
+        "listed": false
+       },
+       "amount": 782755638000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "큐브광안피에프브이 주식회사",
+        "listed": false
+       },
+       "amount": 736334822604,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "CCS JV S.c.a.r.l.",
+        "listed": false
+       },
+       "amount": 707892655000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "흑석11재정비촉진구역 주택재개발정비사업조합",
+        "listed": false
+       },
+       "amount": 702291000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "전농도시환경정비사업조합",
+        "listed": false
+       },
+       "amount": 636077441000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "디에스디삼호(주)",
+        "listed": false
+       },
+       "amount": 580130797000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "산성구역 주택재개발정비사업조합",
+        "listed": false
+       },
+       "amount": 559686922234,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "에스지레일주식회사",
+        "listed": false
+       },
+       "amount": 547048700000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "안락1구역 주택재건축정비사업조합",
+        "listed": false
+       },
+       "amount": 538809316124,
+       "count": 1
+      }
+     ],
+     "more": 26,
+     "sources": [
+      "20251103800680",
+      "20251105800345",
+      "20251112800360",
+      "20251114800141",
+      "20251121800001",
+      "20251128800557",
+      "20251211800721",
+      "20251216800001",
+      "20251224800042",
+      "20251224800595",
+      "20260114800154",
+      "20260128800877",
+      "20260206800121",
+      "20260212800132",
+      "20260303800424",
+      "20260325800110",
+      "20260403800798",
+      "20260416800364",
+      "20260421800429",
+      "20260428800476",
+      "20260430800486",
+      "20260522800424",
+      "20260529800181",
+      "20260612800708",
+      "20260625800795",
+      "20260707800360",
+      "20260708800371",
+      "20260716800502",
+      "20260727800193",
+      "20260729800998",
+      "20260731800547",
+      "20260731801220",
+      "20260806800295",
+      "20260807800247",
+      "20260819800180",
+      "20260826800506",
+      "20260828800247",
+      "20260831800597",
+      "20260901800137",
+      "20260909800091"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 45건, 상대 41쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "대우건설 공시 타임라인",
+     "company": {
+      "id": 2239,
+      "name": "대우건설"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-11-03",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "The General Company for Ports of Iraq (이라크 교통부 산하 항만공사)",
+       "title": "이라크 Al Faw Navigation Channel",
+       "amount": 350917200000.0,
+       "superseded": false,
+       "rcept": "20251103800680"
+      },
+      {
+       "date": "2025-11-05",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "맥서브컨소시엄(주)",
+       "title": "부산 문현 국제금융단지 복합개발사업 3단계 신축공사",
+       "amount": 330047300000.0,
+       "superseded": false,
+       "rcept": "20251105800345"
+      },
+      {
+       "date": "2025-11-12",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "(주)한강시네폴리스개발",
+       "title": "김포한강시네폴리스 주상복합 신축사업",
+       "amount": 940874573200.0,
+       "superseded": false,
+       "rcept": "20251112800360"
+      },
+      {
+       "date": "2025-11-14",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "(주)한국토지신탁",
+       "title": "신길10재정비촉진구역 주택재건축사업",
+       "amount": 322896257000.0,
+       "superseded": false,
+       "rcept": "20251114800141"
+      },
+      {
+       "date": "2025-11-21",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "CCS JV S.c.a.r.l.",
+       "title": "Mozambique LNG Area1",
+       "amount": 707892655000.0,
+       "superseded": false,
+       "rcept": "20251121800001"
+      },
+      {
+       "date": "2025-11-28",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "안락1구역 주택재건축정비사업조합",
+       "title": "부산 안락1구역 주택재건축정비사업",
+       "amount": 538809316124.0,
+       "superseded": false,
+       "rcept": "20251128800557"
+      },
+      {
+       "date": "2025-12-11",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국토지주택공사",
+       "title": "광명시흥 A2-5BL, A1-1BL 및 B1-7BL 통합형 민간참여 공공주택건설사업",
+       "amount": 461085740000.0,
+       "superseded": true,
+       "rcept": "20251211800144"
+      },
+      {
+       "date": "2025-12-11",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "한국토지주택공사",
+       "title": "광명시흥 A2-5BL, A1-1BL 및 B1-7BL 통합형 민간참여 공공주택건설사업",
+       "amount": 461085740000.0,
+       "superseded": false,
+       "rcept": "20251211800721"
+      },
+      {
+       "date": "2025-12-16",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "The General Company for Ports of Iraq (이라크 교통부 산하 항만공사)",
+       "title": "이라크 Al Faw Quay Wall",
+       "amount": 617909436000.0,
+       "superseded": false,
+       "rcept": "20251216800001"
+      },
+      {
+       "date": "2025-12-24",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국자산신탁(주), 신길우성2차·우창아파트 재건축정비사업위원회",
+       "title": "신길우성2차·우창아파트 재건축정비사업",
+       "amount": 442728384000.0,
+       "superseded": false,
+       "rcept": "20251224800042"
+      },
+      {
+       "date": "2025-12-24",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Shell Petroleum Development Company Nigeria Limited",
+       "title": "나이지리아 Gbaran Infill Project - Package 1",
+       "amount": 447049412112.0,
+       "superseded": true,
+       "rcept": "20251224800576"
+      },
+      {
+       "date": "2025-12-24",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "General Electricity Company of Libya",
+       "title": "리비아 Fast Track Power Plant Project",
+       "amount": 1046363500000.0,
+       "superseded": false,
+       "rcept": "20251224800595"
+      },
+      {
+       "date": "2026-01-14",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "장위10구역 주택재개발정비사업조합",
+       "title": "장위10구역 주택재개발정비사업",
+       "amount": 787188080000.0,
+       "superseded": false,
+       "rcept": "20260114800154"
+      },
+      {
+       "date": "2026-01-28",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Shell Petroleum Development Company Nigeria Limited",
+       "title": "나이지리아 Gbaran Infill Project - Package 1",
+       "amount": 447049412112.0,
+       "superseded": false,
+       "rcept": "20260128800877"
+      },
+      {
+       "date": "2026-02-06",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "디에스디삼호(주)",
+       "title": "천안업성3 도시개발지구 A1BL, A2BL 공동주택 신축사업",
+       "amount": 580130797000.0,
+       "superseded": false,
+       "rcept": "20260206800121"
+      },
+      {
+       "date": "2026-02-12",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "흑석11재정비촉진구역 주택재개발정비사업조합",
+       "title": "흑석11재정비촉진구역 주택재개발정비사업",
+       "amount": 702291000000.0,
+       "superseded": false,
+       "rcept": "20260212800132"
+      },
+      {
+       "date": "2026-03-03",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "에스지레일주식회사",
+       "title": "수도권광역급행철도A노선 민간투자시설사업 건설공사",
+       "amount": 547048700000.0,
+       "superseded": false,
+       "rcept": "20260303800424"
+      },
+      {
+       "date": "2026-03-25",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국토지주택공사(LH)",
+       "title": "수원당수2 B-1BL, A-1BL, A-3BL 통합형 민간참여 공공주택건설사업",
+       "amount": 297418374320.0,
+       "superseded": false,
+       "rcept": "20260325800110"
+      },
+      {
+       "date": "2026-03-31",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "주식회사 청주테크노폴리스",
+       "title": "청주테크노폴리스 조성공사",
+       "amount": 428249000000.0,
+       "superseded": true,
+       "rcept": "20260331802536"
+      },
+      {
+       "date": "2026-04-03",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "(주)케이티앤지",
+       "title": "천안 성정동 511일원 공동주택 신축공사",
+       "amount": 414300000000.0,
+       "superseded": false,
+       "rcept": "20260403800798"
+      },
+      {
+       "date": "2026-04-10",
+       "category": "해지",
+       "report": "단일판매ㆍ공급계약해지(자율공시)",
+       "counterparty": "서부광역메트로 주식회사",
+       "title": null,
+       "amount": 289621000000.0,
+       "superseded": false,
+       "rcept": "20260410800750"
+      },
+      {
+       "date": "2026-04-16",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국토지주택공사",
+       "title": "신흥3구역 공공참여 재개발사업",
+       "amount": 1268656700000.0,
+       "superseded": false,
+       "rcept": "20260416800364"
+      },
+      {
+       "date": "2026-04-21",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "주식회사 청주테크노폴리스",
+       "title": "청주테크노폴리스 조성공사",
+       "amount": 438844000000.0,
+       "superseded": false,
+       "rcept": "20260421800429"
+      },
+      {
+       "date": "2026-04-28",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "두산우성한신 리모델링주택조합 정비사업조합",
+       "title": "두산우성한신아파트 리모델링사업",
+       "amount": 782755638000.0,
+       "superseded": false,
+       "rcept": "20260428800476"
+      },
+      {
+       "date": "2026-04-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "디에스케이피에프브이(주)",
+       "title": "풍무역세권 B3BL 공동주택 신축공사",
+       "amount": 478973906649.0,
+       "superseded": false,
+       "rcept": "20260430800486"
+      },
+      {
+       "date": "2026-05-22",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "파인디씨피에프브이(주)",
+       "title": "장성파인데이터센터 신축공사",
+       "amount": 252500000000.0,
+       "superseded": false,
+       "rcept": "20260522800424"
+      },
+      {
+       "date": "2026-05-29",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "경기주택도시공사",
+       "title": "제3판교 테크노밸리 건립사업",
+       "amount": 383677609091.0,
+       "superseded": false,
+       "rcept": "20260529800181"
+      },
+      {
+       "date": "2026-06-12",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Nigeria LNG Limited",
+       "title": "Nigeria LNG Train 7 Project",
+       "amount": 483076454816.0,
+       "superseded": false,
+       "rcept": "20260612800708"
+      },
+      {
+       "date": "2026-06-25",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "국군재정관리단",
+       "title": "22-대미-독신숙소 4단계 시설공사(5002)",
+       "amount": 222875104500.0,
+       "superseded": true,
+       "rcept": "20260625800507"
+      },
+      {
+       "date": "2026-06-25",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "(주)트윈웍스피에프브이",
+       "title": "수표구역 도시정비형 재개발사업",
+       "amount": 523270000000.0,
+       "superseded": false,
+       "rcept": "20260625800795"
+      },
+      {
+       "date": "2026-07-07",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "송내1-1구역 주택재건축정비사업조합",
+       "title": "송내1-1구역 주택재건축정비사업",
+       "amount": 257457297200.0,
+       "superseded": false,
+       "rcept": "20260707800360"
+      },
+      {
+       "date": "2026-07-08",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "주식회사 청라스마트시티",
+       "title": "청라 국제업무단지 M5 주상복합 신축공사",
+       "amount": 818056000000.0,
+       "superseded": false,
+       "rcept": "20260708800371"
+      },
+      {
+       "date": "2026-07-16",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "대신자산신탁 주식회사",
+       "title": "신이문역세권 장기전세주택 도시정비형 재개발사업",
+       "amount": 529172456000.0,
+       "superseded": false,
+       "rcept": "20260716800502"
+      },
+      {
+       "date": "2026-07-27",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국남동발전(주)",
+       "title": "송산빛그린 열병합발전소 주기기 및 부속설비 구매",
+       "amount": 273000000000.0,
+       "superseded": false,
+       "rcept": "20260727800193"
+      },
+      {
+       "date": "2026-07-29",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "서울특별시 도시기반시설본부",
+       "title": "동부간선 지하화(영동대로) 건설공사",
+       "amount": 201730013419.0,
+       "superseded": false,
+       "rcept": "20260729800998"
+      },
+      {
+       "date": "2026-07-31",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "국군재정관리단",
+       "title": "22-대미-00시설공사(5004)",
+       "amount": 241380850670.0,
+       "superseded": false,
+       "rcept": "20260731800547"
+      },
+      {
+       "date": "2026-07-31",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "알제주 수자원국",
+       "title": "알제리 엘하라시 하천정비 사업",
+       "amount": 396905240870.0,
+       "superseded": false,
+       "rcept": "20260731801220"
+      },
+      {
+       "date": "2026-08-06",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "청파제1구역 주택재개발정비사업조합",
+       "title": "청파제1구역 주택재개발정비사업",
+       "amount": 355602000000.0,
+       "superseded": false,
+       "rcept": "20260806800295"
+      },
+      {
+       "date": "2026-08-07",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "가야1구역 주택재개발정비사업조합",
+       "title": "가야1구역 주택재개발정비사업",
+       "amount": 373845562650.0,
+       "superseded": false,
+       "rcept": "20260807800247"
+      },
+      {
+       "date": "2026-08-19",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "주식회사 나산",
+       "title": "청주 송절 2 지구 도시개발구역 A1BL 공동주택 신축사업",
+       "amount": 312654673000.0,
+       "superseded": false,
+       "rcept": "20260819800180"
+      },
+      {
+       "date": "2026-08-21",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "큐브광안피에프브이 주식회사",
+       "title": "부산광역시 남천동 공동주택 신축사업",
+       "amount": 736334822604.0,
+       "superseded": true,
+       "rcept": "20260821800060"
+      },
+      {
+       "date": "2026-08-26",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "큐브광안피에프브이 주식회사",
+       "title": "부산광역시 남천동 공동주택 신축사업",
+       "amount": 736334822604.0,
+       "superseded": false,
+       "rcept": "20260826800506"
+      },
+      {
+       "date": "2026-08-28",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국서부발전주식회사",
+       "title": "공주 천연가스발전소 주기기 및 부속설비 구매",
+       "amount": 209657528000.0,
+       "superseded": false,
+       "rcept": "20260828800247"
+      },
+      {
+       "date": "2026-08-31",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "산성구역 주택재개발정비사업조합",
+       "title": "산성구역 주택재개발정비사업",
+       "amount": 559686922234.0,
+       "superseded": false,
+       "rcept": "20260831800597"
+      },
+      {
+       "date": "2026-09-01",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국토지주택공사",
+       "title": "천호A1-1구역 공공재개발정비사업",
+       "amount": 372011430230.0,
+       "superseded": false,
+       "rcept": "20260901800137"
+      },
+      {
+       "date": "2026-09-09",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "상계2구역 주택재개발정비사업조합",
+       "title": "상계2구역 주택재개발정비사업",
+       "amount": 413427140419.0,
+       "superseded": false,
+       "rcept": "20260909800091"
+      },
+      {
+       "date": "2026-09-09",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "국군재정관리단",
+       "title": "22-대미-독신숙소 4단계 시설공사(5002)",
+       "amount": 222875104500.0,
+       "superseded": false,
+       "rcept": "20260909800253"
+      },
+      {
+       "date": "2026-09-17",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "전농도시환경정비사업조합",
+       "title": "전농도시환경정비사업",
+       "amount": 636077441000.0,
+       "superseded": false,
+       "rcept": "20260917800057"
+      },
+      {
+       "date": "2026-09-18",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "신대방역세권 재개발정비사업조합",
+       "title": "신대방역세권 재개발정비사업",
+       "amount": 290849500000.0,
+       "superseded": false,
+       "rcept": "20260918800075"
+      },
+      {
+       "date": "2026-09-21",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "주식회사 정웅",
+       "title": "안동 태화지구 공동주택 신축사업",
+       "amount": 243355690000.0,
+       "superseded": false,
+       "rcept": "20260921800259"
+      }
+     ],
+     "sources": [
+      "20251103800680",
+      "20251105800345",
+      "20251112800360",
+      "20251114800141",
+      "20251121800001",
+      "20251128800557",
+      "20251211800144",
+      "20251211800721",
+      "20251216800001",
+      "20251224800042",
+      "20251224800576",
+      "20251224800595",
+      "20260114800154",
+      "20260128800877",
+      "20260206800121",
+      "20260212800132",
+      "20260303800424",
+      "20260325800110",
+      "20260331802536",
+      "20260403800798",
+      "20260410800750",
+      "20260416800364",
+      "20260421800429",
+      "20260428800476",
+      "20260430800486",
+      "20260522800424",
+      "20260529800181",
+      "20260612800708",
+      "20260625800507",
+      "20260625800795",
+      "20260707800360",
+      "20260708800371",
+      "20260716800502",
+      "20260727800193",
+      "20260729800998",
+      "20260731800547",
+      "20260731801220",
+      "20260806800295",
+      "20260807800247",
+      "20260819800180",
+      "20260821800060",
+      "20260826800506",
+      "20260828800247",
+      "20260831800597",
+      "20260901800137",
+      "20260909800091",
+      "20260909800253",
+      "20260917800057",
+      "20260918800075",
+      "20260921800259"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 50건"
+    }
+   ],
+   "sources": [
+    "20251112800360",
+    "20251211800721",
+    "20260416800364",
+    "20260708800371",
+    "20260831800597"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "- 대우건설은 조회 범위인 2023~2025 사업연도 동안 현금배당을 하지 않았다고 사업보고서 배당 표에 적혀 있습니다(접수번호 20260318001029). 주당 배당금은 세 해 모두 0원으로 기록되어 있습니다.\n- 같은 사업보고서의 주당순이익(연결 기준)은 2023년 1,245원, 2024년 570원, 2025년 -2,220원입니다(접수번호 20260318001029). 배당성향과 배당수익률은 계산된 값이 없어 공란입니다.\n- 이 DB에는 자기주식 취득·처분, 신주·사채 발행, 자기주식 소각 결정이 하나도 없습니다. 자본 변동 결정 공시는 조회되지 않았습니다.\n- 자료에 없는 것: 실제 납입·발행 여부, 사채의 전환·행사 결과, 자기주식 취득의 실제 결과, 결정의 철회 여부. 거래소에만 낸 소각 결정과 2024년 1월 이전 결정도 이 DB에 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 957,
+    "output_tokens": 393,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [],
+   "sources": [
+    "20260318001029"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "## 주가 흐름 (2026-10-16 기준)\n\n- 최근 1주(10-08~10-16) 수익률은 -11.64%로, 같은 기간 유가증권 시장 중앙값 -2.74%보다 8.9%p 낮았습니다. 같은 제품을 파는 11개 상장사의 중앙값은 -11.21%입니다.\n- 최근 1개월(09-16~10-16) 수익률은 -20.68%로, 시장 중앙값 -3.73%보다 16.95%p 낮았습니다. 동종 중앙값은 -19.92%입니다.\n- 최근 3개월(07-16~10-16) 수익률은 -2.77%로, 시장 중앙값 -0.97%보다 1.8%p 낮았습니다. 동종 중앙값은 -2.86%입니다.\n- 비교 대상 동종은 교량 공사, 데이터센터 건설, 도로 공사, 발전소 건설, 아파트 건설, 철도 공사를 매출의 10% 이상으로 파는 상장사(GS건설, 현대건설, 삼부토건 등 11곳)입니다.\n- 이 수익률은 과거 기간의 종가 기준 값입니다. 이 자료는 가격 움직임의 원인을 설명하지 않으며, 공시 DB에서 원인과 관련된 근거를 확인하지 못했습니다.\n- 출처: 한국거래소(KRX) 통계정보의 일별 시세를 가공한 값입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 874,
+    "output_tokens": 522,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "대우건설 수익률 비교",
+     "company": {
+      "id": 2239,
+      "name": "대우건설"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": -11.64,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": -11.21,
+       "peers_counted": 11,
+       "vs_market_pp": -8.9
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": -20.68,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": -19.92,
+       "peers_counted": 11,
+       "vs_market_pp": -16.95
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": -2.77,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": -2.86,
+       "peers_counted": 11,
+       "vs_market_pp": -1.8
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "교량 공사",
+       "데이터센터 건설",
+       "도로 공사",
+       "발전소 건설",
+       "아파트 건설",
+       "철도 공사"
+      ],
+      "names": [
+       "GS건설",
+       "경동인베스트",
+       "두산",
+       "두산에너빌리티",
+       "삼부토건",
+       "서희건설",
+       "신원종합개발",
+       "자이에스앤디",
+       "한신공영",
+       "현대건설",
+       "효성중공업"
+      ],
+      "total": 11
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 -11.64% (시장 -2.74%); 1개월 -20.68% (시장 -3.73%); 3개월 -2.77% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)",
+  "내부자 매매: 조회 시점까지 공시된 것이 없거나 모으지 않음"
+ ],
+ "usage": {
+  "input_tokens": 20917,
+  "output_tokens": 3875,
+  "cache_read_input_tokens": 7483,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 18.5,
+ "cost_usd": 0.0041
+}
