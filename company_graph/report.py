@@ -21,6 +21,8 @@ from .db import session
 
 MODEL = os.environ.get("REPORT_MODEL", "claude-haiku-5-5")
 LONG = 14000   # 한 항목에 넘기는 사실의 글자 수 상한
+# 항목 쓰기는 모은 사실을 옮기는 일이라 긴 추론이 필요 없다. 켜 두면 Haiku 가 출력 한도를 추론에 다 써서 글이 비거나 잘렸다 (10판 첫 실행)
+THINKING = {"type": "disabled"}
 
 RULES = """당신은 한국 상장사의 공시(DART)에서 모은 사실로 기업 분석 보고서의 한 항목을 쓰는 사람입니다.
 
@@ -117,8 +119,8 @@ def write(client, company: dict, as_of: date, section: dict, checking: bool) -> 
     usage = {"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}
     flagged, retried = [], False
     for attempt in range(2):
-        response = client.messages.create(model=MODEL, max_tokens=2000, system=[{"type": "text", "text": RULES, "cache_control": {"type": "ephemeral"}}],
-                                          messages=messages)
+        response = client.messages.create(model=MODEL, max_tokens=3000, system=[{"type": "text", "text": RULES, "cache_control": {"type": "ephemeral"}}],
+                                          messages=messages, thinking=THINKING)
         for key in usage:
             usage[key] += getattr(response.usage, key, 0) or 0
         text = "".join(block.text for block in response.content if block.type == "text").strip()
@@ -135,7 +137,7 @@ def write(client, company: dict, as_of: date, section: dict, checking: bool) -> 
 def summarize(client, company: dict, as_of: date, written: list[dict]) -> tuple[str, dict]:
     body = "\n\n".join(f"## {s['title']}\n{s['text']}" for s in written)
     response = client.messages.create(
-        model=MODEL, max_tokens=800, system=[{"type": "text", "text": RULES, "cache_control": {"type": "ephemeral"}}],
+        model=MODEL, max_tokens=1500, thinking=THINKING, system=[{"type": "text", "text": RULES, "cache_control": {"type": "ephemeral"}}],
         messages=[{"role": "user", "content": f"회사: {company['name']}\n조회 시점: {as_of.isoformat()}\n항목: 요약\n\n"
                                               f"아래 항목들의 글만 보고 3~5문장으로 요약하세요. 글에 없는 숫자를 만들지 말고, 접수번호는 붙이지 않아도 됩니다.\n\n{body}"}])
     usage = {key: getattr(response.usage, key, 0) or 0 for key in ("input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens")}
