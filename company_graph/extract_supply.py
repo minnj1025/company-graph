@@ -5,6 +5,7 @@
 
 실행: python -m company_graph.extract_supply          수집 대상 기업이 낸 공시만 (회사별 목록, 수백 건)
       python -m company_graph.extract_supply --all    전 시장 (기간별 목록)
+      python -m company_graph.extract_supply update 3 최근 사흘 동안 공급계약·해지 공시를 낸 회사만 (매일 갱신)
 전 시장은 2024-01~2026-10의 공급계약 공시가 약 14,000건(2026-08~09 두 달 860건에서 어림)이라
 목록 약 1,000건 + 원문 약 14,000건으로 DART 하루 한도(18,000건)에 거의 찬다.
 받은 원문은 캐시에 남으므로 한도나 시간에 걸려 끊기면 같은 명령으로 이어 받는다.
@@ -20,7 +21,7 @@ from sqlalchemy import delete, select
 
 from . import dart, loader
 from .cache import cached_json
-from .db import Company, Document, QualityLog, Relation, init_db, session
+from .db import Base, Company, Document, QualityLog, Relation, get_engine, init_db, session
 from .extract_equity import alias_index, link, own_affiliates, rcept_date
 from .manual_aliases import GROUPS, SINGLE
 from .names import clean_reported, normalize
@@ -302,5 +303,36 @@ def main(whole_market: bool):
     print(f"오늘 DART 호출 {dart.calls_today()}건")
 
 
+def update(days: int = 3) -> None:
+    """최근 며칠 동안 공급계약·해지 공시를 낸 회사만 다시 읽는다 (매일 갱신. 전 시장 목록에서 고른다).
+    정정·해지 공시는 옛 공시를 가리키므로 그 회사의 SINCE 이후 공시를 모두 다시 맞춘다. 받은 원문은 캐시에 남는다."""
+    engine = get_engine()
+    # 배포용 DB에는 품질 기록 표가 없다(export_db 가 옮기지 않는다). 이 표만 만든다. init_db 는 모든 표를 만들므로 쓰지 않는다
+    Base.metadata.create_all(engine, tables=[QualityLog.__table__])
+    end = date.today()
+    start = end - timedelta(days=days)
+    recent = dart.filings(bgn_de=f"{start:%Y%m%d}", end_de=f"{end:%Y%m%d}", pblntf_detail_ty="I001")
+    codes = {r["corp_code"] for r in recent if "단일판매" in r["report_nm"]}
+    stats = Counter()
+    with session(engine) as db:
+        resolver = PartyResolver(db)
+        companies = db.scalars(select(Company).where(Company.corp_code.in_(list(codes)))).all() if codes else []
+        try:
+            for company in companies:
+                load_company(db, company, supply_filings(company.corp_code), resolver, stats)
+                db.commit()
+        except dart.DailyBudgetExceeded as stop:
+            db.rollback()
+            print(f"중단: {stop}")
+    print(f"{start}~{end} 공급계약 공시를 낸 회사 {len(codes)}곳 중 원장에 있는 {len(companies)}곳을 다시 읽음")
+    for key in ("줄: added", "줄: retired", "해지 줄: added", "원문을 받지 못함", "원문 실패로 줄 맞추기를 건너뛴 회사"):
+        if stats.get(key):
+            print(f"  {key}: {stats[key]}")
+    print(f"오늘 DART 호출 {dart.calls_today()}건")
+
+
 if __name__ == "__main__":
-    main(whole_market="--all" in sys.argv[1:])
+    if sys.argv[1:2] == ["update"]:
+        update(int(sys.argv[2]) if len(sys.argv) > 2 else 3)
+    else:
+        main(whole_market="--all" in sys.argv[1:])

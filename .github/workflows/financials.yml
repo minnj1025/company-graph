@@ -1,5 +1,6 @@
 # 하루 한 번: 올해 정기보고서(분기·반기·사업보고서)의 주요계정을 OpenDART에서 다시 받아 배포용 DB의 financial 표에 넣고,
-# 최근 사흘 동안 지분공시(5% 보고, 임원·주요주주 소유보고)와 증자·사채·자기주식 결정을 낸 회사의 공시를 다시 받는다.
+# 최근 사흘 동안 지분공시(5% 보고, 임원·주요주주 소유보고)와 증자·사채·자기주식 결정, 공급계약·해지를 낸 회사의 공시를 다시 받는다.
+# 공급계약은 정정이 옛 공시를 가리키므로 그 회사의 2024년 이후 원문을 다시 읽는다. 원문은 바뀌지 않으므로 캐시에 두고 다음 날 다시 쓴다.
 # 늦게 내거나 정정한 보고서도 이렇게 따라잡는다. DART 호출은 한 번에 100곳씩이라 하루 100~250건이다(무료, 하루 한도 20,000건)
 name: financials
 on:
@@ -12,7 +13,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       COMPANY_GRAPH_DB_URL: ${{ secrets.TARGET_DB_URL }}
       DART_API_KEY: ${{ secrets.DART_API_KEY }}
@@ -22,6 +23,12 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt requests
+      - uses: actions/cache@v4
+        with:
+          path: data/cache/dart_document
+          key: dart-document-${{ github.run_id }}
+          restore-keys: dart-document-
       - run: python -m company_graph.financials update
       - run: python -m company_graph.holdings update 3
       - run: python -m company_graph.capital update 3
+      - run: python -m company_graph.extract_supply update 3
