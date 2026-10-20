@@ -5,6 +5,7 @@
 
 실행: TARGET_DB_URL=postgresql+psycopg://... python -m company_graph.export_db
       python -m company_graph.export_db daily   (함께 오른 종목군 결과와 최근 시세만 맞춘다)
+      python -m company_graph.export_db only financial   (그 표만 비우고 다시 채운다. 기업 번호가 같을 때만 쓴다)
 """
 import os
 import sys
@@ -13,9 +14,9 @@ from sqlalchemy import create_engine, func, select, text
 
 from datetime import timedelta
 
-from .db import Base, BusinessSection, Company, CompanyAlias, Document, HotDay, PriceDaily, Product, ProductCode, Relation, SiteText, get_engine
+from .db import Base, BusinessSection, Company, CompanyAlias, Document, Financial, HotDay, PriceDaily, Product, ProductCode, Relation, SiteText, get_engine
 
-TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection, Product, ProductCode)
+TABLES = (Company, CompanyAlias, Document, Relation, BusinessSection, Product, ProductCode, Financial)
 # 대상 DB에서 날마다 채워지는 표(.github/workflows/daily.yml). 비우면 그동안 쌓인 날이 사라지므로, 대상에 없는 날만 채운다
 DAILY = ((HotDay, None), (PriceDaily, 100))   # (표, 최근 며칠 치만 옮길지). 시세는 무리 계산에 쓰는 최근 것만 둔다
 CHUNK = 5000
@@ -48,11 +49,22 @@ def main():
     source, target = get_engine(), create_engine(target_url)
     if sys.argv[1:] == ["daily"]:   # 날마다 채워지는 표만 맞춘다. 다른 표는 건드리지 않아 사이트가 비지 않는다
         return fill_missing_days(source, target)
-    wanted = [model.__table__ for model in TABLES]
-    Base.metadata.drop_all(target, tables=list(reversed(wanted)))
-    Base.metadata.create_all(target, tables=wanted)
+    models = TABLES
+    if sys.argv[1:2] == ["only"]:   # 새로 더한 표 하나만 옮긴다. 다른 표는 그대로라 사이트가 비지 않는다
+        models = tuple(m for m in TABLES if m.__table__.name in sys.argv[2:])
+        if not models:
+            sys.exit(f"표 이름은 {', '.join(m.__table__.name for m in TABLES)} 가운데에서")
+    wanted = [model.__table__ for model in models]
+    if models is TABLES:
+        Base.metadata.drop_all(target, tables=list(reversed(wanted)))
+        Base.metadata.create_all(target, tables=wanted)
+    else:   # metadata 의 drop_all 은 다른 표가 쓰는 enum 형식까지 지우려다 실패한다. 표만 지우고 만든다
+        for table in reversed(wanted):
+            table.drop(target, checkfirst=True)
+        for table in wanted:
+            table.create(target)
     with source.connect() as read, target.begin() as write:
-        for model in TABLES:
+        for model in models:
             table = model.__table__
             query = select(table).order_by(*table.primary_key.columns)
             if model is Relation:
@@ -69,7 +81,7 @@ def main():
             print(f"{table.name}: {total}줄", flush=True)
         if target.dialect.name == "postgresql":
             # 번호를 그대로 옮겼으므로 자동 증가 값을 맞춰 둔다
-            for model in TABLES:
+            for model in models:
                 key = list(model.__table__.primary_key.columns)[0]
                 if key.name.endswith("_id"):   # 번호가 아닌 열쇠(접수번호, 이름)는 자동 증가가 없다
                     write.execute(text(f"select setval(pg_get_serial_sequence('{model.__table__.name}', '{key.name}'), "

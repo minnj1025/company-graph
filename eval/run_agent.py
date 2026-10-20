@@ -52,14 +52,14 @@ def main():
     parser.add_argument("--model", default="claude-haiku-5-5", help="제품이 쓰는 모델이 기본이다. agent.MODEL(Opus)을 기본으로 두었다가 평가 한 번에 20달러가 나간 적이 있다")
     parser.add_argument("--only", default="")
     parser.add_argument("--resume", action="store_true", help="이미 답이 있는 문항은 건너뛴다")
-    parser.add_argument("--set", default="practice", choices=["practice", "sealed", "v2", "v3", "v4", "v5", "v6"])
+    parser.add_argument("--set", default="practice", choices=["practice", "sealed", "v2", "v3", "v4", "v5", "v6", "v7"])
     parser.add_argument("--tag", default="", help="결과 폴더 이름 뒤에 붙일 말. 고친 뒤에 다시 돌린 결과를 따로 둘 때 쓴다")
     args = parser.parse_args()
     only = set(filter(None, args.only.split(",")))
-    out_dir = ROOT / {"practice": "agent", "sealed": "sealed/agent", "v2": "v2/agent", "v3": "v3/agent", "v4": "v4/agent", "v5": "v5/agent", "v6": "v6/agent"}[args.set] / (args.model + args.tag)
+    out_dir = ROOT / {"practice": "agent", "sealed": "sealed/agent", "v2": "v2/agent", "v3": "v3/agent", "v4": "v4/agent", "v5": "v5/agent", "v6": "v6/agent", "v7": "v7/agent"}[args.set] / (args.model + args.tag)
     out_dir.mkdir(parents=True, exist_ok=True)
     total = {"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}
-    items = (sealed_questions() if args.set == "sealed" else v2_questions(args.set) if args.set in ("v2", "v3", "v4", "v5", "v6")
+    items = (sealed_questions() if args.set == "sealed" else v2_questions(args.set) if args.set in ("v2", "v3", "v4", "v5", "v6", "v7")
              else [(n, q, g, AS_OF) for n, q, g in questions()])
     for number, question, gold, as_of in items:
         if only and number not in only:

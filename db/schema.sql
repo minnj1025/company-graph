@@ -89,6 +89,28 @@ CREATE TABLE price_daily (
   KEY ix_price_date (trade_date)
 );
 
+-- 정기보고서 하나의 주요계정 (financials.py). 손익은 석 달(사업보고서는 한 해) 값과 그해 누적 값, 재무상태는 기말 값
+CREATE TABLE financial (
+  company_id   INT          NOT NULL,
+  fiscal_year  SMALLINT     NOT NULL,
+  report       VARCHAR(6)   NOT NULL,   -- q1, half, q3, annual
+  basis        VARCHAR(3)   NOT NULL,   -- CFS 연결, OFS 별도
+  rcept_no     VARCHAR(14)  NOT NULL,
+  period_start DATE,
+  period_end   DATE,
+  currency     VARCHAR(3),
+  revenue BIGINT, operating_income BIGINT, pretax_income BIGINT, net_income BIGINT,
+  revenue_ytd BIGINT, operating_income_ytd BIGINT, pretax_income_ytd BIGINT, net_income_ytd BIGINT,
+  revenue_prev BIGINT, operating_income_prev BIGINT, net_income_prev BIGINT,   -- 같은 보고서가 적은 전년 같은 기간
+  revenue_prev_ytd BIGINT, operating_income_prev_ytd BIGINT, net_income_prev_ytd BIGINT,
+  current_assets BIGINT, noncurrent_assets BIGINT, total_assets BIGINT,
+  current_liabilities BIGINT, noncurrent_liabilities BIGINT, total_liabilities BIGINT,
+  capital_stock BIGINT, retained_earnings BIGINT, total_equity BIGINT,
+  PRIMARY KEY (company_id, fiscal_year, report, basis),
+  KEY ix_financial_company (company_id, period_end),
+  FOREIGN KEY (company_id) REFERENCES company (company_id)
+);
+
 -- 화면의 글을 운영자가 고쳐 쓴 것 (화면의 ?edit 에서 고친다). key 는 original 의 sha1
 CREATE TABLE site_text (
   `key`      CHAR(40) PRIMARY KEY,

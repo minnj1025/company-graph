@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import * as echarts from "echarts/core";
-import { BarChart, CustomChart, GraphChart, SankeyChart, ScatterChart, TreemapChart } from "echarts/charts";
+import { BarChart, CustomChart, GraphChart, LineChart, SankeyChart, ScatterChart, TreemapChart } from "echarts/charts";
 import { GridComponent, TooltipComponent } from "echarts/components";
 import { SVGRenderer } from "echarts/renderers";
 import type { View } from "./types";
 
-echarts.use([BarChart, CustomChart, GraphChart, SankeyChart, ScatterChart, TreemapChart, GridComponent, TooltipComponent, SVGRenderer]);
+echarts.use([BarChart, CustomChart, GraphChart, LineChart, SankeyChart, ScatterChart, TreemapChart, GridComponent, TooltipComponent, SVGRenderer]);
 
 /**
  * Agent가 show_view 로 띄운 시각화 카드. 카드의 값은 서버가 DB에서 채운 것이고(company_graph/views.py),
@@ -42,6 +42,18 @@ export function won(value: number | null | undefined): string {
   if (abs >= 1e8) return `${Math.round(value / 1e8).toLocaleString()}억 원`;
   if (abs >= 1e4) return `${Math.round(value / 1e4).toLocaleString()}만 원`;
   return `${value.toLocaleString()}원`;
+}
+/** 억 원 단위 값 → 읽기 쉬운 단위 (재무 카드는 서버가 억 원으로 준다) */
+function eok(value: number | null | undefined, unit = "억원"): string {
+  if (value === null || value === undefined) return "–";
+  if (unit !== "억원") return `${value.toLocaleString()} ${unit}`;
+  const abs = Math.abs(value);
+  if (abs >= 10000) {
+    const jo = Math.trunc(value / 10000);
+    const rest = Math.round(Math.abs(value) % 10000);
+    return rest ? `${jo.toLocaleString()}조 ${rest.toLocaleString()}억` : `${jo.toLocaleString()}조`;
+  }
+  return `${Math.round(value).toLocaleString()}억`;
 }
 const pct = (value: number | null | undefined, digits = 2) => (value === null || value === undefined ? "–" : `${Number(value).toFixed(digits).replace(/\.?0+$/, "")}%`);
 const signed = (value: number | null | undefined) => (value === null || value === undefined ? "–" : `${value > 0 ? "+" : ""}${value.toFixed(2)}%`);
@@ -440,6 +452,213 @@ function Returns({ view }: CardProps) {
   );
 }
 
+/* ── 9. 실적 추이: 분기별 매출·영업이익 막대와 영업이익률 선 ── */
+type Quarter = {
+  period: string;
+  revenue?: number | null;
+  operating_income?: number | null;
+  net_income?: number | null;
+  operating_margin_pct?: number | null;
+  revenue_yoy_pct?: number;
+  operating_income_yoy_pct?: number;
+  operating_income_yoy?: string;
+  computed?: string;
+  not_computed?: string;
+};
+function Financials({ view }: CardProps) {
+  const unit = String(view.unit ?? "억원");
+  const rows = (view.quarters as Quarter[]).filter((q) => !q.not_computed && (q.revenue != null || q.operating_income != null));
+  if (rows.length === 0) return <p className="view-empty">분기 실적이 없습니다.</p>;
+  const hasRevenue = rows.some((q) => q.revenue != null);
+  const make = (p: Palette): echarts.EChartsCoreOption => ({
+    tooltip: {
+      ...tooltip(p),
+      trigger: "axis",
+      formatter: (items: { dataIndex: number }[]) => {
+        const q = rows[items[0].dataIndex];
+        const yoy = q.operating_income_yoy_pct !== undefined ? ` (전년 동기 ${signed(q.operating_income_yoy_pct)})` : q.operating_income_yoy ? ` (${q.operating_income_yoy})` : "";
+        return [
+          `<b>${q.period}</b>${q.computed ? " · 계산" : ""}`,
+          hasRevenue ? `매출 ${eok(q.revenue, unit)}${q.revenue_yoy_pct !== undefined ? ` (전년 동기 ${signed(q.revenue_yoy_pct)})` : ""}` : "",
+          `영업이익 ${eok(q.operating_income, unit)}${yoy}`,
+          q.operating_margin_pct != null ? `영업이익률 ${pct(q.operating_margin_pct, 1)}` : "",
+        ].filter(Boolean).join("<br/>");
+      },
+    },
+    grid: { left: 52, right: hasRevenue ? 40 : 12, top: 16, bottom: 28 },
+    xAxis: { type: "category", data: rows.map((q) => q.period.replace(/^20(\d\d) (\d)분기$/, "$1.$2Q")), axisLabel: { color: p.muted, fontSize: 10 }, axisLine: { lineStyle: { color: p.line } }, axisTick: { show: false } },
+    yAxis: [
+      { type: "value", axisLabel: { color: p.muted, fontSize: 10, formatter: (v: number) => (Math.abs(v) >= 10000 ? `${v / 10000}조` : `${v}억`) }, splitLine: { lineStyle: { color: p.line } } },
+      ...(hasRevenue ? [{ type: "value", axisLabel: { color: p.muted, fontSize: 10, formatter: (v: number) => `${v}%` }, splitLine: { show: false } }] : []),
+    ],
+    series: [
+      ...(hasRevenue
+        ? [{ name: "매출", type: "bar", barGap: "10%", barMaxWidth: 18, data: rows.map((q) => q.revenue ?? null), itemStyle: { color: p.muted, opacity: 0.55, borderRadius: 2 } }]
+        : []),
+      {
+        name: "영업이익",
+        type: "bar",
+        barMaxWidth: 18,
+        data: rows.map((q) => ({ value: q.operating_income ?? null, itemStyle: { color: (q.operating_income ?? 0) < 0 ? p.down : p.accent, opacity: q.computed ? 0.6 : 1, borderRadius: 2 } })),
+      },
+      ...(hasRevenue
+        ? [{ name: "영업이익률", type: "line", yAxisIndex: 1, data: rows.map((q) => q.operating_margin_pct ?? null), symbolSize: 5, lineStyle: { color: p.info, width: 2 }, itemStyle: { color: p.info } }]
+        : []),
+    ],
+  });
+  const years = (view.years as { period: string; revenue?: number | null; operating_income?: number | null; operating_income_yoy_pct?: number; operating_margin_pct?: number | null }[]).slice(-3);
+  return (
+    <>
+      <Chart height={230} make={make} />
+      <p className="view-legend">
+        {hasRevenue && (
+          <>
+            <i className="dot muted" /> 매출{" "}
+          </>
+        )}
+        <i className="dot accent" /> 영업이익 {hasRevenue && <><i className="dot info" /> 영업이익률</>} · 석 달 값, {String(view.basis)}
+      </p>
+      <table className="view-table">
+        <thead>
+          <tr>
+            <th />
+            {hasRevenue && <th>매출</th>}
+            <th>영업이익</th>
+            {hasRevenue && <th>영업이익률</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {years.map((y) => (
+            <tr key={y.period}>
+              <th>{y.period}</th>
+              {hasRevenue && <td>{eok(y.revenue, unit)}</td>}
+              <td>
+                {eok(y.operating_income, unit)}
+                {y.operating_income_yoy_pct !== undefined && <small> {signed(y.operating_income_yoy_pct)}</small>}
+              </td>
+              {hasRevenue && <td>{pct(y.operating_margin_pct, 1)}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+}
+
+/* ── 10. 재무 체력: 비율마다 이 회사와 같은 시장 중앙값 ── */
+function Health({ view }: CardProps) {
+  const measures = (view.measures as { key: string; label: string; value: number | null; median: number | null; how: string }[]).filter((m) => m.value !== null);
+  if (measures.length === 0) return <p className="view-empty">비율을 계산할 값이 없습니다.</p>;
+  const balance = view.balance as { total_assets?: number; total_liabilities?: number; total_equity?: number };
+  const unit = String(view.unit ?? "억원");
+  return (
+    <>
+      <div className="view-measures">
+        {measures.map((m) => {
+          const top = Math.max(Math.abs(m.value ?? 0), Math.abs(m.median ?? 0), 1) * 1.1;
+          return (
+            <div key={m.key} className="view-measure" title={m.how}>
+              <span className="name">{m.label}</span>
+              <span className="track">
+                <i className="mine" style={{ width: `${(Math.max(m.value ?? 0, 0) / top) * 100}%` }} />
+              </span>
+              <span className="num">{pct(m.value, 1)}</span>
+              <span className="name sub">{String(view.market)} 중앙값</span>
+              <span className="track">
+                <i className="median" style={{ width: `${(Math.max(m.median ?? 0, 0) / top) * 100}%` }} />
+              </span>
+              <span className="num sub">{pct(m.median, 1)}</span>
+            </div>
+          );
+        })}
+      </div>
+      <p className="view-legend">
+        {String(view.date)} 기말 · 자산 {eok(balance.total_assets, unit)} = 부채 {eok(balance.total_liabilities, unit)} + 자본 {eok(balance.total_equity, unit)} · {String(view.basis)}
+      </p>
+    </>
+  );
+}
+
+/* ── 11. 실적 비교: 두 회사의 같은 분기 ── */
+type Side = {
+  id: number;
+  name: string;
+  basis: string;
+  unit: string;
+  revenue: number | null;
+  operating_income: number | null;
+  net_income: number | null;
+  operating_margin_pct: number | null;
+  revenue_yoy_pct: number | null;
+  operating_income_yoy_pct: number | null;
+  debt_ratio_pct: number | null;
+  trend: { period: string; revenue: number | null; operating_income: number | null }[];
+};
+function Compare({ view, onCompany }: CardProps) {
+  const rows = view.rows as Side[];
+  const lines: [string, (s: Side) => string][] = [
+    ["매출", (s) => eok(s.revenue, s.unit)],
+    ["영업이익", (s) => eok(s.operating_income, s.unit)],
+    ["영업이익률", (s) => pct(s.operating_margin_pct, 1)],
+    ["순이익", (s) => eok(s.net_income, s.unit)],
+    ["매출 전년 동기 대비", (s) => signed(s.revenue_yoy_pct)],
+    ["영업이익 전년 동기 대비", (s) => signed(s.operating_income_yoy_pct)],
+    ["부채비율", (s) => pct(s.debt_ratio_pct, 1)],
+  ];
+  const periods = Array.from(new Set(rows.flatMap((s) => s.trend.map((t) => t.period)))).sort();
+  const make = (p: Palette): echarts.EChartsCoreOption => ({
+    tooltip: { ...tooltip(p), trigger: "axis", valueFormatter: (v: number) => eok(v) },
+    grid: { left: 52, right: 12, top: 12, bottom: 24 },
+    xAxis: { type: "category", data: periods.map((x) => x.replace(/^20(\d\d) (\d)분기$/, "$1.$2Q")), axisLabel: { color: p.muted, fontSize: 10 }, axisLine: { lineStyle: { color: p.line } }, axisTick: { show: false } },
+    yAxis: { type: "value", axisLabel: { color: p.muted, fontSize: 10, formatter: (v: number) => (Math.abs(v) >= 10000 ? `${v / 10000}조` : `${v}억`) }, splitLine: { lineStyle: { color: p.line } } },
+    series: rows.map((s, i) => ({
+      name: s.name,
+      type: "bar",
+      barGap: "10%",
+      barMaxWidth: 20,
+      data: periods.map((x) => s.trend.find((t) => t.period === x)?.operating_income ?? null),
+      itemStyle: { color: i === 0 ? p.accent : p.info, borderRadius: 2 },
+    })),
+  });
+  return (
+    <>
+      <table className="view-table compare">
+        <thead>
+          <tr>
+            <th>{String(view.period ?? "")}</th>
+            {rows.map((s) => (
+              <th key={s.id}>
+                <button className="link" onClick={() => onCompany(s.id)}>
+                  {s.name}
+                </button>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {lines.map(([label, show]) => (
+            <tr key={label}>
+              <th>{label}</th>
+              {rows.map((s) => (
+                <td key={s.id}>{show(s)}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {periods.length > 1 && (
+        <>
+          <p className="view-sub">분기별 영업이익</p>
+          <Chart height={180} make={make} />
+          <p className="view-legend">
+            <i className="dot accent" /> {rows[0].name} <i className="dot info" /> {rows[1].name}
+          </p>
+        </>
+      )}
+    </>
+  );
+}
+
 type CardProps = { view: View; onCompany: (id: number) => void };
 const pick = (data: unknown, onCompany: (id: number) => void) => {
   const id = (data as { company?: number | null } | undefined)?.company;
@@ -454,6 +673,9 @@ const CARDS: Record<string, (props: CardProps) => React.ReactElement> = {
   contracts: Contracts,
   revenue: Revenue,
   returns: Returns,
+  financials: Financials,
+  health: Health,
+  compare: Compare,
 };
 
 function Card({ view, onCompany }: CardProps) {

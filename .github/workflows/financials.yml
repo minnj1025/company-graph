@@ -1,0 +1,24 @@
+# 하루 한 번: 올해 정기보고서(분기·반기·사업보고서)의 주요계정을 OpenDART에서 다시 받아 배포용 DB의 financial 표에 넣는다.
+# 늦게 내거나 정정한 보고서도 이렇게 따라잡는다. DART 호출은 한 번에 100곳씩이라 하루 100~250건이다(무료, 하루 한도 20,000건)
+name: financials
+on:
+  schedule:
+    - cron: "0 22 * * *"   # 한국 시간 아침 7시
+  workflow_dispatch:
+concurrency:
+  group: financials
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      COMPANY_GRAPH_DB_URL: ${{ secrets.TARGET_DB_URL }}
+      DART_API_KEY: ${{ secrets.DART_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt requests
+      - run: python -m company_graph.financials update

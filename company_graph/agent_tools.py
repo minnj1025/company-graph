@@ -59,6 +59,9 @@ VIEW_KINDS = {
     "contracts": "계약 기간. 계약마다 시작~종료 막대",
     "revenue": "매출 구성. 제품별 매출 비중",
     "returns": "수익률 비교. 1주·1개월·3개월 수익률을 시장·같은 제품 종목과",
+    "financials": "실적 추이. 분기별 매출·영업이익 막대와 영업이익률",
+    "health": "재무 체력. 부채비율·유동비율·영업이익률을 같은 시장 중앙값과",
+    "compare": "실적 비교. other_company_id 와 같은 분기의 매출·영업이익·이익률·부채비율을 나란히",
 }
 
 TOOLS = [
@@ -189,6 +192,18 @@ TOOLS = [
                     "읽지 못한 회사는 read=false 로 나오고, 그때는 get_business 로 표의 글을 직접 읽는다.",
      "input_schema": {"type": "object", "properties": {"company_id": _COMPANY, "as_of": _AS_OF},
                       "required": ["company_id", "as_of"]}},
+    {"name": "get_financials",
+     "description": "한 회사의 실적과 재무 상태 (정기보고서의 주요계정, 상장사만). "
+                    "quarters: 분기마다 석 달의 매출·영업이익·순이익, 영업이익률, 전년 같은 분기 대비 증감(yoy_pct, 앞이 적자면 yoy 에 흑자 전환 등). "
+                    "4분기는 공시되지 않아 연간에서 3분기 누적을 뺀 값이고 computed 로 밝힌다. years: 사업연도마다 가장 나중 보고서의 누적 값(예: '2026 상반기 누적'). "
+                    "balance: 가장 최근 기말과 직전 사업연도 말의 자산·부채·자본, 부채비율(부채총계/자본총계), 유동비율(유동자산/유동부채). "
+                    "market_median: 같은 시장 상장사들의 부채비율·유동비율·영업이익률 중앙값. 금액 단위는 unit(대개 억원). "
+                    "basis 는 연결(CFS, 기본)과 별도(OFS). 지주회사처럼 둘이 크게 다를 수 있으니 답에 어느 쪽인지 적는다. "
+                    "현금흐름, EPS, 배당, PER·PBR, 사업부문별 실적, 실적 전망은 이 DB에 없다.",
+     "input_schema": {"type": "object", "properties": {
+         "company_id": _COMPANY, "as_of": _AS_OF,
+         "basis": {"type": "string", "enum": ["CFS", "OFS"], "description": "CFS 연결(기본, 없으면 별도), OFS 별도"}},
+         "required": ["company_id", "as_of"]}},
     {"name": "get_price_history",
      "description": "한 회사의 기간 수익률을 시장, 같은 제품을 파는 종목들과 견준다: 최근 1주, 1개월, 3개월. "
                     "\"요즘 주가가 어땠나\", \"정말 못 올랐나\", \"시장보다 나았나\"를 확인할 때 쓴다. 가격 자체는 주지 않고 수익률(%)만 준다. "
@@ -220,7 +235,7 @@ TOOLS = [
              "kind": {"type": "string", "enum": list(VIEW_KINDS),
                       "description": "; ".join(f"{k}: {v}" for k, v in VIEW_KINDS.items())},
              "company_id": _COMPANY, "as_of": _AS_OF,
-             "other_company_id": {"type": "integer", "description": "path 일 때 이어 볼 상대 기업의 company_id"},
+             "other_company_id": {"type": "integer", "description": "path·compare 일 때 상대 기업의 company_id"},
              "since": {"type": "string", "description": "supply_flow·timeline·contracts 의 시작일 YYYY-MM-DD (기본은 as_of 의 1년 전)"}},
              "required": ["kind", "company_id", "as_of"]}}},
          "required": ["highlight"]}},
@@ -553,8 +568,10 @@ def get_coverage(db) -> dict:
                                        "rows": v["rows"]} for v in covered["relations"].values()},
             "business": "사업 내용(search_business, get_business)과 제품(find_by_product, get_products)은 상장사의 2025 사업보고서와 2026 반기보고서에서 왔다. "
                         "제품은 매출 비중 표를 읽을 수 있었던 회사만 있다",
+            "financials": "실적과 재무 상태(get_financials)는 상장사의 2022년 1분기보고서부터 가장 최근 정기보고서까지의 주요계정(매출, 영업이익, 순이익, 자산·부채·자본)이다. "
+                          "현금흐름, EPS, 배당, 사업부문별 실적은 없다",
             "not_collected": ["최대주주와 특수관계인이 아닌 주주(5% 이상 주주, 소액주주)", "개인이 가진 다른 회사 지분",
-                              "분기보고서", "반기보고서의 지분·계열 표", "주요 고객(사업보고서 본문 서술)", "뉴스", "주가",
+                              "분기·반기보고서의 지분·계열 표", "현금흐름표, EPS, 배당, 사업부문별 실적", "주요 고객(사업보고서 본문 서술)", "뉴스", "주가",
                               "2024-01 이전의 공급계약과 취득·처분 결정"]}
 
 
@@ -851,6 +868,30 @@ def _median(values: list[float]) -> float | None:
     return round(statistics.median(values), 2) if values else None
 
 
+def get_financials(db, company_id, as_of, basis=None) -> dict:
+    from . import financials as fin
+    company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
+    chosen, by = fin.reports(db, company.company_id, when, basis)
+    if not by:
+        raise ToolError(f"{company.label} 의 정기보고서 주요계정이 이 DB에 없습니다(상장사만 모았고, {when} 까지 접수된 것만 봅니다)")
+    newest = fin.latest(by)
+    divisor, unit = fin.unit(newest.currency)
+    ends = [r for r in by.values() if r.report == "annual" and r.period_end and r.period_end < (newest.period_end or when)]
+    out = {"company": _brief(company), "basis": chosen, "basis_name": fin.BASIS_NAME[chosen], "unit": unit,
+           "latest_report": f"{newest.fiscal_year} {fin.YTD_LABEL[newest.report].replace(' 누적', '')} ({newest.rcept_no[:4]}-{newest.rcept_no[4:6]}-{newest.rcept_no[6:8]} 접수)",
+           "quarters": fin.quarters(by, divisor)[-8:], "years": fin.years(by, divisor),
+           "balance": {"latest": fin.balance(newest, divisor),
+                       **({"previous_year_end": fin.balance(max(ends, key=lambda r: r.period_end), divisor)} if ends else {})},
+           "market_median": {"market": MARKETS.get(company.corp_cls, company.corp_cls), **fin.medians(db, when, company.corp_cls)},
+           "fields": "금액은 unit 단위. quarters 의 값은 그 석 달, years 는 그해 누적. yoy_pct 는 같은 보고서가 적은 전년 같은 기간 값과 견준 것(나중에 다시 작성된 값이면 그 값). "
+                     "rcept_no 는 그 값이 실린 보고서. 다음 분기 보고서는 분기 말에서 45일 안, 사업보고서는 90일 안에 나온다."}
+    if chosen == "CFS" and basis != "CFS":
+        out["basis_note"] = "연결 재무제표 기준입니다. 별도 기준은 basis=OFS 로 다시 부르세요"
+    if newest.revenue is None and newest.revenue_ytd is None:
+        out["revenue_note"] = "이 회사의 주요계정에는 매출액 줄이 없습니다(은행·보험 같은 금융회사는 영업수익을 따로 적지 않습니다)"
+    return out
+
+
 def get_price_history(db, company_id, as_of) -> dict:
     company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
     if not company.stock_code:
@@ -990,7 +1031,7 @@ def tools() -> list[dict]:
             and (t["name"] not in COMPOSITE_TOOLS or os.environ.get("ASK_COMPOSITE", "0") == "1")]
 
 
-FUNCTIONS = {"show_view": show_view, "get_price_history": get_price_history, "compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
+FUNCTIONS = {"get_financials": get_financials, "show_view": show_view, "get_price_history": get_price_history, "compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
              "search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
              "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}

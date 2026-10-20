@@ -8,6 +8,7 @@ from datetime import date, timedelta
 from sqlalchemy import func, select
 
 from .db import PriceDaily
+from .financials import readable
 
 KINDS = {
     "ownership": "지분 구조도",
@@ -18,6 +19,9 @@ KINDS = {
     "contracts": "계약 기간",
     "revenue": "매출 구성",
     "returns": "수익률 비교",
+    "financials": "실적 추이",
+    "health": "재무 체력",
+    "compare": "실적 비교",
 }
 TABLE_ONLY = ("exited", "share_class", "treasury")
 
@@ -185,23 +189,112 @@ def returns(db, tools, company: dict, when: str) -> dict:
             "summary": "; ".join(f"{p['period']} {p.get('change_pct')}% (시장 {p.get('market_median_pct')}%)" for p in found.get("periods", []) if "change_pct" in p)}
 
 
+def _fin_sources(found: dict) -> list[str]:
+    out = []
+    for item in found.get("quarters", []) + [found["balance"]["latest"]]:
+        for no in item.get("rcept_no") or []:
+            if no not in out:
+                out.append(no)
+    return out
+
+
+def _basis_note(found: dict) -> str:
+    return f"{found['basis_name']} 재무제표 기준, 금액 단위 {found['unit']}. 정기보고서의 주요계정입니다."
+
+
+def financials(db, tools, company: dict, when: str) -> dict:
+    found = tools.get_financials(db, company["company_id"], when)
+    rows = found["quarters"]
+    notes = [_basis_note(found)]
+    if any(q.get("computed") for q in rows):
+        notes.append("4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다.")
+    if any(q.get("not_computed") for q in rows):
+        notes.append("분기 값이 나중에 다시 작성된 해는 4분기를 계산하지 않았습니다.")
+    last = next((q for q in reversed(rows) if q.get("revenue") is not None or q.get("operating_income") is not None), None)
+    summary = ""
+    if last:
+        if "operating_income_yoy_pct" in last:
+            change = f", 영업이익 전년 동기 대비 {last['operating_income_yoy_pct']:+.1f}%"
+        elif "operating_income_yoy" in last:
+            change = f", 영업이익 {last['operating_income_yoy']}"
+        else:
+            change = ""
+        summary = f"{last['period']} 매출 {readable(last.get('revenue'), found['unit'])}, 영업이익 {readable(last.get('operating_income'), found['unit'])}{change}"
+    return {"unit": found["unit"], "basis": found["basis_name"], "quarters": rows, "years": found["years"],
+            "sources": _fin_sources(found), "notes": notes, "summary": summary}
+
+
+def health(db, tools, company: dict, when: str) -> dict:
+    found = tools.get_financials(db, company["company_id"], when)
+    latest, median = found["balance"]["latest"], found["market_median"]
+    year = next((y for y in reversed(found["years"]) if y.get("operating_margin_pct") is not None), {})
+    measures = [
+        {"key": "debt_ratio", "label": "부채비율", "value": latest.get("debt_ratio_pct"), "median": median.get("debt_ratio_pct"),
+         "better": "lower", "how": "부채총계 / 자본총계"},
+        {"key": "current_ratio", "label": "유동비율", "value": latest.get("current_ratio_pct"), "median": median.get("current_ratio_pct"),
+         "better": "higher", "how": "유동자산 / 유동부채"},
+        {"key": "operating_margin", "label": "영업이익률", "value": year.get("operating_margin_pct"), "median": median.get("operating_margin_pct"),
+         "better": "higher", "how": f"영업이익 / 매출 ({year.get('period', '')})"},
+    ]
+    notes = [_basis_note(found),
+             f"중앙값은 {median['market']} 상장사 {median['companies']}곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."]
+    if latest.get("capital_impaired"):
+        notes.append(latest["capital_impaired"])
+    return {"unit": found["unit"], "basis": found["basis_name"], "date": latest.get("date"), "measures": measures,
+            "balance": latest, "previous": found["balance"].get("previous_year_end"), "market": median["market"],
+            "sources": _fin_sources(found), "notes": notes,
+            "summary": ", ".join(f"{m['label']} {m['value']}% (시장 중앙값 {m['median']}%)" for m in measures if m["value"] is not None)}
+
+
+def compare(db, tools, company: dict, other_id: int, when: str) -> dict:
+    sides = [tools.get_financials(db, company_id, when) for company_id in (company["company_id"], other_id)]
+    # 두 회사가 모두 가진 가장 최근 분기에 맞춘다
+    # 결산월이 달라도 같은 달에 끝난 분기끼리 견준다
+    ends = [{q["end"]: q for q in s["quarters"] if q.get("end") and (q.get("revenue") is not None or q.get("operating_income") is not None)} for s in sides]
+    common = sorted(set(ends[0]) & set(ends[1]))
+    period = ends[0][common[-1]]["period"] if common else None
+    rows = []
+    for found in sides:
+        quarter = next((q for q in found["quarters"] if common and q.get("end") == common[-1]), {})
+        latest = found["balance"]["latest"]
+        rows.append({"id": found["company"]["company_id"], "name": found["company"]["name"], "basis": found["basis_name"], "unit": found["unit"],
+                     "revenue": quarter.get("revenue"), "operating_income": quarter.get("operating_income"),
+                     "net_income": quarter.get("net_income"), "operating_margin_pct": quarter.get("operating_margin_pct"),
+                     "revenue_yoy_pct": quarter.get("revenue_yoy_pct"), "operating_income_yoy_pct": quarter.get("operating_income_yoy_pct"),
+                     "debt_ratio_pct": latest.get("debt_ratio_pct"), "balance_date": latest.get("date"),
+                     "trend": [{"period": q["period"], "revenue": q.get("revenue"), "operating_income": q.get("operating_income")}
+                               for q in found["quarters"] if not q.get("not_computed")][-4:]})
+    notes = [f"{period} 석 달 값입니다. 부채비율은 각 회사의 가장 최근 기말 값입니다." if period else "두 회사가 함께 가진 분기가 없습니다."]
+    if len({r["basis"] for r in rows}) > 1:
+        notes.append("두 회사의 재무제표 기준(연결·별도)이 다릅니다.")
+    if len({r["unit"] for r in rows}) > 1:
+        notes.append("두 회사의 통화가 달라 금액을 바로 견줄 수 없습니다.")
+    sources = []
+    for found in sides:
+        sources += [n for n in _fin_sources(found) if n not in sources]
+    return {"period": period, "rows": rows, "to": {"id": rows[1]["id"], "name": rows[1]["name"]},
+            "sources": sources, "notes": notes,
+            "summary": "; ".join(f"{r['name']} 매출 {readable(r['revenue'], r['unit'])}, 영업이익률 {r['operating_margin_pct']}%" for r in rows)}
+
+
 def build(db, tools, kind: str, company_id: int, as_of: str, other_company_id: int | None = None, since: str | None = None) -> dict:
     """보기 하나를 만든다. tools 는 agent_tools 모듈(서로 가져오면 순환하므로 넘겨받는다)."""
     company = tools._brief(tools._company(db, company_id))
     when = tools._date(as_of, "as_of", required=True)
     start = (tools._date(since, "since") or (when - timedelta(days=365))).isoformat()
     as_of = when.isoformat()
-    if kind == "path":
+    if kind in ("path", "compare"):
         if other_company_id is None:
-            raise tools.ToolError("path 는 other_company_id 가 필요합니다")
-        body = path(db, tools, company, other_company_id, as_of)
+            raise tools.ToolError(f"{kind} 는 other_company_id 가 필요합니다")
+        body = (path if kind == "path" else compare)(db, tools, company, other_company_id, as_of)
     elif kind in ("supply_flow", "timeline", "contracts"):
         body = {"supply_flow": supply_flow, "timeline": timeline, "contracts": contracts}[kind](db, tools, company, as_of, start)
     elif kind in KINDS:
-        body = {"ownership": ownership, "group": group, "revenue": revenue, "returns": returns}[kind](db, tools, company, as_of)
+        body = {"ownership": ownership, "group": group, "revenue": revenue, "returns": returns,
+                "financials": financials, "health": health}[kind](db, tools, company, as_of)
     else:
         raise tools.ToolError(f"kind 는 {', '.join(KINDS)} 가운데 하나입니다")
-    title = f"{company['name']} ↔ {body['to']['name']} {KINDS[kind]}" if kind == "path" else f"{company['name']} {KINDS[kind]}"
+    title = f"{company['name']} ↔ {body['to']['name']} {KINDS[kind]}" if kind in ("path", "compare") else f"{company['name']} {KINDS[kind]}"
     return {"kind": kind, "title": title, "company": {"id": company["company_id"], "name": company["name"]},
             "as_of": as_of, **body}
 

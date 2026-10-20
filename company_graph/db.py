@@ -114,6 +114,46 @@ class HotDay(Base):
     computed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
 
 
+class Financial(Base):
+    """정기보고서 하나의 주요계정 (OpenDART 다중회사 주요계정, financials.py).
+    손익은 그 보고서가 다루는 석 달(사업보고서는 한 해) 값과 그해 누적 값을 함께 둔다. 4분기는 따로 공시되지 않으므로 표에 없고 조회할 때 연간에서 뺀다.
+    재무상태는 기말 시점의 값이다. 금액 단위는 currency(대부분 KRW)의 1단위."""
+    __tablename__ = "financial"
+    __table_args__ = (Index("ix_financial_company", "company_id", "period_end"),)
+    company_id: Mapped[int] = mapped_column(ForeignKey("company.company_id"), primary_key=True)
+    fiscal_year: Mapped[int] = mapped_column(SmallInteger, primary_key=True)        # 사업연도 (bsns_year)
+    report: Mapped[str] = mapped_column(String(6), primary_key=True)                # q1, half, q3, annual
+    basis: Mapped[str] = mapped_column(String(3), primary_key=True)                 # CFS 연결, OFS 별도
+    rcept_no: Mapped[str] = mapped_column(String(14))
+    period_start: Mapped[date | None] = mapped_column(Date)                         # 손익의 석 달(또는 한 해)이 시작한 날
+    period_end: Mapped[date | None] = mapped_column(Date)
+    currency: Mapped[str | None] = mapped_column(String(3))
+    revenue: Mapped[int | None] = mapped_column(BigInteger)
+    operating_income: Mapped[int | None] = mapped_column(BigInteger)
+    pretax_income: Mapped[int | None] = mapped_column(BigInteger)
+    net_income: Mapped[int | None] = mapped_column(BigInteger)
+    revenue_ytd: Mapped[int | None] = mapped_column(BigInteger)                     # 그해 누적 (분기·반기보고서)
+    operating_income_ytd: Mapped[int | None] = mapped_column(BigInteger)
+    pretax_income_ytd: Mapped[int | None] = mapped_column(BigInteger)
+    net_income_ytd: Mapped[int | None] = mapped_column(BigInteger)
+    # 같은 보고서가 함께 적은 전년 같은 기간 (frmtrm). 나중 보고서가 지난 값을 다시 작성했으면 여기에 고친 값이 온다
+    revenue_prev: Mapped[int | None] = mapped_column(BigInteger)
+    operating_income_prev: Mapped[int | None] = mapped_column(BigInteger)
+    net_income_prev: Mapped[int | None] = mapped_column(BigInteger)
+    revenue_prev_ytd: Mapped[int | None] = mapped_column(BigInteger)
+    operating_income_prev_ytd: Mapped[int | None] = mapped_column(BigInteger)
+    net_income_prev_ytd: Mapped[int | None] = mapped_column(BigInteger)
+    current_assets: Mapped[int | None] = mapped_column(BigInteger)
+    noncurrent_assets: Mapped[int | None] = mapped_column(BigInteger)
+    total_assets: Mapped[int | None] = mapped_column(BigInteger)
+    current_liabilities: Mapped[int | None] = mapped_column(BigInteger)
+    noncurrent_liabilities: Mapped[int | None] = mapped_column(BigInteger)
+    total_liabilities: Mapped[int | None] = mapped_column(BigInteger)
+    capital_stock: Mapped[int | None] = mapped_column(BigInteger)
+    retained_earnings: Mapped[int | None] = mapped_column(BigInteger)
+    total_equity: Mapped[int | None] = mapped_column(BigInteger)
+
+
 class QualityLog(Base):
     __tablename__ = "quality_log"
     log_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True,
