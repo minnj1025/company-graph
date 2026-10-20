@@ -215,7 +215,8 @@ def dividend_rows(company_id: int, items: list[dict]) -> list[dict]:
             if value is None or rows[year - offset].get(column) is not None:
                 continue
             rows[year - offset][column] = int(value * 1_000_000) if column in ("cash_total", "stock_total") else value
-    return [r for r in rows.values() if any(r.get(c) is not None for c in ("dps_common", "cash_total", "payout_ratio"))]
+    columns = [c.name for c in Dividend.__table__.columns]
+    return [{c: r.get(c) for c in columns} for r in rows.values() if any(r.get(c) is not None for c in ("dps_common", "cash_total", "payout_ratio"))]
 
 
 def store_dividends(db, company_id: int, corp_code: str, fresh: bool = False) -> int:
@@ -249,6 +250,13 @@ def load() -> None:
                 db.commit()
                 print(f"  결정 {n}/{len(targets)}곳, {events}건 (DART 호출 오늘 {dart.calls_today()}건)", flush=True)
         db.commit()
+    load_dividends()
+
+
+def load_dividends() -> None:
+    from . import dart
+    with session() as db:
+        ids = listed(db)
         dividends = 0
         for n, (corp_code, company_id) in enumerate(sorted(ids.items()), 1):
             dividends += store_dividends(db, company_id, corp_code)
@@ -256,7 +264,7 @@ def load() -> None:
                 db.commit()
                 print(f"  배당 {n}/{len(ids)}곳, {dividends}줄 (DART 호출 오늘 {dart.calls_today()}건)", flush=True)
         db.commit()
-    print(f"끝: 결정 {events}건, 배당 {dividends}줄", flush=True)
+    print(f"배당 끝: {dividends}줄", flush=True)
 
 
 def update(days: int = 3) -> None:
@@ -300,5 +308,7 @@ if __name__ == "__main__":
     command = sys.argv[1] if len(sys.argv) > 1 else "load"
     if command == "load":
         load()
+    elif command == "dividends":
+        load_dividends()
     elif command == "update":
         update(int(sys.argv[2]) if len(sys.argv) > 2 else 3)

@@ -1015,7 +1015,9 @@ def _event_json(row, unit_name: str = "억원") -> dict:
         out["period"] = f"{row.period_start or ''}~{row.period_end or ''}"
     attrs = row.attrs or {}
     for key, name in (("bd_tm", "round"), ("bd_mtd", "maturity"), ("bd_intr_ex", "coupon_pct"), ("bd_intr_sf", "yield_to_maturity_pct"),
-                      ("funds", "use_of_funds"), ("cr_std", "reduction_date"), ("nstk_lstprd", "listing_date")):
+                      ("funds", "use_of_funds"), ("cr_std", "reduction_date"), ("nstk_lstprd", "listing_date"),
+                      ("extg", "exchange_target"), ("nstk_ascnt_ps_ostk", "new_shares_per_share"), ("atcr_tisstk_ostk", "shares_after_reduction"),
+                      ("bd_knd", "bond_type")):
         if attrs.get(key):
             out[name] = {k: fin.readable(v / 1e8) for k, v in attrs[key].items()} if key == "funds" else attrs[key]
     return out
