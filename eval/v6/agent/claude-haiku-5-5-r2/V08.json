@@ -1,0 +1,143 @@
+{
+ "question": "삼성전자와 삼성바이오로직스는 어떤 관계야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 삼성전자는 삼성바이오로직스의 지분 31.2%를 가진 주주이자 같은 삼성 기업집단의 계열회사입니다.** 공급계약이나 주식 취득·처분 결정은 두 회사 사이에 공시된 것이 없습니다.\n\n- **지분 관계:** 삼성전자가 삼성바이오로직스 주식 14,450,000주, 지분율 31.2%를 보유한다고 삼성전자의 타법인출자 현황에 적혀 있습니다(기준일 2025-12-31, 접수번호 20260310002820). 같은 주식을 삼성바이오로직스는 최대주주 현황에서 31.22%로 적었고, 이 주주를 최대주주 본인이 아닌 '특수관계인'으로 분류했습니다(접수번호 20260515001658). 두 보고서의 값이 소수점 아래에서 조금 다릅니다.\n- **최대주주:** 삼성물산이 삼성바이오로직스의 최대주주로 43.1%(표 기준 43.06%)를 가집니다(접수번호 20260312000856, 20260515001658). 삼성전자는 이 최대주주의 특수관계인으로 나와 있습니다.\n- **계열:** 두 회사 모두 공정위 2026년 5월 지정 대규모기업집단 '삼성'에 속합니다. 삼성전자의 2025-12-31 기준 사업보고서가 삼성바이오로직스를 계열회사로 적었습니다(접수번호 20260310002820).\n- **공급계약·지분 거래:** 두 회사 사이의 단일판매·공급계약, 타법인 주식 취득·처분 결정은 2026-10-16 기준으로 조회되지 않았습니다.\n\n이 DB로 알 수 없는 것: 두 회사 사이의 실제 거래 내역, 주주 간 의결권 행사나 경영 관계의 세부 내용은 없습니다. 지분율은 사업보고서 기준이며 그 뒤의 변동은 반영되지 않았습니다.",
+ "followups": [
+  "삼성바이오로직스의 최근 공시와 주요 계약은?",
+  "삼성바이오로직스의 계열회사는 어디인가?",
+  "삼성물산과 삼성바이오로직스는 어떻게 이어져 있나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "삼성전자"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "삼성바이오로직스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2187,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 16,
+   "chars": 10417
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2187,
+    "as_of": "2026-10-16",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 83,
+   "chars": 22681
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2187,
+    "as_of": "2026-10-16",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "counterparty_id": 3506
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1220
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2187,
+    "as_of": "2026-10-16",
+    "rel_type": "stake_acquisition",
+    "direction": "both",
+    "counterparty_id": 3506
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1244
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2187,
+    "as_of": "2026-10-16",
+    "rel_type": "stake_disposal",
+    "direction": "both",
+    "counterparty_id": 3506
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1244
+  },
+  {
+   "tool": "find_paths",
+   "input": {
+    "from_company_id": 3506,
+    "to_company_id": 2187,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1575
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3506,
+     2187
+    ],
+    "also": [
+     3384
+    ],
+    "views": [
+     {
+      "kind": "ownership",
+      "company_id": 2187,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 538
+  }
+ ],
+ "cited": [
+  "20260310002820",
+  "20260312000856",
+  "20260515001658"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2410,
+  "cache_read_input_tokens": 74624,
+  "cache_creation_input_tokens": 40905
+ },
+ "seconds": 40.1,
+ "number": "V08",
+ "gold": ""
+}

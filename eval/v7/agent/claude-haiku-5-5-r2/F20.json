@@ -1,0 +1,69 @@
+{
+ "question": "지주회사 LG 작년 영업이익, 연결이랑 별도 각각 얼마야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "LG의 2025년 영업이익은 연결 9,122억 원, 별도 5,971억 원입니다. 두 수치 모두 2025 연간 사업보고서(접수번호 20260318001025)에 실린 값입니다.\n\n| 구분 | 2025 영업이익 | 전년 대비 | 근거 접수번호 |\n|---|---|---|---|\n| 연결 (CFS) | 9,122억 원 | -5.65% | 20260318001025 |\n| 별도 (OFS) | 5,971억 원 | -8.8% | 20260318001025 |\n\n별도 기준 영업이익률은 67.47%로, 지주회사라 연결보다 훨씬 높습니다. 연결 영업이익률은 12.58%입니다.",
+ "followups": [
+  "LG의 2025년 연결 매출과 순이익은 얼마야?",
+  "LG의 2026년 상반기 연결 영업이익은 얼마야?",
+  "LG의 연결 부채비율 추이를 알려줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LG"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 1604,
+    "as_of": "2026-10-16",
+    "basis": "CFS"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5487
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 1604,
+    "as_of": "2026-10-16",
+    "basis": "OFS"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5405
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1604
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  }
+ ],
+ "cited": [
+  "20260318001025"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 867,
+  "cache_read_input_tokens": 58051,
+  "cache_creation_input_tokens": 23939
+ },
+ "seconds": 11.9,
+ "number": "F20",
+ "gold": ""
+}

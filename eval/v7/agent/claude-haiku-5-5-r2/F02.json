@@ -1,0 +1,64 @@
+{
+ "question": "SK하이닉스 작년 매출 얼마였어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "SK하이닉스의 2025년 연간 매출은 **97조 1,467억 원**입니다(연결 기준, 전년 대비 46.76% 증가).\n\n- 근거: 2025 사업연도 사업보고서, 접수번호 20260317000635\n- 같은 보고서의 2025 연간 영업이익은 47조 2,063억 원(전년 대비 101.16% 증가), 당기순이익은 42조 9,479억 원입니다.",
+ "followups": [
+  "SK하이닉스 2026 상반기 실적은 어떤가요?",
+  "SK하이닉스의 2025년 분기별 매출 추이는 어땠나요?",
+  "SK하이닉스의 부채비율은 어느 정도인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK하이닉스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5656
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2033
+    ],
+    "views": [
+     {
+      "kind": "financials",
+      "company_id": 2033,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 455
+  }
+ ],
+ "cited": [
+  "20260317000635"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 813,
+  "cache_read_input_tokens": 55052,
+  "cache_creation_input_tokens": 21319
+ },
+ "seconds": 6.9,
+ "number": "F02",
+ "gold": ""
+}
