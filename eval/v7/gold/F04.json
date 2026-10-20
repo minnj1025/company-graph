@@ -1,0 +1,22 @@
+{
+  "id": "F04",
+  "question": "현대차 올해 상반기 매출 알려줘",
+  "as_of": "2026-10-16",
+  "company": [
+    "현대자동차"
+  ],
+  "expected_kinds": [],
+  "acceptable_kinds": [],
+  "values": [
+    {
+      "label": "2026년 상반기(1~6월 누적) 매출액(연결)",
+      "value": 95154214000000,
+      "unit": "원",
+      "basis": "CFS",
+      "rcept_no": "20260814003521",
+      "formula": "반기보고서의 thstrm_add_amount(누적)"
+    }
+  ],
+  "must_say": [],
+  "note": "사용자가 '현대차'라고 줄여 부르는 경우. 상반기는 반기보고서의 누적 값(thstrm_add_amount)이며 2분기 3개월 값(49조 2,153억)과 다르다. 연결 951,542억원."
+}
