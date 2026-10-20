@@ -304,11 +304,47 @@ def dividends(db, company_id: int, as_of: date) -> list[Dividend]:
     return [r for r in rows if datetime.strptime(r.rcept_no[:8], "%Y%m%d").date() <= as_of]
 
 
+def check() -> None:
+    """공시 안의 숫자끼리 맞춰 본다.
+    1. 사채: 전환·행사·교환 가액 × 주식 수 ≈ 권면총액 (1% 안. 외화 사채와 전환비율이 100%가 아닌 것은 뺀다)
+    2. 증자·감자: 새 주식이나 감자 주식이 결정 전 발행주식총수보다 작은가 (증자는 넘을 수 있어 2배까지만 본다)
+    3. 배당: 배당성향 0~500%, 수익률 0~30%, 주당배당금이 있으면 배당총액도 있는가"""
+    from collections import Counter
+    counts, examples = Counter(), {}
+    with session() as db:
+        for row in db.scalars(select(CapitalEvent)):
+            attrs = row.attrs or {}
+            if row.kind in ("cb", "bw", "eb") and row.shares and row.price and row.amount and not attrs.get("ovis_fta")                     and str(attrs.get("cv_rt") or attrs.get("ex_rt") or "100").startswith("100"):
+                counts["bond_checked"] += 1
+                if abs(row.shares * float(row.price) - row.amount) > 0.01 * row.amount:
+                    counts["bond_off"] += 1
+                    examples.setdefault("bond_off", []).append((row.company_id, row.rcept_no, row.shares, float(row.price), row.amount))
+            if row.kind in ("rights_issue", "bonus_issue", "capital_reduction") and row.shares and row.shares_before:
+                counts["shares_checked"] += 1
+                if row.shares > row.shares_before * (1 if row.kind == "capital_reduction" else 2):
+                    counts["shares_off"] += 1
+                    examples.setdefault("shares_off", []).append((row.company_id, row.rcept_no, row.kind, row.shares, row.shares_before))
+        for row in db.scalars(select(Dividend)):
+            counts["dividend_rows"] += 1
+            if row.payout_ratio is not None and not 0 <= float(row.payout_ratio) <= 500 or row.yield_common is not None and not 0 <= float(row.yield_common) <= 30:
+                counts["dividend_range"] += 1
+                examples.setdefault("dividend_range", []).append((row.company_id, row.fiscal_year, row.payout_ratio, row.yield_common))
+            if row.dps_common and not row.cash_total:
+                counts["dividend_no_total"] += 1
+    print(f"1. 사채 가액×주식 수 ≈ 권면총액: {counts['bond_checked']}건 중 어긋남 {counts['bond_off']}")
+    print(f"2. 증자·감자 주식 수가 결정 전 주식보다 지나치게 큼: {counts['shares_checked']}건 중 {counts['shares_off']}")
+    print(f"3. 배당 {counts['dividend_rows']}줄: 배당성향·수익률 범위 밖 {counts['dividend_range']}, 주당배당금은 있는데 총액이 없음 {counts['dividend_no_total']}")
+    for name, items in examples.items():
+        print(f"   {name} 예: {items[:4]}")
+
+
 if __name__ == "__main__":
     command = sys.argv[1] if len(sys.argv) > 1 else "load"
     if command == "load":
         load()
     elif command == "dividends":
         load_dividends()
+    elif command == "check":
+        check()
     elif command == "update":
         update(int(sys.argv[2]) if len(sys.argv) > 2 else 3)

@@ -242,7 +242,7 @@ TOOLS = [
     {"name": "get_dividends",
      "description": "한 회사의 배당(사업보고서의 배당에 관한 사항)과 자기주식 취득 결정을 사업연도마다. "
                     "years: 주당 현금배당금(보통주·우선주), 현금배당금총액, 현금배당성향(%), 현금배당수익률(%), 주당순이익. "
-                    "buybacks: 그해 공시한 자기주식 취득 결정과 취득 신탁계약의 예정 금액 합계(결정 금액이지 실제 취득액이 아니다). "
+                    "buybacks: 그해 공시한 자기주식 직접 취득 결정(direct)과 취득 신탁계약(trust)을 따로, 예정 금액 합계(결정 금액이지 실제 취득액이 아니다). "
                     "2023~2025 사업연도. 분기·중간배당의 회차별 금액과 앞으로의 배당 예상은 없다.",
      "input_schema": {"type": "object", "properties": {"company_id": _COMPANY, "as_of": _AS_OF}, "required": ["company_id", "as_of"]}},
     {"name": "get_price_history",
@@ -1055,7 +1055,8 @@ def get_dividends(db, company_id, as_of) -> dict:
             item["rcept_no"].append(row.rcept_no)
     buys = {}
     for row in capital.events(db, company.company_id, capital.SINCE, when, ["buyback", "buyback_trust"]):
-        item = buys.setdefault(row.report_date.year, {"decisions": 0, "amount_won": 0, "rcept_no": []})
+        year = buys.setdefault(row.report_date.year, {})
+        item = year.setdefault("direct" if row.kind == "buyback" else "trust", {"decisions": 0, "amount_won": 0, "rcept_no": []})
         item["decisions"] += 1
         item["amount_won"] += row.amount or 0
         item["rcept_no"].append(row.rcept_no)
@@ -1065,8 +1066,8 @@ def get_dividends(db, company_id, as_of) -> dict:
         "cash_total": fin.readable(r.cash_total / 1e8) if r.cash_total is not None else None,
         "payout_ratio_pct": num(r.payout_ratio), "payout_basis": fin.BASIS_NAME.get(r.basis or "", r.basis),
         "yield_common_pct": num(r.yield_common), "eps_won": num(r.eps), "rcept_no": [r.rcept_no]} for r in years],
-        "buybacks": [{"year": y, "decisions": b["decisions"], "amount": fin.readable(b["amount_won"] / 1e8), "rcept_no": b["rcept_no"][:5]}
-                     for y, b in sorted(buys.items())],
+        "buybacks": [{"year": y, **{side: {"decisions": b["decisions"], "amount": fin.readable(b["amount_won"] / 1e8), "rcept_no": b["rcept_no"][:5]}
+                                    for side, b in sides.items()}} for y, sides in sorted(buys.items())],
         "treasury_cancellations": [{"year": y, "decisions": c["decisions"], "shares": c["shares"], "rcept_no": c["rcept_no"][:5]} for y, c in sorted(cancels.items())],
         "fields": "years 는 2025 사업보고서의 당기·전기·전전기 값이다(그래서 rcept_no 가 같다). buybacks 는 자기주식 취득 결정과 신탁계약의 예정 금액 합계로, 실제 취득액이 아니다. "
                   "treasury_cancellations 는 감자결정으로 공시한 자기주식 소각이다(거래소에만 낸 소각 결정은 없다). 분기·중간배당의 회차별 금액, 앞으로의 배당은 없다."}
