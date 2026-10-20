@@ -1,0 +1,106 @@
+{
+ "question": "현대차 피트 졸리 상무가 주식 판 거 장내에서 판 거야, 아니면 증여한 거야? 정확히 며칠에 판 거야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "이 DB로는 장내 매도인지 증여인지 가릴 수 없습니다. 실제 거래일도 확인되지 않습니다. 확인되는 것은 보고 접수일이 2026-08-18이라는 점입니다.\n\n피트 졸리 상무(현대자동차, 비등기임원)의 소유상황보고는 2026-08-18에 접수됐고, 보유 주식이 700주 줄어 보고 뒤 0주가 됐습니다 (접수번호 20260818000199). 이 날짜는 보고 접수일이라 실제 거래일과 다를 수 있습니다.\n\n- **장내·장외, 증여·상속 구분**: 자료에 없어 알 수 없습니다. 보고서에 적힌 사유도 이 DB에는 없습니다.\n- **거래 단가와 금액, 실제 거래일**: 이 DB에는 없습니다. 정확한 거래일은 해당 보고서 원문에서 확인해야 합니다.",
+ "followups": [
+  "현대자동차 임원들의 최근 90일 주식 증감은?",
+  "현대자동차 최대주주와 특수관계인 지분은?",
+  "현대자동차 최근 1년 주가 수익률은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대자동차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_insider_trades",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16",
+    "since": "2025-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 6937
+  },
+  {
+   "tool": "get_insider_trades",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16",
+    "since": "2026-08-18",
+    "until": "2026-08-18"
+   },
+   "error": null,
+   "total": null,
+   "chars": 770
+  },
+  {
+   "tool": "get_insider_trades",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16",
+    "since": "2025-12-19",
+    "until": "2025-12-19"
+   },
+   "error": null,
+   "total": null,
+   "chars": 764
+  },
+  {
+   "tool": "get_insider_trades",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16",
+    "since": "2026-03-10",
+    "until": "2026-03-10"
+   },
+   "error": null,
+   "total": null,
+   "chars": 764
+  },
+  {
+   "tool": "get_insider_trades",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16",
+    "since": "2026-01-08",
+    "until": "2026-01-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5302
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     54
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260818000199"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1914,
+  "cache_read_input_tokens": 89935,
+  "cache_creation_input_tokens": 28525
+ },
+ "seconds": 11.7,
+ "number": "H19",
+ "gold": ""
+}
