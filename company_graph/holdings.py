@@ -231,7 +231,7 @@ def check(as_of: date | None = None) -> None:
             total = view["group_pct"] + sum(h["pct"] for h in view["holders"] if not h["overlap"])
             if total > 100.5:
                 over.append((db.get(Company, company_id).label, round(total, 2)))
-        print(f"최대주주 합계가 있는 {checked}곳 중 합이 100%를 넘는 곳 {len(over)}: {over[:8]}")
+        print(f"최대주주 합계가 있는 {checked}곳 중 합이 100%를 넘는 곳 {len(over)} (카드는 이 회사들을 한 막대로 합치지 않는다): {over[:8]}")
 
 
 if __name__ == "__main__":

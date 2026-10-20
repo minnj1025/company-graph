@@ -285,22 +285,35 @@ def holders(db, tools, company: dict, when: str) -> dict:
     found = tools.get_major_holders(db, company["company_id"], when)
     total = table.get("holder_table_total") or {}
     group_pct = float(total["pct"]) if total.get("pct") not in (None, "") else None
-    insiders = {(r.get("subject") or {}).get("name") or r["detail"].get("holder_name_raw") for r in table["relations"]}
-    insiders |= {r["detail"].get("holder_name_raw") for r in table["relations"] if r["detail"].get("holder_name_raw")}
+    from .names import normalize
+    names = {(r.get("subject") or {}).get("name") or r["detail"].get("holder_name_raw") for r in table["relations"]}
+    names |= {r["detail"].get("holder_name_raw") for r in table["relations"] if r["detail"].get("holder_name_raw")}
+    names = {normalize(n) for n in names if n}
+    group = company.get("group")
+
+    def overlaps(h: dict) -> bool:
+        """최대주주 쪽이 낸 보고인가: 이름이 같거나(띄어쓰기 무시) 한쪽이 다른 쪽으로 시작하거나, 보고자가 같은 기업집단이다."""
+        mine = {normalize(h["reporter"]), normalize((h.get("reporter_company") or {}).get("name") or "")} - {""}
+        if any(m == n or (min(len(m), len(n)) >= 2 and (m.startswith(n) or n.startswith(m))) for m in mine for n in names):
+            return True
+        return bool(group) and (h.get("reporter_company") or {}).get("group") == group
     rows = []
     for h in found["holders"]:
         if h["status"] != "5% 이상":
             continue
-        overlap = h["reporter"] in insiders or (h.get("reporter_company") or {}).get("name") in insiders
         rows.append({"name": h["reporter"], "id": (h.get("reporter_company") or {}).get("company_id"), "pct": h["pct"],
-                     "date": h["date"], "overlap": overlap})
+                     "date": h["date"], "overlap": overlaps(h)})
     outside = sum(r["pct"] for r in rows if not r["overlap"] and r["pct"])
-    rest = None if group_pct is None else round(max(0.0, 100 - group_pct - outside), 2)
-    notes = ["최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
-             "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."]
+    stack = group_pct is not None and group_pct + outside <= 100.5
+    rest = round(max(0.0, 100 - group_pct - outside), 2) if stack else None
+    notes = ["최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다."]
+    if stack:
+        notes.append("최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다.")
+    elif group_pct is not None:
+        notes.append("더하면 100%를 넘습니다. 서로 특별관계인 보고자가 각자 특별관계자를 합친 비율로 보고했거나, 보고 시점이 서로 달라서입니다. 그래서 한 막대로 합치지 않았습니다.")
     sources = [n for h in found["holders"] for n in h["rcept_no"]][:20]
     sources += [n for r in table["relations"][:5] for n in (r.get("rcept_no") or [])]
-    return {"group_pct": group_pct, "group_date": table["relations"][0].get("as_of_date") if table["relations"] else None,
+    return {"stack": stack, "group_pct": group_pct, "group_date": table["relations"][0].get("as_of_date") if table["relations"] else None,
             "holders": rows, "rest_pct": rest, "sources": list(dict.fromkeys(sources)), "notes": notes,
             "summary": (f"최대주주와 특수관계인 {group_pct}%, " if group_pct is not None else "")
                        + ", ".join(f"{r['name']} {r['pct']}%" for r in rows if not r["overlap"]) or "5% 보고자 없음"}

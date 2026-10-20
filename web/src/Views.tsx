@@ -672,7 +672,7 @@ function Holders({ view, onCompany }: CardProps) {
   ];
   return (
     <>
-      {parts.length > 0 && (
+      {view.stack !== false && parts.length > 0 && (
         <div className="view-stack" role="img" aria-label="주주 분포 막대">
           {parts.map((p) => (
             <i key={p.key} className={p.cls} style={{ width: `${Math.max(p.pct, 0.5)}%` }} title={`${p.label} ${pct(p.pct)}`} />
