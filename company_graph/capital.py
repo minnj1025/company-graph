@@ -216,7 +216,11 @@ def dividend_rows(company_id: int, items: list[dict]) -> list[dict]:
                 continue
             rows[year - offset][column] = int(value * 1_000_000) if column in ("cash_total", "stock_total") else value
     columns = [c.name for c in Dividend.__table__.columns]
-    return [{c: r.get(c) for c in columns} for r in rows.values() if any(r.get(c) is not None for c in ("dps_common", "cash_total", "payout_ratio"))]
+    kept = [r for r in rows.values() if any(r.get(c) is not None for c in ("dps_common", "cash_total", "payout_ratio"))]
+    if not kept:
+        # 표는 있는데 값이 모두 '-'면 현금배당을 하지 않은 해다. '배당 표가 없다'와 구분하려고 0원으로 남긴다
+        kept = [{**r, "dps_common": 0, "cash_total": 0} for r in rows.values()]
+    return [{c: r.get(c) for c in columns} for r in kept]
 
 
 def store_dividends(db, company_id: int, corp_code: str, fresh: bool = False) -> int:

@@ -1063,7 +1063,7 @@ def get_dividends(db, company_id, as_of) -> dict:
     num = lambda v: float(v) if v is not None else None
     out = {"company": _brief(company), "years": [{
         "fiscal_year": r.fiscal_year, "dps_common_won": num(r.dps_common), "dps_preferred_won": num(r.dps_preferred),
-        "cash_total": fin.readable(r.cash_total / 1e8) if r.cash_total is not None else None,
+        "cash_total": ("현금배당 없음" if r.cash_total == 0 else fin.readable(r.cash_total / 1e8)) if r.cash_total is not None else None,
         "payout_ratio_pct": num(r.payout_ratio), "payout_basis": fin.BASIS_NAME.get(r.basis or "", r.basis),
         "yield_common_pct": num(r.yield_common), "eps_won": num(r.eps), "rcept_no": [r.rcept_no]} for r in years],
         "buybacks": [{"year": y, **{side: {"decisions": b["decisions"], "amount": fin.readable(b["amount_won"] / 1e8), "rcept_no": b["rcept_no"][:5]}

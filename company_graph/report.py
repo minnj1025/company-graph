@@ -32,7 +32,10 @@ RULES = """당신은 한국 상장사의 공시(DART)에서 모은 사실로 기
 - 원인을 판단하거나 앞을 전망하지 않습니다. "~때문에", "긍정적", "부정적", "기대된다", "우려된다" 같은 말을 쓰지 않습니다. 매수·매도·목표주가는 말하지 않습니다.
 - 결정 공시(증자, 사채, 자기주식, 공급계약, 지분 취득·처분)는 결정이지 실행 결과가 아닙니다. "했다"가 아니라 "결정을 공시했다"로 씁니다.
 - 금액은 조회 결과에 적힌 '89조 4,924억 원' 같은 글을 그대로 옮깁니다. 원 단위로 풀어 쓰지 않습니다. 기간(석 달, 누적, 사업연도)과 연결·별도를 밝힙니다.
-- 자료가 없으면 "공시 없음" 또는 "이 DB에 없음"이라고 한 문장으로 적고 끝냅니다.
+- 자료가 없으면 "공시 없음" 또는 "이 DB에 없음"이라고 한 문장으로 적고 끝냅니다. 다른 항목에 있는 결정이면 그 항목을 가리킵니다.
+- 관계의 방향은 조회 결과의 role 에 적힌 대로 씁니다(누가 누구의 주식을 가졌는지, 누가 팔고 누가 샀는지). 뒤집지 않습니다.
+- 건수, 합계, 가장 큰 것은 summary 나 by_kind 에 계산된 값만 씁니다. 목록을 직접 세거나 더하지 않습니다. 서로 다른 종류의 금액(예: 자기주식 직접 취득과 신탁계약)을 더하지 않습니다.
+- 지분율과 최대주주는 기준일(어느 보고서, 언제 기준인지)과 함께 씁니다.
 - 마크다운으로 씁니다. 제목은 쓰지 않습니다(화면이 붙입니다). 3~7개의 짧은 글머리표나 두세 문단, 길어도 900자 안쪽입니다. 표는 쓰지 않습니다(카드가 따로 붙습니다).
 """
 
@@ -62,25 +65,31 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
     when = as_of.isoformat()
     year_ago = (as_of - timedelta(days=365)).isoformat()
     clean = lambda r: {k: v for k, v in r.items() if not k.startswith("_")}
+    from . import report_facts as shape
+    holders = clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="equity", direction="in"))
+    invested = clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="equity", direction="out", listed_only=False))
+    major = clean(_call(db, "get_major_holders", company_id=company_id, as_of=when))
+    events = clean(_call(db, "get_capital_events", company_id=company_id, as_of=when))
+    recent_events = sum(1 for e in events.get("events", []) if e.get("date", "") >= year_ago)
     sections = [
         {"key": "business", "title": "사업 구성", "cards": ["revenue"],
          "facts": {"products": clean(_call(db, "get_products", company_id=company_id, as_of=when)),
                    "business": clean(_call(db, "get_business", company_id=company_id, as_of=when, sections=[1]))}},
         {"key": "financials", "title": "실적과 재무", "cards": ["financials", "health"],
-         "facts": {"financials": clean(_call(db, "get_financials", company_id=company_id, as_of=when))}},
+         "facts": {"financials": shape.financials(clean(_call(db, "get_financials", company_id=company_id, as_of=when)))}},
         {"key": "governance", "title": "지배 구조와 주주", "cards": ["ownership", "holders"],
-         "facts": {"holders_table": clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="equity", direction="in")),
-                   "investments": clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="equity", direction="out", listed_only=False)),
-                   "major_holders_5pct": clean(_call(db, "get_major_holders", company_id=company_id, as_of=when))}},
+         "facts": {"governance": shape.governance(company_id, holders, invested, major)}},
         {"key": "deals", "title": "최근 1년의 계약과 결정", "cards": ["supply_flow", "timeline"],
-         "facts": {"supply_contracts": clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="supply_contract", direction="both", disclosed_from=year_ago)),
-                   "stake_acquisitions": clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="stake_acquisition", direction="both", disclosed_from=year_ago)),
-                   "stake_disposals": clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="stake_disposal", direction="both", disclosed_from=year_ago))}},
+         "facts": {"deals": shape.deals(
+             company_id,
+             clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="supply_contract", direction="both", disclosed_from=year_ago)),
+             clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="stake_acquisition", direction="both", disclosed_from=year_ago)),
+             clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="stake_disposal", direction="both", disclosed_from=year_ago)),
+             recent_events)}},
         {"key": "capital", "title": "자본 변동과 주주 환원", "cards": ["dilution", "payout"],
-         "facts": {"capital_events": clean(_call(db, "get_capital_events", company_id=company_id, as_of=when)),
-                   "dividends": clean(_call(db, "get_dividends", company_id=company_id, as_of=when))}},
+         "facts": {"capital": shape.capital(events, clean(_call(db, "get_dividends", company_id=company_id, as_of=when)))}},
         {"key": "insiders", "title": "내부자 매매", "cards": ["insiders"],
-         "facts": {"insider_trades": clean(_call(db, "get_insider_trades", company_id=company_id, as_of=when))}},
+         "facts": {"insider_trades": shape.insiders(clean(_call(db, "get_insider_trades", company_id=company_id, as_of=when)))}},
         {"key": "price", "title": "주가", "cards": ["returns"],
          "facts": {"price_history": clean(_call(db, "get_price_history", company_id=company_id, as_of=when))}},
     ]
@@ -92,9 +101,14 @@ def empty(section: dict) -> bool:
     def has(value) -> bool:
         if not isinstance(value, dict) or "error" in value:
             return False
-        for key in ("relations", "rows", "quarters", "holders", "events", "years", "reporters", "periods", "products", "sections"):
+        for key in ("relations", "rows", "quarters", "holders", "events", "years", "reporters", "periods", "products", "sections",
+                    "contracts", "stake_decisions", "investments", "major_holders_5pct", "decisions", "dividends", "buybacks_by_year"):
             if value.get(key):
                 return True
+        if isinstance(value.get("largest_holder_table"), dict) and value["largest_holder_table"].get("rows"):
+            return True
+        if isinstance(value.get("summary"), dict) and value["summary"].get("capital_decisions_elsewhere"):
+            return True
         return bool(value.get("total"))
     return not any(has(v) for v in section["facts"].values())
 
@@ -147,7 +161,9 @@ def summarize(client, company: dict, as_of: date, written: list[dict]) -> tuple[
 def build(company_id: int, as_of: date, *, checking: bool | None = None, client=None, on_section=None) -> dict:
     """보고서 하나. on_section(항목) 은 항목이 하나 끝날 때마다 불린다(화면에 흘려보낼 때)."""
     import anthropic
-    checking = os.environ.get("REPORT_VERIFY", "1") == "1" if checking is None else checking
+    # 검산(숫자 대조 뒤 다시 쓰기)은 기본으로 끈다: 10판 1차에서 켠 쪽이 틀린 사실이 있는 보고서가 더 많고(8 대 6),
+    # 다시 쓴 항목에 고친다는 메모가 남았다. REPORT_VERIFY=1 이면 켠다
+    checking = os.environ.get("REPORT_VERIFY", "0") == "1" if checking is None else checking
     client = client or anthropic.Anthropic(api_key=secret("ANTHROPIC_API_KEY"))
     started = time.time()
     with session() as db:
