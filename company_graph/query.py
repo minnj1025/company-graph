@@ -41,8 +41,11 @@ def visible(as_of: date):
 
 def find_companies(db, text: str, limit: int = 10) -> list[Company]:
     """이름이나 종목코드로 기업을 찾는다. 정확히 맞는 것이 있으면 그것만 돌려준다."""
-    if text.isdigit() and len(text) == 6:
-        return list(db.scalars(select(Company).where(Company.stock_code == text)))
+    # 종목코드: 여섯 자리. 2025년 무렵부터 새로 상장한 종목은 영문이 섞인다(예: 0126Z0)
+    if len(text) == 6 and text.isascii() and text.isalnum() and any(ch.isdigit() for ch in text):
+        found = list(db.scalars(select(Company).where(Company.stock_code == text.upper())))
+        if found or text.isdigit():
+            return found
     key = normalize(clean_reported(text))
     exact = list(db.scalars(select(Company).join(CompanyAlias).where(CompanyAlias.alias == key).distinct()))
     if exact:
