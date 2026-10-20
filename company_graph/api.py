@@ -1185,3 +1185,48 @@ def ask_stream(body: Ask, request: Request, db=Depends(get_db)):
 
     return StreamingResponse(stream(), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"})
+
+
+class ReportAsk(BaseModel):
+    company_id: int
+
+
+@app.post("/api/report/stream")
+def report_stream(body: ReportAsk, request: Request, db=Depends(get_db)):
+    """기업 분석 보고서(report.py)를 항목이 끝나는 대로 흘려보낸다. 질문 한 번으로 센다.
+    사건: section(항목 하나: 제목, 글, 카드, 근거), done(보고서 전체), error(사유)."""
+    from . import report
+
+    company = db.get(Company, body.company_id)
+    if company is None or not company.stock_code:
+        raise HTTPException(404, "상장사만 보고서를 만들 수 있습니다")
+    _, visitor, ask_id = _admit(Ask(question=f"[보고서] {company.label}"), request, db)
+    events: queue.Queue = queue.Queue()
+
+    def work():
+        try:
+            result = report.build(body.company_id, date.today(), on_section=lambda section: events.put(("section", section)))
+            with session(_engine) as own:
+                entry = own.get(AskLog, ask_id)
+                entry.ok, entry.tokens, entry.seconds = True, sum(result["usage"].values()), result["seconds"]
+                own.commit()
+            result["markdown"] = report.markdown(result)
+            events.put(("done", result))
+        except Exception:
+            events.put(("error", UNAVAILABLE))
+
+    threading.Thread(target=work, daemon=True).start()
+
+    def stream():
+        while True:
+            try:
+                kind, value = events.get(timeout=10)
+            except queue.Empty:
+                yield ": 기다리는 중\n\n"
+                continue
+            yield f"event: {kind}\ndata: {json.dumps(value, ensure_ascii=False, default=str)}\n\n"
+            if kind in ("done", "error"):
+                return
+
+    return StreamingResponse(stream(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"})

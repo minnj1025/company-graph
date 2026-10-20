@@ -188,9 +188,11 @@ interface Props {
   onOpen: (id: number) => void;
   onCenter: (id: number) => void;
   onClose: () => void;
+  /** 상장사면 '분석 보고서' 단추를 보인다 */
+  onReport?: (id: number, name: string) => void;
 }
 
-export function Panel({ detail, onOpen, onCenter, onClose }: Props) {
+export function Panel({ detail, onOpen, onCenter, onClose, onReport }: Props) {
   const { company, relations, group } = detail;
   const of = (type: string, outgoing: boolean) =>
     relations.filter((r) => r.type === type && (r.subject_id === company.id) === outgoing);
@@ -219,6 +221,7 @@ export function Panel({ detail, onOpen, onCenter, onClose }: Props) {
       </header>
       <div className="panel-actions">
         <button onClick={() => onCenter(company.id)}>이 기업 중심으로 보기</button>
+        {company.stock_code && onReport && <button onClick={() => onReport(company.id, shortName(company.name))}>분석 보고서</button>}
         <span className="sub">{detail.as_of} 시점에 공시로 알려진 내용</span>
       </div>
       <div className="panel-body">

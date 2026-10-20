@@ -13,10 +13,27 @@ from datetime import date
 COMPUTED = re.compile(r"계산|차이|차액|더한|더하면|합치면|합산|합계|총액|총 |뺀|빼면|늘었|늘어|줄었|줄어|증가|감소|증감|변동|올랐|내렸|%p|약 |대략|평균|배\b")
 NUMBER = re.compile(r"-?\d[\d,]*\.?\d*")
 UNITS = {"조": 10**12, "억": 10**8, "만": 10**4}
+# '89조 4,924억', '1조', '5,971억', '3,000만': 도구가 금액을 이렇게 글로 준다(financials.readable). 한 값으로 읽는다
+WORDED = re.compile(r"(-?\d[\d,]*(?:\.\d+)?)\s?조(?:\s?(\d[\d,]*)\s?억)?|(-?\d[\d,]*(?:\.\d+)?)\s?억|(-?\d[\d,]*(?:\.\d+)?)\s?만(?=\s?원)")
+
+
+def _worded(text: str) -> list[tuple[float, float, str]]:
+    """글로 적은 금액들: (원 단위 값, 그 표기의 반올림 폭, 원문)."""
+    out = []
+    for m in WORDED.finditer(text):
+        jo, eok, alone, man = m.groups()
+        number = lambda s: float(s.replace(",", ""))
+        if jo is not None:
+            out.append((number(jo) * 1e12 + (number(eok) * 1e8 if eok else 0), 1e8 if eok else 1e12 * (0.1 if "." in jo else 1), m.group(0)))
+        elif alone is not None:
+            out.append((number(alone) * 1e8, 1e8 * (0.1 if "." in alone else 1), m.group(0)))
+        else:
+            out.append((number(man) * 1e4, 1e4, m.group(0)))
+    return out
 
 
 def _numbers(text: str) -> set[float]:
-    out = set()
+    out = {value for value, _, _ in _worded(text)}
     for token in NUMBER.findall(text):
         cleaned = token.replace(",", "").rstrip(".")
         try:
@@ -72,6 +89,10 @@ def unsupported(answer: str, results: list[str], as_of: date | None = None, ques
             value = float(match.group(1).replace(",", ""))
             if value not in known and round(value, 4) not in {round(k, 4) for k in known if k <= 100}:
                 flagged.append(match.group(0).strip())
+        for value, width, written in _worded(line):                                     # '89조 4,924억 원'은 한 값이다
+            if not any(abs(value - k) <= width for k in known):
+                flagged.append(written.strip())
+        line = WORDED.sub(" ", line)
         for match in re.finditer(r"(\d[\d,]*\.?\d*)\s?(조|억|만)(?=\s?원|[\s,.)]|$)", line):      # 1,234억 원, 2.5조
             text = match.group(1).replace(",", "")
             digits = len(text.split(".")[1]) if "." in text else 0

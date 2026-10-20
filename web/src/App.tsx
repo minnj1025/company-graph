@@ -20,6 +20,7 @@ type Shown = Pick<AskResult, "question" | "graph"> & {
 const HotPage = lazy(() => import("./Hot").then((m) => ({ default: m.HotPage })));
 const DataPage = lazy(() => import("./Pages").then((m) => ({ default: m.DataPage })));
 const QuestionsPage = lazy(() => import("./Pages").then((m) => ({ default: m.QuestionsPage })));
+const ReportView = lazy(() => import("./Report"));
 
 /** 그래프에 그릴 수 있는 관계 전부. 범례에 이 순서로 나온다 */
 const ALL_TYPES: RelType[] = ["equity", "supply_contract", "affiliate", "stake_acquisition", "stake_disposal", "product"];
@@ -107,6 +108,8 @@ export function App() {
   /** "화면 맞추기"를 누를 때마다 올린다. 그래프가 전체가 보이게 다시 맞춘다 */
   const [refit, setRefit] = useState(0);
   const [drawer, setDrawer] = useState<Drawer>(null);
+  // 기업 분석 보고서를 띄운 기업 (Report.tsx)
+  const [reportFor, setReportFor] = useState<{ id: number; name: string } | null>(null);
   // 오른쪽 칸은 넓힐 수 있는 가장 큰 너비로 연다. 사용자가 경계를 끌어 바꾼 뒤에는 그 너비를 따른다
   const widest = () => Math.round(Math.min(760, window.innerWidth * 0.6));
   const [drawerWidth, setDrawerWidth] = useState(widest);
@@ -709,6 +712,7 @@ export function App() {
                     go({ found: null, center: node, selected: id });
                   }}
                   onClose={closeDrawer}
+                  onReport={(id, name) => setReportFor({ id, name })}
                 />
               ) : (
                 <p className="empty drawer-note">
@@ -720,6 +724,11 @@ export function App() {
         </aside>
       </main>
       <Credit />
+      {reportFor && (
+        <Suspense fallback={null}>
+          <ReportView companyId={reportFor.id} name={reportFor.name} onClose={() => setReportFor(null)} onCompany={(id) => { setReportFor(null); openCompany(id); }} />
+        </Suspense>
+      )}
 
       {tab !== "graph" && (
         <div className="overlay">

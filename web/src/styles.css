@@ -5305,3 +5305,53 @@ details.more .notes {
   font-variant-numeric: tabular-nums;
   color: var(--text-2);
 }
+
+/* ── 기업 분석 보고서 (Report.tsx) ── */
+.report-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgb(0 0 0 / 0.55);
+  overflow-y: auto;
+  padding: 32px 16px;
+}
+.report-page {
+  max-width: 880px;
+  margin: 0 auto;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 28px 32px 36px;
+}
+.report-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+  margin-bottom: 8px;
+}
+.report-head h1 { font-size: 22px; margin: 0 0 4px; }
+.report-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.report-section { padding: 16px 0 6px; border-bottom: 1px solid var(--line); }
+.report-section:last-child { border-bottom: 0; }
+.report-section h2 { font-size: 16px; margin: 0 0 8px; }
+.report-section.pending { opacity: 0.55; }
+.report-section.summary { font-size: 15px; }
+.report-section p, .report-section li { line-height: 1.7; }
+.report-section a { color: var(--accent); }
+.report-progress, .report-error { margin: 12px 0; color: var(--text-2); }
+.report-error { color: var(--down); }
+@media (max-width: 640px) {
+  .report-page { padding: 18px 16px 24px; }
+  .report-head { flex-direction: column; }
+}
+@media print {
+  body * { visibility: hidden; }
+  .report-overlay, .report-overlay * { visibility: visible; }
+  .report-overlay { position: absolute; inset: 0; background: none; padding: 0; overflow: visible; }
+  .report-page { border: 0; max-width: none; }
+  .report-actions { display: none; }
+}

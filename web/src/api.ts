@@ -92,6 +92,61 @@ export async function askAgentStream(
   }
 }
 
+export interface ReportSection {
+  key: string;
+  title: string;
+  text: string;
+  views: View[];
+  sources: string[];
+  flagged: string[];
+  retried: boolean;
+}
+
+export interface ReportResult {
+  company: { company_id: number; name: string };
+  as_of: string;
+  model: string;
+  verified: boolean;
+  summary: string;
+  sections: ReportSection[];
+  unknown: string[];
+  seconds: number;
+  markdown: string;
+}
+
+/** 기업 분석 보고서. 항목이 끝날 때마다 onSection 이 불리고, 다 끝나면 보고서 전체를 돌려준다 */
+export async function reportStream(companyId: number, onSection: (section: ReportSection) => void): Promise<ReportResult> {
+  const response = await fetch("/api/report/stream", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...ownerHeaders() },
+    body: JSON.stringify({ company_id: companyId }),
+  });
+  if (!response.ok || !response.body) {
+    const body = await response.json().catch(() => null);
+    throw new Error(typeof body?.detail === "string" ? body.detail : REFUSED);
+  }
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    buffer += decoder.decode(value, { stream: !done });
+    let end: number;
+    while ((end = buffer.indexOf("\n\n")) >= 0) {
+      const block = buffer.slice(0, end);
+      buffer = buffer.slice(end + 2);
+      const kind = /^event: (.+)$/m.exec(block)?.[1];
+      const data = /^data: (.*)$/m.exec(block)?.[1];
+      if (!kind || data === undefined) continue;
+      const parsed = JSON.parse(data);
+      if (kind === "done") return parsed as ReportResult;
+      if (kind === "error") throw new Error(typeof parsed === "string" ? parsed : REFUSED);
+      if (kind === "section") onSection(parsed as ReportSection);
+    }
+    if (done) throw new Error(REFUSED);
+  }
+}
+
 /** Agent에게 묻는다. 서버가 거절하면(횟수 초과 등) 그 사유를 그대로 던진다. */
 export async function askAgent(question: string): Promise<AskResult> {
   const response = await fetch("/api/ask", {
