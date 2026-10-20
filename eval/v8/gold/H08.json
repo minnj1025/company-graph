@@ -1,0 +1,72 @@
+{
+  "id": "H08",
+  "question": "신한지주 지분은 누가 많이 갖고 있어?",
+  "as_of": "2026-10-16",
+  "company": [
+    "신한지주"
+  ],
+  "expected_kinds": [
+    "holders"
+  ],
+  "acceptable_kinds": [
+    "ownership"
+  ],
+  "values": [
+    {
+      "label": "5% 보고자 국민연금공단",
+      "value": "국민연금공단",
+      "unit": "이름",
+      "rcept_no": [
+        "20250325000404"
+      ],
+      "formula": "repror '국민연금공단' 의 2026-10-16 이전 마지막 보고(2025-03-25)"
+    },
+    {
+      "label": "국민연금공단 보유비율(5% 보고, 특별관계자 포함)",
+      "value": 8.6,
+      "unit": "%",
+      "rcept_no": [
+        "20250325000404"
+      ],
+      "formula": "2025-03-25 보고의 stkrt 8.60 (보유주식 43,318,455주, 증감 0.84%p)"
+    },
+    {
+      "label": "5% 보고자 BlackRock Fund Advisors",
+      "value": "BlackRock Fund Advisors",
+      "unit": "이름",
+      "rcept_no": [
+        "20260811000674"
+      ],
+      "formula": "repror 'BlackRockFundAdvisors' 의 2026-10-16 이전 마지막 보고(2026-08-11)"
+    },
+    {
+      "label": "BlackRock Fund Advisors 보유비율(5% 보고, 특별관계자 포함)",
+      "value": 7.14,
+      "unit": "%",
+      "rcept_no": [
+        "20260811000674"
+      ],
+      "formula": "2026-08-11 보고의 stkrt 7.14 (보유주식 33,538,344주, 증감 1.01%p)"
+    },
+    {
+      "label": "5% 보고자 Capital Research and Management Company",
+      "value": "Capital Research and Management Company",
+      "unit": "이름",
+      "rcept_no": [
+        "20260902000035"
+      ],
+      "formula": "repror 'CapitalResearchandManagementCompany' 의 2026-10-16 이전 마지막 보고(2026-09-02)"
+    },
+    {
+      "label": "Capital Research and Management Company 보유비율(5% 보고, 특별관계자 포함)",
+      "value": 5.02,
+      "unit": "%",
+      "rcept_no": [
+        "20260902000035"
+      ],
+      "formula": "2026-09-02 보고의 stkrt 5.02 (보유주식 23,568,346주, 증감 0.03%p)"
+    }
+  ],
+  "must_say": [],
+  "note": "holders 카드. 금융지주라 최대주주 쪽(특수관계인) 묶음이 없고 5% 이상 주주 셋이 모두 기관이다. 국민연금 8.60%(2025-03-25), 블랙록 7.14%(2026-08-11), Capital Research 5.02%(2026-09-02). 신한지주 5% 보고는 이 세 건이 전부다. 국민연금 값은 1년 반 전 보고라 그 날짜를 함께 밝히는 것이 좋지만 채점은 값으로만 한다."
+}

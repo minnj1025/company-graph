@@ -1,0 +1,41 @@
+{
+  "id": "H05",
+  "question": "최근 3개월 사이에 하나금융지주 지분을 늘린 5% 주주 있어?",
+  "as_of": "2026-10-16",
+  "company": [
+    "하나금융지주"
+  ],
+  "expected_kinds": [],
+  "acceptable_kinds": [],
+  "values": [
+    {
+      "label": "지분을 늘린 5% 보고자",
+      "value": "Capital Research and Management Company",
+      "unit": "이름",
+      "rcept_no": [
+        "20261008000058"
+      ],
+      "formula": "majorstock 중 rcept_dt 2026-07-19~2026-10-16 인 행은 이것 하나"
+    },
+    {
+      "label": "보고 후 보유비율",
+      "value": 6.88,
+      "unit": "%",
+      "rcept_no": [
+        "20261008000058"
+      ],
+      "formula": "2026-10-08 보고 stkrt"
+    },
+    {
+      "label": "비율 증감",
+      "value": 1.33,
+      "unit": "%",
+      "rcept_no": [
+        "20261008000058"
+      ],
+      "formula": "같은 보고 stkrt_irds (보유주식 +3,197,793주)"
+    }
+  ],
+  "must_say": [],
+  "note": "기간은 as_of 이전 90일(2026-07-19~2026-10-16, 접수일 기준). 이 기간 하나금융지주 5% 보고는 2026-10-08 Capital Research and Management Company(5.55% → 6.88%, 장내매수) 한 건뿐이다. 이름은 원문 표기 'CapitalResearchandManagementCompany' 그대로나 '캐피탈 리서치' 등으로 적어도 맞음. 국민연금(9.45%, 2025-02-21)과 블랙록(7.11%, 2026-02-26)은 이 기간에 보고가 없으므로 '늘렸다'고 적으면 틀림. 값 질문이라 카드 없음."
+}

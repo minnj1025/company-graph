@@ -1,0 +1,23 @@
+{
+  "id": "H03",
+  "question": "SK하이닉스 지분 5% 넘게 갖고 있던 캐피탈그룹, 아직도 5% 넘게 갖고 있어?",
+  "as_of": "2026-10-16",
+  "company": [
+    "SK하이닉스"
+  ],
+  "expected_kinds": [],
+  "acceptable_kinds": [],
+  "values": [
+    {
+      "label": "Capital Research and Management Company 보유비율",
+      "value": 3.53,
+      "unit": "%",
+      "rcept_no": [
+        "20260609000049"
+      ],
+      "formula": "repror 'CapitalResearchandManagementCompany' 의 마지막 보고(2026-06-09) stkrt. 직전 2026-02-09 보고 5.05% 에서 -1.52%p"
+    }
+  ],
+  "must_say": [],
+  "note": "값 하나라 카드 없음. 답은 '아니다, 2026-06-09 보고에서 3.53%로 5% 미만으로 내려갔다'. 캐피탈그룹은 보고자 이름이 바뀌었다: 'TheCapitalGroupCompanies,Inc.' 가 2025-10-14 폐지보고(0.00%)를 내고 같은 날 'CapitalResearchandManagementCompany' 가 6.84%로 새로 보고했다. 그 뒤 5.05%(2026-02-09) → 3.53%(2026-06-09). 이름은 'Capital Research', '캐피탈 리서치' 등으로 적어도 맞음. 7.23%나 6.84%, 5.05%를 지금 비율처럼 적으면 틀림."
+}
