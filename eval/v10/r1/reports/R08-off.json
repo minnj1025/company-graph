@@ -1,0 +1,1007 @@
+{
+ "company": {
+  "company_id": 3191,
+  "name": "케이티앤지",
+  "stock_code": "033780",
+  "market": "유가증권",
+  "group": "KT&G"
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "케이티앤지의 2026년 상반기 누적 연결 매출은 3조 4,052억 원으로 전년 동기 대비 12.05% 늘었고, 영업이익은 7,790억 원(22.59%), 당기순이익은 7,403억 원(84.42%) 증가했습니다 (접수번호 20260814004174). 매출의 69.7%는 담배 사업이 차지합니다. 2026년 6월 말 부채비율은 54.65%로 2025년 말(51.98%)보다 높아졌지만, 같은 시점 시장 중앙값(96.7%)보다는 낮습니다. 최대주주 기업은행의 지분은 9.16%로 보고되었습니다 (접수번호 20260805000499). 최근 1년 공시에는 공급계약과 Another Snus Factory 지분 취득·처분 결정이 포함되어 있습니다 (접수번호 20251124800597, 20251124800626). 주가는 1개월 기준 +10.76%로 시장 중앙값(-3.73%)을 웃돌았으나, 이 자료에는 그 움직임을 설명하는 공시가 없습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "**사업 구성 (2026.06 반기보고서, 접수번호 20260814004174, 연결 기준)**\n\n- **담배 (궐련) 69.7%**: 국내 차별화 궐련과 차세대 담배(HNB) 등을 제조·판매하며, 해외는 중동·CIS 중심에서 아태·아프리카·중남미로 수출 지역을 넓히고 인도네시아 등 해외법인 직접 사업을 하고 있습니다 (접수번호 20260814004174). 2026년 반기 누계 매출은 2조 3,744억 원으로 전년 대비 14.2% 증가했습니다.\n- **건강기능식품 (홍삼) 16.3%**: 홍삼과 비홍삼 건강기능식품을 제조·판매하며, '정관장' 브랜드를 중심으로 국내외 마케팅을 강화하고 있습니다. 2026년 반기 누계 매출은 5,564억 원으로 전년 대비 4.0% 증가했습니다 (접수번호 20260814004174).\n- **부동산 (분양) 8.1%**: 저활용 유휴 부지를 활용해 개발·분양과 임대 운영을 하고 있으며, 안양 호계동 공동주택·지식산업센터 분양 등 6개 개발 프로젝트를 추진 중이고 9개 임대자산을 운영합니다 (접수번호 20260814004174). 2026년 반기 누계 매출은 2,752억 원으로 전년 대비 12.7% 증가했습니다.\n- **기타 (제약) 5.9%**: 전문의약품 중심의 제약사업과 화장품 사업을 영위합니다 (접수번호 20260814004174). 2026년 반기 누계 매출은 1,992억 원으로 전년 대비 9.8% 증가했습니다. 다만 이 제품 분류는 보고서 표의 명칭을 바탕으로 붙인 것이므로 세부 제품 구분은 원문을 함께 확인하시기 바랍니다.\n- 연결 매출 총액은 3조 4,052억 원으로 전년 동기 대비 12.0% 증가했습니다 (접수번호 20260814004174).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3702,
+    "output_tokens": 764,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "케이티앤지 매출 구성",
+     "company": {
+      "id": 3191,
+      "name": "케이티앤지"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "궐련",
+       "segment": "담배",
+       "share_pct": 69.7,
+       "family": "담배·인삼"
+      },
+      {
+       "name": "홍삼",
+       "segment": "건강기능식품",
+       "share_pct": 16.3,
+       "family": "건강기능식품"
+      },
+      {
+       "name": "분양",
+       "segment": "부동산",
+       "share_pct": 8.1,
+       "family": "부동산 개발·분양"
+      },
+      {
+       "name": "제약",
+       "segment": "기타",
+       "share_pct": 5.9,
+       "family": "전문의약품"
+      }
+     ],
+     "sources": [
+      "20260814004174"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 4줄, 비중 합 100.0%"
+    }
+   ],
+   "sources": [
+    "20260814004174"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "- **2026년 상반기 누적 실적**: 매출 3조 4,052억 원(전년 동기 대비 12.05%), 영업이익 7,790억 원(22.59%), 당기순이익 7,403억 원(84.42%) 증가. 영업이익률 22.88%, 순이익률 21.74%입니다 (접수번호 20260814004174).\n- **2026년 2분기 단독 실적**: 매출 1조 7,016억 원(9.93%), 영업이익 4,144억 원(18.45%), 당기순이익 3,621억 원(152.3%) 증가. 영업이익률 24.36%입니다 (접수번호 20260814004174).\n- **최근 분기 흐름**: 2026년 1분기 매출 1조 7,036억 원, 영업이익 3,645억 원, 당기순이익 3,782억 원이었고, 2025년 4분기 영업이익률은 14.18%였습니다 (접수번호 20260515002914, 20260318001422).\n- **연간 추이**: 2025년 연간 매출은 6조 5,797억 원(11.35%)으로 늘었고, 영업이익은 1조 3,437억 원(13.03%) 증가, 당기순이익은 1조 1,023억 원(-5.38%) 감소했습니다 (접수번호 20260318001422).\n- **재무상태(2026년 6월 말, 연결)**: 자산총계 15조 360억 원, 부채총계 5조 3,132억 원, 자본총계 9조 7,227억 원이며, 부채비율은 54.65%로 2025년 말(51.98%)보다 높아졌습니다. 유동비율은 203.92%입니다 (접수번호 20260814004174).\n- **시장 중앙값 비교(유가증권 827개사)**: 부채비율 96.7%, 유동비율 133.47%, 영업이익률 5.1%입니다. 이 자료는 해당 시점 DB 기준이며, 같은 시점에서 본 회사의 부채비율은 시장 중앙값보다 낮고 영업이익률과 유동비율은 높습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3127,
+    "output_tokens": 725,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "케이티앤지 실적 추이",
+     "company": {
+      "id": 3191,
+      "name": "케이티앤지"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114002373"
+       ],
+       "revenue": 16363.5,
+       "revenue_yoy_pct": -3.15,
+       "operating_income": 4177.5,
+       "operating_income_yoy_pct": 2.71,
+       "net_income": 2414.8,
+       "net_income_yoy_pct": -27.55,
+       "operating_margin_pct": 25.53
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250318001223",
+        "20241114002373"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 15564.1,
+       "revenue_yoy_pct": 7.98,
+       "operating_income": 2125.0,
+       "operating_income_yoy_pct": 7.34,
+       "net_income": 3251.5,
+       "net_income_yoy_pct": 187.94,
+       "operating_margin_pct": 13.65
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250515002949"
+       ],
+       "revenue": 14911.1,
+       "revenue_yoy_pct": 15.39,
+       "operating_income": 2855.6,
+       "operating_income_yoy_pct": 20.71,
+       "net_income": 2579.3,
+       "net_income_yoy_pct": -9.69,
+       "operating_margin_pct": 19.15
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250814004354"
+       ],
+       "revenue": 15479.0,
+       "revenue_yoy_pct": 8.72,
+       "operating_income": 3498.8,
+       "operating_income_yoy_pct": 8.66,
+       "net_income": 1435.1,
+       "net_income_yoy_pct": -54.11,
+       "operating_margin_pct": 22.6
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251114002334"
+       ],
+       "revenue": 18269.0,
+       "revenue_yoy_pct": 11.64,
+       "operating_income": 4652.9,
+       "operating_income_yoy_pct": 11.38,
+       "net_income": 4187.1,
+       "net_income_yoy_pct": 73.39,
+       "operating_margin_pct": 25.47
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260318001422",
+        "20251114002334"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 17138.0,
+       "revenue_yoy_pct": 10.11,
+       "operating_income": 2429.3,
+       "operating_income_yoy_pct": 14.32,
+       "net_income": 2821.6,
+       "net_income_yoy_pct": -13.22,
+       "operating_margin_pct": 14.18
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260515002914"
+       ],
+       "revenue": 17036.0,
+       "revenue_yoy_pct": 14.25,
+       "operating_income": 3645.4,
+       "operating_income_yoy_pct": 27.66,
+       "net_income": 3782.4,
+       "net_income_yoy_pct": 46.65,
+       "operating_margin_pct": 21.4
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260814004174"
+       ],
+       "revenue": 17015.6,
+       "revenue_yoy_pct": 9.93,
+       "operating_income": 4144.5,
+       "operating_income_yoy_pct": 18.45,
+       "net_income": 3620.9,
+       "net_income_yoy_pct": 152.3,
+       "operating_margin_pct": 24.36
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230320001005"
+       ],
+       "revenue": 58514.1,
+       "revenue_yoy_pct": 11.92,
+       "operating_income": 12676.5,
+       "operating_income_yoy_pct": -5.28,
+       "net_income": 10053.3,
+       "net_income_yoy_pct": 3.45,
+       "operating_margin_pct": 21.66,
+       "net_margin_pct": 17.18
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240320001212"
+       ],
+       "revenue": 58626.1,
+       "revenue_yoy_pct": 0.19,
+       "operating_income": 11673.4,
+       "operating_income_yoy_pct": -7.91,
+       "net_income": 9223.6,
+       "net_income_yoy_pct": -8.25,
+       "operating_margin_pct": 19.91,
+       "net_margin_pct": 15.73
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250318001223"
+       ],
+       "revenue": 59087.9,
+       "revenue_yoy_pct": 0.79,
+       "operating_income": 11888.1,
+       "operating_income_yoy_pct": 1.84,
+       "net_income": 11650.0,
+       "net_income_yoy_pct": 26.31,
+       "operating_margin_pct": 20.12,
+       "net_margin_pct": 19.72
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260318001422"
+       ],
+       "revenue": 65797.1,
+       "revenue_yoy_pct": 11.35,
+       "operating_income": 13436.7,
+       "operating_income_yoy_pct": 13.03,
+       "net_income": 11023.2,
+       "net_income_yoy_pct": -5.38,
+       "operating_margin_pct": 20.42,
+       "net_margin_pct": 16.75
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260814004174"
+       ],
+       "revenue": 34051.6,
+       "revenue_yoy_pct": 12.05,
+       "operating_income": 7789.9,
+       "operating_income_yoy_pct": 22.59,
+       "net_income": 7403.3,
+       "net_income_yoy_pct": 84.42,
+       "operating_margin_pct": 22.88,
+       "net_margin_pct": 21.74
+      }
+     ],
+     "sources": [
+      "20241114002373",
+      "20250318001223",
+      "20250515002949",
+      "20250814004354",
+      "20251114002334",
+      "20260318001422",
+      "20260515002914",
+      "20260814004174"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 1조 7,016억 원, 영업이익 4,144억 원, 영업이익 전년 동기 대비 +18.4%"
+    },
+    {
+     "kind": "health",
+     "title": "케이티앤지 재무 체력",
+     "company": {
+      "id": 3191,
+      "name": "케이티앤지"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 54.65,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 203.92,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 22.88,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260814004174"
+      ],
+      "total_assets": 150359.8,
+      "total_liabilities": 53132.5,
+      "total_equity": 97227.2,
+      "current_assets": 76117.7,
+      "current_liabilities": 37327.1,
+      "debt_ratio_pct": 54.65,
+      "current_ratio_pct": 203.92
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260318001422"
+      ],
+      "total_assets": 141891.3,
+      "total_liabilities": 48529.6,
+      "total_equity": 93361.7,
+      "current_assets": 70262.4,
+      "current_liabilities": 32368.4,
+      "debt_ratio_pct": 51.98,
+      "current_ratio_pct": 217.07
+     },
+     "market": "유가증권",
+     "sources": [
+      "20241114002373",
+      "20250318001223",
+      "20250515002949",
+      "20250814004354",
+      "20251114002334",
+      "20260318001422",
+      "20260515002914",
+      "20260814004174"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 54.65% (시장 중앙값 96.7%), 유동비율 203.92% (시장 중앙값 133.47%), 영업이익률 22.88% (시장 중앙값 5.1%)"
+    }
+   ],
+   "sources": [
+    "20260318001422",
+    "20260515002914",
+    "20260814004174"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "## 지배 구조와 주주\n\n**최대주주 및 특수관계인 (사업보고서 기준)**\n- 최대주주와 특수관계인 합계는 기말 기준 8.06%, 기초 기준 7.59%입니다. 보통주 합계 주식수는 9,510,485주로 기초와 같습니다 (접수번호 20260318001422).\n- 최대주주 본인은 기업은행으로 기재되어 있으며, 중소기업은행이라는 이름으로 보고되었습니다. 기초와 기말 모두 9,510,485주입니다 (접수번호 20260318001422).\n- 특수관계인 가운데 TYM은 0.004%(5,000주), 조선선재는 0.0034%(4,700주)를 보유하고 있으며, 목적은 각각 단순투자와 일반투자입니다 (접수번호 20260318001226, 20260814002194). 파트론은 300주를 보유한 것으로 공시되어 있습니다 (접수번호 20260702000296).\n\n**5% 이상 주주 (대량보유 보고 기준, 최근 1년)**\n- 기업은행은 2026년 8월 5일 보고에서 9.16%(9,510,485주)를 보유했다고 밝혔고, 전 보고 대비 2.23%p 늘었다고 보고했습니다 (접수번호 20260805000499).\n- FirstEagle Investment Management, LLC는 2026년 5월 27일 8.61%(8,934,635주)로 보고했으며, 투자 자금 회수 목적의 장내 매도를 이유로 들었습니다 (접수번호 20260527000073).\n- Capital Research and Management Company는 2026년 7월 3일 8.22%(8,528,191주)로 보고했고, 단순투자 목적의 장내 매수를 이유로 들었습니다 (접수번호 20260703000113).\n- 국민연금공단은 2025년 4월 1일 기준 7.5%(9,157,340주)를 보고했습니다 (접수번호 20250401003742).\n- BlackRock Fund Advisors는 2026년 6월 10일 6.15%(6,381,519주)를 보고했습니다 (접수번호 20260610000680).\n- GIC Private Limited는 2026년 9월 7일 4.02%로 5% 미만으로 내려갔다고 보고했습니다 (접수번호 20260907000176).\n\n**자회사 현황 (사업보고서 기준)**\n- 출자 목록에는 KT&G Taiwan Corporation, KT&G Tutun Mamulleri Sanayi ve Ticaret A.S., KT&G USA Corporation 등이 100% 지분 자회사로 기재되어 있습니다 (접수번호 20260318001422).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 7713,
+    "output_tokens": 944,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "케이티앤지 지분 구조도",
+     "company": {
+      "id": 3191,
+      "name": "케이티앤지"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": 3675,
+       "name": "기업은행",
+       "listed": true,
+       "pct": 8.06,
+       "role": "본인",
+       "rcept": "20260318001422",
+       "up": [
+        {
+         "id": null,
+         "name": "기획재정부",
+         "listed": false,
+         "pct": 59.5
+        },
+        {
+         "id": null,
+         "name": "산업은행",
+         "listed": false,
+         "pct": 7.2
+        },
+        {
+         "id": null,
+         "name": "수출입은행",
+         "listed": false,
+         "pct": 1.8
+        }
+       ]
+      },
+      {
+       "id": 3119,
+       "name": "TYM",
+       "listed": true,
+       "pct": 0.004,
+       "role": null,
+       "rcept": "20260318001226",
+       "up": []
+      },
+      {
+       "id": 1670,
+       "name": "조선선재",
+       "listed": true,
+       "pct": 0.0034,
+       "role": null,
+       "rcept": "20260814002194",
+       "up": []
+      }
+     ],
+     "more_holders": 0,
+     "investees": [
+      {
+       "id": 2554,
+       "name": "영진약품",
+       "listed": true,
+       "pct": 52.45,
+       "purpose": "경영참여",
+       "rcept": "20260312000801"
+      },
+      {
+       "id": null,
+       "name": "KT&G Global Kazakhstan LLP",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      },
+      {
+       "id": null,
+       "name": "KT&G Global Rus L.L.C.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      },
+      {
+       "id": null,
+       "name": "KT&G Global TAS FE LLC(*2)",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      },
+      {
+       "id": null,
+       "name": "KT&G Kazakhstan LLP",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      },
+      {
+       "id": null,
+       "name": "KT&G Rus L.L.C.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      },
+      {
+       "id": null,
+       "name": "KT&G Taiwan Corporation",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      },
+      {
+       "id": null,
+       "name": "KT&G Tutun Mamulleri Sanayi ve Ticaret A.S.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      },
+      {
+       "id": null,
+       "name": "KT&G USA Corporation",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      },
+      {
+       "id": null,
+       "name": "Renzoluc Pte. Ltd.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      },
+      {
+       "id": 9585,
+       "name": "상상스테이",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      },
+      {
+       "id": 9581,
+       "name": "태아산업",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001422"
+      }
+     ],
+     "more_investees": 38,
+     "sources": [
+      "20260318001422",
+      "20260318001226",
+      "20260814002194",
+      "20260312000801"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 3곳(위 3곳 표시), 출자 대상 50곳(위 12곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "케이티앤지 주주 분포",
+     "company": {
+      "id": 3191,
+      "name": "케이티앤지"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 8.06,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "기업은행",
+       "id": 3675,
+       "pct": 9.16,
+       "date": "2026-08-05",
+       "overlap": true
+      },
+      {
+       "name": "FirstEagleInvestmentManagement,LLC",
+       "id": null,
+       "pct": 8.61,
+       "date": "2026-05-27",
+       "overlap": false
+      },
+      {
+       "name": "CapitalResearchandManagementCompany",
+       "id": null,
+       "pct": 8.22,
+       "date": "2026-07-03",
+       "overlap": false
+      },
+      {
+       "name": "국민연금공단",
+       "id": null,
+       "pct": 7.5,
+       "date": "2025-04-01",
+       "overlap": false
+      },
+      {
+       "name": "BlackRockFundAdvisors",
+       "id": null,
+       "pct": 6.15,
+       "date": "2026-06-10",
+       "overlap": false
+      },
+      {
+       "name": "FirstEagleGlobalFund",
+       "id": null,
+       "pct": 5.02,
+       "date": "2026-06-04",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 56.44,
+     "sources": [
+      "20260805000499",
+      "20260527000073",
+      "20260703000113",
+      "20250401003742",
+      "20260610000680",
+      "20260604000207",
+      "20260907000176",
+      "20260318001422",
+      "20260318001226",
+      "20260814002194",
+      "20260702000296"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 8.06%, FirstEagleInvestmentManagement,LLC 8.61%, CapitalResearchandManagementCompany 8.22%, 국민연금공단 7.5%, BlackRockFundAdvisors 6.15%, FirstEagleGlobalFund 5.02%"
+    }
+   ],
+   "sources": [
+    "20250401003742",
+    "20260318001226",
+    "20260318001422",
+    "20260527000073",
+    "20260610000680",
+    "20260702000296",
+    "20260703000113",
+    "20260805000499",
+    "20260814002194",
+    "20260907000176"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "케이티앤지의 최근 1년 계약·결정 공시는 공급계약 4건, 지분 취득 결정 1건, 지분 처분 결정 1건이 조회됩니다. 공급계약은 2024년 1월 이후 건별로 공시된 건만 포함합니다.\n\n- **대우건설 공사수주 계약 (2026-04-03 공시)**: 천안 성정동 공동주택 신축공사, 4,143억 원, 계약기간 2029-09-30까지, 최근 매출 대비 5.14% (접수번호 20260403800798)\n- **계룡건설산업 공사수주 정정 (2026-06-01 공시)**: 미아역세권 활성화사업 신축공사, 계약금액 1,136억 원에서 1,148억 288만 원으로 변경, 계약기간 2026-07-31까지 (접수번호 20260601801090)\n- **신원종합개발 정정 (2026-05-13 공시)**: 안양 주상복합 신축공사, 계약금액 303억 원에서 316억 원으로 변경, 종료일 2026-05-31에서 2026-06-30으로 연장 (접수번호 20260513900293)\n- **신원종합개발 정정 (2026-06-02 공시)**: 대전공장 기숙사 신축공사, 계약금액 198억 원에서 213억 원으로 변경 (접수번호 20260602900350)\n- **한창제지 재료품 구매 계약 (2025-12-31 공시)**: 259억 원, 계약기간 2026년 한 해 (접수번호 20251231800094)\n- **Another Snus Factory International Holding Company AB 지분 취득 결정 (2025-11-24 공시)**: 2,632억 원 규모 현금 취득, 취득 뒤 지분 100%, 니코틴파우치 기업 ASF 인수를 위한 Altria와의 공동투자 SPC 설립 목적 (접수번호 20251124800597)\n- **같은 회사 지분 처분 결정 (2025-11-24 공시)**: 1,027억 원 규모, 취득 뒤 지분 51%, 처분 예정일 2025-12-01 (접수번호 20251124800626)\n\n지분 취득과 처분은 같은 SPC 설립 건과 연결된 결정 공시입니다. 실행 결과는 이 조회 결과에 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 6196,
+    "output_tokens": 818,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "케이티앤지 공급망 흐름",
+     "company": {
+      "id": 3191,
+      "name": "케이티앤지"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 2239,
+        "name": "대우건설",
+        "listed": true
+       },
+       "to": {
+        "id": 3191,
+        "name": "케이티앤지",
+        "listed": true
+       },
+       "amount": 414300000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2168,
+        "name": "계룡건설산업",
+        "listed": true
+       },
+       "to": {
+        "id": 3191,
+        "name": "케이티앤지",
+        "listed": true
+       },
+       "amount": 113623285000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3882,
+        "name": "신원종합개발",
+        "listed": true
+       },
+       "to": {
+        "id": 3191,
+        "name": "케이티앤지",
+        "listed": true
+       },
+       "amount": 52984740000,
+       "count": 2
+      },
+      {
+       "from": {
+        "id": 4210,
+        "name": "한창제지",
+        "listed": true
+       },
+       "to": {
+        "id": 3191,
+        "name": "케이티앤지",
+        "listed": true
+       },
+       "amount": 25983034840,
+       "count": 1
+      }
+     ],
+     "more": 0,
+     "sources": [
+      "20251231800094",
+      "20260403800798",
+      "20260513900293",
+      "20260601801090",
+      "20260602900350"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 5건, 상대 4쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "케이티앤지 공시 타임라인",
+     "company": {
+      "id": 3191,
+      "name": "케이티앤지"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-11-24",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정",
+       "counterparty": "Another Snus Factory International Holding Company AB",
+       "title": null,
+       "amount": 263222300000.0,
+       "superseded": false,
+       "rcept": "20251124800597"
+      },
+      {
+       "date": "2025-11-24",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정(자율공시)",
+       "counterparty": "Another Snus Factory International Holding Company AB",
+       "title": null,
+       "amount": 102695450000.0,
+       "superseded": false,
+       "rcept": "20251124800626"
+      }
+     ],
+     "sources": [
+      "20251124800597",
+      "20251124800626"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 2건"
+    }
+   ],
+   "sources": [
+    "20251124800597",
+    "20251124800626",
+    "20251231800094",
+    "20260403800798",
+    "20260513900293",
+    "20260601801090",
+    "20260602900350"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "## 자본 변동과 주주 환원 (2024년 1월~2026년 10월 16일)\n\n- **배당 (연결 기준, 사업보고서 값):** 주당 배당금은 2023년 5,200원, 2024년 5,400원, 2025년 6,000원이다. 현금배당 총액은 각각 5,908억 원, 5,884억 원, 6,274억 원이다. 배당성향은 65.4%, 50.5%, 57.6%다 (접수번호 20260318001422). 세 해 모두 같은 사업보고서에서 나온 값이다.\n- **자기주식 취득 결정:** 2024년 2건(4,865억 원), 2025년 2건(5,600억 원), 2026년 1건(3,600억 원)이 결정 공시됐다. 2026년 9월 22일 결정(주식 2,071,346주, 기간 2026년 9월 23일~12월 22일)은 주주가치 제고와 주식 소각을 목적으로 한다 (접수번호 20260922000256). 이 금액은 예정 금액이며 실제 취득액이 아니다.\n- **자기주식 처분:** 2024년 2월, 2025년 2월, 2026년 2월에 세 번 처분이 결정됐다. 모두 사장·임원의 성과급 일부를 자기주식으로 지급하는 것이 목적이다. 처분 금액은 합계 약 64억 원이다 (예: 접수번호 20260224004024, 40.3억 원).\n- **자기주식 소각:** 감자결정으로 공시한 소각은 이 자료에 없다.\n- **확인 불가 사항:** 취득 결정의 실제 취득 결과, 처분의 실제 지급 여부, 중간배당 회차별 금액, 앞으로의 배당 계획은 이 자료에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2360,
+    "output_tokens": 629,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "payout",
+     "title": "케이티앤지 주주 환원",
+     "company": {
+      "id": 3191,
+      "name": "케이티앤지"
+     },
+     "as_of": "2026-10-16",
+     "years": [
+      {
+       "year": 2023,
+       "cash_eok": 5907.8,
+       "buyback_eok": 0.0,
+       "dps": 5200.0,
+       "payout_ratio": 65.4
+      },
+      {
+       "year": 2024,
+       "cash_eok": 5884.5,
+       "buyback_eok": 4864.8,
+       "dps": 5400.0,
+       "payout_ratio": 50.5
+      },
+      {
+       "year": 2025,
+       "cash_eok": 6274.3,
+       "buyback_eok": 5600.0,
+       "dps": 6000.0,
+       "payout_ratio": 57.6
+      },
+      {
+       "year": 2026,
+       "cash_eok": null,
+       "buyback_eok": 3600.0,
+       "dps": null,
+       "payout_ratio": null
+      }
+     ],
+     "sources": [
+      "20260318001422"
+     ],
+     "notes": [
+      "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
+      "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."
+     ],
+     "summary": "2023 주당 5,200원, 배당성향 65.4%; 2024 주당 5,400원, 배당성향 50.5%; 2025 주당 6,000원, 배당성향 57.6%"
+    }
+   ],
+   "sources": [
+    "20260224004024",
+    "20260318001422",
+    "20260922000256"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "- **1주(2026-10-08~10-16)**: 케이티앤지 종가 기준 수익률은 +7.38%로, 같은 시장(유가증권) 종목 중앙값 -2.74%보다 10.12%p 높았습니다.\n- **1개월(2026-09-16~10-16)**: 수익률 +10.76%로, 시장 중앙값 -3.73%보다 14.49%p 높았습니다.\n- **3개월(2026-07-16~10-16)**: 수익률 +5.89%로, 시장 중앙값 -0.97%보다 6.85%p 높았습니다.\n- **동종 비교**: 같은 제품(홍삼)을 매출의 10% 이상으로 파는 상장사는 이 DB에서 비엘팜텍 1곳뿐이라, 중앙값 비교는 참고 수준입니다. 비엘팜텍 수익률 중앙값은 1주 -12.82%, 1개월 -7.98%, 3개월 -35.26%였습니다.\n- 위 수익률은 KRX 일별 시세를 가공한 과거 사실이며, 이 자료에는 주가 변동의 원인을 설명하는 공시가 포함되어 있지 않습니다. 접수번호로 연결된 공시는 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 768,
+    "output_tokens": 444,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "케이티앤지 수익률 비교",
+     "company": {
+      "id": 3191,
+      "name": "케이티앤지"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": 7.38,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": -12.82,
+       "peers_counted": 1,
+       "vs_market_pp": 10.12
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": 10.76,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": -7.98,
+       "peers_counted": 1,
+       "vs_market_pp": 14.49
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": 5.89,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": -35.26,
+       "peers_counted": 1,
+       "vs_market_pp": 6.85
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "홍삼"
+      ],
+      "names": [
+       "비엘팜텍"
+      ],
+      "total": 1
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 7.38% (시장 -2.74%); 1개월 10.76% (시장 -3.73%); 3개월 5.89% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)",
+  "내부자 매매: 조회 시점까지 공시된 것이 없거나 모으지 않음"
+ ],
+ "usage": {
+  "input_tokens": 28412,
+  "output_tokens": 4722,
+  "cache_read_input_tokens": 4249,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 17.3,
+ "cost_usd": 0.0052
+}

@@ -1,0 +1,808 @@
+{
+ "company": {
+  "company_id": 2352,
+  "name": "KB금융",
+  "stock_code": "105560",
+  "market": "유가증권",
+  "group": null
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "KB금융은 2026년 2분기 연결 영업이익 2조 7,126억 원(전년 동기 대비 27.17% 증가)과 당기순이익 2조 105억 원(15.05% 증가)을 기록했다고 공시했습니다(접수번호 20260814004200). 2026년 상반기 누적 당기순이익은 3조 9,270억 원으로 집계됩니다(같은 접수번호). 2026년 6월 말 기준 부채비율은 1,282.56%로, 유가증권시장 중앙값 96.7%를 크게 웃돕니다(같은 접수번호). 최대주주는 국민연금공단으로 지분율 8.68%입니다(접수번호 20260619000667). 자기주식 취득 결정은 2026년에 약 3조 원 규모로 공시되었으며, 이는 결정 금액이고 실제 취득액은 확인되지 않습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "- **사업 구조**: KB금융은 금융업을 영위하는 회사에 대한 지배·경영관리와 종속회사 자금지원을 주요 목적으로 하는 순수 지주회사다(접수번호 20260814004200). 은행, 금융투자, 보험, 여신전문, 저축은행, 시스템 유지보수 부문으로 나뉜다(접수번호 20260814004200).\n- **부문별 제품**: 은행부문은 여수신, 금융투자부문은 증권 자기매매·중개, 자산운용, 신탁, 벤처투자, 보험부문은 손해보험과 생명보험, 여신전문부문은 신용카드·현금서비스·카드론·할부금융·리스를 취급한다(접수번호 20260814004200).\n- **비중**: 반기보고서에 각 제품의 매출 비중은 밝혀져 있지 않다(접수번호 20260814004200).\n- **계열사 규모(2026년 6월말 기준)**: KB국민은행 자산 약 627조 원, KB증권 자산 약 103조 원, KB국민카드 회원 약 2,140만 명이다(접수번호 20260814004200).\n- **상반기 실적**: 2026년 상반기 누적 당기순이익은 3조 885십억 원으로 전년동기대비 13.1% 증가했다고 적혀 있다. 보고서 원문의 '3조 885십억원'은 표기가 불명확하다(접수번호 20260814004200).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3594,
+    "output_tokens": 515,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "KB금융 매출 구성",
+     "company": {
+      "id": 2352,
+      "name": "KB금융"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "고객에 대한 여신/수신 취급 등",
+       "segment": "은행부문",
+       "share_pct": null,
+       "family": "은행·저축은행"
+      },
+      {
+       "name": "투자매매업, 투자중개업, 집합투자업, 신탁업, 창업·벤처기업 투자",
+       "segment": "금융투자부문",
+       "share_pct": null,
+       "family": "증권·투자은행"
+      },
+      {
+       "name": "손해보험 및 생명보험",
+       "segment": "보험부문",
+       "share_pct": null,
+       "family": "보험"
+      },
+      {
+       "name": "신용카드, 현금서비스, 카드론, 할부금융, 리스",
+       "segment": "여신전문부문",
+       "share_pct": null,
+       "family": "여신·카드·캐피탈"
+      },
+      {
+       "name": "상호저축은행 수신, 여신",
+       "segment": "저축은행부문",
+       "share_pct": null,
+       "family": "은행·저축은행"
+      },
+      {
+       "name": "컴퓨터 관련 기기 및 시스템의 유지보수 등 지원업무",
+       "segment": "기타부문",
+       "share_pct": null,
+       "family": "IT 서비스"
+      }
+     ],
+     "sources": [
+      "20260814004200"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다.",
+      "비중이 적히지 않은 줄이 있습니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 6줄, 비중 합 0%"
+    }
+   ],
+   "sources": [
+    "20260814004200"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "- **2026년 2분기 실적(연결):** 영업이익 2조 7,126억 원(전년 동기 대비 27.17% 증가), 당기순이익 2조 105억 원(15.05% 증가)이며, 근거는 접수번호 20260814004200입니다.\n- **2026년 상반기 누적:** 영업이익 5조 4,401억 원(22.91% 증가), 당기순이익 3조 9,270억 원(13.93% 증가)이며, 같은 접수번호에 실려 있습니다.\n- **2026년 1분기:** 영업이익 2조 7,276억 원(18.95% 증가), 당기순이익 1조 9,165억 원(12.79% 증가)이며, 접수번호 20260515002888입니다.\n- **2025년 연간:** 영업이익 8조 5,177억 원(5.87% 증가), 당기순이익 5조 8,407억 원(16.15% 증가)이며, 접수번호 20260619000667입니다.\n- **재무상태(2026년 6월 말 기준):** 자산 866조 8,892억 원, 부채 804조 1,874억 원, 자본 62조 7,018억 원이며, 부채비율은 1,282.56%로 유가증권시장 중앙값 96.7%보다 훨씬 높습니다(접수번호 20260814004200).\n- 매출액은 이 DB에 없습니다. 금융회사는 영업수익을 따로 적지 않기 때문입니다. 유동자산과 유동부채도 공시 값이 없어 유동비율은 확인되지 않습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2654,
+    "output_tokens": 544,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "KB금융 실적 추이",
+     "company": {
+      "id": 2352,
+      "name": "KB금융"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114002984"
+       ],
+       "revenue": null,
+       "operating_income": 23575.5,
+       "operating_income_yoy_pct": 21.12,
+       "net_income": 15960.4,
+       "net_income_yoy_pct": 19.37,
+       "operating_margin_pct": null
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20260324000822",
+        "20241114002984"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": null,
+       "operating_income": 10300.1,
+       "operating_income_yoy_pct": 319.26,
+       "net_income": 6586.9,
+       "net_income_yoy_pct": 277.89,
+       "operating_margin_pct": null
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250526000374"
+       ],
+       "revenue": null,
+       "operating_income": 22930.3,
+       "operating_income_yoy_pct": -2.24,
+       "net_income": 16991.2,
+       "net_income_yoy_pct": 60.89,
+       "operating_margin_pct": null
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20260324000827"
+       ],
+       "revenue": null,
+       "operating_income": 21329.7,
+       "operating_income_yoy_pct": -7.37,
+       "net_income": 17475.8,
+       "net_income_yoy_pct": 2.14,
+       "operating_margin_pct": null
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251114003011"
+       ],
+       "revenue": null,
+       "operating_income": 23349.9,
+       "operating_income_yoy_pct": -1.29,
+       "net_income": 16552.3,
+       "net_income_yoy_pct": 3.33,
+       "operating_margin_pct": null
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260619000667",
+        "20251114003011"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": null,
+       "operating_income": 17567.2,
+       "operating_income_yoy_pct": 70.3,
+       "net_income": 7387.9,
+       "net_income_yoy_pct": 11.97,
+       "operating_margin_pct": null
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260515002888"
+       ],
+       "revenue": null,
+       "operating_income": 27275.7,
+       "operating_income_yoy_pct": 18.95,
+       "net_income": 19164.7,
+       "net_income_yoy_pct": 12.79,
+       "operating_margin_pct": null
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260814004200"
+       ],
+       "revenue": null,
+       "operating_income": 27125.5,
+       "operating_income_yoy_pct": 27.17,
+       "net_income": 20105.1,
+       "net_income_yoy_pct": 15.05,
+       "operating_margin_pct": null
+      }
+     ],
+     "years": [
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240326000894"
+       ],
+       "revenue": null,
+       "operating_income": 64353.2,
+       "operating_income_yoy_pct": 21.67,
+       "net_income": 45634.3,
+       "net_income_yoy_pct": 16.08,
+       "operating_margin_pct": null,
+       "net_margin_pct": null
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20260324000822"
+       ],
+       "revenue": null,
+       "operating_income": 80452.6,
+       "operating_income_yoy_pct": 26.0,
+       "net_income": 50286.1,
+       "net_income_yoy_pct": 11.1,
+       "operating_margin_pct": null,
+       "net_margin_pct": null
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260619000667"
+       ],
+       "revenue": null,
+       "operating_income": 85177.1,
+       "operating_income_yoy_pct": 5.87,
+       "net_income": 58407.2,
+       "net_income_yoy_pct": 16.15,
+       "operating_margin_pct": null,
+       "net_margin_pct": null
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260814004200"
+       ],
+       "revenue": null,
+       "operating_income": 54401.1,
+       "operating_income_yoy_pct": 22.91,
+       "net_income": 39269.8,
+       "net_income_yoy_pct": 13.93,
+       "operating_margin_pct": null,
+       "net_margin_pct": null
+      }
+     ],
+     "sources": [
+      "20241114002984",
+      "20260324000822",
+      "20250526000374",
+      "20260324000827",
+      "20251114003011",
+      "20260619000667",
+      "20260515002888",
+      "20260814004200"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 –, 영업이익 2조 7,126억 원, 영업이익 전년 동기 대비 +27.2%"
+    },
+    {
+     "kind": "health",
+     "title": "KB금융 재무 체력",
+     "company": {
+      "id": 2352,
+      "name": "KB금융"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 1282.56,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": null,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": null,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 ()"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260814004200"
+      ],
+      "total_assets": 8668892.1,
+      "total_liabilities": 8041873.8,
+      "total_equity": 627018.2,
+      "current_assets": null,
+      "current_liabilities": null,
+      "debt_ratio_pct": 1282.56,
+      "current_ratio_pct": null
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260619000667"
+      ],
+      "total_assets": 7979230.3,
+      "total_liabilities": 7370930.4,
+      "total_equity": 608299.9,
+      "current_assets": null,
+      "current_liabilities": null,
+      "debt_ratio_pct": 1211.73,
+      "current_ratio_pct": null
+     },
+     "market": "유가증권",
+     "sources": [
+      "20241114002984",
+      "20260324000822",
+      "20250526000374",
+      "20260324000827",
+      "20251114003011",
+      "20260619000667",
+      "20260515002888",
+      "20260814004200"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 1282.56% (시장 중앙값 96.7%)"
+    }
+   ],
+   "sources": [
+    "20260814004200"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "- **최대주주 및 특수관계인 합계**: 2025-12-31 기준 보통주 33,107,971주, 지분율 8.68%(기초 8.41%)입니다. 최대주주는 국민연금공단으로 나와 있습니다. (접수번호 20260619000667)\n- **5% 이상 대량보유 보고**: 가장 최근 보고는 국민연금공단의 2026-06-17 보고로, 보유 33,101,147주(9.33%)이며 보유목적을 일반투자에서 단순투자로 변경했다고 적혀 있습니다. (접수번호 20260617000314)\n- **이전 5% 이상 보고**: BlackRockFundAdvisors는 2026-03-11 보고에서 7.05%(26,288,623주), CapitalResearchandManagementCompany는 2026-04-07 보고에서 6.82%(25,436,245주)로 적혀 있습니다. (접수번호 20260311004186, 20260407000642)\n- **5% 미만으로 내려간 보고**: TheCapitalGroupCompanies,Inc.가 2025-10-14에 폐지 보고를 했습니다. (접수번호 20251014000033)\n- **계열 출자 현황**: 사업보고서 출자현황에 KB국민카드, KB데이타시스템, KB라이프생명, KB부동산신탁, KB손해보험, KB인베스트먼트, KB자산운용, KB저축은행, KB증권, KB캐피탈, 국민은행이 모두 지분율 100%로 적혀 있습니다. (접수번호 20260619000667)\n- **소액 5% 미만 지분 보고(사업보고서 출자현황)**: 삼성화재해상보험 200,682주(0.05%), 현대해상 1,286주(0.0%), 아세아시멘트 4,406주(0.0%), 서울보증보험 기말 0주로 기초 6,000주에서 처분되었다고 적혀 있습니다. (접수번호 20260312001399, 20260312001448, 20260318001310, 20260323000639)",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 7708,
+    "output_tokens": 713,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "KB금융 지분 구조도",
+     "company": {
+      "id": 2352,
+      "name": "KB금융"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": null,
+       "name": "국민연금공단",
+       "listed": false,
+       "pct": 8.68,
+       "role": "본인 및 특별관계자",
+       "rcept": "20260619000667",
+       "up": []
+      },
+      {
+       "id": 1856,
+       "name": "삼성화재해상보험",
+       "listed": true,
+       "pct": 0.05,
+       "role": null,
+       "rcept": "20260312001399",
+       "up": []
+      }
+     ],
+     "more_holders": 0,
+     "investees": [
+      {
+       "id": null,
+       "name": "KB국민카드",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "자회사 편입",
+       "rcept": "20260619000667"
+      },
+      {
+       "id": null,
+       "name": "KB데이타시스템",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "설립시 주식이전",
+       "rcept": "20260619000667"
+      },
+      {
+       "id": null,
+       "name": "KB라이프생명",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "자회사 편입",
+       "rcept": "20260619000667"
+      },
+      {
+       "id": null,
+       "name": "KB부동산신탁",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "설립시 주식이전",
+       "rcept": "20260619000667"
+      },
+      {
+       "id": 1879,
+       "name": "KB손해보험",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "자회사 편입",
+       "rcept": "20260619000667"
+      },
+      {
+       "id": null,
+       "name": "KB인베스트먼트",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "설립시 주식이전",
+       "rcept": "20260619000667"
+      },
+      {
+       "id": null,
+       "name": "KB자산운용",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "설립시 주식이전",
+       "rcept": "20260619000667"
+      },
+      {
+       "id": null,
+       "name": "KB저축은행",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "자회사 편입",
+       "rcept": "20260619000667"
+      },
+      {
+       "id": null,
+       "name": "KB증권",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "자회사 편입",
+       "rcept": "20260619000667"
+      },
+      {
+       "id": null,
+       "name": "KB캐피탈",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "자회사 편입",
+       "rcept": "20260619000667"
+      },
+      {
+       "id": null,
+       "name": "국민은행",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "설립시 주식이전",
+       "rcept": "20260619000667"
+      }
+     ],
+     "more_investees": 0,
+     "sources": [
+      "20260619000667",
+      "20260312001399"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 2곳(위 2곳 표시), 출자 대상 11곳(위 11곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "KB금융 주주 분포",
+     "company": {
+      "id": 2352,
+      "name": "KB금융"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 8.68,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "국민연금공단",
+       "id": null,
+       "pct": 9.33,
+       "date": "2026-06-17",
+       "overlap": true
+      },
+      {
+       "name": "BlackRockFundAdvisors",
+       "id": null,
+       "pct": 7.05,
+       "date": "2026-03-11",
+       "overlap": false
+      },
+      {
+       "name": "CapitalResearchandManagementCompany",
+       "id": null,
+       "pct": 6.82,
+       "date": "2026-04-07",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 77.45,
+     "sources": [
+      "20260617000314",
+      "20260311004186",
+      "20260407000642",
+      "20251014000033",
+      "20260619000667",
+      "20260312001399",
+      "20260323000639",
+      "20260318001310",
+      "20260312001448"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 8.68%, BlackRockFundAdvisors 7.05%, CapitalResearchandManagementCompany 6.82%"
+    }
+   ],
+   "sources": [
+    "20251014000033",
+    "20260311004186",
+    "20260312001399",
+    "20260312001448",
+    "20260318001310",
+    "20260323000639",
+    "20260407000642",
+    "20260617000314",
+    "20260619000667"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "- **자기주식 취득 결정은 2024년 이후 총 9건**입니다. 직접 장내매수 4건(약 2조 200억 원, 17,259,242주)과 신탁계약 5건(약 2조 1,800억 원)입니다. 다만 이는 결정 금액 합계이며 실제 취득액이 아닙니다 (접수번호 20260723000345 외 다수).\n- **2026년 결정 규모는 약 3조 원**입니다. 직접 매수 2건 1조 2,000억 원(접수번호 20260205000367, 20260423000431)과 신탁계약 1건 7,000억 원(접수번호 20260723000345)이 공시되었습니다. 신탁 계약 기간은 2026년 12월 16일까지입니다.\n- **주당배당금(보통주)은 2023년 3,060원, 2024년 3,174원, 2025년 4,367원**으로 공시되어 있습니다. 2025년 배당성향은 연결 기준 27.0%입니다 (접수번호 20260619000667).\n- **자기주식 소각 결정은 감자결정으로 공시된 건이 없습니다.** 2025년 장내매수 공시 2건(접수번호 20250205000299, 20250425000885)에는 목적으로 '주식소각'이 적혀 있으나, 이 DB에서 확인되는 소각 공시는 없습니다.\n- 이 자료에는 자본 증가·감소 등 실제 납입이나 발행 결과, 철회 여부, 분기·중간배당, 앞으로의 배당 계획은 포함되어 있지 않습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2543,
+    "output_tokens": 557,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "payout",
+     "title": "KB금융 주주 환원",
+     "company": {
+      "id": 2352,
+      "name": "KB금융"
+     },
+     "as_of": "2026-10-16",
+     "years": [
+      {
+       "year": 2023,
+       "cash_eok": 11739.4,
+       "buyback_eok": 0.0,
+       "dps": 3060.0,
+       "payout_ratio": 25.5
+      },
+      {
+       "year": 2024,
+       "cash_eok": 11982.6,
+       "buyback_eok": 8200.0,
+       "dps": 3174.0,
+       "payout_ratio": 23.6
+      },
+      {
+       "year": 2025,
+       "cash_eok": 15777.7,
+       "buyback_eok": 14800.0,
+       "dps": 4367.0,
+       "payout_ratio": 27.0
+      },
+      {
+       "year": 2026,
+       "cash_eok": null,
+       "buyback_eok": 19000.0,
+       "dps": null,
+       "payout_ratio": null
+      }
+     ],
+     "sources": [
+      "20260619000667"
+     ],
+     "notes": [
+      "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
+      "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."
+     ],
+     "summary": "2023 주당 3,060원, 배당성향 25.5%; 2024 주당 3,174원, 배당성향 23.6%; 2025 주당 4,367원, 배당성향 27.0%"
+    }
+   ],
+   "sources": [
+    "20250205000299",
+    "20250425000885",
+    "20260205000367",
+    "20260423000431",
+    "20260619000667",
+    "20260723000345"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "- 최근 1주(2026-10-08~10-16) 주가 수익률은 -1.72%로, 같은 시장(유가증권) 종목 중앙값 -2.74%보다 1.02%p 높았습니다. 같은 제품군 동종 21개사 중앙값은 -3.59%였습니다.\n- 최근 1개월(2026-09-16~10-16) 수익률은 -9.45%로, 시장 중앙값 -3.73%보다 5.72%p 낮았습니다. 동종 중앙값은 -9.26%였습니다.\n- 최근 3개월(2026-07-16~10-16) 수익률은 -11.65%로, 시장 중앙값 -0.97%보다 10.69%p 낮았습니다. 동종 중앙값은 -9.11%였습니다.\n- 기간별 수익률이 시장과 동종 중앙값보다 낮아진 원인은 이 조회 결과로 확인할 수 없습니다. 수익률은 종가 기준 과거 사실이며, 이 항목에서는 앞으로의 주가를 전망하지 않습니다.\n- 비교 대상 동종사는 은행 여수신, 신용카드, 생명보험, 손해보험, 리스, 신탁 제품을 매출의 10% 이상으로 파는 상장사이며, 출처는 한국거래소(KRX) 일별 시세입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 869,
+    "output_tokens": 479,
+    "cache_read_input_tokens": 607,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "KB금융 수익률 비교",
+     "company": {
+      "id": 2352,
+      "name": "KB금융"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": -1.72,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": -3.59,
+       "peers_counted": 21,
+       "vs_market_pp": 1.02
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": -9.45,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": -9.26,
+       "peers_counted": 21,
+       "vs_market_pp": -5.72
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": -11.65,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": -9.11,
+       "peers_counted": 21,
+       "vs_market_pp": -10.69
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "리스",
+       "생명보험",
+       "손해보험",
+       "신용카드",
+       "신탁",
+       "은행 여수신"
+      ],
+      "names": [
+       "BNK금융지주",
+       "JB금융지주",
+       "iM금융지주",
+       "기업은행",
+       "다올투자증권",
+       "메리츠금융지주",
+       "삼성카드",
+       "상상인",
+       "신한지주",
+       "우리금융지주",
+       "이스트소프트",
+       "이스트에이드"
+      ],
+      "total": 21
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 -1.72% (시장 -2.74%); 1개월 -9.45% (시장 -3.73%); 3개월 -11.65% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)",
+  "최근 1년의 계약과 결정: 조회 시점까지 공시된 것이 없거나 모으지 않음",
+  "내부자 매매: 조회 시점까지 공시된 것이 없거나 모으지 않음"
+ ],
+ "usage": {
+  "input_tokens": 20444,
+  "output_tokens": 3124,
+  "cache_read_input_tokens": 3642,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 15.2,
+ "cost_usd": 0.0036
+}

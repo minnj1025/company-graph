@@ -35,7 +35,9 @@ RULES = """당신은 한국 상장사의 공시(DART)에서 모은 사실로 기
 - 자료가 없으면 "공시 없음" 또는 "이 DB에 없음"이라고 한 문장으로 적고 끝냅니다. 다른 항목에 있는 결정이면 그 항목을 가리킵니다.
 - 관계의 방향은 조회 결과의 role 에 적힌 대로 씁니다(누가 누구의 주식을 가졌는지, 누가 팔고 누가 샀는지). 뒤집지 않습니다.
 - 건수, 합계, 가장 큰 것은 summary 나 by_kind 에 계산된 값만 씁니다. 목록을 직접 세거나 더하지 않습니다. 서로 다른 종류의 금액(예: 자기주식 직접 취득과 신탁계약)을 더하지 않습니다.
-- 지분율과 최대주주는 기준일(어느 보고서, 언제 기준인지)과 함께 씁니다.
+- 지분율과 최대주주는 기준일(어느 보고서, 언제 기준인지)과 함께 씁니다. 요약에서도 그렇습니다.
+- 실적의 흐름을 "적자가 이어졌다", "흑자 전환" 같은 말로 묶지 않고 분기 값을 그대로 적습니다. 흑자 전환·적자 전환은 조회 결과의 yoy 칸에 그렇게 적힌 경우에만 씁니다.
+- 배당성향은 payout_basis(연결·별도)를 함께 씁니다. 시장 중앙값은 "이 DB가 같은 시장 상장사로 계산한 값"이라고 밝힙니다.
 - 마크다운으로 씁니다. 제목은 쓰지 않습니다(화면이 붙입니다). 3~7개의 짧은 글머리표나 두세 문단, 길어도 900자 안쪽입니다. 표는 쓰지 않습니다(카드가 따로 붙습니다).
 """
 
@@ -82,10 +84,10 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
         {"key": "deals", "title": "최근 1년의 계약과 결정", "cards": ["supply_flow", "timeline"],
          "facts": {"deals": shape.deals(
              company_id,
-             clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="supply_contract", direction="both", disclosed_from=year_ago)),
+             {"relations": full_relations(db, company_id, as_of, "supply_contract", as_of - timedelta(days=365))},
              clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="stake_acquisition", direction="both", disclosed_from=year_ago)),
              clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="stake_disposal", direction="both", disclosed_from=year_ago)),
-             recent_events)}},
+             recent_events, year_ago)}},
         {"key": "capital", "title": "자본 변동과 주주 환원", "cards": ["dilution", "payout"],
          "facts": {"capital": shape.capital(events, clean(_call(db, "get_dividends", company_id=company_id, as_of=when)))}},
         {"key": "insiders", "title": "내부자 매매", "cards": ["insiders"],
@@ -94,6 +96,13 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
          "facts": {"price_history": clean(_call(db, "get_price_history", company_id=company_id, as_of=when))}},
     ]
     return sections
+
+
+def full_relations(db, company_id: int, as_of: date, rel_type: str, since: date) -> list[dict]:
+    """조회 도구(get_relations)는 50건에서 자른다. 보고서의 건수·합계는 전체로 세야 해서 원장에서 바로 읽는다."""
+    from . import query
+    rows = [e for e in query.relations(db, as_of, company_ids=[company_id], rel_types=[rel_type]) if e["disclosed_date"] >= since]
+    return [agent_tools._edge(db, e) for e in sorted(rows, key=lambda e: e["disclosed_date"], reverse=True)]
 
 
 def empty(section: dict) -> bool:
