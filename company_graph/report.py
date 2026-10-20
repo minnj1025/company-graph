@@ -2,6 +2,8 @@
 
 1. 모으기: 항목마다 정해진 조회 도구를 코드가 부른다 (모델 없이, 빠뜨리는 항목이 없다)
 2. 쓰기: 항목마다 모델이 모은 사실만으로 짧게 쓴다. 항목끼리는 서로 기다리지 않으므로 동시에 쓴다
+   '최근 1년의 계약과 결정'은 건수·날짜·가장 큰 것이 많아 본문을 코드가 쓰고, 모델은 숫자 없는 앞 문장만 쓴다
+   (10판 처음 보는 5곳에서 틀린 사실이 이 항목에 몰렸다: 보여 준 일부의 수를 전체로, 결의일을 공시일로, 옛 결정의 정정을 새 결정으로)
 3. 검산: 글의 숫자를 그 항목의 조회 결과와 대조하고(verify.py), 걸린 항목만 한 번 다시 쓰게 한다
 4. 요약: 항목들의 글만 보고 3~5문장. 새 숫자를 만들지 않는다
 카드는 항목마다 서버가 DB에서 채운다(views.py). '이 DB로 알 수 없는 것'은 고정된 목록에 빈 항목을 더해 코드가 쓴다.
@@ -10,12 +12,14 @@
 """
 import json
 import os
+import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, timedelta
 
 from . import agent_tools, verify, views
+from . import report_facts as shape
 from .config import secret
 from .db import session
 
@@ -67,7 +71,6 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
     when = as_of.isoformat()
     year_ago = (as_of - timedelta(days=365)).isoformat()
     clean = lambda r: {k: v for k, v in r.items() if not k.startswith("_")}
-    from . import report_facts as shape
     holders = clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="equity", direction="in"))
     invested = clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="equity", direction="out", listed_only=False))
     major = clean(_call(db, "get_major_holders", company_id=company_id, as_of=when))
@@ -87,7 +90,9 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
              {"relations": full_relations(db, company_id, as_of, "supply_contract", as_of - timedelta(days=365))},
              clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="stake_acquisition", direction="both", disclosed_from=year_ago)),
              clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="stake_disposal", direction="both", disclosed_from=year_ago)),
-             recent_events, year_ago)}},
+             recent_events, year_ago,
+             terminations={"relations": full_relations(db, company_id, as_of, "supply_termination", as_of - timedelta(days=365))},
+             collected_until=collected_until(db, as_of))}},
         {"key": "capital", "title": "자본 변동과 주주 환원", "cards": ["dilution", "payout"],
          "facts": {"capital": shape.capital(events, clean(_call(db, "get_dividends", company_id=company_id, as_of=when)))}},
         {"key": "insiders", "title": "내부자 매매", "cards": ["insiders"],
@@ -105,13 +110,22 @@ def full_relations(db, company_id: int, as_of: date, rel_type: str, since: date)
     return [agent_tools._edge(db, e) for e in sorted(rows, key=lambda e: e["disclosed_date"], reverse=True)]
 
 
+def collected_until(db, as_of: date) -> str | None:
+    """이 DB가 공급계약 공시를 언제 접수분까지 모았나 (매일 갱신에서 빠지면 최근 계약이 없다는 것을 보고서가 밝히게)."""
+    from sqlalchemy import func
+    from .db import Relation
+    last = db.query(func.max(Relation.disclosed_date)).filter(Relation.rel_type.in_(("supply_contract", "supply_termination")),
+                                                              Relation.disclosed_date <= as_of).scalar()
+    return last and last.isoformat()
+
+
 def empty(section: dict) -> bool:
     """조회 결과가 모두 비었나 (오류이거나 목록이 비었다)."""
     def has(value) -> bool:
         if not isinstance(value, dict) or "error" in value:
             return False
         for key in ("relations", "rows", "quarters", "holders", "events", "years", "reporters", "periods", "products", "sections",
-                    "contracts", "stake_decisions", "investments", "major_holders_5pct", "decisions", "dividends", "buybacks_by_year"):
+                    "contracts", "stake_decisions", "terminations", "corrections_of_older_contracts", "investments", "major_holders_5pct", "decisions", "dividends", "buybacks_by_year"):
             if value.get(key):
                 return True
         if isinstance(value.get("largest_holder_table"), dict) and value["largest_holder_table"].get("rows"):
@@ -134,8 +148,28 @@ def cards(db, section: dict, company_id: int, as_of: date) -> list[dict]:
     return out
 
 
+LEDE = ("아래는 이 항목의 본문으로, 코드가 공시에서 그대로 옮긴 목록입니다. 목록 앞에 둘 한두 문장을 쓰세요. "
+        "어떤 종류의 계약·결정이 많은지 같은 흐름만 말하고, 숫자·날짜·금액·건수·회사 이름은 쓰지 않습니다(목록에 있습니다). "
+        "원인, 평가, 전망을 쓰지 않습니다. 결정은 실행 결과가 아닙니다. 쓸 만한 흐름이 없으면 '없음' 한 단어만 씁니다.")
+BANNED = re.compile(r"\d|때문|기대|우려|긍정|부정|전망|호재|악재|성장|견조|부진|매수|매도|없음")
+
+
+def lede(client, company: dict, as_of: date, section: dict) -> tuple[str, dict]:
+    """코드가 쓴 본문 앞에 붙일 숫자 없는 한두 문장. 숫자나 판단하는 말이 섞이면 버린다."""
+    response = client.messages.create(
+        model=MODEL, max_tokens=400, thinking=THINKING, system=[{"type": "text", "text": RULES, "cache_control": {"type": "ephemeral"}}],
+        messages=[{"role": "user", "content": f"회사: {company['name']}\n조회 시점: {as_of.isoformat()}\n항목: {section['title']}\n\n{LEDE}\n\n본문:\n{section['fixed']}"}])
+    usage = {key: getattr(response.usage, key, 0) or 0 for key in ("input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens")}
+    text = "".join(b.text for b in response.content if b.type == "text").strip()
+    return ("" if not text or BANNED.search(text) or len(text) > 300 else text), usage
+
+
 def write(client, company: dict, as_of: date, section: dict, checking: bool) -> dict:
-    """한 항목을 쓰고, 검산에 걸리면 한 번 다시 쓰게 한다."""
+    """한 항목을 쓰고, 검산에 걸리면 한 번 다시 쓰게 한다. 본문을 코드가 쓰는 항목(fixed)은 모델이 앞 문장만 쓴다."""
+    if section.get("fixed"):
+        first, usage = lede(client, company, as_of, section)
+        return {"key": section["key"], "title": section["title"], "text": (first + "\n\n" if first else "") + section["fixed"],
+                "flagged": [], "retried": False, "usage": usage, "written_by": "code" if not first else "code+lede"}
     facts = _trim(section["facts"])
     messages = [{"role": "user", "content": f"회사: {company['name']} ({company.get('stock_code') or ''}, {company.get('market') or ''})\n"
                                             f"조회 시점: {as_of.isoformat()}\n항목: {section['title']}\n\n조회 결과:\n{facts}"}]
@@ -180,6 +214,8 @@ def build(company_id: int, as_of: date, *, checking: bool | None = None, client=
         sections = gather(db, company_id, as_of)
         for section in sections:
             section["empty"] = empty(section)
+            if section["key"] == "deals" and not section["empty"]:
+                section["fixed"] = shape.deals_text(section["facts"]["deals"])
             section["views"] = [] if section["empty"] else cards(db, section, company_id, as_of)
     written: dict[str, dict] = {}
 
