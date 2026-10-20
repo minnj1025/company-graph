@@ -203,6 +203,10 @@ def dividend_rows(company_id: int, items: list[dict]) -> list[dict]:
     for item in items:
         se = (item.get("se") or "").strip()
         kind = (item.get("stock_knd") or "").strip() or None
+        # 주식 종류 칸을 '-' 로 두는 회사(보통주만 있는 경우)와 '종류주'라고 적는 회사가 있다
+        kind = {"-": "보통주", "종류주": "우선주"}.get(kind, kind)
+        if kind is None and se in ("주당 현금배당금(원)", "현금배당수익률(%)"):
+            kind = "보통주"
         column = DIVIDEND_ROWS.get((se, kind)) or DIVIDEND_ROWS.get((se, None))
         if not column:
             continue
