@@ -1,0 +1,75 @@
+{
+ "question": "LG그룹에는 어떤 회사들이 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "2026년 10월 16일 기준 DB에 LG그룹(공정위 2026년 5월 지정 대규모기업집단)으로 묶인 상장사는 12곳입니다. 지주사인 LG를 포함해 모두 유가증권시장 상장이고 코스닥 상장사는 로보스타 1곳입니다.\n\n| 회사 | 종목코드 |\n|---|---|\n| LG | 003550 |\n| LG전자 | 066570 |\n| LG화학 | 051910 |\n| LG에너지솔루션 | 373220 |\n| LG디스플레이 | 034220 |\n| LG이노텍 | 011070 |\n| LG생활건강 | 051900 |\n| LG유플러스 | 032640 |\n| LG씨엔에스 | 064400 |\n| LG헬로비전 | 037560 |\n| HS애드 | 035000 |\n| 로보스타 | 090360 (코스닥) |\n\n계열회사 전체는 51곳이고, 그 가운데 상장사가 이 12곳입니다. 나머지 비상장 계열사는 이 DB의 목록에 없어서 확인할 수 없습니다. 계열 목록은 사업보고서의 계열회사 표 기준이라 공시 시점에 따라 달라질 수 있습니다.",
+ "followups": [
+  "LG에너지솔루션의 최대주주와 지분 구조는?",
+  "LG전자의 제품과 매출 비중은?",
+  "LG유플러스와 LG헬로비전의 공급계약 공시는 어떤가?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LG전자"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "list_companies",
+   "input": {
+    "group": "LG",
+    "listed_only": false
+   },
+   "error": null,
+   "total": 12,
+   "chars": 1522
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1604
+    ],
+    "also": [
+     2427,
+     3205,
+     2757,
+     3991,
+     3915,
+     2207,
+     2626,
+     2972,
+     2891,
+     3409,
+     2233
+    ],
+    "views": [
+     {
+      "kind": "group",
+      "company_id": 1604,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 384
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1345,
+  "cache_read_input_tokens": 58899,
+  "cache_creation_input_tokens": 20875
+ },
+ "seconds": 9.7,
+ "number": "V04",
+ "gold": ""
+}

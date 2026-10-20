@@ -1,0 +1,119 @@
+{
+ "question": "현대차랑 HD현대일렉트릭 사이에 엮인 게 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "**결론: 직접 맞물린 공급계약은 없습니다. 두 회사는 HD현대(3434)를 거쳐 간접적으로 이어져 있습니다.**\n\n조회 시점(2026-10-16) 기준으로 현대자동차와 HD현대일렉트릭 사이의 공급계약 공시는 없었습니다. 공시로 확인되는 연결은 HD현대를 가운데 둔 지분 관계입니다.\n\n- **현대자동차 → HD현대**: 현대자동차가 HD현대 지분 2.2%를 보유하고, 목적은 단순투자입니다. 기준일은 2025-12-31이고 현대자동차 사업보고서(접수번호 20260318001394)에 실려 있습니다.\n- **HD현대 → HD현대일렉트릭**: HD현대가 HD현대일렉트릭 지분 35.74%를 보유한 최대주주입니다. 목적은 경영참여이고 기준일은 2025-12-31입니다. 접수번호는 20260316000940(HD현대일렉트릭 사업보고서)과 20260320000872(HD현대 사업보고서)입니다.\n\n두 회사는 지정 대규모기업집단이 다릅니다(현대자동차 집단과 HD현대 집단). 현대자동차의 HD현대 지분은 단순투자 수준이고, HD현대일렉트릭을 지배하는 쪽은 HD현대입니다. 현대자동차가 HD현대일렉트릭의 주주로 나타나지는 않습니다.\n\n이 DB로 알 수 없는 것은 두 회사 사이의 거래 실적, 계약 외 협력, 업무 연관성입니다. 공급계약은 건별 공시된 것만 모으므로, 공시되지 않은 거래는 여기에 없을 수 있습니다.",
+ "followups": [
+  "HD현대의 공급계약 상대와 금액은 어떻게 되나요?",
+  "HD현대일렉트릭이 최근 낸 단일판매·공급계약 공시를 보여주세요",
+  "현대자동차의 계열회사와 지분 구조는 어떻게 되나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "HD현대일렉트릭"
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  },
+  {
+   "tool": "find_paths",
+   "input": {
+    "from_company_id": 54,
+    "to_company_id": 2150,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 3590
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "counterparty_id": 2150,
+    "include_superseded": true
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1218
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 247,
+   "chars": 26160
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2150,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 22,
+   "chars": 13080
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     54,
+     2150
+    ],
+    "also": [
+     3434
+    ],
+    "views": [
+     {
+      "kind": "path",
+      "company_id": 54,
+      "other_company_id": 2150,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 457
+  }
+ ],
+ "cited": [
+  "20260316000940",
+  "20260318001394",
+  "20260320000872"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2102,
+  "cache_read_input_tokens": 82958,
+  "cache_creation_input_tokens": 45132
+ },
+ "seconds": 38.2,
+ "number": "V07",
+ "gold": ""
+}

@@ -1,0 +1,91 @@
+{
+ "question": "신한지주 지분은 누가 많이 갖고 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "신한지주는 주주 구성이 분산된 편이고, DB에서 가장 큰 지분은 국민연금공단(9.03%)입니다. 다음으로 BlackRockFundAdvisors(7.14%)와 CapitalResearchandManagementCompany(5.02%)가 5% 이상 보고자로 나옵니다.\n\n| 주주 | 지분율 | 기준·보고일 | 근거 접수번호 |\n|---|---|---|---|\n| 국민연금공단 (본인 및 특별관계자) | 9.03% | 2025-12-31 기준 (사업보고서, 2026-03-18 공시) | 20260318000826 |\n| BlackRockFundAdvisors | 7.14% | 2026-08-11 보고 | 20260811000674 |\n| CapitalResearchandManagementCompany | 5.02% | 2026-09-02 보고 | 20260902000035 |\n\n- 국민연금 비율은 사업보고서 기준이라 가장 최근 값이 아닐 수 있습니다. 2025-03-25 5% 보고에서는 8.6%였습니다.\n- BlackRock과 Capital Research 비율은 각 대량보유 보고의 대표보고자와 특별관계자를 합친 값입니다.\n- 지분을 자기 보고서에 적은 회사도 있습니다. 케이티(2.24%, 접수번호 20260323001553), 삼성화재해상보험(0.06%, 20260312001399), 대교(0.04%, 20260609000080) 등입니다. 이 가운데 케이티는 KT 계열사이고, 나머지는 소액입니다.\n- 이 DB의 주주 정보는 최대주주와 그 특수관계인, 그리고 5% 대량보유 보고 등에 한정됩니다. 그 밖의 5% 미만 주주나 소액주주의 지분은 알 수 없습니다.",
+ "followups": [
+  "신한지주 임원·주요주주의 최근 90일 주식 증감은?",
+  "신한지주의 5% 대량보유 보고 이력은 어떻게 변했나?",
+  "케이티의 지분 보유 현황과 계열 관계는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "신한지주"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3361,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 9,
+   "chars": 6162
+  },
+  {
+   "tool": "get_major_holders",
+   "input": {
+    "company_id": 3361,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1624
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3361
+    ],
+    "also": [
+     3404,
+     1856,
+     2881,
+     2490,
+     1325,
+     3289,
+     2342
+    ],
+    "as_of": "2026-10-16",
+    "views": [
+     {
+      "kind": "holders",
+      "company_id": 3361,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 554
+  }
+ ],
+ "cited": [
+  "20260312001399",
+  "20260318000826",
+  "20260323001553",
+  "20260609000080",
+  "20260811000674",
+  "20260902000035"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2317,
+  "cache_read_input_tokens": 62570,
+  "cache_creation_input_tokens": 25201
+ },
+ "seconds": 14.1,
+ "number": "H08",
+ "gold": ""
+}

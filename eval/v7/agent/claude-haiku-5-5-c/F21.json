@@ -1,0 +1,58 @@
+{
+ "question": "현대차 별도 기준으로 작년 영업이익 얼마야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "현대자동차의 2025년 별도 기준 영업이익은 3조 5,150억 원입니다. 전년(2024년 연간 6조 5,994억 원) 대비 -46.74%입니다.\n\n- 근거: 2025 사업연도 사업보고서(접수번호 20260318001394), 별도(OFS) 기준 연간 누적 값입니다.\n- 참고로 2025년 4분기 별도 영업이익은 -1조 955억 원(적자)으로, 연간 값에서 3분기 누적을 뺀 계산 값입니다.",
+ "followups": [
+  "현대자동차 2025년 연결 기준 영업이익은 얼마야?",
+  "현대자동차 2026년 상반기 별도 영업이익과 전년 대비 증감은?",
+  "현대자동차 최근 분기별 별도 영업이익 추이 보여줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대자동차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16",
+    "basis": "OFS"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5545
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     54
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260318001394"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 685,
+  "cache_read_input_tokens": 61047,
+  "cache_creation_input_tokens": 22880
+ },
+ "seconds": 5.9,
+ "number": "F21",
+ "gold": ""
+}
