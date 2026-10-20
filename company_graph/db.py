@@ -154,6 +154,41 @@ class Financial(Base):
     total_equity: Mapped[int | None] = mapped_column(BigInteger)
 
 
+class MajorHolding(Base):
+    """주식등의 대량보유상황보고(5% 보고) 한 건 (OpenDART majorstock, holdings.py). 보유는 대표보고자와 특별관계자를 합친 것이다."""
+    __tablename__ = "major_holding"
+    __table_args__ = (Index("ix_major_company", "company_id", "report_date"),)
+    company_id: Mapped[int] = mapped_column(ForeignKey("company.company_id"), primary_key=True)
+    rcept_no: Mapped[str] = mapped_column(String(14), primary_key=True)
+    report_date: Mapped[date] = mapped_column(Date)                       # 접수일 (rcept_dt)
+    reporter: Mapped[str] = mapped_column(String(200))                    # 대표보고자 이름 그대로
+    reporter_company_id: Mapped[int | None] = mapped_column(Integer)      # 보고자가 원장의 기업이면 그 번호
+    report_type: Mapped[str | None] = mapped_column(String(20))           # 일반, 약식
+    shares: Mapped[int | None] = mapped_column(BigInteger)
+    shares_change: Mapped[int | None] = mapped_column(BigInteger)
+    pct: Mapped[Decimal | None] = mapped_column(Numeric(7, 2))
+    pct_change: Mapped[Decimal | None] = mapped_column(Numeric(7, 2))
+    contract_shares: Mapped[int | None] = mapped_column(BigInteger)      # 보유주식등에 관한 주요계약 주식수
+    reason: Mapped[str | None] = mapped_column(String(500))
+
+
+class InsiderReport(Base):
+    """임원·주요주주 특정증권등 소유상황보고 한 건 (OpenDART elestock, holdings.py). 날짜는 거래일이 아니라 접수일이다."""
+    __tablename__ = "insider_report"
+    __table_args__ = (Index("ix_insider_company", "company_id", "report_date"),)
+    company_id: Mapped[int] = mapped_column(ForeignKey("company.company_id"), primary_key=True)
+    rcept_no: Mapped[str] = mapped_column(String(14), primary_key=True)
+    reporter: Mapped[str] = mapped_column(String(100), primary_key=True)
+    report_date: Mapped[date] = mapped_column(Date)
+    registered: Mapped[str | None] = mapped_column(String(10))            # 등기임원, 비등기임원
+    position: Mapped[str | None] = mapped_column(String(60))              # 직위
+    major_holder: Mapped[str | None] = mapped_column(String(40))          # 주요주주 구분 (최대주주, 10%이상주주 등)
+    shares: Mapped[int | None] = mapped_column(BigInteger)                # 보고 뒤 소유 주식수
+    shares_change: Mapped[int | None] = mapped_column(BigInteger)
+    pct: Mapped[Decimal | None] = mapped_column(Numeric(7, 2))
+    pct_change: Mapped[Decimal | None] = mapped_column(Numeric(7, 2))
+
+
 class QualityLog(Base):
     __tablename__ = "quality_log"
     log_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True,

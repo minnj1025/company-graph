@@ -659,6 +659,120 @@ function Compare({ view, onCompany }: CardProps) {
   );
 }
 
+/* ── 12. 주주 분포: 최대주주 쪽, 그 밖의 5% 보고자, 나머지를 한 막대에 ── */
+function Holders({ view, onCompany }: CardProps) {
+  const group = view.group_pct as number | null;
+  const rows = view.holders as { name: string; id: number | null; pct: number; date: string; overlap: boolean }[];
+  const outside = rows.filter((r) => !r.overlap);
+  const rest = view.rest_pct as number | null;
+  const parts = [
+    ...(group !== null ? [{ key: "group", label: "최대주주와 특수관계인", pct: group, cls: "accent" }] : []),
+    ...outside.map((r, i) => ({ key: r.name, label: r.name, pct: r.pct, cls: i % 2 ? "info2" : "info" })),
+    ...(rest !== null ? [{ key: "rest", label: "나머지(어림)", pct: rest, cls: "muted" }] : []),
+  ];
+  return (
+    <>
+      {parts.length > 0 && (
+        <div className="view-stack" role="img" aria-label="주주 분포 막대">
+          {parts.map((p) => (
+            <i key={p.key} className={p.cls} style={{ width: `${Math.max(p.pct, 0.5)}%` }} title={`${p.label} ${pct(p.pct)}`} />
+          ))}
+        </div>
+      )}
+      <div className="view-bars">
+        {group !== null && (
+          <div className="view-bar static">
+            <span className="name">최대주주와 특수관계인 (사업보고서)</span>
+            <span className="track">
+              <i className="accent" style={{ width: `${Math.min(100, group)}%` }} />
+            </span>
+            <span className="num">{pct(group)}</span>
+          </div>
+        )}
+        {rows.map((r) => (
+          <button key={r.name} className="view-bar" disabled={!r.id} onClick={() => r.id && onCompany(r.id)} title={`${r.date} 보고`}>
+            <span className="name">
+              {r.name}
+              {r.overlap && <small> · 최대주주 쪽</small>}
+            </span>
+            <span className="track">
+              <i style={{ width: `${Math.min(100, r.pct)}%` }} />
+            </span>
+            <span className="num">{pct(r.pct)}</span>
+          </button>
+        ))}
+      </div>
+      {rows.length === 0 && <p className="view-empty">지금 5% 이상으로 보고된 주주가 없습니다(2024-10 이후 보고 기준).</p>}
+    </>
+  );
+}
+
+/* ── 13. 내부자 매매: 접수일별로 늘린 주식(위)과 줄인 주식(아래), 주가 수익률 선 ── */
+function Insiders({ view }: CardProps) {
+  const days = view.by_day as { date: string; increased: number; decreased: number; reports: number }[];
+  const returns = view.returns as { date: string; pct: number }[];
+  const totals = view.totals as { increased_reports: number; increased_shares: number; decreased_reports: number; decreased_shares: number; net_shares: number; reporters: number };
+  const reporters = view.reporters as { reporter: string; position?: string; major_holder?: string; change: number; shares_after: number | null }[];
+  const dates = Array.from(new Set([...returns.map((r) => r.date), ...days.map((d) => d.date)])).sort();
+  const make = (p: Palette): echarts.EChartsCoreOption => {
+    const byDay = new Map(days.map((d) => [d.date, d]));
+    const byReturn = new Map(returns.map((r) => [r.date, r.pct]));
+    return {
+      tooltip: {
+        ...tooltip(p),
+        trigger: "axis",
+        formatter: (items: { dataIndex: number }[]) => {
+          const date = dates[items[0].dataIndex];
+          const d = byDay.get(date);
+          const r = byReturn.get(date);
+          return [`<b>${date}</b>`, d ? `늘림 ${d.increased.toLocaleString()}주 · 줄임 ${d.decreased.toLocaleString()}주 (보고 ${d.reports}건)` : "", r !== undefined ? `수익률 ${signed(r)}` : ""].filter(Boolean).join("<br/>");
+        },
+      },
+      grid: { left: 56, right: returns.length ? 40 : 12, top: 12, bottom: 24 },
+      xAxis: { type: "category", data: dates, axisLabel: { color: p.muted, fontSize: 10, formatter: (v: string) => v.slice(5) }, axisLine: { lineStyle: { color: p.line } }, axisTick: { show: false } },
+      yAxis: [
+        { type: "value", axisLabel: { color: p.muted, fontSize: 10, formatter: (v: number) => (Math.abs(v) >= 10000 ? `${Math.round(v / 10000).toLocaleString()}만` : `${v}`) }, splitLine: { lineStyle: { color: p.line } } },
+        ...(returns.length ? [{ type: "value", axisLabel: { color: p.muted, fontSize: 10, formatter: (v: number) => `${v}%` }, splitLine: { show: false } }] : []),
+      ],
+      series: [
+        { name: "늘림", type: "bar", stack: "s", barMaxWidth: 10, data: dates.map((x) => byDay.get(x)?.increased || null), itemStyle: { color: p.up } },
+        { name: "줄임", type: "bar", stack: "s", barMaxWidth: 10, data: dates.map((x) => (byDay.get(x)?.decreased ? -byDay.get(x)!.decreased : null)), itemStyle: { color: p.down } },
+        ...(returns.length
+          ? [{ name: "수익률", type: "line", yAxisIndex: 1, data: dates.map((x) => byReturn.get(x) ?? null), connectNulls: true, symbol: "none", lineStyle: { color: p.info, width: 2 } }]
+          : []),
+      ],
+    };
+  };
+  return (
+    <>
+      <p className="view-totals">
+        늘린 보고 <b>{totals.increased_reports}건</b> {totals.increased_shares.toLocaleString()}주 · 줄인 보고 <b>{totals.decreased_reports}건</b> {totals.decreased_shares.toLocaleString()}주 · 순증감{" "}
+        <b>{totals.net_shares > 0 ? "+" : ""}{totals.net_shares.toLocaleString()}주</b> · {totals.reporters}명
+      </p>
+      {dates.length > 0 && <Chart height={200} make={make} />}
+      <p className="view-legend">
+        <i className="dot up" /> 늘림 <i className="dot down" /> 줄임 {returns.length > 0 && <><i className="dot info" /> 주가 수익률</>} · {String(view.from)}~{String(view.to)} 보고 접수일
+      </p>
+      {reporters.length > 0 && (
+        <table className="view-table">
+          <tbody>
+            {reporters.slice(0, 6).map((r) => (
+              <tr key={r.reporter}>
+                <th>
+                  {r.reporter}
+                  {(r.position || r.major_holder) && <small> {[r.position, r.major_holder].filter(Boolean).join(" · ")}</small>}
+                </th>
+                <td>{r.change > 0 ? "+" : ""}{r.change.toLocaleString()}주</td>
+                <td>{r.shares_after !== null ? `보고 뒤 ${r.shares_after.toLocaleString()}주` : "–"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
+  );
+}
+
 type CardProps = { view: View; onCompany: (id: number) => void };
 const pick = (data: unknown, onCompany: (id: number) => void) => {
   const id = (data as { company?: number | null } | undefined)?.company;
@@ -676,6 +790,8 @@ const CARDS: Record<string, (props: CardProps) => React.ReactElement> = {
   financials: Financials,
   health: Health,
   compare: Compare,
+  holders: Holders,
+  insiders: Insiders,
 };
 
 function Card({ view, onCompany }: CardProps) {

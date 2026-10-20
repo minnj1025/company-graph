@@ -910,6 +910,11 @@ class _Found:
                     shares = self.products.setdefault(product["name"], {})
                     shares[company_id] = max(shares.get(company_id, 0.0), round((row["share_pct"] or 0) / len(row["products"]), 2))
                     shown += 1
+        elif name in ("get_major_holders", "get_insider_trades", "get_financials"):
+            self.focus.add(result["company"]["company_id"])
+            for row in result.get("holders", []):   # 5% 보고자가 원장의 기업이면 함께 그린다
+                if row.get("reporter_company") and row.get("status") == "5% 이상":
+                    self.companies.add(row["reporter_company"]["company_id"])
         elif name == "list_companies":
             self.companies.update(c["company_id"] for c in result["companies"][:80])
 

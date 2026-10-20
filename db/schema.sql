@@ -111,6 +111,27 @@ CREATE TABLE financial (
   FOREIGN KEY (company_id) REFERENCES company (company_id)
 );
 
+-- 5% 대량보유 상황보고 한 건 (holdings.py). 비율은 대표보고자와 특별관계자 합계
+CREATE TABLE major_holding (
+  company_id INT NOT NULL, rcept_no VARCHAR(14) NOT NULL, report_date DATE NOT NULL,
+  reporter VARCHAR(200) NOT NULL, reporter_company_id INT, report_type VARCHAR(20),
+  shares BIGINT, shares_change BIGINT, pct DECIMAL(7, 2), pct_change DECIMAL(7, 2),
+  contract_shares BIGINT, reason VARCHAR(500),
+  PRIMARY KEY (company_id, rcept_no),
+  KEY ix_major_company (company_id, report_date),
+  FOREIGN KEY (company_id) REFERENCES company (company_id)
+);
+
+-- 임원·주요주주 특정증권등 소유상황보고 한 건 (holdings.py). 날짜는 접수일
+CREATE TABLE insider_report (
+  company_id INT NOT NULL, rcept_no VARCHAR(14) NOT NULL, reporter VARCHAR(100) NOT NULL, report_date DATE NOT NULL,
+  registered VARCHAR(10), position VARCHAR(60), major_holder VARCHAR(40),
+  shares BIGINT, shares_change BIGINT, pct DECIMAL(7, 2), pct_change DECIMAL(7, 2),
+  PRIMARY KEY (company_id, rcept_no, reporter),
+  KEY ix_insider_company (company_id, report_date),
+  FOREIGN KEY (company_id) REFERENCES company (company_id)
+);
+
 -- 화면의 글을 운영자가 고쳐 쓴 것 (화면의 ?edit 에서 고친다). key 는 original 의 sha1
 CREATE TABLE site_text (
   `key`      CHAR(40) PRIMARY KEY,

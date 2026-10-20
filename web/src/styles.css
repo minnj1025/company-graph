@@ -5092,6 +5092,30 @@ details.more .notes {
 .view-legend .dot.muted { background: var(--muted); }
 .view-legend .dot.info { background: var(--info); }
 .view-legend .dot.warn { background: var(--warn); }
+.view-legend .dot.up { background: var(--up); }
+.view-legend .dot.down { background: var(--down); }
+.view-stack {
+  display: flex;
+  height: 14px;
+  border-radius: 4px;
+  overflow: hidden;
+  gap: 1px;
+  margin: 2px 0 10px;
+  background: rgb(var(--ink) / 0.08);
+}
+.view-stack i { display: block; height: 100%; }
+.view-stack .accent, .view-bar .track i.accent { background: var(--accent); }
+.view-stack .info { background: var(--info); }
+.view-stack .info2 { background: var(--info); opacity: 0.6; }
+.view-stack .muted { background: var(--muted); opacity: 0.5; }
+.view-bar.static { cursor: default; }
+.view-bar small { color: var(--muted); }
+.view-totals {
+  font-size: 12px;
+  color: var(--text-2);
+  margin: 0 0 6px;
+}
+.view-totals b { color: var(--text); font-weight: 600; }
 .view-table {
   width: 100%;
   border-collapse: collapse;

@@ -1,4 +1,5 @@
-# 하루 한 번: 올해 정기보고서(분기·반기·사업보고서)의 주요계정을 OpenDART에서 다시 받아 배포용 DB의 financial 표에 넣는다.
+# 하루 한 번: 올해 정기보고서(분기·반기·사업보고서)의 주요계정을 OpenDART에서 다시 받아 배포용 DB의 financial 표에 넣고,
+# 최근 사흘 동안 지분공시(5% 보고, 임원·주요주주 소유보고)를 낸 회사의 보고를 다시 받는다.
 # 늦게 내거나 정정한 보고서도 이렇게 따라잡는다. DART 호출은 한 번에 100곳씩이라 하루 100~250건이다(무료, 하루 한도 20,000건)
 name: financials
 on:
@@ -22,3 +23,4 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt requests
       - run: python -m company_graph.financials update
+      - run: python -m company_graph.holdings update 3

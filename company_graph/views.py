@@ -22,6 +22,8 @@ KINDS = {
     "financials": "실적 추이",
     "health": "재무 체력",
     "compare": "실적 비교",
+    "holders": "주주 분포",
+    "insiders": "내부자 매매",
 }
 TABLE_ONLY = ("exited", "share_class", "treasury")
 
@@ -277,6 +279,58 @@ def compare(db, tools, company: dict, other_id: int, when: str) -> dict:
             "summary": "; ".join(f"{r['name']} 매출 {readable(r['revenue'], r['unit'])}, 영업이익률 {r['operating_margin_pct']}%" for r in rows)}
 
 
+def holders(db, tools, company: dict, when: str) -> dict:
+    """최대주주와 특수관계인(사업보고서), 그 밖의 5% 보고자, 나머지를 한 막대에. 5% 보고자가 최대주주 쪽이면 겹치므로 따로 표시한다."""
+    table = tools.get_relations(db, company["company_id"], when, "equity", "in")
+    found = tools.get_major_holders(db, company["company_id"], when)
+    total = table.get("holder_table_total") or {}
+    group_pct = float(total["pct"]) if total.get("pct") not in (None, "") else None
+    insiders = {(r.get("subject") or {}).get("name") or r["detail"].get("holder_name_raw") for r in table["relations"]}
+    insiders |= {r["detail"].get("holder_name_raw") for r in table["relations"] if r["detail"].get("holder_name_raw")}
+    rows = []
+    for h in found["holders"]:
+        if h["status"] != "5% 이상":
+            continue
+        overlap = h["reporter"] in insiders or (h.get("reporter_company") or {}).get("name") in insiders
+        rows.append({"name": h["reporter"], "id": (h.get("reporter_company") or {}).get("company_id"), "pct": h["pct"],
+                     "date": h["date"], "overlap": overlap})
+    outside = sum(r["pct"] for r in rows if not r["overlap"] and r["pct"])
+    rest = None if group_pct is None else round(max(0.0, 100 - group_pct - outside), 2)
+    notes = ["최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+             "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."]
+    sources = [n for h in found["holders"] for n in h["rcept_no"]][:20]
+    sources += [n for r in table["relations"][:5] for n in (r.get("rcept_no") or [])]
+    return {"group_pct": group_pct, "group_date": table["relations"][0].get("as_of_date") if table["relations"] else None,
+            "holders": rows, "rest_pct": rest, "sources": list(dict.fromkeys(sources)), "notes": notes,
+            "summary": (f"최대주주와 특수관계인 {group_pct}%, " if group_pct is not None else "")
+                       + ", ".join(f"{r['name']} {r['pct']}%" for r in rows if not r["overlap"]) or "5% 보고자 없음"}
+
+
+def insiders(db, tools, company: dict, when: str, start: str) -> dict:
+    """기간 동안 임원·주요주주가 늘리고 줄인 주식 수(보고 접수일별)와, 같은 기간의 주가 수익률(가공값)."""
+    from datetime import date as _date_type
+    found = tools.get_insider_trades(db, company["company_id"], when, since=start if start else None)
+    stock = company.get("stock_code")
+    returns = []
+    if stock:
+        rows = list(db.execute(select(PriceDaily.trade_date, PriceDaily.close_price).where(
+            PriceDaily.stock_code == stock, PriceDaily.trade_date >= _date_type.fromisoformat(found["from"]),
+            PriceDaily.trade_date <= _date_type.fromisoformat(found["to"])).order_by(PriceDaily.trade_date)))
+        if rows:
+            base = float(rows[0][1])
+            returns = [{"date": d.isoformat(), "pct": round((float(c) / base - 1) * 100, 2)} for d, c in rows]
+    t = found["totals"]
+    notes = ["날짜는 실제 거래일이 아니라 보고 접수일입니다. 거래 단가와 금액, 장내·장외, 증여·상속 같은 사유는 이 보고 자료에 없습니다."]
+    if returns:
+        notes.append(f"선은 {returns[0]['date']} 종가를 0으로 둔 주가 수익률입니다(한국거래소 통계정보를 가공). 매매의 원인을 말해 주지 않습니다.")
+    else:
+        notes.append("이 기간의 시세를 보관하고 있지 않아 수익률 선은 없습니다.")
+    return {"from": found["from"], "to": found["to"], "totals": t, "by_day": found["by_day"], "returns": returns,
+            "reporters": found["reporters"][:8], "sources": [n for p in found["reporters"][:8] for n in p["rcept_no"]][:20], "notes": notes,
+            "summary": f"{found['from']}~{found['to']} 늘린 보고 {t['increased_reports']}건 {t['increased_shares']:,}주, "
+                       f"줄인 보고 {t['decreased_reports']}건 {t['decreased_shares']:,}주, 순증감 {t['net_shares']:+,}주 ({t['reporters']}명)"}
+
+
 def build(db, tools, kind: str, company_id: int, as_of: str, other_company_id: int | None = None, since: str | None = None) -> dict:
     """보기 하나를 만든다. tools 는 agent_tools 모듈(서로 가져오면 순환하므로 넘겨받는다)."""
     company = tools._brief(tools._company(db, company_id))
@@ -287,11 +341,13 @@ def build(db, tools, kind: str, company_id: int, as_of: str, other_company_id: i
         if other_company_id is None:
             raise tools.ToolError(f"{kind} 는 other_company_id 가 필요합니다")
         body = (path if kind == "path" else compare)(db, tools, company, other_company_id, as_of)
+    elif kind == "insiders":
+        body = insiders(db, tools, company, as_of, since)
     elif kind in ("supply_flow", "timeline", "contracts"):
         body = {"supply_flow": supply_flow, "timeline": timeline, "contracts": contracts}[kind](db, tools, company, as_of, start)
     elif kind in KINDS:
         body = {"ownership": ownership, "group": group, "revenue": revenue, "returns": returns,
-                "financials": financials, "health": health}[kind](db, tools, company, as_of)
+                "financials": financials, "health": health, "holders": holders}[kind](db, tools, company, as_of)
     else:
         raise tools.ToolError(f"kind 는 {', '.join(KINDS)} 가운데 하나입니다")
     title = f"{company['name']} ↔ {body['to']['name']} {KINDS[kind]}" if kind in ("path", "compare") else f"{company['name']} {KINDS[kind]}"

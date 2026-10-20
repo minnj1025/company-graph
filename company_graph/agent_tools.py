@@ -62,6 +62,8 @@ VIEW_KINDS = {
     "financials": "실적 추이. 분기별 매출·영업이익 막대와 영업이익률",
     "health": "재무 체력. 부채비율·유동비율·영업이익률을 같은 시장 중앙값과",
     "compare": "실적 비교. other_company_id 와 같은 분기의 매출·영업이익·이익률·부채비율을 나란히",
+    "holders": "주주 분포. 최대주주와 특수관계인 합계, 5% 이상 보고자, 나머지를 한 막대에",
+    "insiders": "내부자 매매. 기간(since, 기본 90일) 동안 임원·주요주주가 늘리고 줄인 주식 수를 날짜별로, 주가 수익률 선과 함께",
 }
 
 TOOLS = [
@@ -204,6 +206,24 @@ TOOLS = [
          "company_id": _COMPANY, "as_of": _AS_OF,
          "basis": {"type": "string", "enum": ["CFS", "OFS"], "description": "CFS 연결(기본, 없으면 별도), OFS 별도"}},
          "required": ["company_id", "as_of"]}},
+    {"name": "get_major_holders",
+     "description": "한 회사의 5% 대량보유 상황보고(5% 보고). holders: 보고자마다 조회 시점까지의 가장 최근 보고(보유비율 pct, 주식수, 그 보고의 증감, 보고 사유). "
+                    "status 가 '5% 미만으로 내려감'이면 마지막 보고에서 5% 아래가 된 것이다. recent_reports: since(기본 1년 전)부터의 보고를 최근 것부터. "
+                    "new_holder 는 보고 사유가 신규 보고인 것(새로 5% 이상이 됨). 비율은 대표보고자와 특별관계자를 합친 값이라, 서로 특별관계인 보고자의 비율을 더하면 겹칠 수 있다. "
+                    "최대주주와 특수관계인의 지분은 get_relations(equity, in) 이 따로 준다. OpenDART 가 주는 보고는 2024-10 부터다.",
+     "input_schema": {"type": "object", "properties": {
+         "company_id": _COMPANY, "as_of": _AS_OF,
+         "since": {"type": "string", "description": "recent_reports 의 시작일 YYYY-MM-DD (기본 as_of 의 1년 전)"}},
+         "required": ["company_id", "as_of"]}},
+    {"name": "get_insider_trades",
+     "description": "한 회사의 임원·주요주주 특정증권등 소유상황보고(내부자의 주식 증감). 기간(기본: as_of 를 포함한 최근 90일) 안에 접수된 보고를 모은다. "
+                    "totals: 늘린 보고 건수와 주식 수, 줄인 보고 건수와 주식 수, 순증감, 보고한 사람 수. reporters: 사람마다 기간 증감 합계, 보고 뒤 소유 주식수와 비율, 직위, 등기 여부, 주요주주 구분. "
+                    "날짜는 실제 거래일이 아니라 보고 접수일이다. 거래 단가와 금액, 장내·장외 구분, 증여·상속 같은 사유는 이 보고 자료에 없다.",
+     "input_schema": {"type": "object", "properties": {
+         "company_id": _COMPANY, "as_of": _AS_OF,
+         "since": {"type": "string", "description": "기간 시작일 YYYY-MM-DD (기본 as_of 의 89일 전, 그래서 as_of 까지 90일)"},
+         "until": {"type": "string", "description": "기간 끝날 YYYY-MM-DD (기본 as_of). '9월 한 달'처럼 물으면 since 와 until 을 함께 준다"}},
+         "required": ["company_id", "as_of"]}},
     {"name": "get_price_history",
      "description": "한 회사의 기간 수익률을 시장, 같은 제품을 파는 종목들과 견준다: 최근 1주, 1개월, 3개월. "
                     "\"요즘 주가가 어땠나\", \"정말 못 올랐나\", \"시장보다 나았나\"를 확인할 때 쓴다. 가격 자체는 주지 않고 수익률(%)만 준다. "
@@ -240,7 +260,7 @@ TOOLS = [
                       "description": "; ".join(f"{k}: {v}" for k, v in VIEW_KINDS.items())},
              "company_id": _COMPANY, "as_of": _AS_OF,
              "other_company_id": {"type": "integer", "description": "path·compare 일 때 상대 기업의 company_id"},
-             "since": {"type": "string", "description": "supply_flow·timeline·contracts 의 시작일 YYYY-MM-DD (기본은 as_of 의 1년 전)"}},
+             "since": {"type": "string", "description": "supply_flow·timeline·contracts 의 시작일(기본 as_of 의 1년 전), insiders 의 시작일(기본 90일) YYYY-MM-DD"}},
              "required": ["kind", "company_id", "as_of"]}}},
          "required": ["highlight"]}},
     {"name": "get_coverage",
@@ -572,9 +592,11 @@ def get_coverage(db) -> dict:
                                        "rows": v["rows"]} for v in covered["relations"].values()},
             "business": "사업 내용(search_business, get_business)과 제품(find_by_product, get_products)은 상장사의 2025 사업보고서와 2026 반기보고서에서 왔다. "
                         "제품은 매출 비중 표를 읽을 수 있었던 회사만 있다",
+            "holdings": "5% 대량보유 보고(get_major_holders)와 임원·주요주주 소유보고(get_insider_trades)는 상장사의 2024-10 이후 보고다(OpenDART 가 주는 범위). "
+                        "거래 단가·금액, 실제 거래일, 매매 사유, 기관·외국인 수급, 공매도는 없다",
             "financials": "실적과 재무 상태(get_financials)는 상장사의 2022년 1분기보고서부터 가장 최근 정기보고서까지의 주요계정(매출, 영업이익, 순이익, 자산·부채·자본)이다. "
                           "현금흐름, EPS, 배당, 사업부문별 실적은 없다",
-            "not_collected": ["최대주주와 특수관계인이 아닌 주주(5% 이상 주주, 소액주주)", "개인이 가진 다른 회사 지분",
+            "not_collected": ["5% 미만 주주와 소액주주", "2024-10 이전의 5% 보고와 임원 소유보고", "개인이 가진 다른 회사 지분",
                               "분기·반기보고서의 지분·계열 표", "현금흐름표, EPS, 배당, 사업부문별 실적", "주요 고객(사업보고서 본문 서술)", "뉴스", "주가",
                               "2024-01 이전의 공급계약과 취득·처분 결정"]}
 
@@ -918,6 +940,33 @@ def financial_data(db, company_id, as_of, basis=None) -> dict:
     return out
 
 
+def get_major_holders(db, company_id, as_of, since=None) -> dict:
+    from . import holdings
+    company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
+    found = holdings.major_holders(db, company.company_id, when, _date(since, "since"))
+    linked = {c.company_id: c for c in db.scalars(select(Company).where(Company.company_id.in_(
+        {r["reporter_company_id"] for r in found["holders"] + found["recent_reports"] if r["reporter_company_id"]})))}
+    for row in found["holders"] + found["recent_reports"]:
+        linked_id = row.pop("reporter_company_id", None)
+        if linked_id in linked:   # 보고자가 원장의 기업이면 그래프에 이을 수 있게 번호를 붙인다
+            row["reporter_company"] = _brief(linked[linked_id])
+    return {"company": _brief(company), **found, "note": holdings.OVERLAP_NOTE,
+            **({"empty": f"{when} 까지 접수된 5% 보고가 없습니다(OpenDART 는 2024-10 부터의 보고를 줍니다)"} if not found["total_reports"] else {})}
+
+
+def get_insider_trades(db, company_id, as_of, since=None, until=None) -> dict:
+    from . import holdings
+    company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
+    end = min(_date(until, "until") or when, when)
+    start = _date(since, "since") or (end - timedelta(days=89))
+    if start > end:
+        raise ToolError("since 가 until 보다 늦습니다")
+    found = holdings.insider_trades(db, company.company_id, start, end)
+    return {"company": _brief(company), **found,
+            "fields": "날짜는 보고 접수일(rcept_dt)이다. 증감이 0인 보고(unchanged_reports)는 늘린 쪽에도 줄인 쪽에도 넣지 않았다. "
+                      "거래 단가와 금액, 실제 거래일, 장내·장외, 증여·상속 같은 사유는 이 자료에 없다."}
+
+
 def get_price_history(db, company_id, as_of) -> dict:
     company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
     if not company.stock_code:
@@ -1057,7 +1106,7 @@ def tools() -> list[dict]:
             and (t["name"] not in COMPOSITE_TOOLS or os.environ.get("ASK_COMPOSITE", "0") == "1")]
 
 
-FUNCTIONS = {"get_financials": get_financials, "show_view": show_view, "get_price_history": get_price_history, "compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
+FUNCTIONS = {"get_major_holders": get_major_holders, "get_insider_trades": get_insider_trades, "get_financials": get_financials, "show_view": show_view, "get_price_history": get_price_history, "compare_reports": compare_reports, "holder_changes": holder_changes, SCREEN_TOOL: show_on_graph, "get_price_moves": get_price_moves, "find_by_product": find_by_product, "get_products": get_products,
              "search_business": search_business, "get_business": get_business, "find_company": find_company, "get_relations": get_relations, "get_filings": get_filings,
              "list_companies": list_companies, "find_disclosers": find_disclosers,
              "find_paths": find_paths, "get_coverage": get_coverage}
