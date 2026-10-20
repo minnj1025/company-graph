@@ -8,6 +8,7 @@ OpenDART 는 두 가지 모두 회사 하나씩 부르고, 부르면 그 회사�
       python -m company_graph.holdings update [날 수]  (최근 며칠 지분공시를 낸 회사만, 기본 3일)
       python -m company_graph.holdings check           (5% 보고와 최대주주 현황을 견준다)
 """
+import re
 import sys
 from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
@@ -162,7 +163,15 @@ def _major(row: MajorHolding) -> dict:
             "pct": float(row.pct) if row.pct is not None else None,
             "pct_change": float(row.pct_change) if row.pct_change is not None else None,
             "shares": row.shares, "shares_change": row.shares_change, "reason": row.reason,
-            **({"new_holder": True} if row.reason and "신규" in row.reason else {}), "rcept_no": [row.rcept_no]}
+            **({"new_holder": True} if is_new(row.reason) else {}), "rcept_no": [row.rcept_no]}
+
+
+NEW = re.compile(r"신규\s*보고|보고\s*의무\s*발생|신규\s*보유|이상\s*신규|신규\s*상장|상장에\s*따른\s*신규")
+
+
+def is_new(reason: str | None) -> bool:
+    """새로 5% 이상이 되어 낸 보고인가. '담보권 신규취득'(주식을 담보로 잡은 것)은 새 보유가 아니다."""
+    return bool(reason) and any(NEW.search(line) and "담보" not in line for line in reason.splitlines())
 
 
 def insider_trades(db, company_id: int, start: date, end: date) -> dict:
