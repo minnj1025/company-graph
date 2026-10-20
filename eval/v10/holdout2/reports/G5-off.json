@@ -1,0 +1,959 @@
+{
+ "company": {
+  "company_id": 2989,
+  "name": "오리온",
+  "stock_code": "271560",
+  "market": "유가증권",
+  "group": "오리온"
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "오리온은 2026년 상반기 누적 매출 1조 8,239억 원(15.52% 증가), 영업이익 2,980억 원(17.88% 증가), 순이익 2,134억 원(20.03% 증가)을 기록했습니다(접수번호 20260818000305). 2026년 6월 말 연결 부채비율은 18.94%, 유동비율은 386.69%로, 이 DB의 유가증권 상장사 중앙값(부채비율 96.7%, 유동비율 133.47%)보다 낮습니다. 최대주주 및 특수관계인 합계는 2025-12-31 기준 43.81%입니다(접수번호 20260318001320). 결정 공시로는 2026-07-16 리가켐바이오 지분 취득 결정(825억 원)이 있으며(접수번호 20260716801084), 증자·사채·자기주식 결정 공시는 이 DB에 없습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "**사업 구성 (오리온, 271560, 유가증권)**\n\n- **보고서 기준**: 2026.06 반기보고서 [기재정정] (접수번호 20260818000305). 매출 비중은 이 보고서 기준이며, 여기서 \"매출 비중\"은 보고서가 표로 적은 구성 비율입니다.\n- **주요 제품 비중**: 스낵 30.1%, 비스킷 27.7%, 파이 20.7%, 기타 7.8%가 보고서에 적혀 있습니다. 같은 보고서의 두 번째 묶음에서는 스낵 4.9%, 기타 4.3%, 파이 0.7%, 비스킷 0.5%가 나오고, 별도 \"기타\" 세그먼트는 3.3%입니다 (접수번호 20260818000305). 두 묶음이 어떤 기준으로 나뉘는지는 조회 결과에 나와 있지 않아 확인되지 않습니다.\n- **사업부문**: 음식료품 제조(제과 부문) 한 부문이 중심입니다. 제10기 반기 제과부문 외부매출액은 1조 8,239억 원이고 연결합계 영업이익은 2,980억 원입니다 (접수번호 20260818000305, 단위: 천원 표를 원 단위 기준으로 옮긴 값).\n- **지역 구성**: 중국 5개 생산법인, 베트남 2개 생산공장, 러시아 법인, 인도 라자스탄 생산공장이 사업 개요에 적혀 있습니다. 지역별 매출 비중은 이 자료에 없습니다.\n- **사업 개요 설명**: 보고서는 초코파이, 포카칩, 오징어땅콩 등 장수 브랜드와 간편대용식·제주용암수 등 신규 카테고리를 언급합니다 (접수번호 20260818000305).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4365,
+    "output_tokens": 656,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "오리온 매출 구성",
+     "company": {
+      "id": 2989,
+      "name": "오리온"
+     },
+     "as_of": "2026-10-16",
+     "report": "[기재정정]반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "비스킷",
+       "segment": "음식료품제조",
+       "share_pct": 27.7,
+       "family": "가공식품"
+      },
+      {
+       "name": "파 이",
+       "segment": "음식료품제조",
+       "share_pct": 20.7,
+       "family": "가공식품"
+      },
+      {
+       "name": "스 낵",
+       "segment": "음식료품제조",
+       "share_pct": 30.1,
+       "family": "가공식품"
+      },
+      {
+       "name": "기 타",
+       "segment": "음식료품제조",
+       "share_pct": 7.8,
+       "family": null
+      },
+      {
+       "name": "비스킷",
+       "segment": "음식료품제조",
+       "share_pct": 0.5,
+       "family": "가공식품"
+      },
+      {
+       "name": "파 이",
+       "segment": "음식료품제조",
+       "share_pct": 0.7,
+       "family": "가공식품"
+      },
+      {
+       "name": "스 낵",
+       "segment": "음식료품제조",
+       "share_pct": 4.9,
+       "family": "가공식품"
+      },
+      {
+       "name": "기 타",
+       "segment": "음식료품제조",
+       "share_pct": 4.3,
+       "family": null
+      },
+      {
+       "name": "기타",
+       "segment": "기타",
+       "share_pct": 3.3,
+       "family": null
+      }
+     ],
+     "sources": [
+      "20260818000305"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "[기재정정]반기보고서 (2026.06): 제품 9줄, 비중 합 100.0%"
+    }
+   ],
+   "sources": [
+    "20260818000305"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "**실적과 재무 (오리온, 연결 기준)**\n\n- **최근 분기 (2026년 2분기)**: 매출 8,936억 원(전년 동기 대비 14.98% 증가), 영업이익 1,326억 원(9.16% 증가), 순이익 866억 원(20.84% 증가), 영업이익률 14.84%입니다. 2025년 2분기는 매출 7,772억 원, 영업이익 1,214억 원, 순이익 717억 원이었습니다 (접수번호 20260818000305, 20250814001923).\n- **연간 흐름**: 매출은 2023년 2조 9,124억 원, 2024년 3조 1,043억 원, 2025년 3조 3,324억 원으로 늘었습니다. 2025년 순이익은 3,906억 원으로 전년 대비 26.75% 줄었습니다 (접수번호 20240313000527, 20250808000624, 20260318001320).\n- **2026년 상반기 누적**: 매출 1조 8,239억 원(15.52% 증가), 영업이익 2,980억 원(17.88% 증가), 순이익 2,134억 원(20.03% 증가)입니다 (접수번호 20260818000305).\n- **재무 상태 (2026년 6월 말, 연결)**: 부채비율은 18.94%, 유동비율은 386.69%입니다. 2025년 말은 부채비율 17.55%, 유동비율 374.76%였습니다 (접수번호 20260818000305, 20260318001320).\n- **시장 비교**: 이 DB의 유가증권 상장사 827곳 중앙값은 부채비율 96.7%, 유동비율 133.47%, 영업이익률 5.1%입니다. 같은 기준으로 계산한 값이므로 오리온의 수치와 나란히 볼 수 있습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3469,
+    "output_tokens": 635,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "오리온 실적 추이",
+     "company": {
+      "id": 2989,
+      "name": "오리온"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114000786"
+       ],
+       "revenue": 7748.7,
+       "revenue_yoy_pct": 1.12,
+       "operating_income": 1370.7,
+       "operating_income_yoy_pct": -2.55,
+       "net_income": 1026.4,
+       "net_income_yoy_pct": -6.43,
+       "operating_margin_pct": 17.69
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250808000624",
+        "20241114000786"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 8618.1,
+       "revenue_yoy_pct": 12.16,
+       "operating_income": 1596.8,
+       "operating_income_yoy_pct": 13.77,
+       "net_income": 2546.6,
+       "net_income_yoy_pct": 123.15,
+       "operating_margin_pct": 18.53
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250515000767"
+       ],
+       "revenue": 8017.7,
+       "revenue_yoy_pct": 7.13,
+       "operating_income": 1313.8,
+       "operating_income_yoy_pct": 4.99,
+       "net_income": 1061.3,
+       "net_income_yoy_pct": 6.37,
+       "operating_margin_pct": 16.39
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250814001923"
+       ],
+       "revenue": 7771.7,
+       "revenue_yoy_pct": 8.05,
+       "operating_income": 1214.5,
+       "operating_income_yoy_pct": -0.21,
+       "net_income": 716.6,
+       "net_income_yoy_pct": -5.9,
+       "operating_margin_pct": 15.63
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251113000368"
+       ],
+       "revenue": 8289.2,
+       "revenue_yoy_pct": 6.98,
+       "operating_income": 1378.7,
+       "operating_income_yoy_pct": 0.59,
+       "net_income": 1049.9,
+       "net_income_yoy_pct": 2.3,
+       "operating_margin_pct": 16.63
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260318001320",
+        "20251113000368"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 9245.8,
+       "revenue_yoy_pct": 7.28,
+       "operating_income": 1675.6,
+       "operating_income_yoy_pct": 4.94,
+       "net_income": 1078.1,
+       "net_income_yoy_pct": -57.67,
+       "operating_margin_pct": 18.12
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260515000512"
+       ],
+       "revenue": 9303.6,
+       "revenue_yoy_pct": 16.04,
+       "operating_income": 1654.7,
+       "operating_income_yoy_pct": 25.95,
+       "net_income": 1268.1,
+       "net_income_yoy_pct": 19.49,
+       "operating_margin_pct": 17.79
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260818000305"
+       ],
+       "revenue": 8935.9,
+       "revenue_yoy_pct": 14.98,
+       "operating_income": 1325.7,
+       "operating_income_yoy_pct": 9.16,
+       "net_income": 865.9,
+       "net_income_yoy_pct": 20.84,
+       "operating_margin_pct": 14.84
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230315001259"
+       ],
+       "revenue": 28732.5,
+       "revenue_yoy_pct": 21.98,
+       "operating_income": 4666.5,
+       "operating_income_yoy_pct": 25.14,
+       "net_income": 3983.1,
+       "net_income_yoy_pct": 51.07,
+       "operating_margin_pct": 16.24,
+       "net_margin_pct": 13.86
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240313000527"
+       ],
+       "revenue": 29123.6,
+       "revenue_yoy_pct": 1.36,
+       "operating_income": 4923.9,
+       "operating_income_yoy_pct": 5.52,
+       "net_income": 3849.8,
+       "net_income_yoy_pct": -3.35,
+       "operating_margin_pct": 16.91,
+       "net_margin_pct": 13.22
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250808000624"
+       ],
+       "revenue": 31043.4,
+       "revenue_yoy_pct": 6.59,
+       "operating_income": 5435.9,
+       "operating_income_yoy_pct": 10.4,
+       "net_income": 5332.3,
+       "net_income_yoy_pct": 38.51,
+       "operating_margin_pct": 17.51,
+       "net_margin_pct": 17.18
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260318001320"
+       ],
+       "revenue": 33324.4,
+       "revenue_yoy_pct": 7.35,
+       "operating_income": 5582.6,
+       "operating_income_yoy_pct": 2.7,
+       "net_income": 3906.0,
+       "net_income_yoy_pct": -26.75,
+       "operating_margin_pct": 16.75,
+       "net_margin_pct": 11.72
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260818000305"
+       ],
+       "revenue": 18239.4,
+       "revenue_yoy_pct": 15.52,
+       "operating_income": 2980.4,
+       "operating_income_yoy_pct": 17.88,
+       "net_income": 2134.1,
+       "net_income_yoy_pct": 20.03,
+       "operating_margin_pct": 16.34,
+       "net_margin_pct": 11.7
+      }
+     ],
+     "sources": [
+      "20241114000786",
+      "20250808000624",
+      "20250515000767",
+      "20250814001923",
+      "20251113000368",
+      "20260318001320",
+      "20260515000512",
+      "20260818000305"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 8,936억 원, 영업이익 1,326억 원, 영업이익 전년 동기 대비 +9.2%"
+    },
+    {
+     "kind": "health",
+     "title": "오리온 재무 체력",
+     "company": {
+      "id": 2989,
+      "name": "오리온"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 18.94,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 386.69,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 16.34,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260818000305"
+      ],
+      "total_assets": 49723.3,
+      "total_liabilities": 7916.4,
+      "total_equity": 41806.8,
+      "current_assets": 19510.4,
+      "current_liabilities": 5045.5,
+      "debt_ratio_pct": 18.94,
+      "current_ratio_pct": 386.69
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260318001320"
+      ],
+      "total_assets": 45986.6,
+      "total_liabilities": 6864.6,
+      "total_equity": 39122.1,
+      "current_assets": 18670.3,
+      "current_liabilities": 4981.9,
+      "debt_ratio_pct": 17.55,
+      "current_ratio_pct": 374.76
+     },
+     "market": "유가증권",
+     "sources": [
+      "20241114000786",
+      "20250808000624",
+      "20250515000767",
+      "20250814001923",
+      "20251113000368",
+      "20260318001320",
+      "20260515000512",
+      "20260818000305"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 18.94% (시장 중앙값 96.7%), 유동비율 386.69% (시장 중앙값 133.47%), 영업이익률 16.34% (시장 중앙값 5.1%)"
+    }
+   ],
+   "sources": [
+    "20240313000527",
+    "20250808000624",
+    "20250814001923",
+    "20260318001320",
+    "20260818000305"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "- **최대주주 및 특수관계인 합계**: 2025-12-31 기준 보통주 43.81%(17,321,233주)로, 기초 43.80%에서 소폭 늘었습니다(사업보고서 접수번호 20260318001320).\n- **최대주주 오리온홀딩스**: 37.37%(14,775,000주)를 보유합니다(기준일 2025-12-31, 접수번호 20260318001320).\n- **특수관계인 9명 추가 보유**: 이화경 4.08%, 담서원 1.23%, 담경선 0.60%, 담철곤 0.45% 등이 같은 사업보고서에 최대주주 현황으로 적혀 있습니다. 그 밖에 이원우, 허인철, 김영훈, 이서연, 신호정은 각각 0.05% 이하입니다.\n- **5% 이상 대량보유 보고**: 오리온홀딩스 43.82%(2026-10-01 기준, 주요 계약내용 변경, 접수번호 20261001000377), 국민연금공단 9.14%(2026-04-01 기준, 접접수번호 20260401003292), SilchesterInternationalInvestorsLLP 6.06%(2026-09-01 기준, 단순 취득, 접수번호 20260901000076)가 보고되어 있습니다. 5% 보고 비율은 대표보고자와 특별관계자를 합친 값이라 최대주주 현황과 다를 수 있습니다.\n- **타법인 출자**: 이 회사가 지분을 가진 회사는 8곳입니다. 그중 3곳은 100% 자회사(Orion F&B US, Inc., Orion Food VINA Co., Ltd., Orion Nutritionals Private Limited)이고, 나머지는 PAN Orion Corp. Limited 95.2%, Orion International Euro LLC 73.3%, Delfi-Orion Pte Ltd. 50.0%, 농업회사법인 오리온농협 50.0%, 어업회사법인 오리온수협 50.0%입니다. 뒤의 두 곳은 DB에 이름만 있습니다.\n- **다른 회사의 보유 보고**: 케이알엠(0.01%)과 현대해상(0.00%)이 자기 사업보고서에 이 회사 주식을 가졌다고 적었습니다. 두 곳 모두 최대주주나 특수관계인이 아닙니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2997,
+    "output_tokens": 837,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "오리온 지분 구조도",
+     "company": {
+      "id": 2989,
+      "name": "오리온"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": 2824,
+       "name": "오리온홀딩스",
+       "listed": true,
+       "pct": 37.37,
+       "role": "본인",
+       "rcept": "20260318000838",
+       "up": [
+        {
+         "id": null,
+         "name": "이화경",
+         "listed": false,
+         "pct": 32.63
+        },
+        {
+         "id": null,
+         "name": "담철곤",
+         "listed": false,
+         "pct": 28.73
+        },
+        {
+         "id": null,
+         "name": "담경선",
+         "listed": false,
+         "pct": 1.22
+        }
+       ]
+      },
+      {
+       "id": null,
+       "name": "이화경",
+       "listed": false,
+       "pct": 4.08,
+       "role": "임원",
+       "rcept": "20260318001320",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "담서원",
+       "listed": false,
+       "pct": 1.23,
+       "role": "계열회사임원",
+       "rcept": "20260318001320",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "담경선",
+       "listed": false,
+       "pct": 0.6,
+       "role": "특수관계인",
+       "rcept": "20260318001320",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "담철곤",
+       "listed": false,
+       "pct": 0.45,
+       "role": "임원",
+       "rcept": "20260318001320",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "이원우",
+       "listed": false,
+       "pct": 0.04,
+       "role": "특수관계인",
+       "rcept": "20260318001320",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "허인철",
+       "listed": false,
+       "pct": 0.02,
+       "role": "임원",
+       "rcept": "20260318001320",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "김영훈",
+       "listed": false,
+       "pct": 0.01,
+       "role": "임원",
+       "rcept": "20260318001320",
+       "up": []
+      }
+     ],
+     "more_holders": 2,
+     "investees": [
+      {
+       "id": null,
+       "name": "Orion F&B US, Inc.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001320"
+      },
+      {
+       "id": null,
+       "name": "Orion Food VINA Co., Ltd.(*1)",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001320"
+      },
+      {
+       "id": null,
+       "name": "Orion Nutritionals Private Limited(*2)",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001320"
+      },
+      {
+       "id": null,
+       "name": "PAN Orion Corp. Limited(*1)",
+       "listed": false,
+       "pct": 95.2,
+       "purpose": "경영참여",
+       "rcept": "20260318001320"
+      },
+      {
+       "id": null,
+       "name": "Orion International Euro LLC(*1)",
+       "listed": false,
+       "pct": 73.3,
+       "purpose": "경영참여",
+       "rcept": "20260318001320"
+      },
+      {
+       "id": null,
+       "name": "Delfi-Orion Pte Ltd.(*1)",
+       "listed": false,
+       "pct": 50.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001320"
+      },
+      {
+       "id": 5939,
+       "name": "농업회사법인 오리온농협",
+       "listed": false,
+       "pct": 50.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001320"
+      },
+      {
+       "id": 14036,
+       "name": "어업회사법인 오리온수협",
+       "listed": false,
+       "pct": 50.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001320"
+      }
+     ],
+     "more_investees": 0,
+     "sources": [
+      "20260318000838",
+      "20260318001320"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 10곳(위 8곳 표시), 출자 대상 8곳(위 8곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "오리온 주주 분포",
+     "company": {
+      "id": 2989,
+      "name": "오리온"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 43.81,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "오리온홀딩스",
+       "id": 2824,
+       "pct": 43.82,
+       "date": "2026-10-01",
+       "overlap": true
+      },
+      {
+       "name": "국민연금공단",
+       "id": null,
+       "pct": 9.14,
+       "date": "2026-04-01",
+       "overlap": false
+      },
+      {
+       "name": "SilchesterInternationalInvestorsLLP",
+       "id": null,
+       "pct": 6.06,
+       "date": "2026-09-01",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 40.99,
+     "sources": [
+      "20261001000377",
+      "20260401003292",
+      "20260901000076",
+      "20260318000838",
+      "20260318001320"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 43.81%, 국민연금공단 9.14%, SilchesterInternationalInvestorsLLP 6.06%"
+    }
+   ],
+   "sources": [
+    "20260318001320",
+    "20260401003292",
+    "20260901000076",
+    "20261001000377"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "- **공급계약**: 계약일 2025-10-16 이후의 단일판매·공급계약 공시 없음.\n- **다른 회사 지분의 취득·처분 결정 1건** (결의일 2025-10-16 이후, 결정이지 실행 결과가 아니다):\n  - 2026-07-16 결의·공시, 정정 공시 · 오리온이 리가켐바이오 지분 679,571주를 825억 원에 취득하기로 결정(그 뒤 지분율 25.27%) — 자회사 일을 대신 공시 (접수번호 20260716801084)\n- **옛 지분 결정의 정정 공시 1건**: 결의일이 2025-10-16보다 이른 결정을 이 기간에 정정한 공시다. 최근 1년의 새 결정이 아니다.\n  - 2025-09-18 결의, 2025-11-24 공시, 정정 공시 · 오리온이 어업회사법인 오리온수협 지분 6,000,000주를 300억 원에 취득하기로 결정(그 뒤 지분율 50.00%) — 이 회사가 공시 (접수번호 20251124800258)\n- 이 DB의 공급계약·해지 공시는 2026-10-16 접수분까지 모았다. 그 뒤 공시는 여기에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 713,
+    "output_tokens": 155,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "written_by": "code",
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "오리온 공급망 흐름",
+     "company": {
+      "id": 2989,
+      "name": "오리온"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [],
+     "more": 0,
+     "sources": [],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 0건, 상대 0쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "오리온 공시 타임라인",
+     "company": {
+      "id": 2989,
+      "name": "오리온"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-10-22",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자율공시)",
+       "counterparty": "어업회사법인 오리온수협㈜",
+       "title": null,
+       "amount": 30000000000.0,
+       "superseded": true,
+       "rcept": "20251022800528"
+      },
+      {
+       "date": "2025-11-24",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자율공시)",
+       "counterparty": "어업회사법인 오리온수협㈜",
+       "title": null,
+       "amount": 30000000000.0,
+       "superseded": false,
+       "rcept": "20251124800258"
+      },
+      {
+       "date": "2026-06-26",
+       "category": "지분 취득",
+       "report": "타법인주식및출자증권취득결정(자율공시)(종속회사의주요경영사항)",
+       "counterparty": "주식회사 리가켐 바이오사이언스",
+       "title": null,
+       "amount": 82499895400.0,
+       "superseded": true,
+       "rcept": "20260626800014"
+      },
+      {
+       "date": "2026-07-16",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자율공시)(종속회사의주요경영사항)",
+       "counterparty": "주식회사 리가켐 바이오사이언스",
+       "title": null,
+       "amount": 82499919400.0,
+       "superseded": false,
+       "rcept": "20260716801084"
+      }
+     ],
+     "sources": [
+      "20251022800528",
+      "20251124800258",
+      "20260626800014",
+      "20260716801084"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 4건"
+    }
+   ],
+   "sources": [
+    "20251124800258",
+    "20260716801084"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "- **결정 공시는 없습니다.** 이 DB에는 오리온의 증자, 사채, 자기주식, 감자 결정 공시가 들어 있지 않습니다. 실제 납입이나 소각 결과도 확인할 수 없습니다.\n- **배당은 3개 사업연도 모두 현금배당입니다.** 보통주 1주당 배당금은 2023년 1,250원, 2024년 2,500원, 2025년 3,500원입니다. 현금 배당 총액은 각각 494억 원, 988억 원, 1,384억 원입니다(접수번호 20260318001320).\n- **배당성향은 연결 기준입니다.** 2023년 13.1%, 2024년 18.8%, 2025년 36.2%입니다. 같은 해 시가배당률은 1.1%, 2.4%, 2.8%입니다.\n- **2025년 주당순이익은 9,682원으로, 2024년 13,271원보다 낮습니다.** 같은 기간 배당은 늘었습니다. 그래서 배당성향이 올라갔습니다(접수번호 20260318001320).\n- **자기주식 취득과 소각 내역은 없습니다.** 연도별 자기주식 취득 기록과 감자로 소각한 기록이 모두 비어 있습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 930,
+    "output_tokens": 450,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "payout",
+     "title": "오리온 주주 환원",
+     "company": {
+      "id": 2989,
+      "name": "오리온"
+     },
+     "as_of": "2026-10-16",
+     "years": [
+      {
+       "year": 2023,
+       "cash_eok": 494.1,
+       "buyback_eok": 0.0,
+       "dps": 1250.0,
+       "payout_ratio": 13.1
+      },
+      {
+       "year": 2024,
+       "cash_eok": 988.2,
+       "buyback_eok": 0.0,
+       "dps": 2500.0,
+       "payout_ratio": 18.8
+      },
+      {
+       "year": 2025,
+       "cash_eok": 1383.5,
+       "buyback_eok": 0.0,
+       "dps": 3500.0,
+       "payout_ratio": 36.2
+      }
+     ],
+     "sources": [
+      "20260318001320"
+     ],
+     "notes": [
+      "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
+      "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."
+     ],
+     "summary": "2023 주당 1,250원, 배당성향 13.1%; 2024 주당 2,500원, 배당성향 18.8%; 2025 주당 3,500원, 배당성향 36.2%"
+    }
+   ],
+   "sources": [
+    "20260318001320"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "**주가 (2026-10-16 기준, 한국거래소 일별 시세 가공)**\n\n- **1주 (10/08~10/16):** 4.13%. 같은 유가증권 시장 상장 종목의 중앙값은 -2.74%로, 시장 대비 6.87%p 높았습니다.\n- **1개월 (9/16~10/16):** -2.6%. 시장 중앙값은 -3.73%로, 시장 대비 1.13%p 높았습니다.\n- **3개월 (7/16~10/16):** -15.5%. 시장 중앙값은 -0.97%로, 시장 대비 14.54%p 낮았습니다.\n- **동종 비교:** 같은 제품을 매출의 10% 이상으로 파는 상장사 기준의 비교값은 이 DB에서 산출되지 않았습니다(해당 제품 기준 조건에 맞는 종목이 없음).\n\n수익률은 과거 사실이며, 이 항목은 주가 변동의 원인이나 앞으로의 주가 방향을 말하지 않습니다. 공시 근거(접수번호)가 붙는 항목이 아니므로 출처는 한국거래소 시세 자료입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 737,
+    "output_tokens": 415,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "오리온 수익률 비교",
+     "company": {
+      "id": 2989,
+      "name": "오리온"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": 4.13,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": null,
+       "peers_counted": 0,
+       "vs_market_pp": 6.87
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": -2.6,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": null,
+       "peers_counted": 0,
+       "vs_market_pp": 1.13
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": -15.5,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": null,
+       "peers_counted": 0,
+       "vs_market_pp": -14.54
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [],
+      "names": [],
+      "total": 0
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 4.13% (시장 -2.74%); 1개월 -2.6% (시장 -3.73%); 3개월 -15.5% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)",
+  "내부자 매매: 조회 시점까지 공시된 것이 없거나 모으지 않음"
+ ],
+ "usage": {
+  "input_tokens": 16876,
+  "output_tokens": 3468,
+  "cache_read_input_tokens": 7483,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 17.4,
+ "cost_usd": 0.0035
+}

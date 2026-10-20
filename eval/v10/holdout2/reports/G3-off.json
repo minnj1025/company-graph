@@ -1,0 +1,1757 @@
+{
+ "company": {
+  "company_id": 1377,
+  "name": "LS",
+  "stock_code": "006260",
+  "market": "유가증권",
+  "group": "LS"
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "LS는 순수지주회사로서 전선·일렉트릭·엠앤엠·엠트론·아이앤디 등 다섯 부문을 지배하며, 2026년 상반기 매출은 20조 5,280억 원(+39.0%), 영업이익은 1조 717억 원(+98.4%)을 기록했습니다 (접수번호 20260814001888). 2026년 6월 말 부채비율은 269.71%로 2025년 말(225.47%)보다 높아졌습니다 (접수번호 20260814001888, 20260318001427). 최대주주 및 특수관계인 합계 지분은 2025-12-31 기준 32.60%입니다 (접수번호 20260318001427). 최근 1년간 자회사 계약을 대신 공시한 공급계약이 8건 있으며, 가장 큰 것은 북미 신재생에너지 PJT 4,598억 원입니다 (접수번호 20251126800110). 최근 1주 종가 수익률은 -14.77%로 시장 중앙값을 크게 밑돌았으나, 하락 원인은 이 DB에 나타나 있지 않습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "**LS (006260, 유가증권) · 사업 구성** (기준: 반기보고서 2026.06, 접수번호 20260814001888)\n\n- **지주회사 구조**: LS는 순수지주회사로서 주식 소유를 통해 자회사를 지배하며, LS 상표권 사용료(2025년 577억 원 인식)를 수취합니다 (접수번호 20260814001888).\n- **핵심 사업부문**: 전선, 일렉트릭, 엠앤엠, 엠트론, 아이앤디의 다섯 부문으로 나뉩니다 (접수번호 20260814001888).\n- **부문별 매출 (2026년 반기, 연결, 백만 원)**: 엠앤엠 10,236,200 / 전선 4,523,185 / 일렉트릭 2,953,550 / 아이앤디 3,232,507 / 엠트론 613,119. 기타 조정 후 합계는 20,528,009입니다 (접수번호 20260814001888). 반기 기간 치이므로 연간과 구분해 읽어야 합니다.\n- **비중이 큰 제품 줄**: 전기동(엠앤엠 동제련)이 매출의 47.0%, 해외투자(아이앤디)가 14.8%, 전력기기(일렉트릭)가 11.1%입니다. 비중은 각 줄 전체 기준이며 한 줄에 여러 제품이 묶인 경우 개별 제품 비중은 공시에 없습니다 (접수번호 20260814001888).\n- **세부 제품 분류가 불확실한 항목**: 금속(동관·스테인리스 강관), IT, 기계(트랙터·사출 성형기), 부품(커넥터), 해외투자(권선·통신 케이블) 줄은 제품 분류 매칭을 자동으로 붙인 것이라 사람이 전부 확인하지 않았습니다. 원문 표 기준으로만 참고하시기 바랍니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4556,
+    "output_tokens": 680,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "LS 매출 구성",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "산업용전선",
+       "segment": "전선",
+       "share_pct": 8.2,
+       "family": "전선·케이블"
+      },
+      {
+       "name": "중간재",
+       "segment": "전선",
+       "share_pct": 3.9,
+       "family": "전선·케이블"
+      },
+      {
+       "name": "전력선",
+       "segment": "전선",
+       "share_pct": 8.3,
+       "family": "전선·케이블"
+      },
+      {
+       "name": "통신",
+       "segment": "전선",
+       "share_pct": 0.4,
+       "family": "전선·케이블"
+      },
+      {
+       "name": "전력기기",
+       "segment": "일렉트릭",
+       "share_pct": 11.1,
+       "family": "전력기기"
+      },
+      {
+       "name": "자동화",
+       "segment": "일렉트릭",
+       "share_pct": 1.0,
+       "family": "로봇·자동화 설비"
+      },
+      {
+       "name": "금속",
+       "segment": "일렉트릭",
+       "share_pct": 1.2,
+       "family": "비철금속"
+      },
+      {
+       "name": "IT",
+       "segment": "일렉트릭",
+       "share_pct": 0.3,
+       "family": "IT 서비스"
+      },
+      {
+       "name": "동제련",
+       "segment": "엠앤엠",
+       "share_pct": 47.0,
+       "family": "비철금속"
+      },
+      {
+       "name": "기계",
+       "segment": "엠트론",
+       "share_pct": 2.6,
+       "family": "건설기계·농기계"
+      },
+      {
+       "name": "부품",
+       "segment": "엠트론",
+       "share_pct": 0.2,
+       "family": "수동부품·커넥터"
+      },
+      {
+       "name": "부동산개발",
+       "segment": "아이앤디",
+       "share_pct": 0.0,
+       "family": null
+      },
+      {
+       "name": "해외투자",
+       "segment": "아이앤디",
+       "share_pct": 14.8,
+       "family": "전선·케이블"
+      }
+     ],
+     "sources": [
+      "20260814001888"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 13줄, 비중 합 99.0%"
+    }
+   ],
+   "sources": [
+    "20260814001888"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "- **최근 분기**: 2026년 2분기(연결) 매출은 11조 236억 원으로 전년 같은 기간(7조 8,544억 원) 대비 40.35% 늘었고, 영업이익은 5,956억 원으로 152.74%, 순이익은 2,967억 원으로 81.61% 늘었습니다. 영업이익률은 5.4%입니다 (접수번호 20260814001888, 전년 동기는 접수번호 20250814003623).\n- **상반기 누적**: 2026년 상반기 매출은 20조 5,280억 원(+39.0%), 영업이익 1조 717억 원(+98.4%), 순이익 5,386억 원(+76.89%)입니다. 영업이익률은 5.22%입니다 (접수번호 20260814001888).\n- **분기 흐름**: 2026년 1분기 매출은 9조 5,044억 원, 영업이익은 4,761억 원이었고, 2분기에는 두 값 모두 전 분기보다 커졌습니다 (접수번호 20260527000198, 20260814001888).\n- **연간 추세**: 2025년 연간 매출은 31조 8,700억 원(+15.7%)이었고, 영업이익은 1조 526억 원으로 1.9% 줄었습니다. 순이익은 4,851억 원으로 23.91% 늘었습니다 (접수번호 20260318001427). 2024년 4분기는 순손실 27.8억 원으로 적자 전환이었고, 2025년 4분기는 순이익 761억 원으로 흑자 전환이라고 적혔습니다.\n- **재무구조**: 2026년 6월 말 기준 부채비율은 269.71%로, 2025년 말(225.47%)보다 높아졌습니다. 유동비율은 114.83%입니다. 같은 시장(유가증권) 상장사 827곳의 중앙값은 부채비율 96.7%, 유동비율 133.47%입니다 (접수번호 20260814001888, 20260318001427).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3499,
+    "output_tokens": 697,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "LS 실적 추이",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20250326000616"
+       ],
+       "revenue": 70855.0,
+       "revenue_yoy_pct": 17.82,
+       "operating_income": 1571.0,
+       "operating_income_yoy_pct": -30.56,
+       "net_income": 718.5,
+       "net_income_yoy_pct": 12.32,
+       "operating_margin_pct": 2.22
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250814002856",
+        "20250326000616"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 70998.6,
+       "revenue_yoy_pct": 21.18,
+       "operating_income": 2977.9,
+       "operating_income_yoy_pct": 93.81,
+       "net_income": -27.8,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": 4.19
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250515002301"
+       ],
+       "revenue": 69135.7,
+       "revenue_yoy_pct": 16.29,
+       "operating_income": 3045.1,
+       "operating_income_yoy_pct": 24.97,
+       "net_income": 1411.1,
+       "net_income_yoy_pct": 56.44,
+       "operating_margin_pct": 4.4
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250814003623"
+       ],
+       "revenue": 78544.2,
+       "revenue_yoy_pct": 5.94,
+       "operating_income": 2356.4,
+       "operating_income_yoy_pct": -37.06,
+       "net_income": 1633.6,
+       "net_income_yoy_pct": -29.66,
+       "operating_margin_pct": 3.0
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251114002482"
+       ],
+       "revenue": 80727.7,
+       "revenue_yoy_pct": 13.93,
+       "operating_income": 2571.3,
+       "operating_income_yoy_pct": 63.67,
+       "net_income": 1046.0,
+       "net_income_yoy_pct": 45.59,
+       "operating_margin_pct": 3.19
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260318001427",
+        "20251114002482"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 90292.6,
+       "revenue_yoy_pct": 27.18,
+       "operating_income": 2552.8,
+       "operating_income_yoy_pct": -14.28,
+       "net_income": 760.7,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": 2.83
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260527000198"
+       ],
+       "revenue": 95044.5,
+       "revenue_yoy_pct": 37.48,
+       "operating_income": 4760.9,
+       "operating_income_yoy_pct": 56.35,
+       "net_income": 2419.1,
+       "net_income_yoy_pct": 71.43,
+       "operating_margin_pct": 5.01
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260814001888"
+       ],
+       "revenue": 110235.6,
+       "revenue_yoy_pct": 40.35,
+       "operating_income": 5955.7,
+       "operating_income_yoy_pct": 152.74,
+       "net_income": 2966.8,
+       "net_income_yoy_pct": 81.61,
+       "operating_margin_pct": 5.4
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230328001040"
+       ],
+       "revenue": 174913.4,
+       "revenue_yoy_pct": 36.34,
+       "operating_income": 6709.4,
+       "operating_income_yoy_pct": 16.62,
+       "net_income": 5054.9,
+       "net_income_yoy_pct": 43.55,
+       "operating_margin_pct": 3.84,
+       "net_margin_pct": 2.89
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240328001620"
+       ],
+       "revenue": 244807.4,
+       "revenue_yoy_pct": 39.96,
+       "operating_income": 8996.7,
+       "operating_income_yoy_pct": 34.38,
+       "net_income": 5706.0,
+       "net_income_yoy_pct": -32.65,
+       "operating_margin_pct": 3.68,
+       "net_margin_pct": 2.33
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250814002856"
+       ],
+       "revenue": 275446.6,
+       "revenue_yoy_pct": 12.52,
+       "operating_income": 10729.4,
+       "operating_income_yoy_pct": 19.26,
+       "net_income": 3915.2,
+       "net_income_yoy_pct": -31.38,
+       "operating_margin_pct": 3.9,
+       "net_margin_pct": 1.42
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260318001427"
+       ],
+       "revenue": 318700.3,
+       "revenue_yoy_pct": 15.7,
+       "operating_income": 10525.5,
+       "operating_income_yoy_pct": -1.9,
+       "net_income": 4851.4,
+       "net_income_yoy_pct": 23.91,
+       "operating_margin_pct": 3.3,
+       "net_margin_pct": 1.52
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260814001888"
+       ],
+       "revenue": 205280.1,
+       "revenue_yoy_pct": 39.0,
+       "operating_income": 10716.6,
+       "operating_income_yoy_pct": 98.4,
+       "net_income": 5385.9,
+       "net_income_yoy_pct": 76.89,
+       "operating_margin_pct": 5.22,
+       "net_margin_pct": 2.62
+      }
+     ],
+     "sources": [
+      "20250326000616",
+      "20250814002856",
+      "20250515002301",
+      "20250814003623",
+      "20251114002482",
+      "20260318001427",
+      "20260527000198",
+      "20260814001888"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 11조 236억 원, 영업이익 5,956억 원, 영업이익 전년 동기 대비 +152.7%"
+    },
+    {
+     "kind": "health",
+     "title": "LS 재무 체력",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 269.71,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 114.83,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 5.22,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260814001888"
+      ],
+      "total_assets": 298644.6,
+      "total_liabilities": 217867.0,
+      "total_equity": 80777.6,
+      "current_assets": 205905.4,
+      "current_liabilities": 179313.4,
+      "debt_ratio_pct": 269.71,
+      "current_ratio_pct": 114.83
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260318001427"
+      ],
+      "total_assets": 249947.9,
+      "total_liabilities": 173152.0,
+      "total_equity": 76795.9,
+      "current_assets": 164148.6,
+      "current_liabilities": 137755.3,
+      "debt_ratio_pct": 225.47,
+      "current_ratio_pct": 119.16
+     },
+     "market": "유가증권",
+     "sources": [
+      "20250326000616",
+      "20250814002856",
+      "20250515002301",
+      "20250814003623",
+      "20251114002482",
+      "20260318001427",
+      "20260527000198",
+      "20260814001888"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 269.71% (시장 중앙값 96.7%), 유동비율 114.83% (시장 중앙값 133.47%), 영업이익률 5.22% (시장 중앙값 5.1%)"
+    }
+   ],
+   "sources": [
+    "20250814003623",
+    "20260318001427",
+    "20260527000198",
+    "20260814001888"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "## LS 지배 구조와 주주 (조회 시점 2026-10-16)\n\n- **최대주주 및 특수관계인 합계**: 보통주 기준 32.60%(10,335,256,000주, 기말 2025-12-31 기준). 기초 대비 0.48%p 높아졌다. (접수번호 20260318001427)\n- **최대주주 현황 개별 지분**: 구자은 3.69%, 구동휘 3.04%, 구자용 2.43%, 구자철 1.97%, 구자열 1.90% 등 특수관계인 15명이 기재되어 있다. 모두 2025-12-31 기준이다. (접수번호 20260318001427)\n- **5% 대량보유 보고**:\n  - 구자열 33.11%(기준일 2026-08-25, 특별관계자 추가 및 보유주식수 변동, 보유주식에 관한 계약 변경 사유). (접수번호 20260825000465)\n  - 삼성자산운용 5.01%(기준일 2026-05-13, 매매로 인한 신규보고의무 발생, 삼성액티브자산운용 위탁운용분 포함). (접수번호 20260513000581)\n  - 5% 보고 비율은 대표보고자와 특별관계자를 합친 값이라 최대주주 현황 수치와 다를 수 있다.\n- **타법인 지분 보유**: 사업보고서 기준으로 17개 회사에 지분을 가지고 있으며, 이 중 100% 지분을 가진 회사는 3곳이다(LS Japan, LS글로벌인코퍼레이티드, LS엠트론). (접수번호 20260318001427)\n- **이 DB에 없음**: 이 회사 주식을 다른 회사가 보고한 기록(others_reporting_this_company_shares)은 조회되지 않았다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3987,
+    "output_tokens": 632,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "LS 지분 구조도",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": null,
+       "name": "구자은",
+       "listed": false,
+       "pct": 3.69,
+       "role": "최대주주의  친인척",
+       "rcept": "20260318001427",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구동휘",
+       "listed": false,
+       "pct": 3.04,
+       "role": "최대주주의  친인척",
+       "rcept": "20260318001427",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구자용",
+       "listed": false,
+       "pct": 2.43,
+       "role": "최대주주의  친인척",
+       "rcept": "20260318001427",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구자철",
+       "listed": false,
+       "pct": 1.97,
+       "role": "최대주주의  친인척",
+       "rcept": "20260318001427",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구자열",
+       "listed": false,
+       "pct": 1.9,
+       "role": "최대주주",
+       "rcept": "20260318001427",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구자균",
+       "listed": false,
+       "pct": 1.87,
+       "role": "최대주주의  친인척",
+       "rcept": "20260318001427",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구혜원",
+       "listed": false,
+       "pct": 1.66,
+       "role": "최대주주의  친인척",
+       "rcept": "20260318001427",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "구자엽",
+       "listed": false,
+       "pct": 1.49,
+       "role": "최대주주의  친인척",
+       "rcept": "20260318001427",
+       "up": []
+      }
+     ],
+     "more_holders": 36,
+     "investees": [
+      {
+       "id": 2196,
+       "name": "엘에스일렉트릭",
+       "listed": true,
+       "pct": 48.46,
+       "purpose": null,
+       "rcept": "20260318001243"
+      },
+      {
+       "id": null,
+       "name": "LS Japan(*1)",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영권",
+       "rcept": "20260318001427"
+      },
+      {
+       "id": 7999,
+       "name": "LS글로벌인코퍼레이티드",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영권",
+       "rcept": "20260318001427"
+      },
+      {
+       "id": 7983,
+       "name": "LS엠트론",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영권",
+       "rcept": "20260318001427"
+      },
+      {
+       "id": 7985,
+       "name": "LS아이앤디",
+       "listed": false,
+       "pct": 95.0,
+       "purpose": "경영권",
+       "rcept": "20260318001427"
+      },
+      {
+       "id": 7982,
+       "name": "LS전선",
+       "listed": false,
+       "pct": 93.0,
+       "purpose": "경영권",
+       "rcept": "20260318001427"
+      },
+      {
+       "id": 7984,
+       "name": "LS엠앤엠",
+       "listed": false,
+       "pct": 75.0,
+       "purpose": "경영권",
+       "rcept": "20260318001427"
+      },
+      {
+       "id": null,
+       "name": "LS PHOENIX INTERNATIONAL PRIVATE LIMITED",
+       "listed": false,
+       "pct": 60.0,
+       "purpose": "경영권",
+       "rcept": "20260318001427"
+      },
+      {
+       "id": 8032,
+       "name": "LS엘앤에프배터리솔루션",
+       "listed": false,
+       "pct": 55.0,
+       "purpose": "경영권",
+       "rcept": "20260318001427"
+      },
+      {
+       "id": null,
+       "name": "LS GIDC Pte Ltd.",
+       "listed": false,
+       "pct": 50.0,
+       "purpose": "경영권",
+       "rcept": "20260318001427"
+      },
+      {
+       "id": 8028,
+       "name": "LS이링크",
+       "listed": false,
+       "pct": 50.0,
+       "purpose": "경영권",
+       "rcept": "20260318001427"
+      },
+      {
+       "id": null,
+       "name": "미래에셋글로벌혁신성장투자조합1호(*7)",
+       "listed": false,
+       "pct": 50.0,
+       "purpose": "투자",
+       "rcept": "20260318001427"
+      }
+     ],
+     "more_investees": 4,
+     "sources": [
+      "20260318001427",
+      "20260318001243"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 44곳(위 8곳 표시), 출자 대상 16곳(위 12곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "LS 주주 분포",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 32.6,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "구자열",
+       "id": null,
+       "pct": 33.11,
+       "date": "2026-08-25",
+       "overlap": true
+      },
+      {
+       "name": "삼성자산운용",
+       "id": 4912,
+       "pct": 5.01,
+       "date": "2026-05-13",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 62.39,
+     "sources": [
+      "20260825000465",
+      "20260513000581",
+      "20260318001427"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 32.6%, 삼성자산운용 5.01%"
+    }
+   ],
+   "sources": [
+    "20260318001427",
+    "20260513000581",
+    "20260825000465"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "- **공급계약 8건** (계약일 2025-10-16 이후): 자회사의 계약을 이 회사가 대신 공시한 것 8건.\n- **가장 큰 계약**: 2025-11-25 계약, 2025-11-26 공시 · 자회사 계약을 대신 공시 · 상대 LS ELECTRIC AMERICA Inc. · '북미 신재생에너지 PJT' · 4,598억 원 · 최근 매출액 대비 10.10% (접수번호 20251126800110)\n- 금액이 큰 순서로 전부:\n  - 2025-11-25 계약, 2025-11-26 공시 · 자회사 계약을 대신 공시 · 상대 LS ELECTRIC AMERICA Inc. · '북미 신재생에너지 PJT' · 4,598억 원 · 최근 매출액 대비 10.10% (접수번호 20251126800110)\n  - 2026-04-28 계약, 2026-05-14 공시 · 자회사 계약을 대신 공시 · 상대 LS ELECTRIC AMERICA Inc. · '북미 데이터센터용 연료전지 전력설비 공급 PJT' · 3,190억 원 · 최근 매출액 대비 6.42% · 정정 공시 있음(정정 뒤 금액) (접수번호 20260514800304)\n  - 2026-02-09 계약, 2026-09-30 공시 · 자회사 계약을 대신 공시 · 상대 LS Cable Systems America Inc. · 2,363억 원 · 최근 매출액 대비 3.49% · 정정 공시 있음(정정 뒤 금액) (접수번호 20260930801256)\n  - 2026-08-21 계약, 2026-08-24 공시 · 자회사 계약을 대신 공시 · 상대 LS ELECTRIC AMERICA Inc. · 'Big Tech Data Center 전력설비 공급 PJT' · 2,309억 원 · 최근 매출액 대비 4.65% (접수번호 20260824800100)\n  - 2025-11-07 계약, 2025-12-01 공시 · 자회사 계약을 대신 공시 · 상대 LS ELECTRIC AMERICA Inc. · 'Big Tech Data Center PJT(2차)' · 1,905억 원 · 최근 매출액 대비 4.18% · 정정 공시 있음(정정 뒤 금액) (접수번호 20251201800011)\n  - 2026-10-12 계약, 2026-10-13 공시 · 자회사 계약을 대신 공시 · 상대 LS ELECTRIC AMERICA Inc. · '펜실베니아 연료전지 전력설비 공급 PJT' · 1,853억 원 · 최근 매출액 대비 3.73% (접수번호 20261013800056)\n  - 2026-09-30 계약, 2026-10-01 공시 · 자회사 계약을 대신 공시 · 상대 LS ELECTRIC AMERICA Inc. · '북미 Hyperscale Data Center 전력설비 공급 PJT' · 1,812억 원 · 최근 매출액 대비 3.65% (접수번호 20261001800084)\n  - 2026-04-10 계약, 2026-04-13 공시 · 자회사 계약을 대신 공시 · 상대 LS ELECTRIC AMERICA Inc. · '북미 데이터센터 전력설비 공급 PJT' · 1,703억 원 · 최근 매출액 대비 3.43% (접수번호 20260413800757)\n- **공급계약 해지 1건**:\n  - 2026-04-24 해지, 2026-04-27 공시 · 상대 안마해상풍력 · 'Anma Offshore Wind farm Project - Offshore and Onshore Export Cables Supply, Transport, Installation & Commissioning' · 해지금액 1,771억 원 · 사유: 발주처의 계약 해지 통보 (접수번호 20260427800995)\n- **옛 계약의 정정 공시 5건**: 계약일이 2025-10-16보다 이른 계약을 이 기간에 정정한 공시다. 새 계약이 아니라 위 건수에 넣지 않았다. 금액이 바뀐 것:\n  - 2023-05-25 계약 'Greater Changhua Offshore Wind Farm 2204 대만 장화현 내 해상풍력 프로젝트' · 2025-11-21 정정 · 계약금액 정정 전 1,892억 원 → 정정 후 2,164억 원 (접수번호 20251121800523)\n- **다른 회사 지분의 취득·처분 결정 7건** (결의일 2025-10-16 이후, 결정이지 실행 결과가 아니다):\n  - 2026-09-29 결의·공시, 정정 공시 · LS가 가온전선 지분을 700억 원에 취득하기로 결정 — 자회사 일을 대신 공시 (접수번호 20260929800986)\n  - 2026-09-29 결의, 2026-09-30 공시 · LS가 코리아모션웍스㈜ 지분 150,000,000주를 1,500억 원에 취득하기로 결정(그 뒤 지분율 100.00%) — 자회사 일을 대신 공시 (접수번호 20260930801176)\n  - 2026-03-11 결의·공시 · LS가 LS엠앤엠 지분 3,460,687주를 2,000억 원에 취득하기로 결정(그 뒤 지분율 76.82%) — 이 회사가 공시 (접수번호 20260311802299)\n  - 2026-01-29 결의·공시 · LS가 LS에코첨단소재 지분 15,432,097주를 701억 원에 취득하기로 결정(그 뒤 지분율 100.00%) — 자회사 일을 대신 공시 (접수번호 20260129801043)\n  - 2026-01-14 결의, 2026-01-15 공시 · LS가 LS CABLE & SYSTEM MEXICO S.A. DE C.V. 지분을 2,277억 원에 취득하기로 결정(그 뒤 지분율 100.00%) — 자회사 일을 대신 공시 (접수번호 20260115800114)\n  - 2025-12-16 결의, 2026-06-23 공시, 정정 공시 · LS가 PT Teluk Metal Industry(PT TMI) 지분 180,000,000주를 2,653억 원에 취득하기로 결정(그 뒤 지분율 41%) — 자회사 일을 대신 공시 (접수번호 20260623800714)\n  - 2025-12-05 결의, 2025-12-08 공시 · LS가 LS이브이코리아 지분 8,618,832주를 489억 원에 취득하기로 결정(그 뒤 지분율 100%) — 자회사 일을 대신 공시 (접수번호 20251208800622)\n- 이 DB의 공급계약·해지 공시는 2026-10-16 접수분까지 모았다. 그 뒤 공시는 여기에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2701,
+    "output_tokens": 112,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "written_by": "code",
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "LS 공급망 흐름",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 1377,
+        "name": "LS",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "LS ELECTRIC AMERICA Inc.",
+        "listed": false
+       },
+       "amount": 1736872794593,
+       "count": 7
+      },
+      {
+       "from": {
+        "id": 1377,
+        "name": "LS",
+        "listed": true
+       },
+       "to": {
+        "id": 2143,
+        "name": "한국전력공사",
+        "listed": true
+       },
+       "amount": 263208478500,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1377,
+        "name": "LS",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "LS Cable Systems America Inc.",
+        "listed": false
+       },
+       "amount": 236303577640,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1377,
+        "name": "LS",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Orsted Taiwan Limited",
+        "listed": false
+       },
+       "amount": 216365271618,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1377,
+        "name": "LS",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Hai Long 2 Offshore Wind Power Co., Ltd",
+        "listed": false
+       },
+       "amount": 209263968430,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1377,
+        "name": "LS",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "BURNLEY BESS LIMITED",
+        "listed": false
+       },
+       "amount": 121729345200,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1377,
+        "name": "LS",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Bombardier Transportation (BT)",
+        "listed": false
+       },
+       "amount": 106316336069,
+       "count": 1
+      }
+     ],
+     "more": 0,
+     "sources": [
+      "20251017800298",
+      "20251121800523",
+      "20251126800110",
+      "20251201800011",
+      "20251204800537",
+      "20251211800305",
+      "20260413800757",
+      "20260514800304",
+      "20260824800100",
+      "20260904800540",
+      "20260930801256",
+      "20261001800084",
+      "20261013800056"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 13건, 상대 7쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "LS 공시 타임라인",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-10-17",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "Bombardier Transportation (BT)",
+       "title": "delivery of LS Electric Power Supply & Distribution Monorail New Administrative Capital City & Monorail 6th of October City",
+       "amount": 106316336069.0,
+       "superseded": false,
+       "rcept": "20251017800298"
+      },
+      {
+       "date": "2025-11-10",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS ELECTRIC AMERICA Inc.",
+       "title": "Big Tech Data Center PJT(2차)",
+       "amount": 132910198720.0,
+       "superseded": true,
+       "rcept": "20251110800109"
+      },
+      {
+       "date": "2025-11-21",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "Orsted Taiwan Limited",
+       "title": "Greater Changhua Offshore Wind Farm 2204 대만 장화현 내 해상풍력 프로젝트",
+       "amount": 216365271618.0,
+       "superseded": false,
+       "rcept": "20251121800523"
+      },
+      {
+       "date": "2025-11-26",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS ELECTRIC AMERICA Inc.",
+       "title": "북미 신재생에너지 PJT",
+       "amount": 459802988265.0,
+       "superseded": false,
+       "rcept": "20251126800110"
+      },
+      {
+       "date": "2025-12-01",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS ELECTRIC AMERICA Inc.",
+       "title": "Big Tech Data Center PJT(2차)",
+       "amount": 190477893840.0,
+       "superseded": false,
+       "rcept": "20251201800011"
+      },
+      {
+       "date": "2025-12-04",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "Hai Long 2 Offshore Wind Power Co., Ltd",
+       "title": "Hai Long 2 & 3 Offshore Windfarm Project",
+       "amount": 209263968430.0,
+       "superseded": false,
+       "rcept": "20251204800537"
+      },
+      {
+       "date": "2025-12-08",
+       "category": "지분 취득",
+       "report": "타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "LS이브이코리아㈜",
+       "title": null,
+       "amount": 48902006730.0,
+       "superseded": false,
+       "rcept": "20251208800622"
+      },
+      {
+       "date": "2025-12-11",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "BURNLEY BESS LIMITED",
+       "title": "Widow Hill BESS PJT",
+       "amount": 121729345200.0,
+       "superseded": false,
+       "rcept": "20251211800305"
+      },
+      {
+       "date": "2025-12-17",
+       "category": "지분 취득",
+       "report": "타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "PT Teluk Metal Industry(PT TMI)",
+       "title": null,
+       "amount": 265338000000.0,
+       "superseded": true,
+       "rcept": "20251217800702"
+      },
+      {
+       "date": "2025-12-18",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "PT Teluk Metal Industry(PT TMI)",
+       "title": null,
+       "amount": 265338000000.0,
+       "superseded": true,
+       "rcept": "20251218800193"
+      },
+      {
+       "date": "2026-01-15",
+       "category": "지분 취득",
+       "report": "타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "LS CABLE & SYSTEM MEXICO S.A. DE C.V.",
+       "title": null,
+       "amount": 227700000000.0,
+       "superseded": false,
+       "rcept": "20260115800114"
+      },
+      {
+       "date": "2026-01-29",
+       "category": "지분 취득",
+       "report": "타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "LS에코첨단소재㈜",
+       "title": null,
+       "amount": 70092584560.0,
+       "superseded": false,
+       "rcept": "20260129801043"
+      },
+      {
+       "date": "2026-02-10",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS Cable Systems America Inc.",
+       "title": null,
+       "amount": 236303577640.0,
+       "superseded": true,
+       "rcept": "20260210800720"
+      },
+      {
+       "date": "2026-02-10",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS Cable Systems America Inc.",
+       "title": null,
+       "amount": 216233341707.0,
+       "superseded": true,
+       "rcept": "20260210800738"
+      },
+      {
+       "date": "2026-03-11",
+       "category": "지분 취득",
+       "report": "타법인주식및출자증권취득결정",
+       "counterparty": "엘에스엠앤엠㈜",
+       "title": null,
+       "amount": 200000023104.0,
+       "superseded": false,
+       "rcept": "20260311802299"
+      },
+      {
+       "date": "2026-03-13",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "한국전력공사",
+       "title": "완도-제주 #3HVDC 해저케이블 건설사업",
+       "amount": 263208478500.0,
+       "superseded": true,
+       "rcept": "20260313801318"
+      },
+      {
+       "date": "2026-03-30",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "PT Teluk Metal Industry(PT TMI)",
+       "title": null,
+       "amount": 265338000000.0,
+       "superseded": true,
+       "rcept": "20260330802334"
+      },
+      {
+       "date": "2026-04-13",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS ELECTRIC AMERICA Inc.",
+       "title": "북미 데이터센터 전력설비 공급 PJT",
+       "amount": 170289134809.0,
+       "superseded": false,
+       "rcept": "20260413800757"
+      },
+      {
+       "date": "2026-04-27",
+       "category": "해지",
+       "report": "단일판매ㆍ공급계약해지(자회사의 주요경영사항)",
+       "counterparty": "안마해상풍력(주) (Anma Offshore Wind Energy Co.,Ltd.)",
+       "title": "Anma Offshore Wind farm Project - Offshore and Onshore Export Cables Supply, Transport, Installation & Commissioning",
+       "amount": 177111000000.0,
+       "superseded": false,
+       "rcept": "20260427800995"
+      },
+      {
+       "date": "2026-04-29",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS ELECTRIC AMERICA Inc.",
+       "title": "북미 데이터센터용 연료전지 전력설비 공급 PJT",
+       "amount": 318964597910.0,
+       "superseded": true,
+       "rcept": "20260429800125"
+      },
+      {
+       "date": "2026-05-14",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS ELECTRIC AMERICA Inc.",
+       "title": "북미 데이터센터용 연료전지 전력설비 공급 PJT",
+       "amount": 318964597910.0,
+       "superseded": false,
+       "rcept": "20260514800304"
+      },
+      {
+       "date": "2026-06-23",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "PT Teluk Metal Industry(PT TMI)",
+       "title": null,
+       "amount": 265338000000.0,
+       "superseded": false,
+       "rcept": "20260623800714"
+      },
+      {
+       "date": "2026-08-12",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "한국전력공사",
+       "title": "완도-제주 #3HVDC 해저케이블 건설사업",
+       "amount": 263208478500.0,
+       "superseded": true,
+       "rcept": "20260812800769"
+      },
+      {
+       "date": "2026-08-24",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS ELECTRIC AMERICA Inc.",
+       "title": "Big Tech Data Center 전력설비 공급 PJT",
+       "amount": 230851721100.0,
+       "superseded": false,
+       "rcept": "20260824800100"
+      },
+      {
+       "date": "2026-09-04",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "한국전력공사",
+       "title": "완도-제주 #3HVDC 해저케이블 건설사업",
+       "amount": 263208478500.0,
+       "superseded": false,
+       "rcept": "20260904800540"
+      },
+      {
+       "date": "2026-09-29",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "가온전선㈜ (GAON CABLE CO.,LTD.)",
+       "title": null,
+       "amount": 70000000000.0,
+       "superseded": false,
+       "rcept": "20260929800986"
+      },
+      {
+       "date": "2026-09-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS Cable Systems America Inc.",
+       "title": null,
+       "amount": 216233341707.0,
+       "superseded": true,
+       "rcept": "20260930801255"
+      },
+      {
+       "date": "2026-09-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS Cable Systems America Inc.",
+       "title": null,
+       "amount": 236303577640.0,
+       "superseded": false,
+       "rcept": "20260930801256"
+      },
+      {
+       "date": "2026-09-30",
+       "category": "지분 취득",
+       "report": "타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "코리아모션웍스㈜",
+       "title": null,
+       "amount": 150000000000.0,
+       "superseded": false,
+       "rcept": "20260930801176"
+      },
+      {
+       "date": "2026-10-01",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS ELECTRIC AMERICA Inc.",
+       "title": "북미 Hyperscale Data Center 전력설비 공급 PJT",
+       "amount": 181229274677.0,
+       "superseded": false,
+       "rcept": "20261001800084"
+      },
+      {
+       "date": "2026-10-13",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "LS ELECTRIC AMERICA Inc.",
+       "title": "펜실베니아 연료전지 전력설비 공급 PJT",
+       "amount": 185257183992.0,
+       "superseded": false,
+       "rcept": "20261013800056"
+      }
+     ],
+     "sources": [
+      "20251017800298",
+      "20251110800109",
+      "20251121800523",
+      "20251126800110",
+      "20251201800011",
+      "20251204800537",
+      "20251208800622",
+      "20251211800305",
+      "20251217800702",
+      "20251218800193",
+      "20260115800114",
+      "20260129801043",
+      "20260210800720",
+      "20260210800738",
+      "20260311802299",
+      "20260313801318",
+      "20260330802334",
+      "20260413800757",
+      "20260427800995",
+      "20260429800125",
+      "20260514800304",
+      "20260623800714",
+      "20260812800769",
+      "20260824800100",
+      "20260904800540",
+      "20260929800986",
+      "20260930801255",
+      "20260930801256",
+      "20260930801176",
+      "20261001800084",
+      "20261013800056"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 31건"
+    }
+   ],
+   "sources": [
+    "20251121800523",
+    "20251126800110",
+    "20251201800011",
+    "20251208800622",
+    "20260115800114",
+    "20260129801043",
+    "20260311802299",
+    "20260413800757",
+    "20260427800995",
+    "20260514800304",
+    "20260623800714",
+    "20260824800100",
+    "20260929800986",
+    "20260930801176",
+    "20260930801256",
+    "20261001800084",
+    "20261013800056"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "**자본 변동과 주주 환원 (LS, 조회 시점 2026-10-16)**\n\n- **자기주식 처분 결정 (2025-05-16 공시, 접수번호 20250516000420):** 자기주식 387,365주를 교환대상으로 하는 교환사채 발행에 쓰기 위해 처분하는 결정을 공시했다. 처분 금액은 650억 원, 처분 단가는 167,800원이다. 처분 기간은 2025-06-02 하루다.\n- **교환사채 발행 결정 (2025-05-16 공시, 접수번호 20250516000417):** 2회차 무보증 사모 교환사채 650억 원을 발행한다는 결정을 공시했다. 표면이자율은 0.00%, 만기수익률은 2.00%이며, 만기는 2030년 06월 02일이다. 자금은 채무상환에 쓴다고 적었고, 교환 대상은 자기주식이다. 청약 기간은 2025-12-02부터 2030-05-02까지다. 교환으로 생길 수 있는 주식 수는 387,365주다.\n- **이 자료에 없는 것:** 교환사채와 자기주식 처분의 실제 납입·발행 여부, 실제 교환 주식 수, 철회 여부는 조회 결과에 없다. 자기주식 소각 결정과 2024년 1월 이전 결정도 없다.\n- **배당 (연결 기준, 접수번호 20260318001427):** 보통주 DPS는 2023년 1,600원(배당성향 10.07%, 현금배당 총액 439억 원), 2024년 1,650원(19.01%, 451억 원), 2025년 2,500원(25.25%, 684억 원)이다. 2025년 배당수익률은 1.1%다. 우선주 배당은 없다.\n- **자사주 매입 및 소각:** 조회 결과에 해당 기록이 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1430,
+    "output_tokens": 664,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "dilution",
+     "title": "LS 희석 이력",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "from": "2024-01-01",
+     "events": [
+      {
+       "date": "2025-05-16",
+       "kind": "eb",
+       "label": "교환사채",
+       "cancel": false,
+       "shares": 387365,
+       "amount_eok": 650.0,
+       "ratio_pct": 1.2,
+       "pct_of_before": null,
+       "method": "사모",
+       "price": 167800.0,
+       "rcept_no": "20250516000417"
+      }
+     ],
+     "sources": [
+      "20250516000417"
+     ],
+     "notes": [
+      "결정 공시입니다. 실제 납입·발행, 사채의 실제 전환, 철회 여부는 이 자료에 없습니다.",
+      "사채의 주식 수는 전환·행사·교환되면 생길 수 있는 주식 수입니다. 감자 가운데 자기주식 소각은 따로 표시했습니다."
+     ],
+     "summary": "교환사채 1건"
+    },
+    {
+     "kind": "payout",
+     "title": "LS 주주 환원",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "years": [
+      {
+       "year": 2023,
+       "cash_eok": 438.9,
+       "buyback_eok": 0.0,
+       "dps": 1600.0,
+       "payout_ratio": 10.07
+      },
+      {
+       "year": 2024,
+       "cash_eok": 451.2,
+       "buyback_eok": 0.0,
+       "dps": 1650.0,
+       "payout_ratio": 19.01
+      },
+      {
+       "year": 2025,
+       "cash_eok": 683.7,
+       "buyback_eok": 0.0,
+       "dps": 2500.0,
+       "payout_ratio": 25.25
+      }
+     ],
+     "sources": [
+      "20260318001427"
+     ],
+     "notes": [
+      "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
+      "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."
+     ],
+     "summary": "2023 주당 1,600원, 배당성향 10.07%; 2024 주당 1,650원, 배당성향 19.01%; 2025 주당 2,500원, 배당성향 25.25%"
+    }
+   ],
+   "sources": [
+    "20250516000417",
+    "20250516000420",
+    "20260318001427"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "**내부자 매매 (조회 기간 2026-07-19 ~ 2026-10-16)**\n\n- 이 기간 보고는 1건이며, 모두 지분 증가 보고입니다(접수번호 20261006000163). 감소 보고와 증감 없는 보고는 없습니다.\n- 보고자는 국민연금공단 1곳입니다. 이 회사의 10% 이상 주주로 분류되어 있고, 2026-10-06 보고 접수일 기준 보유 주식은 4,195,210주, 지분율은 13.45%입니다(접수번호 20261006000163).\n- 이 보고에서 늘어난 주식 수는 271,655주입니다. 순증감도 같은 271,655주입니다(접수번호 20261006000163).\n- 날짜는 보고 접수일 기준입니다. 실제 거래일, 거래 단가와 금액, 장내·장외 구분, 취득 사유는 이 DB에 없어 확인할 수 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 761,
+    "output_tokens": 342,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "insiders",
+     "title": "LS 내부자 매매",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "from": "2026-07-19",
+     "to": "2026-10-16",
+     "totals": {
+      "increased_reports": 1,
+      "increased_shares": 271655,
+      "decreased_reports": 0,
+      "decreased_shares": 0,
+      "unchanged_reports": 0,
+      "net_shares": 271655,
+      "reporters": 1
+     },
+     "by_day": [
+      {
+       "date": "2026-10-06",
+       "increased": 271655,
+       "decreased": 0,
+       "reports": 1
+      }
+     ],
+     "returns": [
+      {
+       "date": "2026-07-20",
+       "pct": 0.0
+      },
+      {
+       "date": "2026-07-21",
+       "pct": 3.58
+      },
+      {
+       "date": "2026-07-22",
+       "pct": 7.16
+      },
+      {
+       "date": "2026-07-23",
+       "pct": 21.09
+      },
+      {
+       "date": "2026-07-24",
+       "pct": 15.63
+      },
+      {
+       "date": "2026-07-27",
+       "pct": 14.88
+      },
+      {
+       "date": "2026-07-28",
+       "pct": 0.94
+      },
+      {
+       "date": "2026-07-29",
+       "pct": -8.29
+      },
+      {
+       "date": "2026-07-30",
+       "pct": -15.82
+      },
+      {
+       "date": "2026-07-31",
+       "pct": 0.56
+      },
+      {
+       "date": "2026-08-03",
+       "pct": 2.82
+      },
+      {
+       "date": "2026-08-04",
+       "pct": 13.18
+      },
+      {
+       "date": "2026-08-05",
+       "pct": 23.92
+      },
+      {
+       "date": "2026-08-06",
+       "pct": 23.73
+      },
+      {
+       "date": "2026-08-07",
+       "pct": 19.4
+      },
+      {
+       "date": "2026-08-10",
+       "pct": 24.29
+      },
+      {
+       "date": "2026-08-11",
+       "pct": 21.47
+      },
+      {
+       "date": "2026-08-12",
+       "pct": 26.93
+      },
+      {
+       "date": "2026-08-13",
+       "pct": 22.79
+      },
+      {
+       "date": "2026-08-14",
+       "pct": 21.85
+      },
+      {
+       "date": "2026-08-18",
+       "pct": 29.38
+      },
+      {
+       "date": "2026-08-19",
+       "pct": 25.42
+      },
+      {
+       "date": "2026-08-20",
+       "pct": 18.08
+      },
+      {
+       "date": "2026-08-21",
+       "pct": 10.55
+      },
+      {
+       "date": "2026-08-24",
+       "pct": 8.66
+      },
+      {
+       "date": "2026-08-25",
+       "pct": 10.92
+      },
+      {
+       "date": "2026-08-26",
+       "pct": 10.55
+      },
+      {
+       "date": "2026-08-27",
+       "pct": 17.89
+      },
+      {
+       "date": "2026-08-28",
+       "pct": 17.89
+      },
+      {
+       "date": "2026-08-31",
+       "pct": 17.33
+      },
+      {
+       "date": "2026-09-01",
+       "pct": 16.76
+      },
+      {
+       "date": "2026-09-02",
+       "pct": 11.68
+      },
+      {
+       "date": "2026-09-03",
+       "pct": 9.98
+      },
+      {
+       "date": "2026-09-04",
+       "pct": 12.81
+      },
+      {
+       "date": "2026-09-07",
+       "pct": 19.21
+      },
+      {
+       "date": "2026-09-08",
+       "pct": 13.94
+      },
+      {
+       "date": "2026-09-09",
+       "pct": 24.29
+      },
+      {
+       "date": "2026-09-10",
+       "pct": 21.09
+      },
+      {
+       "date": "2026-09-11",
+       "pct": 20.34
+      },
+      {
+       "date": "2026-09-14",
+       "pct": 17.51
+      },
+      {
+       "date": "2026-09-15",
+       "pct": 14.31
+      },
+      {
+       "date": "2026-09-16",
+       "pct": 14.31
+      },
+      {
+       "date": "2026-09-17",
+       "pct": 14.5
+      },
+      {
+       "date": "2026-09-18",
+       "pct": 22.6
+      },
+      {
+       "date": "2026-09-21",
+       "pct": 21.47
+      },
+      {
+       "date": "2026-09-22",
+       "pct": 22.98
+      },
+      {
+       "date": "2026-09-23",
+       "pct": 21.09
+      },
+      {
+       "date": "2026-09-28",
+       "pct": 17.89
+      },
+      {
+       "date": "2026-09-29",
+       "pct": 18.83
+      },
+      {
+       "date": "2026-09-30",
+       "pct": 16.2
+      },
+      {
+       "date": "2026-10-01",
+       "pct": 12.24
+      },
+      {
+       "date": "2026-10-02",
+       "pct": 12.43
+      },
+      {
+       "date": "2026-10-06",
+       "pct": 12.81
+      },
+      {
+       "date": "2026-10-07",
+       "pct": 5.46
+      },
+      {
+       "date": "2026-10-08",
+       "pct": 0.75
+      },
+      {
+       "date": "2026-10-12",
+       "pct": -3.58
+      },
+      {
+       "date": "2026-10-13",
+       "pct": -6.97
+      },
+      {
+       "date": "2026-10-14",
+       "pct": -6.59
+      },
+      {
+       "date": "2026-10-15",
+       "pct": -16.38
+      },
+      {
+       "date": "2026-10-16",
+       "pct": -14.12
+      }
+     ],
+     "reporters": [
+      {
+       "reporter": "국민연금공단",
+       "reports": 1,
+       "change": 271655,
+       "rcept_no": [
+        "20261006000163"
+       ],
+       "position": "-",
+       "registered": "-",
+       "major_holder": "10%이상주주",
+       "shares_after": 4195210,
+       "last_date": "2026-10-06",
+       "pct_after": 13.45
+      }
+     ],
+     "sources": [
+      "20261006000163"
+     ],
+     "notes": [
+      "날짜는 실제 거래일이 아니라 보고 접수일입니다. 거래 단가와 금액, 장내·장외, 증여·상속 같은 사유는 이 보고 자료에 없습니다.",
+      "선은 2026-07-20 종가를 0으로 둔 주가 수익률입니다(한국거래소 통계정보를 가공). 매매의 원인을 말해 주지 않습니다."
+     ],
+     "summary": "2026-07-19~2026-10-16 늘린 보고 1건 271,655주, 줄인 보고 0건 0주, 순증감 +271,655주 (1명)"
+    }
+   ],
+   "sources": [
+    "20261006000163"
+   ]
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "- 2026-10-16 기준 최근 거래일 종가 수익률은 1주 -14.77%, 1개월 -24.88%, 3개월 -20.83%입니다. 같은 기간 유가증권시장 상장 종목 수익률 중앙값은 각각 -2.74%, -3.73%, -0.97%로, 시장 중앙값 대비 차이는 1주 -12.03%p, 1개월 -21.15%p, 3개월 -19.86%p입니다. (출처: 한국거래소 통계정보 일별 시세 가공값)\n- 같은 제품(권선, 전력기기, 통신 케이블)을 매출의 10% 이상으로 파는 상장사 6곳(LS에코에너지, 다산네트웍스, 대한전선, 바이오스마트, 엘에스일렉트릭, 티씨머티리얼즈)의 중앙값은 1주 -14.52%, 1개월 -9.6%, 3개월 +4.01%입니다.\n- 이 수익률은 지난 기간의 사실만 보여 주며, 하락의 원인은 이 DB의 조회 결과에 나타나 있지 않습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 815,
+    "output_tokens": 403,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "LS 수익률 비교",
+     "company": {
+      "id": 1377,
+      "name": "LS"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": -14.77,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": -14.52,
+       "peers_counted": 6,
+       "vs_market_pp": -12.03
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": -24.88,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": -9.6,
+       "peers_counted": 6,
+       "vs_market_pp": -21.15
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": -20.83,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": 4.01,
+       "peers_counted": 6,
+       "vs_market_pp": -19.86
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "권선",
+       "전력기기",
+       "통신 케이블"
+      ],
+      "names": [
+       "LS에코에너지",
+       "다산네트웍스",
+       "대한전선",
+       "바이오스마트",
+       "엘에스일렉트릭",
+       "티씨머티리얼즈"
+      ],
+      "total": 6
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 -14.77% (시장 -2.74%); 1개월 -24.88% (시장 -3.73%); 3개월 -20.83% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)"
+ ],
+ "usage": {
+  "input_tokens": 23778,
+  "output_tokens": 3923,
+  "cache_read_input_tokens": 8552,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 21.1,
+ "cost_usd": 0.0044
+}

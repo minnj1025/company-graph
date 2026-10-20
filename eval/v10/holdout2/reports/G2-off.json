@@ -1,0 +1,1643 @@
+{
+ "company": {
+  "company_id": 2900,
+  "name": "파두",
+  "stock_code": "440110",
+  "market": "코스닥",
+  "group": null
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "파두의 2026년 상반기 누적 매출은 1,327억 원으로 전년 동기 대비 209.36% 늘었고, 영업이익은 239억 원으로 흑자로 바뀌었습니다(접수번호 20260813001260). 당기순이익은 -499억 원으로 적자가 이어졌습니다. 2026년 6월 30일 기준 부채비율은 200.67%로, 2025년 말 518.5%에서 낮아졌습니다(접수번호 20260813001260). 지배 구조는 2025-12-31 사업보고서 기준 최대주주 등 합계 25.31%이며, 최대주주는 남이현입니다(접수번호 20260318001002). 최근 1년 공급계약은 20건, 합계 5,099억 원이고, 자본 결정으로 제7회 전환사채 120억 원 발행 결정이 있었습니다(접수번호 20260630000628).",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "## 파두 사업 구성 (반기보고서 2026.06, 접수번호 20260813001260)\n\n- **SSD 컨트롤러**: 매출 비중 85.97%. 시스템 반도체 제품군으로, 보고서는 이를 데이터센터용 기업 SSD에 필수적인 핵심 제품으로 설명합니다 (접수번호 20260813001260).\n- **SSD 완제품**: 매출 비중 14.03%. 메모리 반도체 제품군입니다 (접수번호 20260813001260).\n- 두 제품 모두 비중은 보고서 표에 적힌 값이며, 이 비중은 해당 제품 줄 기준입니다.\n- 보고서는 회사를 시스템 반도체 팹리스 기업으로 설명하고, 사업 영역으로 데이터센터를 제시합니다 (접수번호 20260813001260).\n- 보고서는 기업용 SSD가 소비자용 SSD보다 품질 경쟁력과 기술 진입장벽이 높은 시장이라고 설명합니다 (접수번호 20260813001260).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4184,
+    "output_tokens": 383,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "파두 매출 구성",
+     "company": {
+      "id": 2900,
+      "name": "파두"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "SSD 컨트롤러",
+       "segment": null,
+       "share_pct": 85.97,
+       "family": "시스템 반도체"
+      },
+      {
+       "name": "SSD 완제품",
+       "segment": null,
+       "share_pct": 14.03,
+       "family": "메모리 반도체"
+      }
+     ],
+     "sources": [
+      "20260813001260"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 2줄, 비중 합 100.0%"
+    }
+   ],
+   "sources": [
+    "20260813001260"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "- **최근 분기 (2026년 2분기, 연결)**: 매출 732억 원으로 전년 같은 분기(237억 원) 대비 209.02% 증가했습니다(접수번호 20260813001260). 영업이익은 162억 원으로 전년 같은 분기의 적자(-126억 원)에서 흑자로 바뀌었다고 공시에 적혀 있습니다. 당기순이익은 -601억 원으로 적자가 이어졌습니다(접수번호 20260813001260).\n- **2026년 상반기 누적 (연결)**: 매출 1,327억 원(전년 동기 대비 209.36% 증가), 영업이익 239억 원(흑자 전환), 당기순이익 -499억 원(적자 지속)입니다(접수번호 20260813001260). 영업이익률은 18.02%, 순이익률은 -37.61%입니다.\n- **분기 흐름**: 2025년 1분기부터 2026년 1분기까지 영업이익은 -120억, -126억, -114억, -295억 원이었습니다. 2026년 1분기 76.9억 원, 2분기 162억 원으로 이어졌습니다(접수번호 20260512000628, 20260813001260). 2025년 4분기 수치는 사업보고서 연간 값에서 3분기 누적을 뺀 계산값입니다(접수번호 20260318001002, 20251112000371).\n- **연간 실적**: 2025년 연간 매출은 924억 원(전년 대비 112.44% 증가), 영업손실 -655억 원, 당기순손실 -762억 원입니다(접수번호 20260318001002).\n- **재무상태 (2026년 6월 30일, 연결)**: 자산총계 1,940억 원, 부채총계 1,295억 원, 자본총계 645억 원입니다. 부채비율은 200.67%로, 2025년 말 518.5%에서 낮아졌습니다. 유동비율은 141.99%입니다(접수번호 20260813001260). 같은 시장 상장사 중앙값은 부채비율 55.98%, 유동비율 184.74%입니다(코스닥 1,811개사, 이 DB 기준).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3184,
+    "output_tokens": 753,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "파두 실적 추이",
+     "company": {
+      "id": 2900,
+      "name": "파두"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114002436"
+       ],
+       "revenue": 100.9,
+       "revenue_yoy_pct": 3046.68,
+       "operating_income": -305.4,
+       "operating_income_yoy": "적자 지속",
+       "net_income": -306.7,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -302.57
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250814004099",
+        "20241114002436"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 239.8,
+       "revenue_yoy_pct": 441.77,
+       "operating_income": -260.9,
+       "operating_income_yoy": "적자 지속",
+       "net_income": -239.1,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -108.79
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250512000226"
+       ],
+       "revenue": 192.2,
+       "revenue_yoy_pct": 724.19,
+       "operating_income": -119.9,
+       "operating_income_yoy": "적자 지속",
+       "net_income": -121.4,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -62.36
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250812000651"
+       ],
+       "revenue": 236.8,
+       "revenue_yoy_pct": 233.86,
+       "operating_income": -125.6,
+       "operating_income_yoy": "적자 지속",
+       "net_income": -147.5,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -53.06
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251112000371"
+       ],
+       "revenue": 256.4,
+       "revenue_yoy_pct": 154.03,
+       "operating_income": -114.3,
+       "operating_income_yoy": "적자 지속",
+       "net_income": -108.8,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -44.56
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260318001002",
+        "20251112000371"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 238.8,
+       "revenue_yoy_pct": -0.45,
+       "operating_income": -294.9,
+       "operating_income_yoy": "적자 지속",
+       "net_income": -384.5,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -123.53
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260512000628"
+       ],
+       "revenue": 595.4,
+       "revenue_yoy_pct": 209.79,
+       "operating_income": 76.9,
+       "operating_income_yoy": "흑자 전환",
+       "net_income": 102.1,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": 12.91
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260813001260"
+       ],
+       "revenue": 731.7,
+       "revenue_yoy_pct": 209.02,
+       "operating_income": 162.2,
+       "operating_income_yoy": "흑자 전환",
+       "net_income": -601.3,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": 22.17
+      }
+     ],
+     "years": [
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240320000994"
+       ],
+       "revenue": 224.7,
+       "revenue_yoy_pct": -60.16,
+       "operating_income": -585.7,
+       "operating_income_yoy": "적자 전환",
+       "net_income": -568.3,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -260.65,
+       "net_margin_pct": -252.92
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250814004099"
+       ],
+       "revenue": 435.0,
+       "revenue_yoy_pct": 93.6,
+       "operating_income": -950.5,
+       "operating_income_yoy": "적자 지속",
+       "net_income": -915.1,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -218.49,
+       "net_margin_pct": -210.35
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260318001002"
+       ],
+       "revenue": 924.2,
+       "revenue_yoy_pct": 112.44,
+       "operating_income": -654.7,
+       "operating_income_yoy": "적자 지속",
+       "net_income": -762.2,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -70.84,
+       "net_margin_pct": -82.47
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260813001260"
+       ],
+       "revenue": 1327.1,
+       "revenue_yoy_pct": 209.36,
+       "operating_income": 239.1,
+       "operating_income_yoy": "흑자 전환",
+       "net_income": -499.1,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": 18.02,
+       "net_margin_pct": -37.61
+      }
+     ],
+     "sources": [
+      "20241114002436",
+      "20250814004099",
+      "20250512000226",
+      "20250812000651",
+      "20251112000371",
+      "20260318001002",
+      "20260512000628",
+      "20260813001260"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 732억 원, 영업이익 162억 원, 영업이익 흑자 전환"
+    },
+    {
+     "kind": "health",
+     "title": "파두 재무 체력",
+     "company": {
+      "id": 2900,
+      "name": "파두"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 200.67,
+       "median": 55.98,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 141.99,
+       "median": 184.74,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 18.02,
+       "median": 2.63,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260813001260"
+      ],
+      "total_assets": 1939.9,
+      "total_liabilities": 1294.7,
+      "total_equity": 645.2,
+      "current_assets": 1533.2,
+      "current_liabilities": 1079.8,
+      "debt_ratio_pct": 200.67,
+      "current_ratio_pct": 141.99
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260318001002"
+      ],
+      "total_assets": 1224.3,
+      "total_liabilities": 1026.3,
+      "total_equity": 197.9,
+      "current_assets": 961.2,
+      "current_liabilities": 900.7,
+      "debt_ratio_pct": 518.5,
+      "current_ratio_pct": 106.72
+     },
+     "market": "코스닥",
+     "sources": [
+      "20241114002436",
+      "20250814004099",
+      "20250512000226",
+      "20250812000651",
+      "20251112000371",
+      "20260318001002",
+      "20260512000628",
+      "20260813001260"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 코스닥 상장사 1811곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 200.67% (시장 중앙값 55.98%), 유동비율 141.99% (시장 중앙값 184.74%), 영업이익률 18.02% (시장 중앙값 2.63%)"
+    }
+   ],
+   "sources": [
+    "20251112000371",
+    "20260318001002",
+    "20260512000628",
+    "20260813001260"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "**지배 구조와 주주** (기준: 2025-12-31 사업보고서, 조회 시점 2026-10-16)\n\n- **최대주주 및 특수관계인 합계**는 보통주 기준 25.31%(12,527,804주)입니다. 기초(2025-01-01 시점) 25.69%에서 소폭 줄었습니다 (접수번호 20260318001002).\n- **최대주주 본인**은 남이현(11.67%)이고, 특수관계인 이지효(9.01%)가 뒤를 잇습니다. 이 둘이 합계의 대부분을 차지합니다 (접수번호 20260318001002).\n- **5% 대량보유 보고**: 남이현 17.73%(2026-08-26 기준, 접수번호 20260826000706), 이지효 8.90%(2026-08-26, 특별관계 해소에 따른 신규 보고, 접수번호 20260826000723), 삼성자산운용 5.42%(2026-09-14 기준, 매매로 인한 신규보고의무 발생, 접수번호 20260914000256)가 보고되어 있습니다. 이 비율은 특별관계자를 합친 값이라 사업보고서의 최대주주 현황과 다릅니다.\n- **투자 현황**(사업보고서 타법인출자 기준): FADU Technology Incorporated 100%, 파두(상해)기술유한공사 100%, EEUM, INC 79.9%가 자회사이며, Chelsio Communications, INC 3.5%를 보유하고 있습니다. 이 회사는 자기 자신의 주식 0.16%(80,000주)도 가지고 있습니다 (접수번호 20260318001002).\n- 이 DB에서 집계한 공시는 위 항목에 한정되며, 세부 지분 변동 경위는 원 공시를 확인해야 합니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3133,
+    "output_tokens": 639,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "파두 지분 구조도",
+     "company": {
+      "id": 2900,
+      "name": "파두"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": null,
+       "name": "남이현",
+       "listed": false,
+       "pct": 11.67,
+       "role": "본인",
+       "rcept": "20260318001002",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "이지효",
+       "listed": false,
+       "pct": 9.01,
+       "role": "등기임원",
+       "rcept": "20260318001002",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "이대근",
+       "listed": false,
+       "pct": 1.93,
+       "role": "등기임원",
+       "rcept": "20260318001002",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "이성갑",
+       "listed": false,
+       "pct": 0.67,
+       "role": "미등기임원",
+       "rcept": "20260318001002",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "김홍석",
+       "listed": false,
+       "pct": 0.48,
+       "role": "미등기임원",
+       "rcept": "20260318001002",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "박범진",
+       "listed": false,
+       "pct": 0.35,
+       "role": "미등기임원",
+       "rcept": "20260318001002",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "성윤제",
+       "listed": false,
+       "pct": 0.34,
+       "role": "미등기임원",
+       "rcept": "20260318001002",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "정상용",
+       "listed": false,
+       "pct": 0.17,
+       "role": "미등기임원",
+       "rcept": "20260318001002",
+       "up": []
+      }
+     ],
+     "more_holders": 7,
+     "investees": [
+      {
+       "id": 2900,
+       "name": "파두",
+       "listed": true,
+       "pct": 0.16,
+       "purpose": null,
+       "rcept": "20260318001002"
+      },
+      {
+       "id": null,
+       "name": "FADU Technology Incorporated",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001002"
+      },
+      {
+       "id": null,
+       "name": "파두(상해)기술유한공사(*)",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001002"
+      },
+      {
+       "id": null,
+       "name": "EEUM, INC",
+       "listed": false,
+       "pct": 79.9,
+       "purpose": "경영참여",
+       "rcept": "20260318001002"
+      },
+      {
+       "id": null,
+       "name": "Chelsio Communications,INC",
+       "listed": false,
+       "pct": 3.5,
+       "purpose": "단순투자",
+       "rcept": "20260318001002"
+      }
+     ],
+     "more_investees": 0,
+     "sources": [
+      "20260318001002"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 15곳(위 8곳 표시), 출자 대상 5곳(위 5곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "파두 주주 분포",
+     "company": {
+      "id": 2900,
+      "name": "파두"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 25.31,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "남이현",
+       "id": null,
+       "pct": 17.73,
+       "date": "2026-08-26",
+       "overlap": true
+      },
+      {
+       "name": "이지효",
+       "id": null,
+       "pct": 8.9,
+       "date": "2026-08-26",
+       "overlap": true
+      },
+      {
+       "name": "삼성자산운용",
+       "id": 4912,
+       "pct": 5.42,
+       "date": "2026-09-14",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 69.27,
+     "sources": [
+      "20260826000706",
+      "20260826000723",
+      "20260914000256",
+      "20260211001136",
+      "20260318001002"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 25.31%, 삼성자산운용 5.42%"
+    }
+   ],
+   "sources": [
+    "20260318001002",
+    "20260826000706",
+    "20260826000723",
+    "20260914000256"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "- **공급계약 20건** (계약일 2025-10-16 이후): 이 회사가 수주한 계약 20건, 합계 5,099억 원.\n- **가장 큰 계약**: 2026-05-05 계약, 2026-06-15 공시 · 수주 · 상대 해외 Nand Flash Memory 제조사 · '기업용 SSD 컨트롤러 공급' · 500억 원 · 최근 매출액 대비 54.11% · 정정 공시 있음(정정 뒤 금액) (접수번호 20260615900688)\n- 금액이 큰 순서로 8건 (나머지 12건은 카드와 접수번호로 볼 수 있다):\n  - 2026-05-05 계약, 2026-06-15 공시 · 수주 · 상대 해외 Nand Flash Memory 제조사 · '기업용 SSD 컨트롤러 공급' · 500억 원 · 최근 매출액 대비 54.11% · 정정 공시 있음(정정 뒤 금액) (접수번호 20260615900688)\n  - 2026-07-29 계약, 2026-07-30 공시 · 수주 · 상대 Macnica Galaxy Inc. · 'SSD 공급계약 체결' · 496억 원 · 최근 매출액 대비 53.62% (접수번호 20260730900136)\n  - 2025-11-04 계약, 2026-06-18 공시 · 수주 · 상대 Macnica Galaxy Inc. · 'SSD 공급계약 체결' · 470억 원 · 최근 매출액 대비 107.98% · 정정 공시 있음(정정 뒤 금액) (접수번호 20260618900776)\n  - 2026-05-28 계약·공시 · 수주 · 상대 해외 Nand Flash Memory 제조사 · '기업용 SSD 컨트롤러 공급' · 465억 원 · 최근 매출액 대비 50.32% (접수번호 20260528900230)\n  - 2026-07-10 계약·공시 · 수주 · 상대 해외 Nand Flash Memory 제조사 · '기업용 SSD 컨트롤러 공급' · 421억 원 · 최근 매출액 대비 45.52% (접수번호 20260710900498)\n  - 2026-08-11 계약, 2026-08-12 공시 · 수주 · 상대 해외 Nand Flash Memory 제조사 · '기업용 SSD 컨트롤러 공급' · 396억 원 · 최근 매출액 대비 42.83% (접수번호 20260812900394)\n  - 2026-02-04 계약, 2026-02-05 공시 · 수주 · 상대 글로벌 항공우주 업체 · 'SSD 공급계약 체결' · 305억 원 · 최근 매출액 대비 70.20% (접수번호 20260205900151)\n  - 2026-05-21 계약, 2026-05-22 공시 · 수주 · 상대 해외 Nand Flash Memory 제조사 · '기업용 SSD 컨트롤러 공급' · 287억 원 · 최근 매출액 대비 31.04% (접수번호 20260522900209)\n- **옛 계약의 정정 공시 5건**: 계약일이 2025-10-16보다 이른 계약을 이 기간에 정정한 공시다. 새 계약이 아니라 위 건수에 넣지 않았다. 계약금액을 바꾼 정정은 없다.\n- 같은 기간 증자·사채·자기주식 같은 자본 결정 1건은 '자본 변동과 주주 환원' 항목에 있다.\n- 이 DB의 공급계약·해지 공시는 2026-10-16 접수분까지 모았다. 그 뒤 공시는 여기에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1562,
+    "output_tokens": 198,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "written_by": "code",
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "파두 공급망 흐름",
+     "company": {
+      "id": 2900,
+      "name": "파두"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 2900,
+        "name": "파두",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "해외 Nand Flash Memory 제조사",
+        "listed": false
+       },
+       "amount": 376972948100,
+       "count": 17
+      },
+      {
+       "from": {
+        "id": 2900,
+        "name": "파두",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Macnica Galaxy Inc.",
+        "listed": false
+       },
+       "amount": 114362768823,
+       "count": 4
+      },
+      {
+       "from": {
+        "id": 2900,
+        "name": "파두",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "글로벌 항공우주 업체",
+        "listed": false
+       },
+       "amount": 30540978720,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2126,
+        "name": "에이직랜드",
+        "listed": true
+       },
+       "to": {
+        "id": 2900,
+        "name": "파두",
+        "listed": true
+       },
+       "amount": 29976402400,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2900,
+        "name": "파두",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "국내 반도체 제조사",
+        "listed": false
+       },
+       "amount": 19939530200,
+       "count": 2
+      }
+     ],
+     "more": 0,
+     "sources": [
+      "20251017900200",
+      "20251218900567",
+      "20260129901065",
+      "20260205900151",
+      "20260223900755",
+      "20260317900445",
+      "20260430900594",
+      "20260522900209",
+      "20260528900230",
+      "20260529901588",
+      "20260529901593",
+      "20260615900688",
+      "20260618900776",
+      "20260625900725",
+      "20260626901396",
+      "20260710900498",
+      "20260716900192",
+      "20260730900136",
+      "20260807900747",
+      "20260812900394",
+      "20260911900389",
+      "20261008900573",
+      "20261008900575",
+      "20261015900127",
+      "20260820900104"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 25건, 상대 5쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "파두 공시 타임라인",
+     "company": {
+      "id": 2900,
+      "name": "파두"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-10-17",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Macnica Galaxy Inc.",
+       "title": "SSD 공급계약 체결",
+       "amount": 6872385295.0,
+       "superseded": false,
+       "rcept": "20251017900200"
+      },
+      {
+       "date": "2025-10-27",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 13292859800.0,
+       "superseded": true,
+       "rcept": "20251027900122"
+      },
+      {
+       "date": "2025-11-05",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Macnica Galaxy Inc.",
+       "title": "SSD 공급계약 체결",
+       "amount": 21577356980.0,
+       "superseded": true,
+       "rcept": "20251105900149"
+      },
+      {
+       "date": "2025-11-10",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 14476024000.0,
+       "superseded": true,
+       "rcept": "20251110900139"
+      },
+      {
+       "date": "2025-12-01",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 12254924000.0,
+       "superseded": true,
+       "rcept": "20251201900318"
+      },
+      {
+       "date": "2025-12-18",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 6795420300.0,
+       "superseded": false,
+       "rcept": "20251218900567"
+      },
+      {
+       "date": "2025-12-19",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 6736032000.0,
+       "superseded": true,
+       "rcept": "20251219900723"
+      },
+      {
+       "date": "2026-01-13",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 20307067000.0,
+       "superseded": true,
+       "rcept": "20260113900300"
+      },
+      {
+       "date": "2026-01-22",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Macnica Galaxy Inc.",
+       "title": "SSD 공급계약 체결",
+       "amount": 47088179360.0,
+       "superseded": true,
+       "rcept": "20260122900004"
+      },
+      {
+       "date": "2026-01-29",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "국내 반도체 제조사",
+       "title": "기업용 SSD 컨트롤러 공급계약",
+       "amount": 9863726400.0,
+       "superseded": false,
+       "rcept": "20260129901065"
+      },
+      {
+       "date": "2026-02-05",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "글로벌 항공우주 업체",
+       "title": "SSD 공급계약 체결",
+       "amount": 30540978720.0,
+       "superseded": false,
+       "rcept": "20260205900151"
+      },
+      {
+       "date": "2026-02-12",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 20448864000.0,
+       "superseded": true,
+       "rcept": "20260212900310"
+      },
+      {
+       "date": "2026-02-23",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 4732596000.0,
+       "superseded": false,
+       "rcept": "20260223900755"
+      },
+      {
+       "date": "2026-03-12",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 22666392000.0,
+       "superseded": true,
+       "rcept": "20260312900185"
+      },
+      {
+       "date": "2026-03-13",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "국내 반도체 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 10075803800.0,
+       "superseded": true,
+       "rcept": "20260313900181"
+      },
+      {
+       "date": "2026-03-17",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 10505480000.0,
+       "superseded": false,
+       "rcept": "20260317900445"
+      },
+      {
+       "date": "2026-04-13",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 15196086000.0,
+       "superseded": true,
+       "rcept": "20260413900118"
+      },
+      {
+       "date": "2026-04-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 13292859800.0,
+       "superseded": false,
+       "rcept": "20260430900594"
+      },
+      {
+       "date": "2026-05-06",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 50011705000.0,
+       "superseded": true,
+       "rcept": "20260506900280"
+      },
+      {
+       "date": "2026-05-22",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 28684300000.0,
+       "superseded": false,
+       "rcept": "20260522900209"
+      },
+      {
+       "date": "2026-05-28",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 46504552000.0,
+       "superseded": false,
+       "rcept": "20260528900230"
+      },
+      {
+       "date": "2026-05-29",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Macnica Galaxy Inc.",
+       "title": "SSD 공급계약 체결",
+       "amount": 10373052800.0,
+       "superseded": true,
+       "rcept": "20260529900216"
+      },
+      {
+       "date": "2026-05-29",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 12254924000.0,
+       "superseded": false,
+       "rcept": "20260529901588"
+      },
+      {
+       "date": "2026-05-29",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 14476024000.0,
+       "superseded": false,
+       "rcept": "20260529901593"
+      },
+      {
+       "date": "2026-06-12",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 20307067000.0,
+       "superseded": true,
+       "rcept": "20260612900737"
+      },
+      {
+       "date": "2026-06-15",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 50011705000.0,
+       "superseded": false,
+       "rcept": "20260615900688"
+      },
+      {
+       "date": "2026-06-18",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Macnica Galaxy Inc.",
+       "title": "SSD 공급계약 체결",
+       "amount": 46972144560.0,
+       "superseded": false,
+       "rcept": "20260618900776"
+      },
+      {
+       "date": "2026-06-25",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Macnica Galaxy Inc.",
+       "title": "SSD 공급계약 체결",
+       "amount": 10966485120.0,
+       "superseded": false,
+       "rcept": "20260625900725"
+      },
+      {
+       "date": "2026-06-26",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 20448864000.0,
+       "superseded": true,
+       "rcept": "20260626901308"
+      },
+      {
+       "date": "2026-06-26",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 6736032000.0,
+       "superseded": false,
+       "rcept": "20260626901396"
+      },
+      {
+       "date": "2026-07-10",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 42069465600.0,
+       "superseded": false,
+       "rcept": "20260710900498"
+      },
+      {
+       "date": "2026-07-16",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 20307067000.0,
+       "superseded": false,
+       "rcept": "20260716900192"
+      },
+      {
+       "date": "2026-07-30",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Macnica Galaxy Inc.",
+       "title": "SSD 공급계약 체결",
+       "amount": 49551753848.0,
+       "superseded": false,
+       "rcept": "20260730900136"
+      },
+      {
+       "date": "2026-08-07",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 20448864000.0,
+       "superseded": false,
+       "rcept": "20260807900747"
+      },
+      {
+       "date": "2026-08-12",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 39583110400.0,
+       "superseded": false,
+       "rcept": "20260812900394"
+      },
+      {
+       "date": "2026-09-11",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 22666392000.0,
+       "superseded": false,
+       "rcept": "20260911900389"
+      },
+      {
+       "date": "2026-10-08",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "국내 반도체 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 10075803800.0,
+       "superseded": false,
+       "rcept": "20261008900573"
+      },
+      {
+       "date": "2026-10-08",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 15196086000.0,
+       "superseded": false,
+       "rcept": "20261008900575"
+      },
+      {
+       "date": "2026-10-15",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "해외 Nand Flash Memory 제조사",
+       "title": "기업용 SSD 컨트롤러 공급",
+       "amount": 22708070000.0,
+       "superseded": false,
+       "rcept": "20261015900127"
+      }
+     ],
+     "sources": [
+      "20251017900200",
+      "20251027900122",
+      "20251105900149",
+      "20251110900139",
+      "20251201900318",
+      "20251218900567",
+      "20251219900723",
+      "20260113900300",
+      "20260122900004",
+      "20260129901065",
+      "20260205900151",
+      "20260212900310",
+      "20260223900755",
+      "20260312900185",
+      "20260313900181",
+      "20260317900445",
+      "20260413900118",
+      "20260430900594",
+      "20260506900280",
+      "20260522900209",
+      "20260528900230",
+      "20260529900216",
+      "20260529901588",
+      "20260529901593",
+      "20260612900737",
+      "20260615900688",
+      "20260618900776",
+      "20260625900725",
+      "20260626901308",
+      "20260626901396",
+      "20260710900498",
+      "20260716900192",
+      "20260730900136",
+      "20260807900747",
+      "20260812900394",
+      "20260911900389",
+      "20261008900573",
+      "20261008900575",
+      "20261015900127"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 39건"
+    }
+   ],
+   "sources": [
+    "20260205900151",
+    "20260522900209",
+    "20260528900230",
+    "20260615900688",
+    "20260618900776",
+    "20260710900498",
+    "20260730900136",
+    "20260812900394"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "**자본 변동과 주주 환원**\n\n- **전환사채 결정(2026-06-30 정정 기준)**: 제7회 무기명식 무보증 사모 전환사채 120억 원을 발행하기로 결정했다고 공시했습니다(접수번호 20260630000628). 전환 가능 주식 수는 1,116,907주, 전환가액은 10,735원, 희석 비율은 2.21%입니다. 전환 기간은 2027-05-23~2035-04-23, 만기는 2035년 05월 23일, 표면이자율은 0.0%, 조달 목적은 운영자금입니다. 이는 결정 공시이며, 실제 납입이나 전환 여부는 이 자료에서 확인되지 않습니다.\n- **현금배당**: 2023~2025 사업연도 모두 현금배당이 없었습니다(접수번호 20260318001002). 같은 기간 주당순이익은 각각 -1,275원, -1,846원, -1,532원이었습니다(연결 기준).\n- **자기주식 취득·소각**: 이 DB에 기록된 자기주식 직접 취득, 신탁계약, 감자에 따른 소각 결정은 없습니다. 거래소에만 낸 소각 결정과 2024년 1월 이전 결정은 이 자료에 포함되지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1228,
+    "output_tokens": 464,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "dilution",
+     "title": "파두 희석 이력",
+     "company": {
+      "id": 2900,
+      "name": "파두"
+     },
+     "as_of": "2026-10-16",
+     "from": "2024-01-01",
+     "events": [
+      {
+       "date": "2026-06-30",
+       "kind": "cb",
+       "label": "전환사채",
+       "cancel": false,
+       "shares": 1116907,
+       "amount_eok": 119.9,
+       "ratio_pct": 2.21,
+       "pct_of_before": null,
+       "method": "사모",
+       "price": 10735.0,
+       "rcept_no": "20260630000628"
+      }
+     ],
+     "sources": [
+      "20260630000628"
+     ],
+     "notes": [
+      "결정 공시입니다. 실제 납입·발행, 사채의 실제 전환, 철회 여부는 이 자료에 없습니다.",
+      "사채의 주식 수는 전환·행사·교환되면 생길 수 있는 주식 수입니다. 감자 가운데 자기주식 소각은 따로 표시했습니다."
+     ],
+     "summary": "전환사채 1건"
+    }
+   ],
+   "sources": [
+    "20260318001002",
+    "20260630000628"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "- 조회 기간(2026-07-19~2026-10-16) 동안 파두의 내부자 매매 보고는 1건이 있었고, 모두 증가 보고였습니다(접수번호 20260724000541).\n- 보고자는 비등기임원인 상무 박만수이며, 2026-07-24 보고 접수일에 9,600주가 늘어 보고 후 보유 주식은 10,960주, 지분율은 0.02%로 나타났습니다.\n- 감소 보고는 없었습니다. 순증 합계는 9,600주이며, 보고자는 1명입니다.\n- 이 자료에는 거래 단가, 금액, 실제 거래일, 장내·장외 구분, 증여·상속 같은 사유가 없어서 매수인지 다른 경위인지는 확인할 수 없습니다. 날짜는 보고 접수일 기준입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 747,
+    "output_tokens": 305,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "insiders",
+     "title": "파두 내부자 매매",
+     "company": {
+      "id": 2900,
+      "name": "파두"
+     },
+     "as_of": "2026-10-16",
+     "from": "2026-07-19",
+     "to": "2026-10-16",
+     "totals": {
+      "increased_reports": 1,
+      "increased_shares": 9600,
+      "decreased_reports": 0,
+      "decreased_shares": 0,
+      "unchanged_reports": 0,
+      "net_shares": 9600,
+      "reporters": 1
+     },
+     "by_day": [
+      {
+       "date": "2026-07-24",
+       "increased": 9600,
+       "decreased": 0,
+       "reports": 1
+      }
+     ],
+     "returns": [
+      {
+       "date": "2026-07-20",
+       "pct": 0.0
+      },
+      {
+       "date": "2026-07-21",
+       "pct": 8.38
+      },
+      {
+       "date": "2026-07-22",
+       "pct": -1.68
+      },
+      {
+       "date": "2026-07-23",
+       "pct": 2.93
+      },
+      {
+       "date": "2026-07-24",
+       "pct": -9.92
+      },
+      {
+       "date": "2026-07-27",
+       "pct": -9.36
+      },
+      {
+       "date": "2026-07-28",
+       "pct": -21.37
+      },
+      {
+       "date": "2026-07-29",
+       "pct": -29.75
+      },
+      {
+       "date": "2026-07-30",
+       "pct": -31.84
+      },
+      {
+       "date": "2026-07-31",
+       "pct": -11.45
+      },
+      {
+       "date": "2026-08-03",
+       "pct": -11.59
+      },
+      {
+       "date": "2026-08-04",
+       "pct": -13.55
+      },
+      {
+       "date": "2026-08-05",
+       "pct": -7.12
+      },
+      {
+       "date": "2026-08-06",
+       "pct": -19.13
+      },
+      {
+       "date": "2026-08-07",
+       "pct": -20.25
+      },
+      {
+       "date": "2026-08-10",
+       "pct": -14.25
+      },
+      {
+       "date": "2026-08-11",
+       "pct": -13.41
+      },
+      {
+       "date": "2026-08-12",
+       "pct": -9.22
+      },
+      {
+       "date": "2026-08-13",
+       "pct": -12.01
+      },
+      {
+       "date": "2026-08-14",
+       "pct": -8.52
+      },
+      {
+       "date": "2026-08-18",
+       "pct": -4.61
+      },
+      {
+       "date": "2026-08-19",
+       "pct": -10.75
+      },
+      {
+       "date": "2026-08-20",
+       "pct": -7.96
+      },
+      {
+       "date": "2026-08-21",
+       "pct": -13.55
+      },
+      {
+       "date": "2026-08-24",
+       "pct": -13.41
+      },
+      {
+       "date": "2026-08-25",
+       "pct": -10.2
+      },
+      {
+       "date": "2026-08-26",
+       "pct": -12.57
+      },
+      {
+       "date": "2026-08-27",
+       "pct": -9.92
+      },
+      {
+       "date": "2026-08-28",
+       "pct": -11.59
+      },
+      {
+       "date": "2026-08-31",
+       "pct": -8.24
+      },
+      {
+       "date": "2026-09-01",
+       "pct": -11.87
+      },
+      {
+       "date": "2026-09-02",
+       "pct": -12.29
+      },
+      {
+       "date": "2026-09-03",
+       "pct": -14.11
+      },
+      {
+       "date": "2026-09-04",
+       "pct": -6.01
+      },
+      {
+       "date": "2026-09-07",
+       "pct": -2.37
+      },
+      {
+       "date": "2026-09-08",
+       "pct": -0.84
+      },
+      {
+       "date": "2026-09-09",
+       "pct": 3.91
+      },
+      {
+       "date": "2026-09-10",
+       "pct": 10.75
+      },
+      {
+       "date": "2026-09-11",
+       "pct": -4.33
+      },
+      {
+       "date": "2026-09-14",
+       "pct": -15.64
+      },
+      {
+       "date": "2026-09-15",
+       "pct": -14.11
+      },
+      {
+       "date": "2026-09-16",
+       "pct": -17.18
+      },
+      {
+       "date": "2026-09-17",
+       "pct": -11.17
+      },
+      {
+       "date": "2026-09-18",
+       "pct": -14.8
+      },
+      {
+       "date": "2026-09-21",
+       "pct": -8.52
+      },
+      {
+       "date": "2026-09-22",
+       "pct": 0.98
+      },
+      {
+       "date": "2026-09-23",
+       "pct": 13.97
+      },
+      {
+       "date": "2026-09-28",
+       "pct": 12.99
+      },
+      {
+       "date": "2026-09-29",
+       "pct": 16.76
+      },
+      {
+       "date": "2026-09-30",
+       "pct": 14.11
+      },
+      {
+       "date": "2026-10-01",
+       "pct": 25.28
+      },
+      {
+       "date": "2026-10-02",
+       "pct": 19.97
+      },
+      {
+       "date": "2026-10-06",
+       "pct": 20.25
+      },
+      {
+       "date": "2026-10-07",
+       "pct": 14.94
+      },
+      {
+       "date": "2026-10-08",
+       "pct": 15.64
+      },
+      {
+       "date": "2026-10-12",
+       "pct": 7.4
+      },
+      {
+       "date": "2026-10-13",
+       "pct": -0.28
+      },
+      {
+       "date": "2026-10-14",
+       "pct": -7.54
+      },
+      {
+       "date": "2026-10-15",
+       "pct": -20.25
+      },
+      {
+       "date": "2026-10-16",
+       "pct": -20.11
+      }
+     ],
+     "reporters": [
+      {
+       "reporter": "박만수",
+       "reports": 1,
+       "change": 9600,
+       "rcept_no": [
+        "20260724000541"
+       ],
+       "position": "상무",
+       "registered": "비등기임원",
+       "shares_after": 10960,
+       "last_date": "2026-07-24",
+       "pct_after": 0.02
+      }
+     ],
+     "sources": [
+      "20260724000541"
+     ],
+     "notes": [
+      "날짜는 실제 거래일이 아니라 보고 접수일입니다. 거래 단가와 금액, 장내·장외, 증여·상속 같은 사유는 이 보고 자료에 없습니다.",
+      "선은 2026-07-20 종가를 0으로 둔 주가 수익률입니다(한국거래소 통계정보를 가공). 매매의 원인을 말해 주지 않습니다."
+     ],
+     "summary": "2026-07-19~2026-10-16 늘린 보고 1건 9,600주, 줄인 보고 0건 0주, 순증감 +9,600주 (1명)"
+    }
+   ],
+   "sources": [
+    "20260724000541"
+   ]
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "- 최근 1주(2026-10-08~10-16) 수익률은 -30.92%로, 같은 시장(코스닥) 상장 종목 중앙값 -5.38%보다 25.54%p 낮았습니다.\n- 최근 1개월(2026-09-16~10-16) 수익률은 -3.54%로, 시장 중앙값 -2.64%와 비교해 0.9%p 낮았습니다.\n- 최근 3개월(2026-07-16~10-16) 수익률은 -18.75%로, 시장 중앙값 +0.61%보다 19.36%p 낮았습니다.\n- 같은 제품(SSD)을 매출의 10% 이상으로 파는 비교 대상은 엠디바이스, 한양디지텍 2곳입니다. 이들의 중앙값은 1주 -11.13%, 1개월 +54.9%, 3개월 +43.96%입니다. 비교 대상이 2곳뿐이라 중앙값의 대표성이 낮습니다.\n- 이 수치는 KRX 일별 시세에서 계산한 지난 기간의 종가 기준 수익률입니다. 이 자료는 주가 변동의 원인을 설명하지 않으며, 이 DB의 공시 목록에서도 이 기간의 주가 변동 원인을 확인할 수 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 761,
+    "output_tokens": 463,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "파두 수익률 비교",
+     "company": {
+      "id": 2900,
+      "name": "파두"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": -30.92,
+       "market_median_pct": -5.38,
+       "market": "코스닥",
+       "peers_median_pct": -11.13,
+       "peers_counted": 2,
+       "vs_market_pp": -25.54
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": -3.54,
+       "market_median_pct": -2.64,
+       "market": "코스닥",
+       "peers_median_pct": 54.9,
+       "peers_counted": 2,
+       "vs_market_pp": -0.9
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": -18.75,
+       "market_median_pct": 0.61,
+       "market": "코스닥",
+       "peers_median_pct": 43.96,
+       "peers_counted": 2,
+       "vs_market_pp": -19.36
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "SSD"
+      ],
+      "names": [
+       "엠디바이스",
+       "한양디지텍"
+      ],
+      "total": 2
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 -30.92% (시장 -5.38%); 1개월 -3.54% (시장 -2.64%); 3개월 -18.75% (시장 0.61%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)"
+ ],
+ "usage": {
+  "input_tokens": 19278,
+  "output_tokens": 3523,
+  "cache_read_input_tokens": 8552,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 23.1,
+ "cost_usd": 0.0038
+}
