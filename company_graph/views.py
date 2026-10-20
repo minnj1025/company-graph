@@ -203,7 +203,7 @@ def _basis_note(found: dict) -> str:
 
 
 def financials(db, tools, company: dict, when: str) -> dict:
-    found = tools.get_financials(db, company["company_id"], when)
+    found = tools.financial_data(db, company["company_id"], when)
     rows = found["quarters"]
     notes = [_basis_note(found)]
     if any(q.get("computed") for q in rows):
@@ -225,7 +225,7 @@ def financials(db, tools, company: dict, when: str) -> dict:
 
 
 def health(db, tools, company: dict, when: str) -> dict:
-    found = tools.get_financials(db, company["company_id"], when)
+    found = tools.financial_data(db, company["company_id"], when)
     latest, median = found["balance"]["latest"], found["market_median"]
     year = next((y for y in reversed(found["years"]) if y.get("operating_margin_pct") is not None), {})
     measures = [
@@ -247,7 +247,7 @@ def health(db, tools, company: dict, when: str) -> dict:
 
 
 def compare(db, tools, company: dict, other_id: int, when: str) -> dict:
-    sides = [tools.get_financials(db, company_id, when) for company_id in (company["company_id"], other_id)]
+    sides = [tools.financial_data(db, company_id, when) for company_id in (company["company_id"], other_id)]
     # 두 회사가 모두 가진 가장 최근 분기에 맞춘다
     # 결산월이 달라도 같은 달에 끝난 분기끼리 견준다
     ends = [{q["end"]: q for q in s["quarters"] if q.get("end") and (q.get("revenue") is not None or q.get("operating_income") is not None)} for s in sides]

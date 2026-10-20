@@ -159,7 +159,9 @@ def readable(value: float | None, unit_name: str = "억원") -> str:
         jo, eok = jo + 1, 0
     if jo:
         return f"{sign}{jo:,}조" + (f" {eok:,}억 원" if eok else " 원")
-    return f"{sign}{value:,.0f}억 원" if value >= 1 else f"{sign}{value * 1e4:,.0f}만 원"
+    if value >= 100:
+        return f"{sign}{value:,.0f}억 원"
+    return f"{sign}{value:,.1f}억 원" if value >= 1 else f"{sign}{value * 1e4:,.0f}만 원"
 
 
 def _pct(part, whole) -> float | None:

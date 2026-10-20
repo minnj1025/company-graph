@@ -1,0 +1,58 @@
+{
+ "question": "HMM 올해 상반기 순이익 얼마야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "HMM(011200)의 2026년 상반기 누적 당기순이익(연결)은 **7,650.1억 원**(765,010,000,000원)입니다. 전년 같은 기간 대비 -36.83%입니다.\n\n- 근거: 2026 상반기 보고서 (접수번호 20260813001042, 접수일 2026-08-13)\n- 참고로 같은 보고서의 상반기 누적 매출은 61,207억 원(전년 대비 +11.74%), 영업이익은 6,232.1억 원(전년 대비 -26.43%)입니다.\n- 분기별로 보면 2026년 2분기 순이익은 4,114.0억 원(전년 대비 -12.71%), 1분기는 3,536.1억 원(전년 대비 -52.2%)입니다.",
+ "followups": [
+  "HMM 2026년 2분기 실적을 2025년 2분기와 비교해 줘",
+  "HMM의 최근 분기별 영업이익률 추이는?",
+  "HMM의 2026년 6월 말 부채비율과 유동비율은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "HMM"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 3827,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5337
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3827
+    ],
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20260813001042"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1178,
+  "cache_read_input_tokens": 54622,
+  "cache_creation_input_tokens": 21053
+ },
+ "seconds": 8.1,
+ "number": "F08",
+ "gold": ""
+}

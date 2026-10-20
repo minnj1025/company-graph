@@ -1,0 +1,58 @@
+{
+ "question": "셀트리온 작년 4분기 영업이익 얼마였어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "셀트리온의 2025년 4분기(작년 4분기) 연결 영업이익은 **475,170,000,000원(4,751.7억 원)**입니다. 전년 같은 분기 대비 141.94% 증가했고, 영업이익률은 35.72%입니다.\n\n- 4분기는 공시되지 않아 2025 사업보고서(접수번호 20260316001415)의 연간 값에서 2025 3분기보고서(접수번호 20251114002699)의 누적 값을 뺀 계산 값입니다.\n- 매출은 13,301.6억 원, 순이익은 5,279.3억 원입니다.",
+ "followups": [
+  "셀트리온 2026년 2분기 실적은 어땠어?",
+  "셀트리온 2025 연간 영업이익과 실적 추이 보여줘",
+  "셀트리온 최근 공급계약 공시 알려줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "셀트리온"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 3047,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5321
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3047
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20251114002699",
+  "20260316001415"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1046,
+  "cache_read_input_tokens": 54649,
+  "cache_creation_input_tokens": 20995
+ },
+ "seconds": 8.4,
+ "number": "F07",
+ "gold": ""
+}

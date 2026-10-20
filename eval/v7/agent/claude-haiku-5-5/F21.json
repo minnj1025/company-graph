@@ -1,0 +1,59 @@
+{
+ "question": "현대차 별도 기준으로 작년 영업이익 얼마야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "현대자동차의 2025년 별도 기준 영업이익은 35,150.5억 원입니다. 전년 대비 -46.74%이고, 영업이익률은 4.46%입니다 (근거: 2025 연간 사업보고서, 접수번호 20260318001394).\n\n- 기준: 별도(OFS), 단위 억원\n- 2025 연간 매출은 787,667.9억 원(전년 대비 -0.37%), 당기순이익은 40,548.8억 원(전년 대비 -66.87%)입니다. 근거는 같은 접수번호입니다.\n- 2026년 상반기 누적 영업이익은 16,219.3억 원(전년 동기 대비 -55.27%)으로, 2026 상반기 보고서(접수번호 20260814003521)에 실려 있습니다.\n\n이 DB로 알 수 없는 것은 실적 전망, 사업부문별 실적, 업황과 원자재 가격입니다.",
+ "followups": [
+  "현대자동차 2025년 연결 기준 영업이익은 얼마야?",
+  "현대자동차 분기별 영업이익 추이를 보여줘",
+  "현대자동차의 부채비율은 얼마야?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16",
+    "basis": "OFS"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5284
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     54
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260318001394",
+  "20260814003521"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1045,
+  "cache_read_input_tokens": 54621,
+  "cache_creation_input_tokens": 20838
+ },
+ "seconds": 7.5,
+ "number": "F21",
+ "gold": ""
+}

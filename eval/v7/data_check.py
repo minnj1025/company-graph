@@ -52,7 +52,7 @@ def main() -> None:
                 if len(gold["company"]) > 1:
                     name = next((c for c in gold["company"] if value["label"].startswith(c[:2]) or value["label"].startswith({"NAVER": "네이버"}.get(c, c))), name)
                 company = agent_tools.call(db, "find_company", {"name": name})["candidates"][0]
-                found = agent_tools.call(db, "get_financials", {"company_id": company["company_id"], "as_of": gold["as_of"], "basis": value["basis"]})
+                found = agent_tools.financial_data(db, company["company_id"], gold["as_of"], value["basis"])
                 mine = pick(found, value["label"])
                 if value["unit"] == "%":
                     ok = mine is not None and abs(mine - value["value"]) <= 0.1

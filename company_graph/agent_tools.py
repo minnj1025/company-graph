@@ -197,7 +197,7 @@ TOOLS = [
                     "quarters: 분기마다 석 달의 매출·영업이익·순이익, 영업이익률, 전년 같은 분기 대비 증감(yoy_pct, 앞이 적자면 yoy 에 흑자 전환 등). "
                     "4분기는 공시되지 않아 연간에서 3분기 누적을 뺀 값이고 computed 로 밝힌다. years: 사업연도마다 가장 나중 보고서의 누적 값(예: '2026 상반기 누적'). "
                     "balance: 가장 최근 기말과 직전 사업연도 말의 자산·부채·자본, 부채비율(부채총계/자본총계), 유동비율(유동자산/유동부채). "
-                    "market_median: 같은 시장 상장사들의 부채비율·유동비율·영업이익률 중앙값. 금액 단위는 unit(대개 억원). "
+                    "market_median: 같은 시장 상장사들의 부채비율·유동비율·영업이익률 중앙값. 금액은 '89조 4,924억 원' 같은 글로 준다. "
                     "basis 는 연결(CFS, 기본)과 별도(OFS). 지주회사처럼 둘이 크게 다를 수 있으니 답에 어느 쪽인지 적는다. "
                     "현금흐름, EPS, 배당, PER·PBR, 사업부문별 실적, 실적 전망은 이 DB에 없다.",
      "input_schema": {"type": "object", "properties": {
@@ -868,7 +868,29 @@ def _median(values: list[float]) -> float | None:
     return round(statistics.median(values), 2) if values else None
 
 
+MONEY = ("revenue", "operating_income", "net_income", "total_assets", "total_liabilities", "total_equity",
+         "current_assets", "current_liabilities")
+
+
 def get_financials(db, company_id, as_of, basis=None) -> dict:
+    """Agent에게 주는 값. 금액은 '89조 4,924억 원' 같은 글로 바꿔 준다. 모델이 억 단위를 원으로 옮기다 자릿수를 틀린 일이 있어서다(평가 7판 F20)."""
+    from . import financials as fin
+    found = financial_data(db, company_id, as_of, basis)
+    unit = found["unit"]
+
+    def words(item: dict) -> dict:
+        return {k: (fin.readable(v, unit) if k in MONEY and isinstance(v, (int, float)) else v) for k, v in item.items()}
+    balance = {k: words(v) for k, v in found["balance"].items()}
+    found.pop("unit")
+    return {**found, "quarters": [words(q) for q in found["quarters"]], "years": [words(y) for y in found["years"]],
+            "balance": balance,
+            "fields": "금액은 이미 조·억 원으로 적은 글이니 그대로 옮긴다. quarters 의 값은 그 석 달, years 는 그해 누적. "
+                      "yoy_pct 는 같은 보고서가 적은 전년 같은 기간 값과 견준 증감률(%). rcept_no 는 그 값이 실린 보고서. "
+                      "다음 분기 보고서는 분기 말에서 45일 안, 사업보고서는 90일 안에 나온다."}
+
+
+def financial_data(db, company_id, as_of, basis=None) -> dict:
+    """get_financials 의 숫자판. 금액은 unit(대개 억원) 단위의 수다. 카드(views.py)와 검산이 쓴다."""
     from . import financials as fin
     company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
     chosen, by = fin.reports(db, company.company_id, when, basis)
