@@ -795,6 +795,7 @@ def _prepare_ask():
 NO_SHARE = "매출 비중은 보고서에 없음"
 GRAPH_COMPANIES = 500  # 질문 결과 그래프에 그리는 기업 수의 상한
 AROUND_COMPANIES = 24   # 한 기업만 물었을 때 함께 그리는 상대의 수
+CONTEXT_COMPANIES = 160  # Agent가 강조한 기업 둘레에 덧그리는 기업 수의 상한
 
 
 _listed_names: dict[int, str] = {}
@@ -956,6 +957,28 @@ class _Found:
                 seen.add(other(edge))
                 self._link(edge)
 
+    def _context(self, db, centers: list[int], per: int) -> set[int]:
+        """강조한 기업이 어디에 놓여 있는지: 큰 주주와 출자 대상, 상장 계열사, 공급계약 상대를 선과 함께 더한다.
+        Agent가 강조한 기업만 그리면 재무·공시 질문의 그래프가 점 하나로 끝나서(평가 답 41개 중 36개가 다섯 점 이하) 둘레를 옅게 덧그린다."""
+        added: set[int] = set()
+        listed = listed_names(db).keys()
+        for center in centers:
+            edges = [e for e in query.relations(db, date.today(), company_ids=[center], rel_types=["equity", "affiliate", "supply_contract"])
+                     if e["subject_id"] and e["object_id"] and e["subject_id"] != e["object_id"]]
+            other = lambda e: e["object_id"] if e["subject_id"] == center else e["subject_id"]
+            # 지분은 큰 것, 계열은 상장사, 공급계약은 금액이 큰 것부터. 셋을 고루 섞는다
+            groups = [sorted([e for e in edges if e["type"] == "equity"], key=lambda e: -float(e["value"] or 0)),
+                      [e for e in edges if e["type"] == "affiliate" and other(e) in listed],
+                      sorted([e for e in edges if e["type"] == "supply_contract"], key=lambda e: -float(e["value"] or 0))]
+            seen: set[int] = set()
+            for round_ in range(max(map(len, groups), default=0)):
+                for group in groups:
+                    if round_ < len(group) and (len(seen) < per or other(group[round_]) in seen):
+                        seen.add(other(group[round_]))
+                        self._link(group[round_])
+            added |= seen
+        return added
+
     def graph(self, db, answer: str = "") -> dict:
         from .names import normalize
 
@@ -980,9 +1003,18 @@ class _Found:
                 text = text.replace(name, "\0" * len(name))
                 if company_id in candidates:
                     mentioned.add(company_id)
-        if self.shown:   # Agent가 정했다: 강조는 그 기업들만, 그릴 것은 강조와 함께 그릴 기업만
+        if self.shown:   # Agent가 정했다: 강조는 그 기업들만. 둘레(조회에서 본 관계, 큰 주주·출자·계열·계약 상대)는 옅게 덧그린다
             focus = set(self.shown["highlight"])
             ids = focus | set(self.shown["also"])
+            for source, target, _ in list(self.links):   # 조회하면서 본 관계 가운데 강조한 기업에 닿는 것
+                if len(ids) >= CONTEXT_COMPANIES:
+                    break
+                if source in focus or target in focus:
+                    ids.update((source, target))
+            centers = self.shown["highlight"][:6]
+            room = max(0, CONTEXT_COMPANIES - len(ids))
+            if centers and room:
+                ids |= set(list(self._context(db, centers, min(AROUND_COMPANIES, room // len(centers))))[:room])
         else:
             focus = self.focus | mentioned
             ids = set(focus)
