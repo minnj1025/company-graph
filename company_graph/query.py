@@ -157,7 +157,7 @@ def coverage(db) -> dict:
             .where(Relation.retired_at.is_(None)).group_by(Relation.rel_type)):
         kinds[rel_type] = {"label": LABELS[rel_type], "first_disclosed": first, "last_disclosed": last, "rows": count}
     return {"notice": NOTICE, "relations": kinds,
-            "sources": {"equity": "사업보고서의 타법인 출자현황과 최대주주 현황 (반기·분기보고서는 아직 없음). 주주 쪽은 최대주주와 그 특수관계인만 있고, 5% 이상 주주 전체가 아니다. 개인·정부 같은 원장에 없는 주주는 이름만 있다. 지분율은 그 표에 적힌 값으로, 회사에 따라 우선주를 포함한 발행주식총수 기준이다. 같은 보고서의 5% 이상 주주 표(보통주나 의결권 있는 주식 기준)의 값과 다를 수 있다",
+            "sources": {"equity": "사업보고서의 타법인 출자현황과 최대주주 현황 (반기·분기보고서의 표는 아직 없음). 주주 쪽은 최대주주와 그 특수관계인만 있고, 5% 이상 주주 전체가 아니다. 사업보고서 뒤의 지분 변화와 5% 이상 주주는 5% 대량보유 보고(get_major_holders)에, 임원·주요주주의 주식 증감은 get_insider_trades 에 있다. 개인·정부 같은 원장에 없는 주주는 이름만 있다. 지분율은 그 표에 적힌 값으로, 회사에 따라 우선주를 포함한 발행주식총수 기준이다. 같은 보고서의 5% 이상 주주 표(보통주나 의결권 있는 주식 기준)의 값과 다를 수 있다",
                         "affiliate": "사업보고서의 계열회사 현황 표",
                         "supply_contract": "단일판매ㆍ공급계약 체결 공시 (건별로 공시한 계약만)",
                         "supply_termination": "단일판매ㆍ공급계약 해지 공시. 해지된 계약은 공급계약 조회에서 빠진다",
