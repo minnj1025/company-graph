@@ -21,6 +21,7 @@ type Shown = Pick<AskResult, "question" | "graph"> & {
 
 // 그래프 말고 다른 탭은 누를 때 받는다. 첫 화면이 받는 양이 준다
 const HotPage = lazy(() => import("./Hot").then((m) => ({ default: m.HotPage })));
+const PortfolioPage = lazy(() => import("./Portfolio").then((m) => ({ default: m.PortfolioPage })));
 const DataPage = lazy(() => import("./Pages").then((m) => ({ default: m.DataPage })));
 const QuestionsPage = lazy(() => import("./Pages").then((m) => ({ default: m.QuestionsPage })));
 const ReportView = lazy(() => import("./Report"));
@@ -105,7 +106,7 @@ export function App() {
       /* 적어 두지 못해도 이번에는 바뀐다 */
     }
   }, [theme]);
-  const [tab, setTab] = useState<"graph" | "hot" | "data" | "agent">("graph");
+  const [tab, setTab] = useState<"graph" | "hot" | "mine" | "data" | "agent">("graph");
   const [filters, setFilters] = useState<Filters>(NO_FILTER);
   const [loading, setLoading] = useState(false);
   /** "화면 맞추기"를 누를 때마다 올린다. 그래프가 전체가 보이게 다시 맞춘다 */
@@ -453,6 +454,9 @@ export function App() {
           <button className={tab === "hot" ? "on" : ""} onClick={() => setTab("hot")}>
             이슈 종목
           </button>
+          <button className={tab === "mine" ? "on" : ""} onClick={() => setTab("mine")}>
+            내 종목
+          </button>
           <button className={tab === "data" ? "on" : ""} onClick={() => setTab("data")}>
             데이터와 검증
           </button>
@@ -742,6 +746,19 @@ export function App() {
                 seed(graph);
                 go({ found: { question: title, graph, picked: true } });
                 setTab("graph");
+              }}
+            />
+          ) : tab === "mine" ? (
+            <PortfolioPage
+              onOpenCompany={(company) => {
+                go({ found: null, center: company, selected: company.id });
+                setDrawer("company");
+                setTab("graph");
+              }}
+              onAsk={(question) => {
+                setTab("graph");
+                setDrawer("answer");
+                void chat.ask(question);
               }}
             />
           ) : tab === "data" ? (

@@ -160,3 +160,63 @@ export async function askAgent(question: string): Promise<AskResult> {
   }
   return response.json();
 }
+
+/** 내 종목 탭 (company_graph/portfolio.py). 종목 목록은 이 브라우저에만 있고, 보낼 때마다 서버가 정리해 돌려준다 */
+export interface PortfolioMove {
+  day: string;
+  /** 이 종목의 마지막 시세가 다른 종목보다 이르다 (거래 정지 등) */
+  stale: boolean;
+  d1: number | null;
+  d5?: number | null;
+  d20?: number | null;
+  /** 최근 20거래일의 누적 등락률(%) */
+  spark: number[];
+}
+export interface PortfolioStock {
+  id: number;
+  name: string;
+  stock_code: string | null;
+  market: string | null;
+  listed: boolean;
+  /** 보유 수량 × 최근 종가로 계산한 비중(%). 관심 종목이나 시세가 없으면 null */
+  weight: number | null;
+  move: PortfolioMove | null;
+}
+export interface PortfolioEvent {
+  date: string;
+  company_id: number;
+  company: string;
+  kind: string;
+  text: string;
+  rcept_no: string;
+  url: string;
+  tone: "deal" | "capital" | "holder" | "report" | "info";
+}
+export interface PortfolioIssue {
+  day: string;
+  company_id: number;
+  company: string;
+  side: "up" | "down";
+  change: number;
+  group: number | null;
+  together: string[];
+  why: string[];
+  grade: string | null;
+  reason: string | null;
+  sources: { title: string; url: string }[];
+}
+export interface PortfolioResult {
+  as_of: string;
+  price_day: string | null;
+  since: string;
+  stocks: PortfolioStock[];
+  events: PortfolioEvent[];
+  issues: PortfolioIssue[];
+  note: string;
+}
+export async function fetchPortfolio(items: { id: number; qty: number | null }[], days: number): Promise<PortfolioResult> {
+  const response = await fetch("/api/portfolio", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items, days }) });
+  if (!response.ok) throw new Error(`/portfolio ${response.status}`);
+  return response.json();
+}
+export const fetchView = (kind: string, companyId: number, asOf: string) => get<View>("/view", { kind, company_id: companyId, as_of: asOf });

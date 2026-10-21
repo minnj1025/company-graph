@@ -5355,3 +5355,354 @@ details.more .notes {
   .report-page { border: 0; max-width: none; }
   .report-actions { display: none; }
 }
+
+
+/* ---------- 3D 그래프의 배경: 그래프 판은 비워 두고 뒤에 아주 옅은 성운 빛을 깐다 (별은 Graph.tsx 가 그린다) ---------- */
+.graph-dark {
+  background:
+    radial-gradient(ellipse 60% 45% at 22% 18%, rgb(86 104 190 / 0.10), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 82% 78%, rgb(140 86 180 / 0.07), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgb(40 52 80 / 0.12), transparent 75%),
+    #0b0c0f;
+}
+.graph-light {
+  background:
+    radial-gradient(ellipse 60% 45% at 22% 18%, rgb(120 140 200 / 0.08), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 82% 78%, rgb(190 150 210 / 0.06), transparent 70%),
+    #f5f4f1;
+}
+
+/* ---------- 내 종목 (Portfolio.tsx) ---------- */
+.page.mine {
+  max-width: 1120px;
+}
+.mine .up { color: var(--up); }
+.mine .down { color: var(--down); }
+.mine .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mine h3 { margin: 34px 0 12px; }
+.mine-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0 8px;
+  align-items: stretch;
+}
+.mine-search { position: relative; flex: 1 1 260px; }
+.mine-add input,
+.mine-qty {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  box-sizing: border-box;
+}
+.mine-add .mine-qty { width: 120px; flex: 0 0 120px; }
+.mine-qty.small { width: 96px; height: 30px; text-align: right; }
+.mine-found {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  top: 44px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.mine-found button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.mine-found button:hover { background: var(--surface); }
+.mine-found span { color: var(--muted); font-size: 13px; }
+.mine-kind,
+.mine-period,
+.mine-filter {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  align-items: center;
+}
+.mine-kind button,
+.mine-period button,
+.mine-filter button {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.mine-kind button.on,
+.mine-period button.on,
+.mine-filter button.on {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+}
+.mine-filter select {
+  margin-left: 4px;
+  padding: 5px 6px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+}
+.mine-submit {
+  height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #15120a;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.mine-submit:disabled { opacity: 0.4; cursor: default; }
+.mine-start {
+  margin: 28px 0;
+  padding: 36px 24px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  text-align: center;
+  color: var(--muted);
+}
+.mine-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 14px;
+  margin-top: 22px;
+}
+.mine-stats { flex: 1 1 560px; margin: 0; }
+.mine-stats small { margin-left: 4px; font-size: 13px; color: var(--muted); font-weight: 400; }
+.mine-error { color: var(--up); }
+.mine-empty { color: var(--muted); padding: 24px 0; }
+
+/* 보유 종목 상자: 비중대로 크기, 등락률대로 색 */
+.mine-map {
+  position: relative;
+  height: clamp(280px, 46vw, 440px);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--panel);
+}
+.mine-tile {
+  position: absolute;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  border: 1px solid var(--bg);
+  color: var(--text);
+  font: inherit;
+  text-align: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: filter 0.15s, outline-color 0.15s;
+  outline: 2px solid transparent;
+  outline-offset: -3px;
+}
+.mine-tile:hover { filter: brightness(1.12); }
+.mine-tile.on { outline-color: var(--accent); }
+.mine-tile b {
+  max-width: 100%;
+  font-size: clamp(12px, 1.6vw, 17px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mine-tile-change { font-size: clamp(13px, 2.1vw, 22px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.mine-tile-weight { font-size: 12px; opacity: 0.8; }
+.mine-tile.small b { font-size: 11px; }
+.mine-tile.small .mine-tile-change { font-size: 12px; }
+.mine-tile.flat { flex-direction: row; gap: 8px; }
+.mine-tile.flat b { font-size: 13px; }
+.mine-tile.flat .mine-tile-change { font-size: 14px; }
+
+.mine-watch {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+.mine-chip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.mine-chip.on { outline: 2px solid var(--accent); outline-offset: -2px; }
+.mine-chip b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mine-chip > span { font-weight: 700; font-variant-numeric: tabular-nums; }
+.mine-chip svg { grid-column: 1 / -1; width: 100%; }
+.mine-spark polyline { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.mine-spark.up polyline { stroke: var(--up); }
+.mine-spark.down polyline { stroke: var(--down); }
+.mine-chip .mine-spark polyline { stroke: var(--text); opacity: 0.75; }
+.mine-spark .zero { stroke: rgb(var(--ink) / 0.18); stroke-dasharray: 2 3; }
+
+/* 한 종목 자세히 */
+.mine-detail {
+  margin-top: 26px;
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  scroll-margin-top: 80px;
+}
+.mine-detail header { display: flex; justify-content: space-between; align-items: flex-start; }
+.mine-detail h2 { margin: 0 0 2px; padding: 0; border: 0; font-size: 20px; }
+.mine-detail p { margin: 0; }
+.mine-close {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+.mine-detail-top { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 36px; margin: 16px 0 6px; }
+.mine-moves { display: flex; gap: 28px; margin: 0; }
+.mine-moves dt { color: var(--muted); font-size: 13px; }
+.mine-moves dd { margin: 2px 0 0; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.mine-detail-spark { margin: 0; }
+.mine-detail-spark figcaption { color: var(--muted); font-size: 12px; }
+.mine-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+.mine-actions button,
+.mine-actions a {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.mine-actions button:hover,
+.mine-actions a:hover { border-color: var(--accent); }
+.mine-detail-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 24px;
+  margin-top: 6px;
+}
+.mine-detail-body h4 { margin: 18px 0 8px; font-size: 15px; }
+
+/* 소식 */
+.mine-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+.mine-section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.mine-section-head h3 { margin-bottom: 12px; }
+.mine-feed { list-style: none; margin: 0; padding: 0; }
+.mine-feed > li { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--border); }
+.mine-feed time { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; padding-top: 2px; }
+.mine-feed ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.mine-event { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; gap: 4px 10px; font-size: 14px; line-height: 1.55; }
+.mine-event a { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.mine-badge {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.mine-event.deal .mine-badge { color: var(--accent); }
+.mine-event.issue-up .mine-badge { color: var(--up); border-color: color-mix(in srgb, var(--up) 40%, transparent); }
+.mine-event.issue-down .mine-badge { color: var(--down); border-color: color-mix(in srgb, var(--down) 40%, transparent); }
+.mine-text { min-width: 0; text-align: left; word-break: keep-all; overflow-wrap: anywhere; }
+.mine-text .mine-who { margin-right: 6px; }
+.mine-badge { justify-self: start; }
+.mine-reason { display: block; margin-top: 2px; color: var(--muted); font-style: normal; font-size: 13px; }
+.mine-who {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.mine-who:hover { text-decoration: underline; }
+.mine-note { font-size: 13px; margin-top: 18px; }
+.mine-link { border: 0; background: none; color: var(--accent); font: inherit; cursor: pointer; }
+.mine-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.mine-table th { color: var(--muted); font-weight: 400; font-size: 13px; text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--border); }
+.mine-table td { padding: 8px 4px; border-bottom: 1px solid var(--border); }
+.mine-table tr.on td { background: var(--surface); }
+.mine-tag { margin-left: 6px; color: var(--muted); font-size: 12px; }
+.mine-row-actions button {
+  margin-left: 4px;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+  .mine-columns { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .mine-detail-body { grid-template-columns: minmax(0, 1fr); }
+  .mine-event { grid-template-columns: minmax(0, 1fr) auto; }
+  .mine-event .mine-badge { grid-column: 1 / -1; }
+  .mine-feed > li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .mine-add .mine-qty { flex: 1 1 100px; }
+  .mine-detail { padding: 16px; }
+  .mine-moves { gap: 18px; }
+}
+
+/* 탭이 다섯 개라 좁은 화면에서는 글자를 줄여 한 줄에 둔다 */
+@media (max-width: 520px) {
+  .tabs { gap: 12px; }
+  .tabs button { white-space: nowrap; font-size: 13px; }
+  .mine-stats { grid-template-columns: 1fr 1fr; }
+  .mine-stats > div:nth-child(3) { padding-left: 0; border-left: 0; }
+  .mine-stats > div:nth-child(n + 3) { border-top: 1px solid var(--border); }
+  .mine-stats dd { font-size: 18px; }
+}

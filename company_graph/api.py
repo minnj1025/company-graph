@@ -678,6 +678,23 @@ def hot_graph(day: date, group: int = Query(ge=0), side: str = "up", db=Depends(
     return graph
 
 
+class Holding(BaseModel):
+    id: int
+    qty: float | None = Field(default=None, ge=0, le=1e12)   # 보유 수량. 관심 종목은 비운다
+
+
+class PortfolioAsk(BaseModel):
+    items: list[Holding] = Field(max_length=80)
+    days: int = Field(default=30, ge=1, le=90)
+
+
+@app.post("/api/portfolio")
+def portfolio_view(body: PortfolioAsk, db=Depends(get_db)):
+    """내 종목 탭(portfolio.py). 목록은 방문자 브라우저에만 있고 서버는 받은 목록을 정리해 돌려줄 뿐 저장하지 않는다."""
+    from . import portfolio
+    return portfolio.summary(db, [(item.id, item.qty) for item in body.items], body.days, date.today())
+
+
 @app.get("/api/insights")
 def insights(as_of: date, db=Depends(get_db)):
     """그 날짜까지의 최근 공시와, 최근에 바뀐 것(정정·해지·철회)."""
