@@ -49,14 +49,15 @@ def _get(path: str, **params) -> requests.Response:
             time.sleep(wait)
         _last_call = time.monotonic()
         _count_call()
-    for attempt in range(3):
+    # GitHub 서버에서 부르면 응답이 한참 걸리는 날이 있다(2026-10-21: 한 번에 약 70초). 오래 기다리기보다 짧게 끊고 다시 부른다
+    for attempt in range(4):
         try:
-            return requests.get(f"{BASE}/{path}", params={"crtfc_key": secret("DART_API_KEY"), **params}, timeout=60)
+            return requests.get(f"{BASE}/{path}", params={"crtfc_key": secret("DART_API_KEY"), **params}, timeout=(10, 25))
         except requests.RequestException:
-            if attempt == 2:
+            if attempt == 3:
                 # 예외 메시지에 인증키가 든 주소가 섞이지 않게 새로 던진다
                 raise DartError(f"{path} 호출 실패") from None
-            time.sleep(2)
+            time.sleep(2 * (attempt + 1))
 
 
 def _json(path: str, **params) -> dict:
