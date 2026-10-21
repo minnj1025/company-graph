@@ -9,6 +9,9 @@ import { Credit } from "./Credit";
 import { Panel } from "./Panel";
 import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType, Suggestion, Taxonomy } from "./types";
 
+/** 기업 분석 보고서 단추. 평가 10판 처음 보는 회사에서 기준 미달이라 공개하지 않는다. VITE_REPORT=1 로 빌드하면 보인다 */
+const REPORT_ENABLED = import.meta.env.VITE_REPORT === "1";
+
 /** 그래프에 따로 띄운 것: Agent의 답이 찾은 결과이거나, 입력 칸에서 고른 제품·제품군·분류 */
 type Shown = Pick<AskResult, "question" | "graph"> & {
   picked?: boolean;
@@ -712,7 +715,7 @@ export function App() {
                     go({ found: null, center: node, selected: id });
                   }}
                   onClose={closeDrawer}
-                  onReport={(id, name) => setReportFor({ id, name })}
+                  onReport={REPORT_ENABLED ? (id, name) => setReportFor({ id, name }) : undefined}
                 />
               ) : (
                 <p className="empty drawer-note">

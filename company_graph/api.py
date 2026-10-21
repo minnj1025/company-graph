@@ -1197,6 +1197,9 @@ def report_stream(body: ReportAsk, request: Request, db=Depends(get_db)):
     사건: section(항목 하나: 제목, 글, 카드, 근거), done(보고서 전체), error(사유)."""
     from . import report
 
+    # 평가 10판 처음 보는 회사에서 기준 미달이라 공개하지 않는다. 화면 단추를 숨겨도 주소를 직접 부르면 비용이 나가므로 서버에서도 막는다
+    if os.environ.get("REPORT_ENABLED") != "1":
+        raise HTTPException(404, "기업 분석 보고서는 아직 공개하지 않았습니다")
     company = db.get(Company, body.company_id)
     if company is None or not company.stock_code:
         raise HTTPException(404, "상장사만 보고서를 만들 수 있습니다")
