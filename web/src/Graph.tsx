@@ -13,6 +13,8 @@ import {
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
+  Points,
+  PointsMaterial,
   Quaternion,
   SphereGeometry,
   Vector3,
@@ -38,6 +40,29 @@ const BATCH_LINKS = 600;
 
 export const shortName = (name: string) =>
   name.replace(/\(주\)|㈜|주식회사|유한회사/g, "").trim();
+
+/** 배경의 별: 그래프보다 훨씬 먼 껍질에 흩어 둔다. 카메라가 돌면 천천히 함께 흘러 공간감만 준다 */
+const STARS = 1400;
+function starField(): Points {
+  const positions = new Float32Array(STARS * 3);
+  for (let i = 0; i < STARS; i++) {
+    const r = 2600 + Math.random() * 2400;
+    const y = Math.random() * 2 - 1;
+    const ring = Math.sqrt(1 - y * y);
+    const a = Math.random() * Math.PI * 2;
+    positions.set([Math.cos(a) * ring * r, y * r, Math.sin(a) * ring * r], i * 3);
+  }
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", new BufferAttribute(positions, 3));
+  const stars = new Points(geometry, new PointsMaterial({ size: 1.3, sizeAttenuation: false, transparent: true, opacity: 0.5, depthWrite: false }));
+  stars.name = "stars";
+  stars.renderOrder = -1;
+  return stars;
+}
+/** 가만히 두면 카메라가 이만큼씩 돈다(한 프레임에 라디안). 60프레임이면 한 바퀴에 약 3분 */
+const SPIN = 0.00058;
+/** 마지막으로 만진 뒤 이만큼 지나면 다시 돌기 시작한다(밀리초) */
+const IDLE = 7000;
 
 const endId = (end: number | GraphNode) => (typeof end === "number" ? end : end.id);
 // 제품군 점은 기업이 수십 곳씩 달려서, 연결 수 그대로 키우면 화면을 덮는다
@@ -507,14 +532,58 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
   }, []);
   const onBackgroundClick = useCallback(() => onSelect(null), [onSelect]);
 
+  // 배경의 별. 밝은 바탕에서는 거의 보이지 않게 옅은 회색으로 둔다
+  useEffect(() => {
+    const scene = graph.current?.scene();
+    if (!scene) return;
+    const stars = (scene.getObjectByName("stars") as Points | undefined) ?? starField();
+    if (!stars.parent) scene.add(stars);
+    const material = stars.material as PointsMaterial;
+    material.color.set(light ? "#8a8f99" : "#c9d3ff");
+    material.opacity = light ? 0.18 : 0.5;
+  }, [light, size]);
+
+  // 가만히 두면 천천히 돈다. 만지거나, 기업을 골랐거나, 화면을 맞추는 중에는 멈춘다. 움직임을 줄이라는 기기 설정이면 돌지 않는다
+  const lastTouch = useRef(performance.now());
+  useEffect(() => {
+    lastTouch.current = performance.now();
+  }, [selectedId, fitKey, refit, data]);
+  useEffect(() => {
+    const element = container.current;
+    if (!element || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const touch = () => (lastTouch.current = performance.now());
+    const events = ["pointerdown", "pointermove", "wheel", "touchstart", "keydown"] as const;
+    for (const name of events) element.addEventListener(name, touch, { passive: true });
+    let frame = 0;
+    const step = () => {
+      frame = requestAnimationFrame(step);
+      const view = graph.current;
+      if (!view || selected.current !== null || moving.current || performance.now() - lastTouch.current < IDLE) return;
+      const eye = view.camera().position;
+      const target = (view.controls() as { target: Vector3 }).target;
+      const dx = eye.x - target.x;
+      const dz = eye.z - target.z;
+      const cos = Math.cos(SPIN);
+      const sin = Math.sin(SPIN);
+      eye.x = target.x + dx * cos - dz * sin;
+      eye.z = target.z + dx * sin + dz * cos;
+      view.camera().lookAt(target);
+    };
+    frame = requestAnimationFrame(step);
+    return () => {
+      cancelAnimationFrame(frame);
+      for (const name of events) element.removeEventListener(name, touch);
+    };
+  }, []);
+
   return (
-    <div ref={container} className="graph">
+    <div ref={container} className={`graph ${light ? "graph-light" : "graph-dark"}`}>
       <ForceGraph3D
         ref={graph}
         width={size.width}
         height={size.height}
         graphData={data}
-        backgroundColor={light ? "#f5f4f1" : "#0d0e10"}
+        backgroundColor="rgba(0,0,0,0)"
         showNavInfo={false}
         nodeId="id"
         nodeLabel={nodeLabel}
