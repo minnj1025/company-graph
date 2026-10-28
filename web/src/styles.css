@@ -5706,3 +5706,19 @@ details.more .notes {
   .mine-stats > div:nth-child(n + 3) { border-top: 1px solid var(--border); }
   .mine-stats dd { font-size: 18px; }
 }
+
+/* 답 속 근거 공시: 14자리 번호 대신 작은 칩 (Chat.tsx linkReceipts) */
+.answer a.receipt {
+  display: inline-block;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.78em;
+  line-height: 1.5;
+  vertical-align: 1px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.answer a.receipt:hover { color: var(--text); border-color: var(--accent); text-decoration: none; }

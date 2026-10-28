@@ -26,8 +26,11 @@ const HINTS = [
   "한화오션이 올해 공시한 공급계약을 금액이 큰 순서로",
 ];
 
-/** 답에 나온 14자리 접수번호를 DART 원문 링크로 바꾼다. */
-const linkReceipts = (text: string) => text.replace(/(?<![\d/=])(20\d{12})(?!\d)/g, `[$1](${DART}$1)`);
+/** 답에 나온 14자리 접수번호를 DART 원문 링크로 바꾼다. 글에는 14자리 대신 접수일을 담은 작은 칩("공시 08-14")을 보이고,
+ * 번호는 마우스를 올리면 보이게 둔다. 답 글 자체는 그대로라 근거 검사·채점에는 영향이 없다. 앞의 "접수번호" 낱말은 칩과 겹쳐 뗀다 */
+const linkReceipts = (text: string) =>
+  text.replace(/(?:접수번호\s*:?\s*)?(?<![\d/=])(20\d{2})(\d{2})(\d{2})(\d{6})(?!\d)/g, (_all, year, month, day, rest) =>
+    `[공시 ${month}-${day}](${DART}${year}${month}${day}${rest} "${year}${month}${day}${rest}")`);
 /** 답이 흘러나오는 동안에는 끝에 붙는 "이어서 물을 질문"이 글로 보이지 않게 뗀다 (다 오면 버튼으로 나온다) */
 const withoutFollowups = (text: string) => text.split("<<")[0];
 
@@ -330,6 +333,10 @@ function Answer({ result, onCompany }: { result: AskResult; onCompany: (id: numb
               <button className="company-link" title="그래프에서 이 기업 보기" onClick={() => onCompany(Number(href.slice(9)))}>
                 {children}
               </button>
+            ) : href?.startsWith(DART) ? (
+              <a className="receipt" href={href} target="_blank" rel="noreferrer" title={`DART 공시 원문 ${href.slice(DART.length)}`}>
+                {children}
+              </a>
             ) : (
               <a href={href} target="_blank" rel="noreferrer">
                 {children}

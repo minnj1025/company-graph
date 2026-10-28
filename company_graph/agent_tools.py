@@ -7,6 +7,7 @@
   - 결과가 비었을 때 "공시된 것이 없음"인지 "모으지 않음"인지 가릴 수 있게 수집 범위를 같이 준다
   - 모든 줄에 근거 공시의 접수번호가 있다
 """
+import os
 import re
 import statistics
 from datetime import date, timedelta
@@ -341,6 +342,15 @@ def find_company(db, name: str) -> dict:
 _TABLES = {"largest_shareholders": "최대주주 현황", "other_corp_investments": "타법인출자 현황"}
 
 
+def _style2() -> bool:
+    return os.environ.get("ANSWER_STYLE", "1") == "2"
+
+
+def _won_text(value) -> str:
+    from .financials import readable
+    return readable(float(value) / 1e8)
+
+
 def _edge(db, edge: dict) -> dict:
     subject = db.get(Company, edge["subject_id"]) if edge["subject_id"] else None
     obj = db.get(Company, edge["object_id"]) if edge["object_id"] else None
@@ -351,6 +361,8 @@ def _edge(db, edge: dict) -> dict:
             "object": _brief(obj) or {"company_id": None, "name": edge["object_name_raw"], "note": "원장에 없는 상대 (이름만 있음)"},
             "value": None if value is None else (float(value) if edge["unit"] == "pct" else int(value)),
             "unit": {"pct": "%", "krw": "원"}.get(edge["unit"]),
+            # 새 말투(ANSWER_STYLE=2): 원 단위 금액을 '조·억 원' 글로도 준다. 모델이 직접 바꾸다 자릿수를 틀린 일이 있다(평가 7판 F20)
+            **({"value_text": _won_text(value)} if edge["unit"] == "krw" and value and _style2() else {}),
             "as_of_date": edge["as_of_date"] and edge["as_of_date"].isoformat(),
             "disclosed_date": edge["disclosed_date"].isoformat(),
             "disclosed_by": "양쪽 공시에 있으나 값이 다름" if edge.get("differs") else
