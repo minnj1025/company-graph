@@ -930,7 +930,7 @@ def get_financials(db, company_id, as_of, basis=None) -> dict:
     unit = found["unit"]
 
     def words(item: dict) -> dict:
-        return {k: (fin.readable(v, unit) if k in MONEY and isinstance(v, (int, float)) else v) for k, v in item.items()}
+        return {k: (fin.readable(v, unit) if (k in MONEY or k.endswith("_prior_restated")) and isinstance(v, (int, float)) else v) for k, v in item.items()}
     balance = {k: words(v) for k, v in found["balance"].items()}
     found.pop("unit")
     return {**found, "quarters": [words(q) for q in found["quarters"]], "years": [words(y) for y in found["years"]],
@@ -956,8 +956,19 @@ def financial_data(db, company_id, as_of, basis=None) -> dict:
            "balance": {"latest": fin.balance(newest, divisor),
                        **({"previous_year_end": fin.balance(max(ends, key=lambda r: r.period_end), divisor)} if ends else {})},
            "market_median": {"market": MARKETS.get(company.corp_cls, company.corp_cls), **fin.medians(db, when, company.corp_cls)},
+           "vs_market_median": None,
            "fields": "금액은 unit 단위. quarters 의 값은 그 석 달, years 는 그해 누적. yoy_pct 는 같은 보고서가 적은 전년 같은 기간 값과 견준 것(나중에 다시 작성된 값이면 그 값). "
                      "rcept_no 는 그 값이 실린 보고서. 다음 분기 보고서는 분기 말에서 45일 안, 사업보고서는 90일 안에 나온다."}
+    # 중앙값보다 높은지 낮은지는 코드가 정해 준다 (평가 10판 오리온: 386.69% 를 중앙값 133.47% 보다 '낮다'고 씀)
+    latest_balance, median = out["balance"]["latest"], out["market_median"]
+    compare = {}
+    for key, name in (("debt_ratio_pct", "부채비율"), ("current_ratio_pct", "유동비율")):
+        mine, mid = latest_balance.get(key), median.get(key)
+        if mine is not None and mid is not None:
+            compare[name] = f"{mine}% — 같은 시장 중앙값 {mid}%보다 " + ("높음" if mine > mid else "낮음" if mine < mid else "같음")
+    out["vs_market_median"] = compare or None
+    if out["vs_market_median"] is None:
+        out.pop("vs_market_median")
     if chosen == "CFS" and basis != "CFS":
         out["basis_note"] = "연결 재무제표 기준입니다. 별도 기준은 basis=OFS 로 다시 부르세요"
     if newest.revenue is None and newest.revenue_ytd is None:

@@ -366,7 +366,9 @@ def financials(found: dict) -> dict:
     if latest:
         before = next((q for q in quarters if q.get("fiscal_year") == latest["fiscal_year"] - 1 and q.get("quarter") == latest["quarter"]), None)
     return {**found, "latest_quarter": latest, "same_quarter_last_year": before,
-            "note": "latest_quarter 와 same_quarter_last_year 의 금액을 함께 쓴다. 금액은 이미 조·억 원 글이다."}
+            "note": "latest_quarter 와 same_quarter_last_year 의 금액을 함께 쓴다. 금액은 이미 조·억 원 글이다. "
+                    "latest_quarter 에 *_prior_restated 가 있으면 전년 같은 분기 값은 그 값(올해 보고서가 다시 작성한 값)을 쓰고 그렇다고 밝힌다. "
+                    "부채비율·유동비율이 시장 중앙값보다 높은지 낮은지는 vs_market_median 에 적힌 대로 쓴다."}
 
 
 def insiders(found: dict) -> dict:

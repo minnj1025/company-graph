@@ -187,11 +187,21 @@ def load_company(db, company: Company, filings: list[dict], resolver: PartyResol
         loaded.append((doc, relations, contract))
         chains[contract_key(contract)].append((doc, relations, contract))
 
-    # 정정 처리: 같은 계약(계약명·계약일·상대가 같음)의 공시를 접수 순으로 잇는다
+    # 정정 처리: 같은 계약(계약명·계약일·상대가 같음)의 공시를 접수 순으로 잇는다.
+    # 정정이 아닌 공시는 다른 공시를 정정하지 않는다. 같은 날 같은 상대와 맺은 계약이 둘이고 계약명이 비공개면(LS전선 2026-02-10,
+    # 2,363억·2,162억) 열쇠가 같아서, 전에는 두 번째 계약을 첫 번째의 정정으로 이어 한 계약이 사라졌다
     for doc, relations, contract in loaded:
-        chain = chains[contract_key(contract)]
-        position = chain.index((doc, relations, contract))
-        previous = chain[position - 1] if position > 0 else None
+        previous = None
+        if doc.is_correction:
+            open_ = [x for x in chains[contract_key(contract)] if x[0].rcept_no < doc.rcept_no and x[0].is_latest]
+            if len(open_) > 1:   # 같은 열쇠의 계약이 여럿 열려 있으면 금액, 계약 종료일이 같은 것을 고른다
+                for same in (lambda x: x[2].amount == contract.amount, lambda x: x[2].period_end == contract.period_end):
+                    narrowed = [x for x in open_ if same(x)]
+                    if narrowed:
+                        open_ = narrowed
+                        if len(open_) == 1:
+                            break
+            previous = open_[-1] if open_ else None
         if previous is None and doc.is_correction:
             # 정정으로 계약상대가 바뀐 경우(예: ARAMCO → SATORP): 계약명과 계약일이 같고 아직 정정되지 않은 공시가 하나뿐이면 잇는다
             earlier = [x for x in loaded if x[0].rcept_no < doc.rcept_no and x[0].is_latest

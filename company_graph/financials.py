@@ -260,9 +260,18 @@ def quarters(by: dict, divisor: float) -> list[dict]:
             else:
                 values = {k: getattr(row, k) for k in ("revenue", "operating_income", "net_income")}
                 before = {k: getattr(row, f"{k}_prev") for k in ("revenue", "operating_income", "net_income")}
+            prior = by.get((year - 1, report)) if report != "annual" else None
             for key, value in values.items():
                 item[key] = _money(value, divisor)
                 item.update({f"{key}_{k}": v for k, v in _change(value, before[key]).items()})
+                # 증감은 올해 보고서가 적은 전년 값과 견준다. 그 값이 작년 보고서의 값과 다르면(다시 작성) 견준 값을 함께 준다.
+                # 평가 10판 엔켐: 목록의 작년 2분기 -27.3억과 '적자 전환'(다시 작성된 +9.45억 기준)을 섞어 썼다
+                was = getattr(prior, key, None) if prior is not None else None
+                if before[key] is not None and was is not None and abs(was - before[key]) > RESTATED * max(abs(before[key]), 1):
+                    item[f"{key}_prior_restated"] = _money(before[key], divisor)
+            if any(k.endswith("_prior_restated") for k in item):
+                item["prior_restated_note"] = ("이 분기 보고서가 전년 같은 분기 값을 다시 작성해 적었습니다. yoy 는 *_prior_restated 와 견준 것이고, "
+                                               "목록에 있는 작년 분기 값(작년 보고서)과 다릅니다. 둘을 쓰면 어느 보고서의 값인지 밝힙니다")
             item["operating_margin_pct"] = _pct(values["operating_income"], values["revenue"])
             out.append(item)
     return out
