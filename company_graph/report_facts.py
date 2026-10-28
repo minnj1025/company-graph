@@ -65,11 +65,25 @@ def governance(company_id: int, holders: dict, investments: dict, major: dict) -
 
 
 def _side(company_id: int, r: dict, mine: str, theirs: str) -> str:
-    """이 회사 쪽에서 본 역할. 지주회사가 자회사의 일을 자기 이름으로 공시한 것(detail.subsidiary)은 자회사의 일이라고 밝힌다."""
+    """이 회사 쪽에서 본 역할. 모회사가 자회사의 일을 자기 이름으로 공시한 것(detail.subsidiary)은 자회사의 일이라고 밝힌다.
+    공시한 쪽이 이 회사면 '이 회사의 자회사'의 일이고, 상대 회사면 '상대 회사의 자회사'가 상대다 (10판: 둘을 섞어 썼다)."""
     detail = r.get("detail") or {}
+    filer_is_me = (r.get("subject") or {}).get("company_id") == company_id
     if detail.get("subsidiary"):
-        return f"자회사 {detail['subsidiary']}의 일을 이 회사가 대신 공시한 것. 이 회사 자신의 일이 아니다"
-    return mine if (r.get("subject") or {}).get("company_id") == company_id else theirs
+        if filer_is_me:
+            return f"자회사 {detail['subsidiary']}의 일을 이 회사가 대신 공시한 것. 이 회사 자신의 일이 아니다"
+        return f"{theirs} (상대는 {detail['subsidiary']}, 그 모회사 {_name(r.get('subject'))}가 대신 공시)"
+    return mine if filer_is_me else theirs
+
+
+def _proxy_duplicates(rows: list[dict]) -> list[dict]:
+    """모회사가 자회사 대신 낸 공시와 자회사 자신의 공시가 같은 일이면 대신 낸 것을 뺀다 (같은 날, 같은 금액, 같은 이름).
+    10판: SNT다이내믹스의 계약을 SNT홀딩스도 공시해 한 계약을 두 번 셌다."""
+    def key(r: dict) -> tuple:
+        detail = r.get("detail") or {}
+        return (r.get("as_of_date"), r.get("value"), re.sub(r"\W", "", detail.get("title") or ""), _name(r.get("object")) if not detail.get("title") else "")
+    own = {key(r) for r in rows if not (r.get("detail") or {}).get("subsidiary")}
+    return [r for r in rows if not ((r.get("detail") or {}).get("subsidiary") and key(r) in own)]
 
 
 def _amount_text(cell: str) -> str:
@@ -95,28 +109,50 @@ def _receipts(r: dict) -> str:
     return ", ".join(value) if isinstance(value, list) else str(value or "")
 
 
+def _filings(r: dict) -> dict:
+    """정정 사슬(report.chains 가 붙임): 처음 공시일, 마지막 정정일, 기간 안의 정정 공시 수."""
+    chain = r.get("chain") or {}
+    out = {"first_filed": chain.get("first_filed") or r.get("disclosed_date")}
+    if chain.get("last_filed") and chain["last_filed"] != out["first_filed"]:
+        out["last_corrected"] = chain["last_filed"]
+    if chain.get("corrections_in_window"):
+        out["correction_filings_in_period"] = chain["corrections_in_window"]
+    return out
+
+
 def _contract(company_id: int, r: dict) -> dict:
     detail = r.get("detail") or {}
     seller = (r.get("subject") or {}).get("company_id") == company_id
+    counterparty = _name(r.get("object") if seller else r.get("subject"))
+    if not seller and detail.get("subsidiary"):   # 상대 회사가 자기 자회사의 계약을 대신 공시했다: 상대는 그 자회사
+        counterparty = detail["subsidiary"]
     item = {"role": _side(company_id, r, "이 회사가 판(수주한) 계약 — 이 회사가 공시", "이 회사가 산(발주한) 계약 — 상대 회사가 공시"),
-            "counterparty": _name(r.get("object") if seller else r.get("subject")),
-            "amount": won(r.get("value")), "contract_date": r.get("as_of_date"), "filed": r.get("disclosed_date"),
+            "counterparty": counterparty,
+            "amount": won(r.get("value")), "contract_date": r.get("as_of_date"), **_filings(r),
             "title": detail.get("title"), "kind": detail.get("kind"), "period": f"{detail.get('period_start') or ''}~{detail.get('period_end') or ''}",
             "ratio_pct_of_sales": detail.get("ratio_pct"), "rcept_no": r.get("rcept_no")}
     if detail.get("changes"):
-        item["corrected"] = "정정 공시가 있었다. 금액은 정정된 뒤의 값이고 filed 는 마지막 정정의 접수일이다"
+        item["corrected"] = "정정 공시가 있었다. 금액은 정정된 뒤의 값이다"
         item["corrections"] = corrections(detail["changes"])
     return {k: v for k, v in item.items() if v not in (None, "", "~")}
 
 
 def _stake(company_id: int, r: dict, verb: str) -> dict:
     detail = r.get("detail") or {}
+    filer = _name(r.get("subject"))
+    actor = detail.get("subsidiary") or filer   # 자회사의 결정을 모회사가 공시했으면 결정한 쪽은 자회사다 (10판: 한화시스템의 처분을 한화에어로스페이스의 처분으로 씀)
+    # 정정 공시는 이사회결의일을 정정을 결의한 날로 바꿔 적기도 하고, 정정 표와 본문의 날짜가 다르기도 하다(오리온 2026-07-16).
+    # 정정 표에 '정정 후' 결의일이 있으면 그것을 쓴다. 최근 1년의 새 결정인지는 결의일이 아니라 처음 공시일로 가른다(deals)
+    decided = r.get("as_of_date")
+    for row in detail.get("changes") or []:
+        if len(row) >= 3 and "이사회결의일" in str(row[0]) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(row[2]).strip()):
+            decided = str(row[2]).strip()
     return {k: v for k, v in {
         "role": _side(company_id, r, f"이 회사가 다른 회사 지분을 {verb}기로 한 결정 — 이 회사가 공시",
                       f"다른 회사가 이 회사 지분을 {verb}기로 한 결정 — 그 회사가 공시. 이 회사가 {verb}는 것이 아니다"),
-        "verb": verb, "actor": _name(r.get("subject")), "target": _name(r.get("object")), "amount": won(r.get("value")),
+        "verb": verb, "actor": actor, "filed_by": filer if actor != filer else None, "target": _name(r.get("object")), "amount": won(r.get("value")),
         "shares": detail.get("shares"), "pct_after": detail.get("pct_after"),
-        "decided": r.get("as_of_date"), "filed": r.get("disclosed_date"),
+        "decided": decided, **_filings(r),
         "purpose": detail.get("purpose"), "rcept_no": r.get("rcept_no"),
         "corrections": corrections(detail["changes"]) if detail.get("changes") else None}.items() if v not in (None, "", [])}
 
@@ -127,7 +163,7 @@ def _termination(company_id: int, r: dict) -> dict:
     return {k: v for k, v in {
         "role": _side(company_id, r, "이 회사가 판 계약의 해지 — 이 회사가 공시", "이 회사가 산 계약의 해지 — 상대 회사가 공시"),
         "counterparty": _name(r.get("object") if seller else r.get("subject")), "title": detail.get("title"),
-        "amount": won(r.get("value")), "terminated": r.get("as_of_date"), "filed": r.get("disclosed_date"),
+        "amount": won(r.get("value")), "terminated": r.get("as_of_date"), "first_filed": r.get("disclosed_date"),
         "reason": detail.get("reason"), "rcept_no": r.get("rcept_no")}.items() if v not in (None, "")}
 
 
@@ -135,7 +171,7 @@ def deals(company_id: int, supply: dict, acquisitions: dict, disposals: dict, ca
           terminations: dict | None = None, collected_until: str | None = None) -> dict:
     """supply 는 잘리지 않은 전체 목록이어야 한다(조회 도구는 50건에서 자른다).
     계약일(지분 결정은 결의일)이 since 보다 이른 것은 옛 계약·결정의 정정 공시라 따로 둔다 (10판: 이것을 새 것으로 세거나 수를 줄여 썼다)."""
-    rows = supply.get("relations", [])
+    rows = _proxy_duplicates(supply.get("relations", []))
     older = [r for r in rows if (r.get("as_of_date") or "9999") < since]
     rows = [r for r in rows if r not in older]
     contracts = [_contract(company_id, r) for r in rows]
@@ -145,10 +181,12 @@ def deals(company_id: int, supply: dict, acquisitions: dict, disposals: dict, ca
     proxy = [c for c in contracts if c["role"].startswith("자회사")]
     biggest = max(contracts, key=lambda c: raw[id(c)], default=None)
     contracts.sort(key=lambda c: -raw[id(c)])
-    stakes = [_stake(company_id, r, "사") for r in acquisitions.get("relations", [])] + [_stake(company_id, r, "팔") for r in disposals.get("relations", [])]
-    old_stakes = [s for s in stakes if (s.get("decided") or "9999") < since]
-    stakes = sorted((s for s in stakes if s not in old_stakes), key=lambda s: s.get("decided") or s.get("filed") or "", reverse=True)
-    ended = sorted((_termination(company_id, r) for r in (terminations or {}).get("relations", [])), key=lambda e: e.get("filed") or "", reverse=True)
+    stakes = ([_stake(company_id, r, "사") for r in _proxy_duplicates(acquisitions.get("relations", []))]
+              + [_stake(company_id, r, "팔") for r in _proxy_duplicates(disposals.get("relations", []))])
+    # 처음 공시일과 결의일 가운데 이른 날로 가른다: 정정이 결의일을 뒤로 바꿔 적어도(가온전선) 처음 공시가 1년 전이면 옛 결정이다
+    old_stakes = [s for s in stakes if min(s.get("first_filed") or "9999", s.get("decided") or "9999") < since]
+    stakes = sorted((s for s in stakes if s not in old_stakes), key=lambda s: s.get("decided") or s.get("first_filed") or "", reverse=True)
+    ended = sorted((_termination(company_id, r) for r in (terminations or {}).get("relations", [])), key=lambda e: e.get("first_filed") or "", reverse=True)
     return {
         "note": ROLE_NOTE + " 정정 공시는 corrections 의 '정정 전 → 정정 후' 방향대로 쓴다.",
         "since": since, "collected_until": collected_until,
@@ -156,16 +194,23 @@ def deals(company_id: int, supply: dict, acquisitions: dict, disposals: dict, ca
                     "sold_by_this_company": len(sold), "bought_by_this_company": len(bought), "filed_for_subsidiaries": len(proxy),
                     "sold_total": won(sum(raw[id(c)] for c in sold)), "bought_total": won(sum(raw[id(c)] for c in bought)),
                     "largest_contract": biggest, "terminations": len(ended), "corrections_of_older_contracts": len(older),
+                    "correction_filings_for_older_contracts": sum(max(1, (r.get("chain") or {}).get("corrections_in_window", 0)) for r in older),
                     "stake_decisions": len(stakes), "corrections_of_older_stake_decisions": len(old_stakes),
+                    "correction_filings_for_older_stake_decisions": sum(max(1, s.get("correction_filings_in_period", 0)) for s in old_stakes),
                     "capital_decisions_elsewhere": f"같은 기간 증자·사채·자기주식 같은 자본 결정 {capital_events}건은 '자본 변동과 주주 환원' 항목에 있다" if capital_events else None},
         "contracts": contracts, "stake_decisions": stakes, "terminations": ended,
         "corrections_of_older_stake_decisions": old_stakes,
         "corrections_of_older_contracts": [{"counterparty": _contract(company_id, r).get("counterparty"), "title": (r.get("detail") or {}).get("title"),
-                                            "amount": won(r.get("value")), "contract_date": r.get("as_of_date"),
-                                            "filed": r.get("disclosed_date"), "rcept_no": r.get("rcept_no"),
+                                            "amount": won(r.get("value")), "contract_date": r.get("as_of_date"), **_filings(r),
+                                            "rcept_no": r.get("rcept_no"),
                                             "corrections": corrections((r.get("detail") or {}).get("changes") or []),
                                             "role": "1년보다 오래된 계약을 이 기간에 정정한 공시. 새 계약이 아니다"} for r in older],
     }
+
+
+def _plain(name: str | None) -> str:
+    """'한화시스템㈜', 'LS전선(주)' → '한화시스템', 'LS전선'. 문장 속 회사 이름."""
+    return re.sub(r"\s*(㈜|\(주\)|주식회사)\s*", "", name or "").strip() or (name or "")
 
 
 def _josa(word: str, with_final: str, without_final: str) -> str:
@@ -204,7 +249,7 @@ def _contract_line(c: dict) -> str:
     who = c["role"].split(" — ")[0].replace("이 회사가 판(수주한) 계약", "수주").replace("이 회사가 산(발주한) 계약", "발주(상대 회사가 공시)")
     if c["role"].startswith("자회사"):
         who = "자회사 계약을 대신 공시"
-    parts = [_dates(c.get("contract_date"), "계약", c.get("filed")), who]
+    parts = [_dates(c.get("contract_date"), "계약", c.get("first_filed")) + (f", {c['last_corrected']} 마지막 정정" if c.get("last_corrected") else ""), who]
     if c.get("counterparty") and c["counterparty"].strip("- "):
         parts.append(f"상대 {c['counterparty']}")
     if c.get("title"):
@@ -219,16 +264,27 @@ def _contract_line(c: dict) -> str:
 
 
 def _stake_line(s: dict) -> str:
-    what = f"{_josa(s.get('actor') or '', '이', '가')} {s.get('target')} 지분"
+    what = f"{_josa(_plain(s.get('actor')), '이', '가')} {_plain(s.get('target'))} 지분"
     if s.get("shares"):
         what += f" {_shares(s['shares'])}"
     what = _josa(what, "을", "를") + (f" {s['amount']}에" if s.get("amount") else "")
     what += " 취득하기로 결정" if s.get("verb") == "사" else " 처분하기로 결정"
     if s.get("pct_after") not in (None, ""):
         what += f"(그 뒤 지분율 {s['pct_after']}%)"
-    whose = "이 회사가 공시" if s["role"].startswith("이 회사가") else ("자회사 일을 대신 공시" if s["role"].startswith("자회사") else f"{s.get('actor')}의 공시, 이 회사의 결정이 아님")
-    corrected = ", 정정 공시" if s.get("corrections") else ""
-    return f"{_dates(s.get('decided'), '결의', s.get('filed'))}{corrected} · {what} — {whose} (접수번호 {_receipts(s)})"
+    if s["role"].startswith("이 회사가"):
+        whose = "이 회사의 결정, 이 회사가 공시"
+    elif s["role"].startswith("자회사"):
+        whose = f"자회사의 결정, {_josa(_plain(s.get('filed_by')), '이', '가')} 대신 공시"
+    elif s.get("filed_by"):
+        whose = f"{_plain(s.get('filed_by'))}의 자회사가 한 결정, 이 회사의 결정이 아님"
+    else:
+        whose = f"{s.get('actor')}의 공시, 이 회사의 결정이 아님"
+    later = s.get("decided") and s.get("first_filed") and s["decided"] > s["first_filed"]
+    dates = _dates(s.get("decided"), "결의(정정 후)" if later else "결의", s.get("first_filed"))
+    if s.get("last_corrected"):
+        n = s.get("correction_filings_in_period")
+        dates += f", {s['last_corrected']} 마지막 정정" + (f"(이 기간 정정 {n}번)" if n and n > 1 else "")
+    return f"{dates} · {what} — {whose} (접수번호 {_receipts(s)})"
 
 
 def deals_text(d: dict, shown: int = 8) -> str:
@@ -261,13 +317,14 @@ def deals_text(d: dict, shown: int = 8) -> str:
             amount = f" · 해지금액 {e['amount']}" if e.get("amount") else ""
             title = f" · '{e['title']}'" if e.get("title") else ""
             party = f" · 상대 {e['counterparty']}" if (e.get("counterparty") or "").strip("- ") else ""
-            out.append(f"  - {_dates(e.get('terminated'), '해지', e.get('filed'))}{party}{title}{amount}{reason} (접수번호 {_receipts(e)})")
+            out.append(f"  - {_dates(e.get('terminated'), '해지', e.get('first_filed'))}{party}{title}{amount}{reason} (접수번호 {_receipts(e)})")
     if d["corrections_of_older_contracts"]:
         older = d["corrections_of_older_contracts"]
-        out.append(f"- **옛 계약의 정정 공시 {len(older)}건**: 계약일이 {since}보다 이른 계약을 이 기간에 정정한 공시다. 새 계약이 아니라 위 건수에 넣지 않았다. 금액이 바뀐 것:")
+        filings = s.get("correction_filings_for_older_contracts") or len(older)
+        out.append(f"- **옛 계약의 정정**: 계약일이 {since}보다 이른 계약 {len(older)}건을 이 기간에 정정한 공시 {filings}건. 새 계약이 아니라 위 건수에 넣지 않았다. 금액이 바뀐 것:")
         changed = [o for o in older if _amount_changed(o.get("corrections"))]
         for o in changed[:3]:
-            out.append(f"  - {o.get('contract_date')} 계약 '{o.get('title') or ''}' · {o.get('filed')} 정정 · 계약금액 {_amount_changed(o['corrections'])} (접수번호 {_receipts(o)})")
+            out.append(f"  - {o.get('contract_date')} 계약 '{o.get('title') or ''}' · {o.get('last_corrected') or o.get('first_filed')} 정정 · 계약금액 {_amount_changed(o['corrections'])} (접수번호 {_receipts(o)})")
         if len(changed) > 3:
             out.append(f"  - 계약금액을 바꾼 정정은 모두 {len(changed)}건이다.")
         if not changed:
@@ -277,7 +334,8 @@ def deals_text(d: dict, shown: int = 8) -> str:
         out += [f"  - {_stake_line(x)}" for x in d["stake_decisions"][:shown]]
     if d["corrections_of_older_stake_decisions"]:
         old = d["corrections_of_older_stake_decisions"]
-        out.append(f"- **옛 지분 결정의 정정 공시 {len(old)}건**: 결의일이 {since}보다 이른 결정을 이 기간에 정정한 공시다. 최근 1년의 새 결정이 아니다.")
+        filings = s.get("correction_filings_for_older_stake_decisions") or len(old)
+        out.append(f"- **옛 지분 결정의 정정**: 결의일이 {since}보다 이른 결정 {len(old)}건을 이 기간에 정정한 공시 {filings}건. 최근 1년의 새 결정이 아니다.")
         out += [f"  - {_stake_line(x)}" for x in old[:3]]
     if s.get("capital_decisions_elsewhere"):
         out.append(f"- {s['capital_decisions_elsewhere']}.")

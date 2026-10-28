@@ -295,6 +295,24 @@ def is_cancel(row) -> bool:
     return row.kind == "capital_reduction" and "소각" in text and ("자기주식" in text or "자사주" in text or "이익" in text)
 
 
+# 결정한 날(이사회 결의일, 취득·처분 결정일)이 적힌 칸. 결정 API 는 마지막 정정본만 주므로 report_date 는 마지막 정정일일 수 있다.
+# 유상증자(piicDecsn)에는 이 칸이 없다
+DECIDED = ("bddd", "aq_dd", "dp_dd", "fric_bddd")
+
+
+def decided(row: CapitalEvent) -> date | None:
+    """결정한 날. 옛 결정을 정정한 공시를 '최근 결정'으로 세지 않으려고 쓴다 (평가 10판: 파두 2025-05 사채의 2026-06 정정)."""
+    attrs = row.attrs or {}
+    for key in DECIDED:
+        found = re.search(r"(\d{4})\D+(\d{1,2})\D+(\d{1,2})", str(attrs.get(key) or ""))
+        if found:
+            try:
+                return date(int(found[1]), int(found[2]), int(found[3]))
+            except ValueError:
+                continue
+    return None
+
+
 def events(db, company_id: int, start: date, end: date, kinds: list[str] | None = None) -> list[CapitalEvent]:
     query = select(CapitalEvent).where(CapitalEvent.company_id == company_id, CapitalEvent.report_date >= start,
                                        CapitalEvent.report_date <= end)

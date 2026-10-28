@@ -231,7 +231,8 @@ TOOLS = [
                     "events: 결정마다 접수일, 종류, 주식 수(새 주식, 사채가 전환될 주식, 취득·처분·감자 주식), 결정 전 발행주식총수, 금액(조달액, 사채 권면총액, 취득·처분 예정액), "
                     "전환·교환·처분 가액, 발행주식총수 대비 비율, 방식(공모·사모·제3자배정, 장내매수), 목적, 기간. by_kind: 종류마다 건수와 합계. "
                     "결정이지 실행 결과가 아니다: 실제 납입·전환·취득 결과, 철회는 없다. 자기주식 소각은 감자결정으로 공시한 것만 있다(treasury_cancel). "
-                    "date 는 마지막 정정 공시의 접수일일 수 있다. 2024-01 부터 모았다.",
+                    "date 는 마지막 정정 공시의 접수일일 수 있다. decided 는 결정한 날(이사회 결의일, 취득·처분 결정일. 유상증자는 없음)이다. "
+                    "결정한 날이 조회 시작(since)보다 이른 정정 공시는 by_kind 건수에서 빼고 earlier_decisions_corrected 에 따로 둔다. 2024-01 부터 모았다.",
      "input_schema": {"type": "object", "properties": {
          "company_id": _COMPANY, "as_of": _AS_OF,
          "since": {"type": "string", "description": "시작일 YYYY-MM-DD (기본 2024-01-01, 수집 시작)"},
@@ -994,6 +995,11 @@ def get_insider_trades(db, company_id, as_of, since=None, until=None) -> dict:
 def _event_json(row, unit_name: str = "억원") -> dict:
     from . import capital, financials as fin
     out = {"date": row.report_date.isoformat(), "kind": row.kind, "kind_name": capital.LABELS.get(row.kind, row.kind), "rcept_no": [row.rcept_no]}
+    decided = capital.decided(row)
+    if decided:   # date 는 마지막 정정일일 수 있다. 결정한 날이 그보다 이르면 옛 결정을 정정한 공시다
+        out["decided"] = decided.isoformat()
+        if decided < row.report_date - timedelta(days=31):
+            out["correction_of_earlier_decision"] = True
     if capital.is_cancel(row):
         out["kind_name"], out["treasury_cancel"] = "감자(자기주식 소각)", True
     if row.shares is not None:
@@ -1027,7 +1033,10 @@ def get_capital_events(db, company_id, as_of, since=None, kinds=None) -> dict:
     from . import capital, financials as fin
     company, when = _company(db, company_id), _date(as_of, "as_of", required=True)
     start = _date(since, "since") or capital.SINCE
-    rows = capital.events(db, company.company_id, start, when, kinds)
+    found = capital.events(db, company.company_id, start, when, kinds)
+    # 결정은 그 전인데 정정만 이 기간에 낸 것: 이 기간의 새 결정으로 세지 않는다
+    older = [row for row in found if (capital.decided(row) or row.report_date) < start]
+    rows = [row for row in found if row not in older]
     by_kind = {}
     for row in rows:
         item = by_kind.setdefault(row.kind, {"kind_name": capital.LABELS.get(row.kind, row.kind), "count": 0, "shares": 0, "amount_won": 0})
@@ -1039,6 +1048,7 @@ def get_capital_events(db, company_id, as_of, since=None, kinds=None) -> dict:
         item["amount"] = fin.readable(won / 1e8) if won else None
     return {"company": _brief(company), "from": start.isoformat(), "to": when.isoformat(), "total": len(rows),
             "by_kind": by_kind, "events": [_event_json(r) for r in reversed(rows)][:40], "truncated": len(rows) > 40,
+            **({"earlier_decisions_corrected": [_event_json(r) for r in reversed(older)][:10]} if older else {}),
             "note": capital.NOT_HERE + " shares 는 사채의 경우 전환·행사·교환으로 생길 수 있는 주식 수다."}
 
 

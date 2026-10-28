@@ -75,7 +75,7 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
     invested = clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="equity", direction="out", listed_only=False))
     major = clean(_call(db, "get_major_holders", company_id=company_id, as_of=when))
     events = clean(_call(db, "get_capital_events", company_id=company_id, as_of=when))
-    recent_events = sum(1 for e in events.get("events", []) if e.get("date", "") >= year_ago)
+    recent_events = sum(1 for e in events.get("events", []) if (e.get("decided") or e.get("date", "")) >= year_ago)
     sections = [
         {"key": "business", "title": "사업 구성", "cards": ["revenue"],
          "facts": {"products": clean(_call(db, "get_products", company_id=company_id, as_of=when)),
@@ -87,9 +87,9 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
         {"key": "deals", "title": "최근 1년의 계약과 결정", "cards": ["supply_flow", "timeline"],
          "facts": {"deals": shape.deals(
              company_id,
-             {"relations": full_relations(db, company_id, as_of, "supply_contract", as_of - timedelta(days=365))},
-             clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="stake_acquisition", direction="both", disclosed_from=year_ago)),
-             clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="stake_disposal", direction="both", disclosed_from=year_ago)),
+             {"relations": chains(db, full_relations(db, company_id, as_of, "supply_contract", as_of - timedelta(days=365)), as_of)},
+             {"relations": chains(db, full_relations(db, company_id, as_of, "stake_acquisition", as_of - timedelta(days=365)), as_of)},
+             {"relations": chains(db, full_relations(db, company_id, as_of, "stake_disposal", as_of - timedelta(days=365)), as_of)},
              recent_events, year_ago,
              terminations={"relations": full_relations(db, company_id, as_of, "supply_termination", as_of - timedelta(days=365))},
              collected_until=collected_until(db, as_of))}},
@@ -108,6 +108,32 @@ def full_relations(db, company_id: int, as_of: date, rel_type: str, since: date)
     from . import query
     rows = [e for e in query.relations(db, as_of, company_ids=[company_id], rel_types=[rel_type]) if e["disclosed_date"] >= since]
     return [agent_tools._edge(db, e) for e in sorted(rows, key=lambda e: e["disclosed_date"], reverse=True)]
+
+
+def chains(db, rows: list[dict], as_of: date) -> list[dict]:
+    """관계마다 정정 사슬을 붙인다: 처음 공시일, 마지막 정정일, 최근 1년 안의 정정 공시 수.
+    원장에는 사슬의 마지막 공시만 살아 있어서, 정정이 여러 번이면 한 건으로 보였다 (10판: 엔켐 듀오콤 정정 6번을 1건으로 씀)."""
+    from .db import Document
+    since = as_of - timedelta(days=365)
+    seen: dict[str, Document | None] = {}
+
+    def doc(no: str | None):
+        if no and no not in seen:
+            seen[no] = db.get(Document, no)
+        return seen.get(no) if no else None
+    for row in rows:
+        numbers = row.get("rcept_no")
+        latest = max(numbers) if isinstance(numbers, list) and numbers else numbers
+        filings, current = [], doc(latest)
+        while current is not None and len(filings) < 40 and current.rcept_dt <= as_of:
+            filings.append(current)
+            current = doc(current.corrects_rcept_no)
+        if not filings:
+            continue
+        row["chain"] = {"first_filed": filings[-1].rcept_dt.isoformat(), "first_rcept": filings[-1].rcept_no,
+                        "last_filed": filings[0].rcept_dt.isoformat(),
+                        "corrections_in_window": sum(1 for f in filings if f.is_correction and since <= f.rcept_dt <= as_of)}
+    return rows
 
 
 def collected_until(db, as_of: date) -> str | None:
