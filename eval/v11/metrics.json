@@ -1,0 +1,392 @@
+{
+ "F01": {
+  "A": {
+   "chars": 304,
+   "output_tokens": 969,
+   "has_table": false,
+   "has_views": false,
+   "views": [],
+   "db_subject": 0,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 2,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 265,
+   "output_tokens": 726,
+   "has_table": false,
+   "has_views": false,
+   "views": [],
+   "db_subject": 0,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 1,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  }
+ },
+ "D08": {
+  "A": {
+   "chars": 185,
+   "output_tokens": 661,
+   "has_table": false,
+   "has_views": false,
+   "views": [],
+   "db_subject": 0,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 1,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 390,
+   "output_tokens": 942,
+   "has_table": false,
+   "has_views": false,
+   "views": [],
+   "db_subject": 2,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 1,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  }
+ },
+ "H04": {
+  "A": {
+   "chars": 675,
+   "output_tokens": 1297,
+   "has_table": true,
+   "has_views": false,
+   "views": [],
+   "db_subject": 3,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 2,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 419,
+   "output_tokens": 1301,
+   "has_table": false,
+   "has_views": true,
+   "views": [
+    "holders"
+   ],
+   "db_subject": 0,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 2,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  }
+ },
+ "F15": {
+  "A": {
+   "chars": 816,
+   "output_tokens": 1939,
+   "has_table": true,
+   "has_views": true,
+   "views": [
+    "compare"
+   ],
+   "db_subject": 3,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 2,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 836,
+   "output_tokens": 1930,
+   "has_table": false,
+   "has_views": true,
+   "views": [
+    "compare"
+   ],
+   "db_subject": 2,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 2,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  }
+ },
+ "D14": {
+  "A": {
+   "chars": 686,
+   "output_tokens": 1487,
+   "has_table": true,
+   "has_views": true,
+   "views": [
+    "dilution"
+   ],
+   "db_subject": 3,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 2,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 739,
+   "output_tokens": 1702,
+   "has_table": false,
+   "has_views": true,
+   "views": [
+    "dilution"
+   ],
+   "db_subject": 0,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 2,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  }
+ },
+ "D16": {
+  "A": {
+   "chars": 740,
+   "output_tokens": 1271,
+   "has_table": true,
+   "has_views": true,
+   "views": [
+    "payout"
+   ],
+   "db_subject": 4,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 4,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 601,
+   "output_tokens": 1195,
+   "has_table": false,
+   "has_views": true,
+   "views": [
+    "payout"
+   ],
+   "db_subject": 0,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 4,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  }
+ },
+ "H16": {
+  "A": {
+   "chars": 1175,
+   "output_tokens": 1509,
+   "has_table": true,
+   "has_views": true,
+   "views": [
+    "insiders"
+   ],
+   "db_subject": 0,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 14,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 656,
+   "output_tokens": 1270,
+   "has_table": false,
+   "has_views": true,
+   "views": [
+    "insiders"
+   ],
+   "db_subject": 0,
+   "internal_names": 1,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 5,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  }
+ },
+ "V05": {
+  "A": {
+   "chars": 2850,
+   "output_tokens": 5583,
+   "has_table": true,
+   "has_views": true,
+   "views": [
+    "supply_flow"
+   ],
+   "db_subject": 1,
+   "internal_names": 0,
+   "raw_won": 26,
+   "forbidden": [],
+   "receipts": 23,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 1181,
+   "output_tokens": 3988,
+   "has_table": true,
+   "has_views": true,
+   "views": [
+    "supply_flow"
+   ],
+   "db_subject": 2,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 10,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  }
+ },
+ "F13": {
+  "A": {
+   "chars": 1110,
+   "output_tokens": 1952,
+   "has_table": true,
+   "has_views": true,
+   "views": [
+    "health"
+   ],
+   "db_subject": 3,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 2,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 832,
+   "output_tokens": 1568,
+   "has_table": false,
+   "has_views": true,
+   "views": [
+    "health"
+   ],
+   "db_subject": 0,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 2,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  }
+ },
+ "W1-02": {
+  "A": {
+   "chars": 1131,
+   "output_tokens": 2765,
+   "has_table": true,
+   "has_views": true,
+   "views": [
+    "returns"
+   ],
+   "db_subject": 9,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 1,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 793,
+   "output_tokens": 2947,
+   "has_table": false,
+   "has_views": true,
+   "views": [
+    "returns"
+   ],
+   "db_subject": 0,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 1,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  }
+ },
+ "D18": {
+  "A": {
+   "chars": 735,
+   "output_tokens": 1414,
+   "has_table": false,
+   "has_views": false,
+   "views": [],
+   "db_subject": 2,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 2,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 536,
+   "output_tokens": 1321,
+   "has_table": false,
+   "has_views": false,
+   "views": [],
+   "db_subject": 1,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 1,
+   "ends_with_unknown": true,
+   "cited_not_in_results": []
+  }
+ },
+ "V17": {
+  "A": {
+   "chars": 433,
+   "output_tokens": 954,
+   "has_table": false,
+   "has_views": false,
+   "views": [],
+   "db_subject": 3,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 0,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  },
+  "B": {
+   "chars": 373,
+   "output_tokens": 808,
+   "has_table": false,
+   "has_views": false,
+   "views": [],
+   "db_subject": 1,
+   "internal_names": 0,
+   "raw_won": 0,
+   "forbidden": [],
+   "receipts": 0,
+   "ends_with_unknown": false,
+   "cited_not_in_results": []
+  }
+ }
+}

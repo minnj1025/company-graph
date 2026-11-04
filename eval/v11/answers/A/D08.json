@@ -1,0 +1,59 @@
+{
+ "question": "SK하이닉스 작년 배당성향 몇 %야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "SK하이닉스의 작년(2025 사업연도) 현금배당성향은 **4.9%**(연결 기준)입니다.\n\n- 근거: 2025 사업보고서 (접수번호 20260317000635)\n- 같은 보고서의 2025년 주당 현금배당금은 3,000원(보통주)이고, 현금배당수익률은 0.4%입니다.\n- 참고로 2024년 배당성향은 7.7%였습니다(같은 접수번호).",
+ "followups": [
+  "SK하이닉스의 2025년 주당순이익(EPS)과 배당을 함께 보여줘",
+  "SK하이닉스 2026년 자기주식 취득 결정 내역은?",
+  "SK하이닉스 최근 분기 실적 추이는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK하이닉스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_dividends",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1162
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2033
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260317000635"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 661,
+  "cache_read_input_tokens": 64087,
+  "cache_creation_input_tokens": 22332
+ },
+ "seconds": 7.0,
+ "number": "D08",
+ "source": "v9",
+ "style": "A",
+ "cost_usd": 0.00376
+}

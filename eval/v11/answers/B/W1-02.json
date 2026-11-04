@@ -1,0 +1,117 @@
+{
+ "question": "SK하이닉스 8월부터 주가가 왜 이렇게 많이 올랐어?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "원인은 판단하지 않고, 조회된 사실만 정리합니다. 먼저 짚을 점은 조회 시점(2026-10-08) 기준으로 8월 이후 주가는 누적으로 내린 상태라는 것입니다. 최근 1개월 수익률은 -6.25%이고 3개월은 -23.1%입니다(같은 기간 시장 중앙값은 각각 -2.27%, +2.99%). 종가 기준이며 1주 수익률은 -8.29%입니다.\n\n대신 급등이 몰린 날은 7월 말과 8월 중순이었습니다.\n\n- **7월 31일** 하루 +29.95%였습니다. 같은 날 제주반도체(+29.94%), 삼성전자(+26.81%), 피델릭스(+24.65%)도 함께 올랐고, 모두 D램·낸드 플래시를 파는 종목으로 묶였습니다.\n- **8월 20일** +12.73%였고, 삼성전자(+9.49%), 피델릭스(+6.47%)와 함께 움직였습니다.\n- **9월 7일** +8.26%였고, 삼성전자(+5.68%), 피델릭스(+5.26%)와 함께 움직였습니다.\n- 반면 **8월 6일**에는 -10.37%로 혼자 크게 내렸습니다.\n\n실적 공시는 7월 31일 이후에 나왔습니다. 2026년 2분기 실적은 매출 79조 3,188억 원, 영업이익 60조 5,426억 원(전년 같은 기간 대비 +557.15%)이고, 보고서 접수일은 8월 14일입니다 (20260814003509). 다만 날짜가 이렇게 이어진다는 사실이 원인을 말해 주지는 않습니다. 이 기간에 낸 공급계약 공시는 없습니다.\n\n이 조회에서는 급등 당일의 기사를 확인할 수 없어서, 주가가 움직인 이유를 적을 근거가 없습니다. 실적 전망, 업황, 증권사 의견, 수급은 여기서 모으지 않는 자료입니다.",
+ "followups": [
+  "SK하이닉스 2분기 실적을 전 분기와 비교하면 어떤가?",
+  "SK하이닉스와 삼성전자의 최근 3개월 수익률은 어떻게 다른가?",
+  "SK하이닉스의 최근 자본 변동 결정(증자·자사주 등)이 있었는가?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK하이닉스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1200
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-10-08",
+    "company_id": 2033,
+    "lookback_days": 60,
+    "direction": "up"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1547
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5762
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_contract",
+    "filed_from": "2026-08-01"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1058
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-10-08",
+    "company_id": 2033,
+    "lookback_days": 120,
+    "direction": "both"
+   },
+   "error": null,
+   "total": null,
+   "chars": 7994
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2033
+    ],
+    "also": [
+     3506,
+     3433,
+     2973
+    ],
+    "views": [
+     {
+      "kind": "returns",
+      "company_id": 2033,
+      "as_of": "2026-10-08"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 443
+  }
+ ],
+ "cited": [
+  "20260814003509"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2947,
+  "cache_read_input_tokens": 111783,
+  "cache_creation_input_tokens": 36108
+ },
+ "seconds": 21.5,
+ "number": "W1-02",
+ "source": "v5",
+ "style": "B",
+ "cost_usd": 0.00711
+}
