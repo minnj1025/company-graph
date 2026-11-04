@@ -268,10 +268,12 @@ def quarters(by: dict, divisor: float) -> list[dict]:
                 # 평가 10판 엔켐: 목록의 작년 2분기 -27.3억과 '적자 전환'(다시 작성된 +9.45억 기준)을 섞어 썼다
                 was = getattr(prior, key, None) if prior is not None else None
                 if before[key] is not None and was is not None and abs(was - before[key]) > RESTATED * max(abs(before[key]), 1):
-                    item[f"{key}_prior_restated"] = _money(before[key], divisor)
-            if any(k.endswith("_prior_restated") for k in item):
-                item["prior_restated_note"] = ("이 분기 보고서가 전년 같은 분기 값을 다시 작성해 적었습니다. yoy 는 *_prior_restated 와 견준 것이고, "
-                                               "목록에 있는 작년 분기 값(작년 보고서)과 다릅니다. 둘을 쓰면 어느 보고서의 값인지 밝힙니다")
+                    item[f"{key}_last_year_restated"] = _money(before[key], divisor)
+            if any(k.endswith("_last_year_restated") for k in item):
+                # 평가 10판 씨에스윈드: 2025 2분기 줄에 붙은 '2024 2분기 다시 작성 값'을 2025 2분기의 값으로 읽었다. 어느 분기 값인지 글로 박는다
+                item["last_year_restated_note"] = (f"*_last_year_restated 는 {year - 1}년 {number}분기의 값을 이 줄({year}년 {number}분기)의 보고서가 다시 작성한 것이다. "
+                                                   f"이 줄의 yoy 는 그 값과 견줬다. {year}년 {number}분기 자신의 값이 아니다. "
+                                                   f"목록에 따로 있는 {year - 1}년 {number}분기 줄(그해 보고서의 값)과 다르다")
             item["operating_margin_pct"] = _pct(values["operating_income"], values["revenue"])
             out.append(item)
     return out

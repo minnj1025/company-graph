@@ -29,7 +29,7 @@ def _name(side: dict | None) -> str | None:
 
 
 def governance(company_id: int, holders: dict, investments: dict, major: dict) -> dict:
-    table, others = [], []
+    table, others, other_classes = [], [], []
 
     def receipt(r: dict, table_name: str):
         """두 회사 보고서에 모두 있는 지분이면 그 표의 접수번호만 붙인다 (다른 회사 보고서의 비율에 이 회사 접수번호를 달지 않게)."""
@@ -42,10 +42,14 @@ def governance(company_id: int, holders: dict, investments: dict, major: dict) -
         rcept, pct = receipt(r, "최대주주 현황" if mine else "타법인출자 현황")
         row = {"name": _name(r.get("subject")), "pct": pct, "shares": (r.get("detail") or {}).get("shares"),
                "date": r.get("as_of_date"), "rcept_no": rcept}
+        share_class = (r.get("detail") or {}).get("share_class")
         if not mine:   # 그 회사가 자기 보고서(타법인출자 현황)에 적은 것뿐이다. 이 회사의 최대주주 표에는 없다
             others.append({**row, "role": "다른 회사가 자기 사업보고서(타법인출자 현황)에 이 회사 주식을 가졌다고 적은 것. 최대주주·특수관계인이 아니다"})
+        elif share_class:   # 평가 10판 SK디스커버리: 우선주 비율을 보통주 순위에 섞어 썼다
+            other_classes.append({**row, "share_class": share_class,
+                                  "role": f"이 회사의 최대주주 또는 특수관계인이 가진 {share_class}. 보통주 비율과 섞어 순위를 매기지 않는다"})
         else:
-            table.append({**row, "role": "이 회사의 최대주주 또는 특수관계인 (이 회사 사업보고서의 최대주주 현황)"})
+            table.append({**row, "role": "이 회사의 최대주주 또는 특수관계인 (이 회사 사업보고서의 최대주주 현황, 보통주)"})
     invested = [{"name": _name(r.get("object")), "pct": r.get("value"), "listed": ((r.get("object") or {}).get("market") or "비상장"),
                  "date": r.get("as_of_date"), "rcept_no": r.get("rcept_no"),
                  "role": "이 회사가 지분을 가진 회사 (이 회사 사업보고서의 타법인출자 현황)"} for r in investments.get("relations", [])]
@@ -54,6 +58,7 @@ def governance(company_id: int, holders: dict, investments: dict, major: dict) -
     return {
         "note": ROLE_NOTE + " 지분율은 기준일(date)과 함께 쓴다. 5% 보고의 비율은 대표보고자와 특별관계자를 합친 값이라 최대주주 현황과 다를 수 있다.",
         "largest_holder_table": {"total": holders.get("holder_table_total"), "rows": table[:15]},
+        **({"largest_holder_table_other_share_classes": other_classes[:10]} if other_classes else {}),
         "others_reporting_this_company_shares": others[:8],
         "investments": invested[:15],
         "major_holders_5pct": [{"reporter": h["reporter"], "pct": h["pct"], "date": h["date"], "reason": h.get("reason"), "rcept_no": h["rcept_no"],
@@ -187,6 +192,9 @@ def deals(company_id: int, supply: dict, acquisitions: dict, disposals: dict, ca
     old_stakes = [s for s in stakes if min(s.get("first_filed") or "9999", s.get("decided") or "9999") < since]
     stakes = sorted((s for s in stakes if s not in old_stakes), key=lambda s: s.get("decided") or s.get("first_filed") or "", reverse=True)
     ended = sorted((_termination(company_id, r) for r in (terminations or {}).get("relations", [])), key=lambda e: e.get("first_filed") or "", reverse=True)
+    # 평가 10판 씨에스윈드: 2025-02 해지의 공시 유보를 2025-12 에 푼 정정을 '최근 1년의 해지'로 썼다
+    old_ended = [e for e in ended if (e.get("terminated") or e.get("first_filed") or "9999") < since]
+    ended = [e for e in ended if e not in old_ended]
     return {
         "note": ROLE_NOTE + " 정정 공시는 corrections 의 '정정 전 → 정정 후' 방향대로 쓴다.",
         "since": since, "collected_until": collected_until,
@@ -198,12 +206,13 @@ def deals(company_id: int, supply: dict, acquisitions: dict, disposals: dict, ca
                     "stake_decisions": len(stakes), "corrections_of_older_stake_decisions": len(old_stakes),
                     "correction_filings_for_older_stake_decisions": sum(max(1, s.get("correction_filings_in_period", 0)) for s in old_stakes),
                     "capital_decisions_elsewhere": f"같은 기간 증자·사채·자기주식 같은 자본 결정 {capital_events}건은 '자본 변동과 주주 환원' 항목에 있다" if capital_events else None},
-        "contracts": contracts, "stake_decisions": stakes, "terminations": ended,
+        "contracts": contracts, "stake_decisions": stakes, "terminations": ended, "corrections_of_older_terminations": old_ended,
         "corrections_of_older_stake_decisions": old_stakes,
         "corrections_of_older_contracts": [{"counterparty": _contract(company_id, r).get("counterparty"), "title": (r.get("detail") or {}).get("title"),
                                             "amount": won(r.get("value")), "contract_date": r.get("as_of_date"), **_filings(r),
                                             "rcept_no": r.get("rcept_no"),
                                             "corrections": corrections((r.get("detail") or {}).get("changes") or []),
+                                            "filed_by_this_company": (r.get("subject") or {}).get("company_id") == company_id,
                                             "role": "1년보다 오래된 계약을 이 기간에 정정한 공시. 새 계약이 아니다"} for r in older],
     }
 
@@ -318,17 +327,29 @@ def deals_text(d: dict, shown: int = 8) -> str:
             title = f" · '{e['title']}'" if e.get("title") else ""
             party = f" · 상대 {e['counterparty']}" if (e.get("counterparty") or "").strip("- ") else ""
             out.append(f"  - {_dates(e.get('terminated'), '해지', e.get('first_filed'))}{party}{title}{amount}{reason} (접수번호 {_receipts(e)})")
+    if d.get("corrections_of_older_terminations"):
+        old_ended = d["corrections_of_older_terminations"]
+        out.append(f"- **옛 해지의 정정 {len(old_ended)}건**: 해지일이 {since}보다 이른 해지를 이 기간에 다시 공시하거나 정정한 것이다. 최근 1년의 해지가 아니다.")
+        for e in old_ended[:3]:
+            amount = f" · 해지금액 {e['amount']}" if e.get("amount") else ""
+            party = f" · 상대 {e['counterparty']}" if (e.get("counterparty") or "").strip("- ") else ""
+            out.append(f"  - {e.get('terminated') or '해지일 없음'} 해지 · {e.get('first_filed')} 공시{party}{amount} (접수번호 {_receipts(e)})")
     if d["corrections_of_older_contracts"]:
         older = d["corrections_of_older_contracts"]
-        filings = s.get("correction_filings_for_older_contracts") or len(older)
-        out.append(f"- **옛 계약의 정정**: 계약일이 {since}보다 이른 계약 {len(older)}건을 이 기간에 정정한 공시 {filings}건. 새 계약이 아니라 위 건수에 넣지 않았다. 금액이 바뀐 것:")
+        # 평가 10판 삼성바이오로직스: 상대 회사(삼성E&A)가 낸 정정까지 이 회사의 정정으로 셌다
+        parts = []
+        for mine, who in ((True, "이 회사가 낸 정정"), (False, "상대 회사가 이 회사와의 계약을 정정한 공시")):
+            group = [o for o in older if bool(o.get("filed_by_this_company")) == mine]
+            if group:
+                filings = sum(max(1, o.get("correction_filings_in_period", 0)) for o in group)
+                parts.append(f"{who} {filings}건(계약 {len(group)}개)")
         changed = [o for o in older if _amount_changed(o.get("corrections"))]
+        tail = " 계약금액이 바뀐 계약:" if changed else " 계약금액이 바뀐 계약은 없다."
+        out.append(f"- **옛 계약의 정정**: 계약일이 {since}보다 이른 계약을 이 기간에 정정한 공시 — {', '.join(parts)}. 새 계약이 아니라 위 건수에 넣지 않았다.{tail}")
         for o in changed[:3]:
             out.append(f"  - {o.get('contract_date')} 계약 '{o.get('title') or ''}' · {o.get('last_corrected') or o.get('first_filed')} 정정 · 계약금액 {_amount_changed(o['corrections'])} (접수번호 {_receipts(o)})")
-        if len(changed) > 3:
-            out.append(f"  - 계약금액을 바꾼 정정은 모두 {len(changed)}건이다.")
-        if not changed:
-            out[-1] = out[-1].replace(" 금액이 바뀐 것:", " 계약금액을 바꾼 정정은 없다.")
+        if len(changed) > 3:   # 세는 것은 계약이다. 한 계약의 금액이 여러 번 바뀌었어도 하나로 센다
+            out.append(f"  - 계약금액이 바뀐 계약은 모두 {len(changed)}개다.")
     if d["stake_decisions"]:
         out.append(f"- **다른 회사 지분의 취득·처분 결정 {len(d['stake_decisions'])}건** (결의일 {since} 이후, 결정이지 실행 결과가 아니다):")
         out += [f"  - {_stake_line(x)}" for x in d["stake_decisions"][:shown]]
@@ -367,7 +388,8 @@ def financials(found: dict) -> dict:
         before = next((q for q in quarters if q.get("fiscal_year") == latest["fiscal_year"] - 1 and q.get("quarter") == latest["quarter"]), None)
     return {**found, "latest_quarter": latest, "same_quarter_last_year": before,
             "note": "latest_quarter 와 same_quarter_last_year 의 금액을 함께 쓴다. 금액은 이미 조·억 원 글이다. "
-                    "latest_quarter 에 *_prior_restated 가 있으면 전년 같은 분기 값은 그 값(올해 보고서가 다시 작성한 값)을 쓰고 그렇다고 밝힌다. "
+                    "latest_quarter 에 *_last_year_restated 가 있으면 전년 같은 분기 값은 그 값(올해 보고서가 다시 작성한 값)을 쓰고 그렇다고 밝힌다. "
+                    "다른 줄에 붙은 *_last_year_restated 는 그 줄의 한 해 전 값이다(last_year_restated_note). "
                     "부채비율·유동비율이 시장 중앙값보다 높은지 낮은지는 vs_market_median 에 적힌 대로 쓴다."}
 
 

@@ -942,7 +942,7 @@ def get_financials(db, company_id, as_of, basis=None) -> dict:
     unit = found["unit"]
 
     def words(item: dict) -> dict:
-        return {k: (fin.readable(v, unit) if (k in MONEY or k.endswith("_prior_restated")) and isinstance(v, (int, float)) else v) for k, v in item.items()}
+        return {k: (fin.readable(v, unit) if (k in MONEY or k.endswith("_last_year_restated")) and isinstance(v, (int, float)) else v) for k, v in item.items()}
     balance = {k: words(v) for k, v in found["balance"].items()}
     found.pop("unit")
     return {**found, "quarters": [words(q) for q in found["quarters"]], "years": [words(y) for y in found["years"]],

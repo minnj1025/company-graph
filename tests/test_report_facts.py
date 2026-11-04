@@ -50,7 +50,7 @@ def test_deals_text_counts_all_contracts_and_keeps_dates_apart():
     assert "**공급계약 10건**" in text and "이 회사가 수주한 계약 10건, 합계 5조 5,000억 원" in text
     assert "2026-09-16 계약, 2026-09-17 공시" in text
     assert "나머지 2건" in text
-    assert "옛 계약의 정정**: 계약일이 2025-10-16보다 이른 계약 1건을 이 기간에 정정한 공시 1건" in text
+    assert "옛 계약의 정정**: 계약일이 2025-10-16보다 이른 계약을 이 기간에 정정한 공시 — 이 회사가 낸 정정 1건(계약 1개)" in text
     assert "정정 전 5,425억 원 → 정정 후 5,597억 원" in text
     assert "공급계약 해지 1건" in text and "2026-04-09 해지, 2026-04-10 공시 · 상대 서부광역메트로" in text
     assert "2026-10-08 접수분까지" in text
@@ -74,3 +74,19 @@ def test_subsidiary_decision_names_the_subsidiary_and_drops_parent_duplicate():
     assert "한화시스템이 한화오션 지분 13,281,250주를 1조 7,000억 원에 처분하기로 결정" in text
     assert "자회사의 결정, 한화에어로스페이스가 대신 공시" in text
     assert "2026-03-06 결의, 2026-03-09 공시, 2026-04-03 마지막 정정" in text
+
+
+def test_old_termination_and_counterparty_corrections_are_kept_apart():
+    # 씨에스윈드(10판 K5): 2025-02 해지의 유보 해제 공시를 최근 해지로 썼다. 삼성바이오로직스(K2): 상대 회사의 정정을 이 회사 정정으로 셌다
+    from company_graph.report_facts import deals, deals_text
+    me = {"company_id": 1, "name": "씨에스윈드"}
+    ended = {"relations": [{"subject": me, "object": {"name": "Atlantic Shores"}, "value": 565800000000, "as_of_date": "2025-02-28",
+                            "disclosed_date": "2025-12-30", "rcept_no": ["20251230801114"], "detail": {}}]}
+    theirs = {"subject": {"company_id": 9, "name": "삼성E&A"}, "object": me, "value": 100000000000, "as_of_date": "2023-05-01",
+              "disclosed_date": "2026-03-02", "rcept_no": ["20260302800001"], "detail": {"title": "P5"},
+              "chain": {"first_filed": "2023-05-02", "last_filed": "2026-03-02", "corrections_in_window": 4}}
+    d = deals(1, {"relations": [theirs]}, {"relations": []}, {"relations": []}, 0, "2025-10-16", ended)
+    assert d["summary"]["terminations"] == 0
+    text = deals_text(d)
+    assert "옛 해지의 정정 1건" in text and "2025-02-28 해지" in text
+    assert "상대 회사가 이 회사와의 계약을 정정한 공시 4건(계약 1개)" in text and "이 회사가 낸 정정" not in text
