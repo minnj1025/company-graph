@@ -1,0 +1,1383 @@
+{
+ "company": {
+  "company_id": 1439,
+  "name": "선익시스템",
+  "stock_code": "171090",
+  "market": "코스닥",
+  "group": null
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "선익시스템은 OLED 증착장비를 주력으로 하며, 2026년 2분기 매출이 전년 같은 분기 대비 크게 줄고 영업손실로 돌아섰습니다(접수번호 20260814003806). 2025년 연간은 매출 5,158억 원, 영업이익 1,115억 원으로 흑자였습니다(접수번호 20260320001146). 2026년 6월 말 부채비율은 196.83%로 코스닥 중앙값 55.98%보다 높습니다(접수번호 20260814003806). 최근 1년간 공급계약 5건, 합계 555억 원이 공시됐으며 가장 큰 계약은 Jinan Goerpixel Technology와의 369억 원 건입니다(접수번호 20260930900851). 최근 1개월 주가는 +18.40%로 코스닥 중앙값보다 높았습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "**사업 구성 (반기보고서 2026.06, 접수번호 20260814003806 기준)**\n\n- 매출 구성은 세 줄입니다. 증착장비(해외)가 75.72%, 증착장비(국내)가 15.17%, 기타(상품/서비스)가 9.12%입니다(접수번호 20260814003806). 세 비중을 합하면 100%입니다.\n- 증착장비 두 줄의 제품은 모두 OLED 증착 장비로 표시되어 있습니다. 제품군은 디스플레이 장비이며, 한국표준산업분류 세세분류 코드는 29272입니다.\n- 기타 줄은 상품/서비스이고, 붙은 제품 이름은 없습니다(접수번호 20260814003806). 이 줄의 비중은 9.12%로만 확인되며, 어떤 상품이나 서비스인지는 공시에 나와 있지 않습니다.\n- 사업의 개요에서 회사는 OLED 디스플레이 시장의 확대를 설명하고, OLEDoS(스마트 글라스·XR 기기용 실리콘 기판 OLED)와 페로브스카이트 태양광 분야로 증착 기술을 넓힌다고 적고 있습니다(접수번호 20260814003806). 다만 이는 시장 설명이며, 회사가 해당 분야의 제품을 매출로 판매하고 있다는 내용은 이 항목의 조회 결과에 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2342,
+    "output_tokens": 512,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "선익시스템 매출 구성",
+     "company": {
+      "id": 1439,
+      "name": "선익시스템"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "제품/용역",
+       "segment": "증착장비(국내)",
+       "share_pct": 15.17,
+       "family": "디스플레이 장비"
+      },
+      {
+       "name": "제품/용역",
+       "segment": "증착장비(해외)",
+       "share_pct": 75.72,
+       "family": "디스플레이 장비"
+      },
+      {
+       "name": "상품/서비스",
+       "segment": "기타",
+       "share_pct": 9.12,
+       "family": null
+      }
+     ],
+     "sources": [
+      "20260814003806"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 3줄, 비중 합 100.0%"
+    }
+   ],
+   "sources": [
+    "20260814003806"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "## 실적과 재무 (연결 기준, 2026년 2분기 보고서 기준)\n\n- **최근 분기(2026 2분기)**: 매출 202억 원(전년 같은 분기 대비 -89.35%), 영업손실 -101억 원(적자 전환), 당기순손실 -79.5억 원(적자 전환), 영업이익률 -50.11%입니다 (접수번호 20260814003806).\n- **전년 같은 분기(2025 2분기)**: 매출 1,900억 원, 영업이익 400억 원, 당기순이익 593억 원, 영업이익률 21.03%입니다 (접수번호 20250814001029).\n- **2026 상반기 누적**: 매출 363억 원(전년 동기 대비 -82.35%), 영업손실 -86.7억 원, 당기순손실 -276억 원, 영업이익률 -23.85%입니다 (접수번호 20260814003806).\n- **연간 흐름**: 2025년 연간 매출 5,158억 원, 영업이익 1,115억 원, 당기순이익 965억 원이고 영업이익률은 21.62%입니다 (접수번호 20260320001146). 2024년 연간은 매출 1,129억 원, 영업이익 79.1억 원, 당기순손실 -281억 원입니다 (접수번호 20250723000058).\n- **재무 상태(2026년 6월 말)**: 자산총계 5,244억 원, 부채총계 3,477억 원, 자본총계 1,767억 원입니다. 부채비율은 196.83%로 같은 시장(코스닥) 중앙값 55.98%보다 높고, 유동비율은 126.05%로 중앙값 184.74%보다 낮습니다 (접수번호 20260814003806). 전년 말(2025년 12월 말)의 부채비율은 154.25%, 유동비율은 138.62%였습니다 (접수번호 20260320001146).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3609,
+    "output_tokens": 665,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "선익시스템 실적 추이",
+     "company": {
+      "id": 1439,
+      "name": "선익시스템"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114001955"
+       ],
+       "revenue": 128.6,
+       "revenue_yoy_pct": -37.04,
+       "operating_income": -15.6,
+       "operating_income_yoy": "적자 전환",
+       "net_income": 78.9,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": -12.17
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250723000058",
+        "20241114001955"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 401.5,
+       "revenue_yoy_pct": 84.57,
+       "operating_income": 31.9,
+       "operating_income_yoy_pct": -6.94,
+       "net_income": -273.2,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": 7.93
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250520000023"
+       ],
+       "revenue": 158.9,
+       "revenue_yoy_pct": -8.28,
+       "operating_income": -17.9,
+       "operating_income_yoy": "적자 지속",
+       "net_income": -34.3,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -11.29
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250814001029"
+       ],
+       "revenue": 1900.5,
+       "revenue_yoy_pct": 346.2,
+       "operating_income": 399.6,
+       "operating_income_yoy_pct": 437.2,
+       "net_income": 593.4,
+       "net_income_yoy_pct": 56048.37,
+       "operating_margin_pct": 21.03
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251114000270"
+       ],
+       "revenue": 887.6,
+       "revenue_yoy_pct": 590.42,
+       "operating_income": 198.0,
+       "operating_income_yoy": "흑자 전환",
+       "net_income": 65.7,
+       "net_income_yoy_pct": -16.74,
+       "operating_margin_pct": 22.3
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260320001146",
+        "20251114000270"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 2210.5,
+       "revenue_yoy_pct": 450.61,
+       "operating_income": 535.6,
+       "operating_income_yoy_pct": 1581.36,
+       "net_income": 340.4,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": 24.23
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260515002995"
+       ],
+       "revenue": 161.0,
+       "revenue_yoy_pct": 1.29,
+       "operating_income": 14.7,
+       "operating_income_yoy": "흑자 전환",
+       "net_income": -196.3,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": 9.16
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260814003806"
+       ],
+       "revenue": 202.4,
+       "revenue_yoy_pct": -89.35,
+       "operating_income": -101.4,
+       "operating_income_yoy": "적자 전환",
+       "net_income": -79.5,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": -50.11
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230317000722"
+       ],
+       "revenue": 740.5,
+       "revenue_yoy_pct": 60.19,
+       "operating_income": 44.3,
+       "operating_income_yoy": "흑자 전환",
+       "net_income": -32.4,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": 5.99,
+       "net_margin_pct": -4.37
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240315000938"
+       ],
+       "revenue": 624.1,
+       "revenue_yoy_pct": -15.72,
+       "operating_income": -40.6,
+       "operating_income_yoy": "적자 전환",
+       "net_income": -92.3,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": -6.5,
+       "net_margin_pct": -14.79
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250723000058"
+       ],
+       "revenue": 1129.3,
+       "revenue_yoy_pct": 80.93,
+       "operating_income": 79.1,
+       "operating_income_yoy": "흑자 전환",
+       "net_income": -280.7,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": 7.0,
+       "net_margin_pct": -24.86
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260320001146"
+       ],
+       "revenue": 5157.6,
+       "revenue_yoy_pct": 356.73,
+       "operating_income": 1115.3,
+       "operating_income_yoy_pct": 1310.54,
+       "net_income": 965.2,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": 21.62,
+       "net_margin_pct": 18.71
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260814003806"
+       ],
+       "revenue": 363.4,
+       "revenue_yoy_pct": -82.35,
+       "operating_income": -86.7,
+       "operating_income_yoy": "적자 전환",
+       "net_income": -275.9,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": -23.85,
+       "net_margin_pct": -75.91
+      }
+     ],
+     "sources": [
+      "20241114001955",
+      "20250723000058",
+      "20250520000023",
+      "20250814001029",
+      "20251114000270",
+      "20260320001146",
+      "20260515002995",
+      "20260814003806"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 202억 원, 영업이익 -101억 원, 영업이익 적자 전환"
+    },
+    {
+     "kind": "health",
+     "title": "선익시스템 재무 체력",
+     "company": {
+      "id": 1439,
+      "name": "선익시스템"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 196.83,
+       "median": 55.98,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 126.05,
+       "median": 184.74,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": -23.85,
+       "median": 2.63,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260814003806"
+      ],
+      "total_assets": 5244.0,
+      "total_liabilities": 3477.3,
+      "total_equity": 1766.7,
+      "current_assets": 3800.6,
+      "current_liabilities": 3015.1,
+      "debt_ratio_pct": 196.83,
+      "current_ratio_pct": 126.05
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260320001146"
+      ],
+      "total_assets": 3656.2,
+      "total_liabilities": 2218.2,
+      "total_equity": 1438.1,
+      "current_assets": 2636.8,
+      "current_liabilities": 1902.2,
+      "debt_ratio_pct": 154.25,
+      "current_ratio_pct": 138.62
+     },
+     "market": "코스닥",
+     "sources": [
+      "20241114001955",
+      "20250723000058",
+      "20250520000023",
+      "20250814001029",
+      "20251114000270",
+      "20260320001146",
+      "20260515002995",
+      "20260814003806"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 코스닥 상장사 1811곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 196.83% (시장 중앙값 55.98%), 유동비율 126.05% (시장 중앙값 184.74%), 영업이익률 -23.85% (시장 중앙값 2.63%)"
+    }
+   ],
+   "sources": [
+    "20250723000058",
+    "20250814001029",
+    "20260320001146",
+    "20260814003806"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "**지배 구조와 주주**\n\n- **최대주주와 특수관계인**: 동아엘텍이 최대주주로 보통주 4,506,000주, 지분율 47.13%를 보유합니다(기준일 2025-12-31, 접수번호 20260320001146). 최대주주와 특수관계인 합계는 4,506,240주, 47.13%이며 기초 47.46%에서 줄었습니다(같은 접수번호).\n- **5% 이상 대량보유 보고**: 동아엘텍은 2026-07-06 보고에서 주식매수선택권 행사를 사유로 44.94%를 보고했습니다(접수번호 20260706000235). 국민연금공단은 2026-10-02 보고에서 단순추가취득/처분을 사유로 5.16%를 보고했습니다(접수번호 20261002000150). 대량보유 보고의 비율은 대표보고자와 특별관계자를 합산한 값이라 최대주주 현황의 비율과 다를 수 있습니다.\n- **타법인 출자**: 이 회사가 지분을 가진 회사는 10곳입니다(기준일 2025-12-31, 접수번호 20260320001146). 그중 SUNIC SYSTEM(CHENGDU)과 프라임엔지니어링은 지분율 100%입니다. 나머지는 디에이밸류업신기술투자조합1호 92.0%, 디에이-822 신기술투자조합 제1호 26.23%, 디에이 뷰티 신기술조합 제1호 8.63%, 디에이-세이지 신기술투자조합 제1호 7.3%, 충남 기업성장 벤처펀드 1.5%, (주)휴넷플러스 보통주 1.1%, (주)휴넷플러스 전환우선주 0.2%, 씨엠디엘 0.2%입니다.\n- **이 DB에 없는 항목**: 이 회사를 지분 보유자로 보고한 다른 자의 자료는 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1927,
+    "output_tokens": 688,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "선익시스템 지분 구조도",
+     "company": {
+      "id": 1439,
+      "name": "선익시스템"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": 3385,
+       "name": "동아엘텍",
+       "listed": true,
+       "pct": 48.71,
+       "role": "최대주주",
+       "rcept": "20260316001316",
+       "up": [
+        {
+         "id": null,
+         "name": "박재규",
+         "listed": false,
+         "pct": 14.83
+        },
+        {
+         "id": null,
+         "name": "박진균",
+         "listed": false,
+         "pct": 11.43
+        },
+        {
+         "id": null,
+         "name": "박진철",
+         "listed": false,
+         "pct": 11.43
+        }
+       ]
+      }
+     ],
+     "more_holders": 0,
+     "investees": [
+      {
+       "id": null,
+       "name": "SUNIC SYSTEM(CHENGDU)",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001146"
+      },
+      {
+       "id": 7489,
+       "name": "프라임엔지니어링",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001146"
+      },
+      {
+       "id": null,
+       "name": "디에이밸류업신기술투자조합1호",
+       "listed": false,
+       "pct": 92.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001146"
+      },
+      {
+       "id": null,
+       "name": "디에이-822 신기술투자조합 제1호",
+       "listed": false,
+       "pct": 26.23,
+       "purpose": "단순투자",
+       "rcept": "20260320001146"
+      },
+      {
+       "id": null,
+       "name": "디에이 뷰티 신기술조합 제1호",
+       "listed": false,
+       "pct": 8.63,
+       "purpose": "단순투자",
+       "rcept": "20260320001146"
+      },
+      {
+       "id": null,
+       "name": "디에이-세이지 신기술투자조합 제1호",
+       "listed": false,
+       "pct": 7.3,
+       "purpose": "단순투자",
+       "rcept": "20260320001146"
+      },
+      {
+       "id": null,
+       "name": "충남 기업성장 벤처펀드",
+       "listed": false,
+       "pct": 1.5,
+       "purpose": "단순투자",
+       "rcept": "20260320001146"
+      },
+      {
+       "id": null,
+       "name": "(주)휴넷플러스 - 보통주",
+       "listed": false,
+       "pct": 1.1,
+       "purpose": "단순투자",
+       "rcept": "20260320001146"
+      },
+      {
+       "id": null,
+       "name": "(주)휴넷플러스 - 전환우선주",
+       "listed": false,
+       "pct": 0.2,
+       "purpose": "단순투자",
+       "rcept": "20260320001146"
+      },
+      {
+       "id": 7076,
+       "name": "씨엠디엘",
+       "listed": false,
+       "pct": 0.2,
+       "purpose": "단순투자",
+       "rcept": "20260320001146"
+      }
+     ],
+     "more_investees": 0,
+     "sources": [
+      "20260316001316",
+      "20260320001146"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 1곳(위 1곳 표시), 출자 대상 10곳(위 10곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "선익시스템 주주 분포",
+     "company": {
+      "id": 1439,
+      "name": "선익시스템"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 47.13,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "동아엘텍",
+       "id": 3385,
+       "pct": 44.94,
+       "date": "2026-07-06",
+       "overlap": true
+      },
+      {
+       "name": "국민연금공단",
+       "id": null,
+       "pct": 5.16,
+       "date": "2026-10-02",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 47.71,
+     "sources": [
+      "20260706000235",
+      "20261002000150",
+      "20260310003115",
+      "20260316001316",
+      "20260320001146"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 47.13%, 국민연금공단 5.16%"
+    }
+   ],
+   "sources": [
+    "20260320001146",
+    "20260706000235",
+    "20261002000150"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "- **공급계약 5건** (계약일 2025-10-16 이후): 이 회사가 수주한 계약 5건, 합계 555억 원.\n- **가장 큰 계약**: 2026-01-08 계약·공시, 2026-09-30 마지막 정정 · 수주 · 상대 Jinan Goerpixel Technology Co., Ltd · 'Micro OLED 디스플레이 양산용 증착장비' · 369억 원 · 최근 매출액 대비 32.71% · 정정 공시 있음(정정 뒤 금액) (접수번호 20260930900851)\n- 금액이 큰 순서로 전부:\n  - 2026-01-08 계약·공시, 2026-09-30 마지막 정정 · 수주 · 상대 Jinan Goerpixel Technology Co., Ltd · 'Micro OLED 디스플레이 양산용 증착장비' · 369억 원 · 최근 매출액 대비 32.71% · 정정 공시 있음(정정 뒤 금액) (접수번호 20260930900851)\n  - 2026-02-04 계약, 2026-02-05 공시, 2026-09-15 마지막 정정 · 수주 · 상대 Anhui Hongxi Weixian Technology Co., LTD. · 'Micro OLED 디스플레이 양산용 증착장비' · 185억 원 · 최근 매출액 대비 16.40% · 정정 공시 있음(정정 뒤 금액) (접수번호 20260915900719)\n  - 2026-05-22 계약, 2026-05-26 공시, 2026-06-15 마지막 정정 · 수주 · 상대 LG디스플레이 · 'OLED 디스플레이 대면적 증착장비' · 금액 없음 · 정정 공시 있음(정정 뒤 금액) (접수번호 20260615900232)\n  - 2026-03-26 계약, 2026-03-27 공시, 2026-04-14 마지막 정정 · 수주 · 상대 SeeYA Display Co.,Ltd. · 'Micro OLED 디스플레이 양산용 증착장비' · 금액 없음 · 정정 공시 있음(정정 뒤 금액) (접수번호 20260414900187)\n  - 2026-02-24 계약, 2026-02-25 공시 · 수주 · 상대 Chengdu BOE Display Technology Co., Ltd. · 'OLED 디스플레이 양산용 증착장비' · 금액 없음 · 정정 공시 있음(정정 뒤 금액) (접수번호 20260225900897)\n- **옛 계약의 정정**: 계약일이 2025-10-16보다 이른 계약 11건을 이 기간에 정정한 공시 16건. 새 계약이 아니라 위 건수에 넣지 않았다. 금액이 바뀐 것:\n  - 2024-12-24 계약 'OLED 디스플레이 연구용 증착장비' · 2026-10-15 정정 · 계약금액 정정 전 97.5억 원 → 정정 후 87.8억 원 (접수번호 20261015900525)\n  - 2025-04-03 계약 'OLED 디스플레이 연구용 증착장비' · 2026-06-23 정정 · 계약금액 정정 전 64.6억 원 → 정정 후 71.8억 원 (접수번호 20260623900180)\n  - 2025-04-11 계약 'OLED 디스플레이 연구용 증착장비' · 2026-05-06 정정 · 계약금액 정정 전 47.7억 원 → 정정 후 59.6억 원 (접수번호 20260506900284)\n  - 계약금액을 바꾼 정정은 모두 10건이다.\n- 이 DB의 공급계약·해지 공시는 2026-10-16 접수분까지 모았다. 그 뒤 공시는 여기에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1602,
+    "output_tokens": 116,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "written_by": "code",
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "선익시스템 공급망 흐름",
+     "company": {
+      "id": 1439,
+      "name": "선익시스템"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Chengdu BOE Display Technology Co.,Ltd",
+        "listed": false
+       },
+       "amount": 379778374800,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Jinan Goerpixel Technology Co., Ltd",
+        "listed": false
+       },
+       "amount": 36940339800,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Beijing BOE CHUANGYUAN Technology Co., Ltd",
+        "listed": false
+       },
+       "amount": 30980250000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "SeeYA Display Co.,Ltd.",
+        "listed": false
+       },
+       "amount": 28399018500,
+       "count": 2
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Anhui Hongxi Weixian Technology Co., LTD.",
+        "listed": false
+       },
+       "amount": 18518220000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Shaanxi Lighte Optoelectronics Material Co.,Ltd",
+        "listed": false
+       },
+       "amount": 14368365000,
+       "count": 2
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Jiangsu Hantang International Trade Group Corp.,Ltd",
+        "listed": false
+       },
+       "amount": 13705560000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "비공개 상대",
+        "listed": false
+       },
+       "amount": 11638260000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Merck Performance Materials Ltd.",
+        "listed": false
+       },
+       "amount": 8775000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": 1877,
+        "name": "에스에프씨",
+        "listed": false
+       },
+       "amount": 7180000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "듀폰스페셜티머터리얼스코리아 유한회사",
+        "listed": false
+       },
+       "amount": 5962000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "CHINA STAR OPTOELECTRONICS TECHNOLOGY CO., LTD",
+        "listed": false
+       },
+       "amount": 5744604300,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Chengdu BOE Display Technology Co., Ltd.",
+        "listed": false
+       },
+       "amount": 0,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1439,
+        "name": "선익시스템",
+        "listed": true
+       },
+       "to": {
+        "id": 3205,
+        "name": "LG디스플레이",
+        "listed": true
+       },
+       "amount": 0,
+       "count": 1
+      }
+     ],
+     "more": 0,
+     "sources": [
+      "20251230900673",
+      "20251230900748",
+      "20251230900757",
+      "20251230900764",
+      "20251230900778",
+      "20260123900573",
+      "20260130901425",
+      "20260225900897",
+      "20260414900187",
+      "20260506900284",
+      "20260601901723",
+      "20260615900232",
+      "20260623900180",
+      "20260915900719",
+      "20260930900851",
+      "20261015900525"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 16건, 상대 14쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "선익시스템 공시 타임라인",
+     "company": {
+      "id": 1439,
+      "name": "선익시스템"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-11-27",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "에스에프씨 주식회사",
+       "title": "OLED 디스플레이 연구용 증착장비",
+       "amount": 7180000000.0,
+       "superseded": true,
+       "rcept": "20251127900455"
+      },
+      {
+       "date": "2025-12-08",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "-",
+       "title": "에너지산업용 증착장비 공급계약",
+       "amount": 11638260000.0,
+       "superseded": true,
+       "rcept": "20251208900126"
+      },
+      {
+       "date": "2025-12-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "에스에프씨 주식회사",
+       "title": "OLED 디스플레이 연구용 증착장비",
+       "amount": 6462000000.0,
+       "superseded": true,
+       "rcept": "20251230900604"
+      },
+      {
+       "date": "2025-12-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "SeeYA Display Co.,Ltd.",
+       "title": "Micro OLED 디스플레이 양산용 증착장비",
+       "amount": 28399018500.0,
+       "superseded": false,
+       "rcept": "20251230900673"
+      },
+      {
+       "date": "2025-12-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Jiangsu Hantang International Trade Group Corp.,Ltd",
+       "title": "Micro OLED 디스플레이 양산용 증착장비",
+       "amount": 13705560000.0,
+       "superseded": false,
+       "rcept": "20251230900748"
+      },
+      {
+       "date": "2025-12-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Shaanxi Lighte Optoelectronics Material Co.,Ltd",
+       "title": "OLED 디스플레이 연구용 증착장비",
+       "amount": 7200765000.0,
+       "superseded": false,
+       "rcept": "20251230900757"
+      },
+      {
+       "date": "2025-12-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "Shaanxi Lighte Optoelectronics Material Co.,Ltd",
+       "title": "OLED 디스플레이 연구용 증착장비",
+       "amount": 7167600000.0,
+       "superseded": false,
+       "rcept": "20251230900764"
+      },
+      {
+       "date": "2025-12-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "CHINA STAR OPTOELECTRONICS TECHNOLOGY CO., LTD",
+       "title": "디스플레이용 연구장비",
+       "amount": 5744604300.0,
+       "superseded": false,
+       "rcept": "20251230900778"
+      },
+      {
+       "date": "2026-01-08",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Jinan Goerpixel Technology Co., Ltd",
+       "title": "Micro OLED 디스플레이 양산용 증착장비",
+       "amount": 41044822000.0,
+       "superseded": true,
+       "rcept": "20260108900152"
+      },
+      {
+       "date": "2026-01-23",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Beijing BOE CHUANGYUAN Technology Co., Ltd",
+       "title": "Micro OLED 디스플레이 양산용 증착장비",
+       "amount": 30980250000.0,
+       "superseded": false,
+       "rcept": "20260123900573"
+      },
+      {
+       "date": "2026-01-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "듀폰스페셜티머터리얼스코리아 유한회사",
+       "title": "OLED 디스플레이 연구용 증착장비",
+       "amount": 4769600000.0,
+       "superseded": true,
+       "rcept": "20260130901251"
+      },
+      {
+       "date": "2026-01-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Chengdu BOE Display Technology Co.,Ltd",
+       "title": "OLED 디스플레이 양산용 증착장비",
+       "amount": 379778374800.0,
+       "superseded": false,
+       "rcept": "20260130901425"
+      },
+      {
+       "date": "2026-02-02",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Merck Performance Materials Ltd.",
+       "title": "OLED 디스플레이 연구용 증착장비",
+       "amount": 9750000000.0,
+       "superseded": true,
+       "rcept": "20260202901050"
+      },
+      {
+       "date": "2026-02-05",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Anhui Hongxi Weixian Technology Co., LTD.",
+       "title": "Micro OLED 디스플레이 양산용 증착장비",
+       "amount": 20575800000.0,
+       "superseded": true,
+       "rcept": "20260205900122"
+      },
+      {
+       "date": "2026-02-19",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Jinan Goerpixel Technology Co., Ltd",
+       "title": "Micro OLED 디스플레이 양산용 증착장비",
+       "amount": 41044822000.0,
+       "superseded": true,
+       "rcept": "20260219900167"
+      },
+      {
+       "date": "2026-02-25",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Chengdu BOE Display Technology Co., Ltd.",
+       "title": "OLED 디스플레이 양산용 증착장비",
+       "amount": null,
+       "superseded": true,
+       "rcept": "20260225900560"
+      },
+      {
+       "date": "2026-02-25",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Chengdu BOE Display Technology Co., Ltd.",
+       "title": "OLED 디스플레이 양산용 증착장비",
+       "amount": null,
+       "superseded": false,
+       "rcept": "20260225900897"
+      },
+      {
+       "date": "2026-03-27",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "SeeYA Display Co.,Ltd.",
+       "title": "Micro OLED 디스플레이 양산용 증착장비",
+       "amount": null,
+       "superseded": true,
+       "rcept": "20260327900456"
+      },
+      {
+       "date": "2026-04-14",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "SeeYA Display Co.,Ltd.",
+       "title": "Micro OLED 디스플레이 양산용 증착장비",
+       "amount": null,
+       "superseded": false,
+       "rcept": "20260414900187"
+      },
+      {
+       "date": "2026-05-06",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "듀폰스페셜티머터리얼스코리아 유한회사",
+       "title": "OLED 디스플레이 연구용 증착장비",
+       "amount": 5962000000.0,
+       "superseded": false,
+       "rcept": "20260506900284"
+      },
+      {
+       "date": "2026-05-26",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "엘지디스플레이 주식회사",
+       "title": "OLED 디스플레이 대면적 증착장비",
+       "amount": null,
+       "superseded": true,
+       "rcept": "20260526900130"
+      },
+      {
+       "date": "2026-06-01",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "-",
+       "title": "에너지산업용 증착장비 공급계약",
+       "amount": 11638260000.0,
+       "superseded": false,
+       "rcept": "20260601901723"
+      },
+      {
+       "date": "2026-06-15",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "엘지디스플레이 주식회사",
+       "title": "OLED 디스플레이 대면적 증착장비",
+       "amount": null,
+       "superseded": false,
+       "rcept": "20260615900232"
+      },
+      {
+       "date": "2026-06-23",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "에스에프씨 주식회사",
+       "title": "OLED 디스플레이 연구용 증착장비",
+       "amount": 7180000000.0,
+       "superseded": false,
+       "rcept": "20260623900180"
+      },
+      {
+       "date": "2026-09-15",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Anhui Hongxi Weixian Technology Co., LTD.",
+       "title": "Micro OLED 디스플레이 양산용 증착장비",
+       "amount": 18518220000.0,
+       "superseded": false,
+       "rcept": "20260915900719"
+      },
+      {
+       "date": "2026-09-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Jinan Goerpixel Technology Co., Ltd",
+       "title": "Micro OLED 디스플레이 양산용 증착장비",
+       "amount": 36940339800.0,
+       "superseded": false,
+       "rcept": "20260930900851"
+      },
+      {
+       "date": "2026-10-15",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Merck Performance Materials Ltd.",
+       "title": "OLED 디스플레이 연구용 증착장비",
+       "amount": 8775000000.0,
+       "superseded": false,
+       "rcept": "20261015900525"
+      }
+     ],
+     "sources": [
+      "20251127900455",
+      "20251208900126",
+      "20251230900604",
+      "20251230900673",
+      "20251230900748",
+      "20251230900757",
+      "20251230900764",
+      "20251230900778",
+      "20260108900152",
+      "20260123900573",
+      "20260130901251",
+      "20260130901425",
+      "20260202901050",
+      "20260205900122",
+      "20260219900167",
+      "20260225900560",
+      "20260225900897",
+      "20260327900456",
+      "20260414900187",
+      "20260506900284",
+      "20260526900130",
+      "20260601901723",
+      "20260615900232",
+      "20260623900180",
+      "20260915900719",
+      "20260930900851",
+      "20261015900525"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 27건"
+    }
+   ],
+   "sources": [
+    "20260225900897",
+    "20260414900187",
+    "20260506900284",
+    "20260615900232",
+    "20260623900180",
+    "20260915900719",
+    "20260930900851",
+    "20261015900525"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "## 자본 변동과 주주 환원\n\n**전환사채(CB) 발행 결정 (접수번호 20240605000268)**: 2024년 6월 4일 결정, 사모 방식으로 420억 원 규모(주식 677,550주, 전환가액 61,988원, 희석 비율 6.66%)를 결정했다. 만기는 2029년 6월 21일이며, 이자율은 0.0%다. 자금 용도는 운영자금이다. 최근 정정 공시 접수일은 2024-06-05다.\n\n**교환사채(EB) 발행 결정 (접수번호 20240604000386)**: 같은 날 사모 교환사채 180억 원(교환 대상 주식 263,983주, 교환가액 68,186원)을 결정했다. 교환 대상은 (주)선익시스템 기명식 보통주이고 만기는 2029년 6월 21일, 이자율은 0.0%다.\n\n**자기주식 처분 결정 (접수번호 20240604000389)**: 위 교환사채 발행을 위해 자기주식 263,983주(180억 원)의 처분을 결정했다.\n\n위 3건은 모두 결정 공시이며, 실제 납입이나 전환·교환 실행 여부는 이 자료에서 확인되지 않는다.\n\n**배당**: 2025 사업연도 보통주 주당 배당금은 1,000원이며, 현금배당 총액은 88.2억 원이다. 배당성향은 연결 기준 9.1%이고, 연결 기준 주당순이익(EPS)은 10,959원이다(접수번호 20260320001146).\n\n**자기주식 취득·소각**: 이 DB에 해당 공시가 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1501,
+    "output_tokens": 583,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "dilution",
+     "title": "선익시스템 희석 이력",
+     "company": {
+      "id": 1439,
+      "name": "선익시스템"
+     },
+     "as_of": "2026-10-16",
+     "from": "2024-01-01",
+     "events": [
+      {
+       "date": "2024-06-04",
+       "kind": "eb",
+       "label": "교환사채",
+       "cancel": false,
+       "shares": 263983,
+       "amount_eok": 180.0,
+       "ratio_pct": 2.71,
+       "pct_of_before": null,
+       "method": "사모",
+       "price": 68186.0,
+       "rcept_no": "20240604000386"
+      },
+      {
+       "date": "2024-06-05",
+       "kind": "cb",
+       "label": "전환사채",
+       "cancel": false,
+       "shares": 677550,
+       "amount_eok": 420.0,
+       "ratio_pct": 6.66,
+       "pct_of_before": null,
+       "method": "사모",
+       "price": 61988.0,
+       "rcept_no": "20240605000268"
+      }
+     ],
+     "sources": [
+      "20240604000386",
+      "20240605000268"
+     ],
+     "notes": [
+      "결정 공시입니다. 실제 납입·발행, 사채의 실제 전환, 철회 여부는 이 자료에 없습니다.",
+      "사채의 주식 수는 전환·행사·교환되면 생길 수 있는 주식 수입니다. 감자 가운데 자기주식 소각은 따로 표시했습니다."
+     ],
+     "summary": "교환사채 1건, 전환사채 1건"
+    },
+    {
+     "kind": "payout",
+     "title": "선익시스템 주주 환원",
+     "company": {
+      "id": 1439,
+      "name": "선익시스템"
+     },
+     "as_of": "2026-10-16",
+     "years": [
+      {
+       "year": 2025,
+       "cash_eok": 88.2,
+       "buyback_eok": 0.0,
+       "dps": 1000.0,
+       "payout_ratio": 9.1
+      }
+     ],
+     "sources": [
+      "20260320001146"
+     ],
+     "notes": [
+      "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
+      "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."
+     ],
+     "summary": "2025 주당 1,000원, 배당성향 9.1%"
+    }
+   ],
+   "sources": [
+    "20240604000386",
+    "20240604000389",
+    "20240605000268",
+    "20260320001146"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "- **최근 1주**(2026-10-08 → 10-16): 종가 기준 **+10.67%**. 같은 코스닥 상장 종목의 중앙값은 **-5.38%**여서 시장 중앙값보다 **16.05%p** 높았습니다. 같은 제품(OLED 증착 장비)을 파는 4개 종목 중앙값은 **-5.49%**입니다.\n- **최근 1개월**(2026-09-16 → 10-16): **+18.40%**. 코스닥 중앙값 **-2.64%**보다 **21.04%p** 높았고, 비교 종목(4개) 중앙값은 **+1.53%**입니다.\n- **최근 3개월**(2026-07-16 → 10-16): **+49.55%**. 코스닥 중앙값 **+0.61%**보다 **48.94%p** 높았고, 비교 종목 중앙값은 **+9.29%**입니다.\n- 비교 기준은 같은 제품을 매출의 10% 이상으로 파는 상장사이며, 그 제품을 파는 곳이 12곳 이하인 좁은 제품 이름만 골랐습니다. 비교 종목은 SFA넥셀, 동아엘텍, 아이씨디, 야스입니다.\n- 위 수익률은 한국거래소 일별 시세를 가공한 과거 사실입니다. 이 자료는 상승의 원인을 설명하지 않으며, 이후 주가 흐름에 대한 판단도 담지 않습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 785,
+    "output_tokens": 525,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "선익시스템 수익률 비교",
+     "company": {
+      "id": 1439,
+      "name": "선익시스템"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": 10.67,
+       "market_median_pct": -5.38,
+       "market": "코스닥",
+       "peers_median_pct": -5.49,
+       "peers_counted": 4,
+       "vs_market_pp": 16.05
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": 18.4,
+       "market_median_pct": -2.64,
+       "market": "코스닥",
+       "peers_median_pct": 1.53,
+       "peers_counted": 4,
+       "vs_market_pp": 21.04
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": 49.55,
+       "market_median_pct": 0.61,
+       "market": "코스닥",
+       "peers_median_pct": 9.29,
+       "peers_counted": 4,
+       "vs_market_pp": 48.94
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "OLED 증착 장비"
+      ],
+      "names": [
+       "SFA넥셀",
+       "동아엘텍",
+       "아이씨디",
+       "야스"
+      ],
+      "total": 4
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 10.67% (시장 -5.38%); 1개월 18.4% (시장 -2.64%); 3개월 49.55% (시장 0.61%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)",
+  "내부자 매매: 조회 시점까지 공시된 것이 없거나 모으지 않음"
+ ],
+ "usage": {
+  "input_tokens": 16300,
+  "output_tokens": 3399,
+  "cache_read_input_tokens": 7483,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 19.1,
+ "cost_usd": 0.0034
+}

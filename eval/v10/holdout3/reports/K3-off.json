@@ -1,0 +1,1315 @@
+{
+ "company": {
+  "company_id": 2747,
+  "name": "두산에너빌리티",
+  "stock_code": "034020",
+  "market": "유가증권",
+  "group": "두산"
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "두산에너빌리티는 2026년 상반기 누적 영업이익이 5,478억 원으로 32.45% 늘었고, 2분기 영업이익률은 6.65%입니다(접수번호 20260814003782). 최대주주 및 특수관계인 합계는 30.68%이며, 두산이 30.39%를 보유합니다(접수번호 20260320001246, 기준일 2025-12-31). 최근 1년 수주 공급계약은 9건, 합계 10조 5,364억 원이며 가장 큰 계약은 Dukovany 5&6 NSSS Contract 4조 9,290억 원입니다(접수번호 20251216801147). 부채비율 136.43%(연결, 2026년 6월 말)는 같은 시장 상장사 중앙값 96.7%보다 높습니다. 주가는 최근 1개월 -22.91%로 같은 시장 중앙값 -3.73%보다 낮았습니다(이 수익률은 지난 기간의 사실이며 원인은 이 자료로 확인할 수 없습니다).",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "- **제품 구성**: 최근 반기보고서(2026.06, 접수번호 20260814003782) 기준 매출 비중은 두산밥캣 52.25%, 두산에너빌리티 45.49%, 두산퓨얼셀 1.92%, 기타(레저 등) 0.34%입니다(접수번호 20260814003782).\n- **두산에너빌리티 부문**: 원전 기자재, 발전 설비, 발전소 건설 등을 다룹니다. 이 부문에 속한 제품은 원전 기자재·발전 설비(발전 설비·원전 제품군)와 발전소 건설(플랜트·설비 공사)입니다(접수번호 20260814003782).\n- **두산밥캣 부문**: 소형 건설기계, 포터블 파워 장비, 지게차 등을 다룹니다(접수번호 20260814003782).\n- **두산퓨얼셀 부문**: 연료전지 기자재 공급과 연료전지 발전소 장기유지보수서비스를 주요 사업으로 합니다(접수번호 20260814003782).\n- **매출 기준**: 보고서에 따르면 2026년 반기 두산에너빌리티 부문 매출액은 4,087,322백만 원, 연결 기준 매출액은 8,985,938백만 원입니다. 이는 반기 누적 값입니다(접수번호 20260814003782).\n- **비중의 범위**: 제품 비중은 표의 한 줄 전체에 대한 비율입니다. 한 줄에 여러 제품이 묶여 있는 경우 개별 제품의 비중은 공시에 나와 있지 않습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2376,
+    "output_tokens": 572,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "두산에너빌리티 매출 구성",
+     "company": {
+      "id": 2747,
+      "name": "두산에너빌리티"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "제품, 공사",
+       "segment": "두산에너빌리티",
+       "share_pct": 45.49,
+       "family": "발전 설비·원전"
+      },
+      {
+       "name": "Compact 건설기계, Portable Power,산업차량 등",
+       "segment": "두산밥캣",
+       "share_pct": 52.25,
+       "family": "건설기계·농기계"
+      },
+      {
+       "name": "제품, 용역",
+       "segment": "두산퓨얼셀",
+       "share_pct": 1.92,
+       "family": "수소·연료전지"
+      },
+      {
+       "name": "레저 등",
+       "segment": "기타",
+       "share_pct": 0.34,
+       "family": null
+      }
+     ],
+     "sources": [
+      "20260814003782"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 4줄, 비중 합 100.0%"
+    }
+   ],
+   "sources": [
+    "20260814003782"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "- **최근 분기(2026년 2분기, 6월 말 기준)**: 매출 4조 7,248억 원(전년 동기 대비 3.41% 증가), 영업이익 3,143억 원(15.92% 증가), 당기순이익 2,264억 원(14.44% 증가), 영업이익률 6.65%입니다 (접수번호 20260814003782). 같은 분기 전년치는 매출 4조 5,690억 원, 영업이익 2,711억 원, 당기순이익 1,978억 원, 영업이익률 5.93%입니다 (접수번호 20250814003907).\n\n- **2026년 상반기 누적**: 매출 8조 9,859억 원(8.04% 증가), 영업이익 5,478억 원(32.45% 증가), 당기순이익 2,866억 원(62.24% 증가)입니다. 영업이익률은 6.1%입니다 (접수번호 20260814003782).\n\n- **연간 흐름**: 2025년 연간 매출은 17조 579억 원(5.08% 증가), 영업이익은 7,627억 원(25.05% 감소), 당기순이익은 2,052억 원(48.02% 감소)입니다 (접수번호 20260320001246). 2024년 연간 영업이익은 1조 176억 원이었습니다 (접수번호 20250320001103).\n\n- **분기 흐름**: 2025년 3분기는 순손실 240억 원, 2026년 1분기는 순이익 602억 원을 기록했습니다. 2026년 1분기 영업이익은 2,335억 원으로 전년 동기 대비 63.9% 늘었습니다 (접수번호 20260514001269).\n\n- **재무 구조(연결, 2026년 6월 말)**: 부채비율은 136.43%, 유동비율은 103.27%입니다 (접수번호 20260814003782). 2025년 말에는 부채비율 129.1%, 유동비율 106.58%였습니다 (접수번호 20260320001246). 같은 시장(유가증권) 상장사 중앙값은 부채비율 96.7%, 유동비율 133.47%이며, 이 DB가 같은 시장 827개사로 계산한 값입니다. 부채비율은 중앙값보다 높고 유동비율은 중앙값보다 낮습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3725,
+    "output_tokens": 792,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "두산에너빌리티 실적 추이",
+     "company": {
+      "id": 2747,
+      "name": "두산에너빌리티"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241112000354"
+       ],
+       "revenue": 33955.7,
+       "revenue_yoy_pct": -18.28,
+       "operating_income": 1147.9,
+       "operating_income_yoy_pct": -63.14,
+       "net_income": -264.7,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": 3.38
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250320001103",
+        "20241112000354"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 45891.3,
+       "revenue_yoy_pct": -5.47,
+       "operating_income": 2349.5,
+       "operating_income_yoy_pct": -20.81,
+       "net_income": -606.6,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": 5.12
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250515002881"
+       ],
+       "revenue": 37485.7,
+       "revenue_yoy_pct": -8.52,
+       "operating_income": 1424.8,
+       "operating_income_yoy_pct": -60.21,
+       "net_income": -211.6,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": 3.8
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250814003907"
+       ],
+       "revenue": 45690.2,
+       "revenue_yoy_pct": 10.08,
+       "operating_income": 2711.1,
+       "operating_income_yoy_pct": -12.49,
+       "net_income": 1978.1,
+       "net_income_yoy_pct": -10.4,
+       "operating_margin_pct": 5.93
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251113001034"
+       ],
+       "revenue": 38803.5,
+       "revenue_yoy_pct": 14.28,
+       "operating_income": 1370.6,
+       "operating_income_yoy_pct": 19.4,
+       "net_income": -240.3,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": 3.53
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260320001246",
+        "20251113001034"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 48599.3,
+       "revenue_yoy_pct": 5.9,
+       "operating_income": 2120.7,
+       "operating_income_yoy_pct": -9.74,
+       "net_income": 525.4,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": 4.36
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260514001269"
+       ],
+       "revenue": 42611.3,
+       "revenue_yoy_pct": 13.67,
+       "operating_income": 2335.1,
+       "operating_income_yoy_pct": 63.9,
+       "net_income": 602.3,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": 5.48
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260814003782"
+       ],
+       "revenue": 47248.1,
+       "revenue_yoy_pct": 3.41,
+       "operating_income": 3142.6,
+       "operating_income_yoy_pct": 15.92,
+       "net_income": 2263.7,
+       "net_income_yoy_pct": 14.44,
+       "operating_margin_pct": 6.65
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230321001573"
+       ],
+       "revenue": 154210.6,
+       "revenue_yoy_pct": 40.31,
+       "operating_income": 11061.2,
+       "operating_income_yoy_pct": 27.23,
+       "net_income": -4531.5,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": 7.17,
+       "net_margin_pct": -2.94
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240327001226"
+       ],
+       "revenue": 175898.9,
+       "revenue_yoy_pct": 14.06,
+       "operating_income": 14673.2,
+       "operating_income_yoy_pct": 32.65,
+       "net_income": 5175.2,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": 8.34,
+       "net_margin_pct": 2.94
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250320001103"
+       ],
+       "revenue": 162330.5,
+       "revenue_yoy_pct": -7.71,
+       "operating_income": 10176.0,
+       "operating_income_yoy_pct": -30.65,
+       "net_income": 3946.9,
+       "net_income_yoy_pct": -23.73,
+       "operating_margin_pct": 6.27,
+       "net_margin_pct": 2.43
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260320001246"
+       ],
+       "revenue": 170578.8,
+       "revenue_yoy_pct": 5.08,
+       "operating_income": 7627.1,
+       "operating_income_yoy_pct": -25.05,
+       "net_income": 2051.6,
+       "net_income_yoy_pct": -48.02,
+       "operating_margin_pct": 4.47,
+       "net_margin_pct": 1.2
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260814003782"
+       ],
+       "revenue": 89859.4,
+       "revenue_yoy_pct": 8.04,
+       "operating_income": 5477.7,
+       "operating_income_yoy_pct": 32.45,
+       "net_income": 2865.9,
+       "net_income_yoy_pct": 62.24,
+       "operating_margin_pct": 6.1,
+       "net_margin_pct": 3.19
+      }
+     ],
+     "sources": [
+      "20241112000354",
+      "20250320001103",
+      "20250515002881",
+      "20250814003907",
+      "20251113001034",
+      "20260320001246",
+      "20260514001269",
+      "20260814003782"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 4조 7,248억 원, 영업이익 3,143억 원, 영업이익 전년 동기 대비 +15.9%"
+    },
+    {
+     "kind": "health",
+     "title": "두산에너빌리티 재무 체력",
+     "company": {
+      "id": 2747,
+      "name": "두산에너빌리티"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 136.43,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 103.27,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 6.1,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260814003782"
+      ],
+      "total_assets": 299477.4,
+      "total_liabilities": 172812.6,
+      "total_equity": 126664.8,
+      "current_assets": 124669.2,
+      "current_liabilities": 120720.3,
+      "debt_ratio_pct": 136.43,
+      "current_ratio_pct": 103.27
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260320001246"
+      ],
+      "total_assets": 275132.2,
+      "total_liabilities": 155038.5,
+      "total_equity": 120093.7,
+      "current_assets": 107717.1,
+      "current_liabilities": 101070.7,
+      "debt_ratio_pct": 129.1,
+      "current_ratio_pct": 106.58
+     },
+     "market": "유가증권",
+     "sources": [
+      "20241112000354",
+      "20250320001103",
+      "20250515002881",
+      "20250814003907",
+      "20251113001034",
+      "20260320001246",
+      "20260514001269",
+      "20260814003782"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 136.43% (시장 중앙값 96.7%), 유동비율 103.27% (시장 중앙값 133.47%), 영업이익률 6.1% (시장 중앙값 5.1%)"
+    }
+   ],
+   "sources": [
+    "20250320001103",
+    "20250814003907",
+    "20260320001246",
+    "20260514001269",
+    "20260814003782"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "- **최대주주 및 특수관계인 합계는 30.68%(196,516,415주, 보통주)**이며, 기초 30.67%에서 소폭 늘었습니다(접수번호 20260320001246). 최대주주 두산은 30.39%(194,690,723주, 기준일 2025-12-31)를 보유합니다(접수번호 20260320001246).\n- 특수관계인으로는 박정원 0.07%, 박지원 0.05%, 박진원 0.04% 등 개인들이 적혀 있으며, 이 중 가장 큰 지분은 박정원입니다. 합계와 개별 지분은 모두 2025-12-31 기준입니다(접수번호 20260320001246).\n- 5% 대량보유 보고 기준으로는 두산이 30.68%(2026-10-01, 계약 내용의 변경 사유, 접수번호 20261001000182), 국민연금공단이 7.63%(2026-07-31, 단순투자목적에서 일반투자목적으로 보유목적 변경, 접수번호 20260731000382)로 보고되어 있습니다. 이 비율은 대표보고자와 특별관계자를 합친 값이라 최대주주 현황 표와 다를 수 있습니다.\n- 이 회사가 지분을 가진 회사는 DB에 45건 있고, 이 중 100% 자회사는 12건입니다(접수번호 20260320001246 기준). 예로 D20 Capital, LLC와 Doosan Enerbility America Holdings Inc. 등이 있습니다.\n- 다른 회사가 자기 사업보고서에 이 회사 주식을 가졌다고 적은 사례는 여러 건 있으나, 이들은 최대주주나 특수관계인이 아닙니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4798,
+    "output_tokens": 609,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "두산에너빌리티 지분 구조도",
+     "company": {
+      "id": 2747,
+      "name": "두산에너빌리티"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": 3778,
+       "name": "두산",
+       "listed": true,
+       "pct": 30.39,
+       "role": "본인",
+       "rcept": "20260320001246",
+       "up": [
+        {
+         "id": null,
+         "name": "박정원",
+         "listed": false,
+         "pct": 7.87
+        },
+        {
+         "id": null,
+         "name": "박지원",
+         "listed": false,
+         "pct": 5.63
+        },
+        {
+         "id": null,
+         "name": "박진원",
+         "listed": false,
+         "pct": 3.72
+        }
+       ]
+      },
+      {
+       "id": null,
+       "name": "박정원",
+       "listed": false,
+       "pct": 0.07,
+       "role": "특수관계인",
+       "rcept": "20260320001246",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "박지원",
+       "listed": false,
+       "pct": 0.05,
+       "role": "특수관계인",
+       "rcept": "20260320001246",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "박진원",
+       "listed": false,
+       "pct": 0.04,
+       "role": "특수관계인",
+       "rcept": "20260320001246",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "박석원",
+       "listed": false,
+       "pct": 0.03,
+       "role": "특수관계인",
+       "rcept": "20260320001246",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "박태원",
+       "listed": false,
+       "pct": 0.03,
+       "role": "특수관계인",
+       "rcept": "20260320001246",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "박인원",
+       "listed": false,
+       "pct": 0.02,
+       "role": "특수관계인",
+       "rcept": "20260320001246",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "박형원",
+       "listed": false,
+       "pct": 0.02,
+       "role": "특수관계인",
+       "rcept": "20260320001246",
+       "up": []
+      }
+     ],
+     "more_holders": 1,
+     "investees": [
+      {
+       "id": 1417,
+       "name": "두산밥캣",
+       "listed": true,
+       "pct": 48.24,
+       "purpose": "경영참여",
+       "rcept": "20260319001265"
+      },
+      {
+       "id": 2591,
+       "name": "두산퓨얼셀",
+       "listed": true,
+       "pct": 30.33,
+       "purpose": "경영참여",
+       "rcept": "20260318001264"
+      },
+      {
+       "id": 2591,
+       "name": "두산퓨얼셀",
+       "listed": true,
+       "pct": 12.47,
+       "purpose": null,
+       "rcept": "20260318001264"
+      },
+      {
+       "id": null,
+       "name": "D20 Capital, LLC",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001246"
+      },
+      {
+       "id": null,
+       "name": "Doosan Enerbility America Holdings Inc.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001246"
+      },
+      {
+       "id": null,
+       "name": "Doosan Enerbility Japan Corp.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001246"
+      },
+      {
+       "id": null,
+       "name": "Doosan GridTech Inc.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001246"
+      },
+      {
+       "id": null,
+       "name": "Doosan Heavy Industries Malaysia Sdn. Bhd",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001246"
+      },
+      {
+       "id": null,
+       "name": "Doosan Heavy Industries Muscat SPC",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001246"
+      },
+      {
+       "id": null,
+       "name": "Doosan Power Systems S.A.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001246"
+      },
+      {
+       "id": null,
+       "name": "Doosan Ukudu Power, LLC.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001246"
+      },
+      {
+       "id": null,
+       "name": "Doosan Water UK Ltd",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260320001246"
+      }
+     ],
+     "more_investees": 28,
+     "sources": [
+      "20260320001246",
+      "20260323000945",
+      "20260319001265",
+      "20260318001264"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 9곳(위 8곳 표시), 출자 대상 40곳(위 12곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "두산에너빌리티 주주 분포",
+     "company": {
+      "id": 2747,
+      "name": "두산에너빌리티"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 30.68,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "두산",
+       "id": 3778,
+       "pct": 30.68,
+       "date": "2026-10-01",
+       "overlap": true
+      },
+      {
+       "name": "국민연금공단",
+       "id": null,
+       "pct": 7.63,
+       "date": "2026-07-31",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 61.69,
+     "sources": [
+      "20261001000182",
+      "20260731000382",
+      "20260320001246",
+      "20260323000945"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 30.68%, 국민연금공단 7.63%"
+    }
+   ],
+   "sources": [
+    "20260320001246",
+    "20260731000382",
+    "20261001000182"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "- **공급계약 19건** (계약일 2025-10-16 이후): 이 회사가 수주한 계약 9건, 합계 10조 5,364억 원; 이 회사가 발주한 계약(상대 회사가 공시) 10건, 합계 6,127억 원.\n- **가장 큰 계약**: 2025-12-15 계약, 2025-12-16 공시 · 수주 · 상대 한국수력원자력 · 'Dukovany 5&6 NSSS Contract' · 4조 9,290억 원 · 최근 매출액 대비 30.36% (접수번호 20251216801147)\n- 금액이 큰 순서로 8건 (나머지 11건은 카드와 접수번호로 볼 수 있다):\n  - 2025-12-15 계약, 2025-12-16 공시 · 수주 · 상대 한국수력원자력 · 'Dukovany 5&6 NSSS Contract' · 4조 9,290억 원 · 최근 매출액 대비 30.36% (접수번호 20251216801147)\n  - 2026-08-20 계약, 2026-08-21 공시 · 수주 · 상대 Jabel Power SAOC · 'Misfah Independent Power Project' · 9,281억 원 · 최근 매출액 대비 5.4% (접수번호 20260821800022)\n  - 2026-09-30 계약, 2026-10-01 공시 · 수주 · 상대 VIETNAM NATIONAL INDUSTRY - ENERGY GROUP (PVN) · 'Engineering, Procurement and Construction (EPC) of O Mon III Combined Cycle Power Plant Construction Project' · 8,380억 원 · 최근 매출액 대비 4.91% (접수번호 20261001800034)\n  - 2026-06-01 계약·공시 · 수주 · 상대 Korea Electric Power Corporation For Power Company · 'Jafurah Phase II Cogeneration Plant' · 8,370억 원 · 최근 매출액 대비 4.9% (접수번호 20260601801277)\n  - 2025-12-15 계약, 2025-12-16 공시 · 수주 · 상대 한국수력원자력 · 'Dukovany 5&6 Turbine Generator Supply Contract' · 7,111억 원 · 최근 매출액 대비 4.38% (접수번호 20251216801163)\n  - 2026-09-01 계약·공시 · 수주 · 상대 한국남부발전 · '하동복합 발전소 일괄 설치조건부 구매' · 6,658억 원 · 최근 매출액 대비 3.9% (접수번호 20260901800387)\n  - 2025-12-31 계약·공시 · 수주 · 상대 ㈜야월해상풍력 · '영광 야월 해상풍력 발전소 설계 구매 시공 (EPC) 계약' · 5,750억 원 · 최근 매출액 대비 3.54% (접수번호 20251231800182)\n  - 2026-06-12 계약, 2026-06-15 공시 · 수주 · 상대 Coastal Power SAOC · 'Duqm Independent Power Project' · 5,289억 원 · 최근 매출액 대비 3.1% (접수번호 20260615800697)\n- **옛 계약의 정정**: 계약일이 2025-10-16보다 이른 계약 14건을 이 기간에 정정한 공시 21건. 새 계약이 아니라 위 건수에 넣지 않았다. 금액이 바뀐 것:\n  - 2023-03-14 계약 '카자흐스탄 Shymkent CCPP(복합화력)' · 2026-10-06 정정 · 계약금액 정정 전 1조 1,522억 원 → 정정 후 - (접수번호 20261006800697)\n  - 2023-12-22 계약 '신한울#3 CVAP 계측기 및 데이터처리장치 개발' · 2026-09-21 정정 · 계약금액 정정 전 64.9억 원 → 정정 후 65.7억 원 (접수번호 20260921800171)\n  - 2023-12-13 계약 '신한울#3,4 DCS 구매' · 2026-09-21 정정 · 계약금액 정정 전 165억 원 → 정정 후 170억 원 (접수번호 20260921900149)\n  - 계약금액을 바꾼 정정은 모두 7건이다.\n- **옛 지분 결정의 정정**: 결의일이 2025-10-16보다 이른 결정 1건을 이 기간에 정정한 공시 1건. 최근 1년의 새 결정이 아니다.\n  - 2025-08-20 결의·공시, 2025-12-19 마지막 정정 · 두산에너빌리티가 Doosan Enerbility Vietnam Co., Ltd. 지분을 3,754억 원에 처분하기로 결정 — 이 회사의 결정, 이 회사가 공시 (접수번호 20251219800511)\n- 같은 기간 증자·사채·자기주식 같은 자본 결정 1건은 '자본 변동과 주주 환원' 항목에 있다.\n- 이 DB의 공급계약·해지 공시는 2026-10-16 접수분까지 모았다. 그 뒤 공시는 여기에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2089,
+    "output_tokens": 95,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "written_by": "code",
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "두산에너빌리티 공급망 흐름",
+     "company": {
+      "id": 2747,
+      "name": "두산에너빌리티"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": 9151,
+        "name": "한국수력원자력",
+        "listed": false
+       },
+       "amount": 5640074367615,
+       "count": 2
+      },
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Jabel Power SAOC",
+        "listed": false
+       },
+       "amount": 928136466540,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "VIETNAM NATIONAL INDUSTRY - ENERGY GROUP (PVN)",
+        "listed": false
+       },
+       "amount": 837970880392,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Korea Electric Power Corporation For Power Company",
+        "listed": false
+       },
+       "amount": 837040384800,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": 9162,
+        "name": "한국남부발전",
+        "listed": false
+       },
+       "amount": 665850000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2251,
+        "name": "한전기술",
+        "listed": true
+       },
+       "to": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "amount": 588231162083,
+       "count": 2
+      },
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "㈜야월해상풍력",
+        "listed": false
+       },
+       "amount": 575000000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": 2143,
+        "name": "한국전력공사",
+        "listed": true
+       },
+       "amount": 536466320000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Coastal Power SAOC",
+        "listed": false
+       },
+       "amount": 528899503720,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "주식회사 정상시티파크",
+        "listed": false
+       },
+       "amount": 523400000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "NWEDC (Nepal Water & Energy Development Co.)",
+        "listed": false
+       },
+       "amount": 403724750000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "to": {
+        "id": 9156,
+        "name": "한국중부발전",
+        "listed": false
+       },
+       "amount": 281600000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3623,
+        "name": "비에이치아이",
+        "listed": true
+       },
+       "to": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "amount": 237594470000,
+       "count": 3
+      },
+      {
+       "from": {
+        "id": 4292,
+        "name": "우원개발",
+        "listed": true
+       },
+       "to": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "amount": 69622000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2832,
+        "name": "우리기술",
+        "listed": true
+       },
+       "to": {
+        "id": 2747,
+        "name": "두산에너빌리티",
+        "listed": true
+       },
+       "amount": 64318867899,
+       "count": 4
+      }
+     ],
+     "more": 7,
+     "sources": [
+      "20251216801147",
+      "20251216801163",
+      "20251231800182",
+      "20260227801276",
+      "20260506800911",
+      "20260601801277",
+      "20260615800697",
+      "20260630801489",
+      "20260821800022",
+      "20260901800387",
+      "20260901800761",
+      "20261001800034",
+      "20261006800697",
+      "20251031900128",
+      "20251209900091",
+      "20251224800396",
+      "20260109800243",
+      "20260324800684",
+      "20260402900833",
+      "20260423900794",
+      "20260423900799",
+      "20260423900802",
+      "20260427900747",
+      "20260605900607",
+      "20260615900304",
+      "20260728800328",
+      "20260811900407",
+      "20260901900178",
+      "20260917800452",
+      "20260917800466",
+      "20260921800171",
+      "20260921900149",
+      "20260921900150"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 33건, 상대 22쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "두산에너빌리티 공시 타임라인",
+     "company": {
+      "id": 2747,
+      "name": "두산에너빌리티"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-12-16",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국수력원자력(주)",
+       "title": "Dukovany 5&6 NSSS Contract",
+       "amount": 4928968079043.0,
+       "superseded": false,
+       "rcept": "20251216801147"
+      },
+      {
+       "date": "2025-12-16",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국수력원자력(주)",
+       "title": "Dukovany 5&6 Turbine Generator Supply Contract",
+       "amount": 711106288572.0,
+       "superseded": false,
+       "rcept": "20251216801163"
+      },
+      {
+       "date": "2025-12-17",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": null,
+       "title": null,
+       "amount": null,
+       "superseded": false,
+       "rcept": "20251217800425"
+      },
+      {
+       "date": "2025-12-19",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정",
+       "counterparty": "Doosan Enerbility Vietnam Co., Ltd.",
+       "title": null,
+       "amount": 375364920836.0,
+       "superseded": false,
+       "rcept": "20251219800511"
+      },
+      {
+       "date": "2025-12-31",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "㈜야월해상풍력",
+       "title": "영광 야월 해상풍력 발전소 설계 구매 시공 (EPC) 계약",
+       "amount": 575000000000.0,
+       "superseded": false,
+       "rcept": "20251231800182"
+      },
+      {
+       "date": "2026-02-27",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "NWEDC (Nepal Water & Energy Development Co.)",
+       "title": "Upper Trishuli-1 Hydroelectric Power Project",
+       "amount": 403724750000.0,
+       "superseded": false,
+       "rcept": "20260227801276"
+      },
+      {
+       "date": "2026-03-06",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": null,
+       "title": null,
+       "amount": null,
+       "superseded": false,
+       "rcept": "20260306801165"
+      },
+      {
+       "date": "2026-05-06",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "주식회사 정상시티파크",
+       "title": "부산광역시 명장공원 공동주택 신축공사",
+       "amount": 523400000000.0,
+       "superseded": false,
+       "rcept": "20260506800911"
+      },
+      {
+       "date": "2026-06-01",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Korea Electric Power Corporation For Power Company",
+       "title": "Jafurah Phase II Cogeneration Plant",
+       "amount": 837040384800.0,
+       "superseded": false,
+       "rcept": "20260601801277"
+      },
+      {
+       "date": "2026-06-15",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Coastal Power SAOC",
+       "title": "Duqm Independent Power Project",
+       "amount": 528899503720.0,
+       "superseded": false,
+       "rcept": "20260615800697"
+      },
+      {
+       "date": "2026-06-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "한국중부발전(주)",
+       "title": "보령신복합발전소 주기기 공급",
+       "amount": 281600000000.0,
+       "superseded": false,
+       "rcept": "20260630801489"
+      },
+      {
+       "date": "2026-08-21",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Jabel Power SAOC",
+       "title": "Misfah Independent Power Project",
+       "amount": 928136466540.0,
+       "superseded": false,
+       "rcept": "20260821800022"
+      },
+      {
+       "date": "2026-09-01",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국남부발전(주)",
+       "title": "하동복합 발전소 일괄 설치조건부 구매",
+       "amount": 665850000000.0,
+       "superseded": false,
+       "rcept": "20260901800387"
+      },
+      {
+       "date": "2026-09-01",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "한국전력공사",
+       "title": "Jafurah Cogeneration Plant Project",
+       "amount": 536466320000.0,
+       "superseded": false,
+       "rcept": "20260901800761"
+      },
+      {
+       "date": "2026-10-01",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "VIETNAM NATIONAL INDUSTRY - ENERGY GROUP (PVN)",
+       "title": "Engineering, Procurement and Construction (EPC) of O Mon III Combined Cycle Power Plant Construction Project",
+       "amount": 837970880392.0,
+       "superseded": false,
+       "rcept": "20261001800034"
+      },
+      {
+       "date": "2026-10-06",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "PGU Turkestan LLP",
+       "title": "카자흐스탄 Shymkent CCPP(복합화력)",
+       "amount": null,
+       "superseded": false,
+       "rcept": "20261006800697"
+      }
+     ],
+     "sources": [
+      "20251216801147",
+      "20251216801163",
+      "20251217800425",
+      "20251219800511",
+      "20251231800182",
+      "20260227801276",
+      "20260306801165",
+      "20260506800911",
+      "20260601801277",
+      "20260615800697",
+      "20260630801489",
+      "20260821800022",
+      "20260901800387",
+      "20260901800761",
+      "20261001800034",
+      "20261006800697"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 16건"
+    }
+   ],
+   "sources": [
+    "20251216801147",
+    "20251216801163",
+    "20251219800511",
+    "20251231800182",
+    "20260601801277",
+    "20260615800697",
+    "20260821800022",
+    "20260901800387",
+    "20260921800171",
+    "20260921900149",
+    "20261001800034",
+    "20261006800697"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "두산에너빌리티의 자본 변동과 주주 환원은 아래 공시 자료에 기록된 범위로 정리합니다.\n\n- **자기주식 취득**: 2026년 3월 31일 결정, 1,383,680주, 1,303억 원 규모의 장내매수를 공시했습니다. 목적은 임직원 주식보상이고, 취득 기간은 2026년 4월 1일부터 6월 30일까지입니다. 정정 공시 접수일이 2026년 4월 13일로 기재되어 있습니다 (접수번호 20260413002228). 자기주식 직접 취득 건이며, 신탁계약 건은 이 자료에 없습니다.\n- **자기주식 소각**: 감자결정으로 공시된 소각 건은 없습니다. 거래소에만 낸 소각 결정과 2024년 1월 이전 결정은 이 DB에 없습니다.\n- **증자·사채 등 자본 변동**: 이 자료에는 결정 공시 외에 실제 납입, 발행, 전환, 행사 결과가 없습니다. 철회 건도 확인되지 않았습니다.\n- **현금배당**: 2023, 2024, 2025 사업연도 모두 보통주 주당 배당금 0원이며, 현금배당이 없었습니다 (사업보고서 배당 표의 값이 비어 있음, 접수번호 20260320001246). 같은 기간 주당순이익(연결)은 2023년 87원, 2024년 174원, 2025년 132원입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1199,
+    "output_tokens": 531,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [],
+   "sources": [
+    "20260320001246",
+    "20260413002228"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "**주가 흐름 (2026-10-16 기준, 최근 거래일 2026-10-16)**\n\n- **1주**(2026-10-08~10-16): -17.18%. 같은 시장(유가증권) 상장 종목 중앙값은 -2.74%로, 시장 대비 -14.44%p 낮았습니다. 같은 제품을 파는 6개사 중앙값은 -7.77%입니다.\n- **1개월**(2026-09-16~10-16): -22.91%. 시장 중앙값은 -3.73%이고, 시장 대비 -19.18%p입니다. 같은 제품군 중앙값은 -17.50%입니다.\n- **3개월**(2026-07-16~10-16): -7.32%. 시장 중앙값은 -0.97%이고, 시장 대비 -6.36%p입니다. 같은 제품군 중앙값은 -1.11%입니다.\n\n비교 대상은 발전 설비, 발전소 건설, 소형 건설기계, 원전 기자재, 지게차, 포터블 파워 장비를 매출의 10% 이상으로 파는 상장사 6곳(GS건설, 대우건설, 두산, 두산밥캣, 삼부토건, 이성씨엔아이)입니다.\n\n이 수익률은 지난 기간의 사실이며, 이 자료만으로는 주가가 움직인 원인을 확인할 수 없습니다. 출처는 한국거래소(KRX) 통계정보의 일별 시세입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 844,
+    "output_tokens": 517,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "두산에너빌리티 수익률 비교",
+     "company": {
+      "id": 2747,
+      "name": "두산에너빌리티"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": -17.18,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": -7.77,
+       "peers_counted": 6,
+       "vs_market_pp": -14.44
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": -22.91,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": -17.5,
+       "peers_counted": 6,
+       "vs_market_pp": -19.18
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": -7.32,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": -1.11,
+       "peers_counted": 6,
+       "vs_market_pp": -6.36
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "발전 설비",
+       "발전소 건설",
+       "소형 건설기계",
+       "원전 기자재",
+       "지게차",
+       "포터블 파워 장비"
+      ],
+      "names": [
+       "GS건설",
+       "대우건설",
+       "두산",
+       "두산밥캣",
+       "삼부토건",
+       "이성씨엔아이"
+      ],
+      "total": 6
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 -17.18% (시장 -2.74%); 1개월 -22.91% (시장 -3.73%); 3개월 -7.32% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)",
+  "내부자 매매: 조회 시점까지 공시된 것이 없거나 모으지 않음"
+ ],
+ "usage": {
+  "input_tokens": 20100,
+  "output_tokens": 3485,
+  "cache_read_input_tokens": 7483,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 15.5,
+ "cost_usd": 0.0038
+}

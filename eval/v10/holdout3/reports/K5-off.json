@@ -1,0 +1,1509 @@
+{
+ "company": {
+  "company_id": 2182,
+  "name": "씨에스윈드",
+  "stock_code": "112610",
+  "market": "유가증권",
+  "group": null
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "씨에스윈드는 풍력타워 제조가 매출의 대부분을 차지하며, 2026년 2분기 매출은 6,864억 원으로 전년 같은 분기보다 5.6% 늘었습니다(접수번호 20260814001500). 같은 분기 영업이익은 860억 원으로 전년 대비 45.16% 증가했다고 공시되었으나, 전년 2분기 값은 이 보고서가 다시 작성한 수치를 썼고 원 보고서 수치와 다릅니다. 2026년 상반기 누적 매출은 1조 3,975억 원으로 9.95% 줄었습니다(접수번호 20260814001500). 2026년 6월 말 기준 부채비율은 161.71%로 유가증권 상장사 중앙값 96.7%보다 높습니다. 최근 1년간 풍력 타워 공급계약 11건(합계 1조 4,065억 원)이 공시되었고, 해지 1건(해지금액 5,658억 원)도 있습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "- **제품 구성 (반기보고서, 접수번호 20260814001500)**: 풍력타워 제조 부문에서 '제품'이 매출의 77.5%, '기타'가 6.4%, '상품'이 0.2%를 차지합니다. 제품군은 풍력이며 표준 분류 코드는 25113(풍력 타워)입니다.\n- **해상풍력 하부구조물**: 해당 부문의 '건설공사'가 매출의 15.8%를 차지하며, 제품군은 풍력이고 분류 코드는 25114(해상풍력 하부구조물)입니다.\n- **주요 고객 비중**: 풍력타워 부문의 주요 고객사(Vestas, SGRE 등)가 2026년 상반기 누적 연결 매출의 70.4%를 차지한다고 공시되어 있습니다(접수번호 20260814001500).\n- **수주 현황 (2026.06 말 기준, 접수번호 20260814001500)**: 풍력타워 부문의 2026년 상반기 수주총액은 645백만 USD, 수주잔고는 1,097백만 USD입니다. 해상풍력 하부구조물 부문의 수주잔고는 17백만 USD이며, 인수 이후 체결된 신규 공급계약은 비밀유지 의무로 공시가 유보되어 현재 잔고에 반영되지 않았습니다.\n- **생산 거점**: 한국 본사를 기반으로 베트남, 미국, 포르투갈, 중국, 터키, 대만에서 풍력타워 생산법인을 운영한다고 공시되어 있습니다(접수번호 20260814001500).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2272,
+    "output_tokens": 575,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "씨에스윈드 매출 구성",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "제품",
+       "segment": "풍력타워 제조",
+       "share_pct": 77.5,
+       "family": "풍력"
+      },
+      {
+       "name": "상품",
+       "segment": "풍력타워 제조",
+       "share_pct": 0.2,
+       "family": null
+      },
+      {
+       "name": "기타",
+       "segment": "풍력타워 제조",
+       "share_pct": 6.4,
+       "family": null
+      },
+      {
+       "name": "건설공사",
+       "segment": "해상풍력 하부구조물",
+       "share_pct": 15.8,
+       "family": "풍력"
+      }
+     ],
+     "sources": [
+      "20260814001500"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 4줄, 비중 합 99.9%"
+    }
+   ],
+   "sources": [
+    "20260814001500"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "씨에스윈드(연결 기준)의 가장 최근 분기인 2026년 2분기(2026-06-30) 매출은 6,864억 원으로 전년 같은 분기보다 5.6% 늘었고, 영업이익은 860억 원(전년 대비 45.16% 증가), 당기순이익은 611억 원(56.9% 증가)입니다(접수번호 20260814001500). 영업이익률은 12.53%입니다.\n\n다만 같은 분기 비교에서 전년 2025년 2분기 값은 이 보고서가 다시 작성한 수치를 썼습니다. 2025년 2분기 보고서(접수번호 20250814003538)에 적힌 영업이익 593억 원, 순이익 389억 원과는 다릅니다. 다시 작성된 전년 값은 영업이익 1,240억 원, 순이익 1,034억 원이고, 증감률은 이 값에 견준 것입니다.\n\n2026년 상반기 누적 매출은 1조 3,975억 원으로 전년 대비 9.95% 줄었고, 영업이익은 1,603억 원(13.09% 감소), 순이익은 1,049억 원(21.91% 감소)입니다(접수번호 20260814001500).\n\n재무 상태는 2026년 6월 말 기준으로 부채비율 161.71%, 유동비율 149.7%입니다. 같은 기간 유가증권시장 상장사 중앙값(827개사 기준)은 부채비율 96.7%, 유동비율 133.47%이므로 두 비율 모두 중앙값보다 높습니다. 2025년 말 부채비율은 167.68%였습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4077,
+    "output_tokens": 572,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "씨에스윈드 실적 추이",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114002176"
+       ],
+       "revenue": 8054.7,
+       "revenue_yoy_pct": 111.69,
+       "operating_income": 1096.5,
+       "operating_income_yoy_pct": 164.65,
+       "net_income": 734.6,
+       "net_income_yoy_pct": 310.62,
+       "operating_margin_pct": 13.61
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250814002092"
+       ],
+       "not_computed": "2024년 1~3분기 값을 다음 해 보고서가 다시 작성해서(사업 분할, 회계 변경 등) 연간에서 빼는 방식으로 4분기를 계산하지 않았습니다"
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250515001027"
+       ],
+       "revenue": 9018.9,
+       "revenue_yoy_pct": 22.42,
+       "operating_income": 1252.1,
+       "operating_income_yoy": "흑자 전환",
+       "operating_income_prior_restated": -134.0,
+       "net_income": 954.5,
+       "net_income_yoy": "흑자 전환",
+       "net_income_prior_restated": -438.0,
+       "prior_restated_note": "이 분기 보고서가 전년 같은 분기 값을 다시 작성해 적었습니다. yoy 는 *_prior_restated 와 견준 것이고, 목록에 있는 작년 분기 값(작년 보고서)과 다릅니다. 둘을 쓰면 어느 보고서의 값인지 밝힙니다",
+       "operating_margin_pct": 13.88
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250814003538"
+       ],
+       "revenue": 6500.0,
+       "revenue_yoy_pct": -24.23,
+       "operating_income": 592.7,
+       "operating_income_yoy_pct": -52.19,
+       "operating_income_prior_restated": 1239.6,
+       "net_income": 389.2,
+       "net_income_yoy_pct": -62.35,
+       "net_income_prior_restated": 1033.8,
+       "prior_restated_note": "이 분기 보고서가 전년 같은 분기 값을 다시 작성해 적었습니다. yoy 는 *_prior_restated 와 견준 것이고, 목록에 있는 작년 분기 값(작년 보고서)과 다릅니다. 둘을 쓰면 어느 보고서의 값인지 밝힙니다",
+       "operating_margin_pct": 9.12
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251114001284"
+       ],
+       "revenue": 5970.2,
+       "revenue_yoy_pct": -25.88,
+       "operating_income": 656.9,
+       "operating_income_yoy_pct": -40.2,
+       "net_income": 579.3,
+       "net_income_yoy_pct": -21.55,
+       "operating_margin_pct": 11.0
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260318001110",
+        "20251114001284"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 7827.4,
+       "revenue_yoy_pct": 16.39,
+       "operating_income": 701.6,
+       "operating_income_yoy_pct": 99.98,
+       "net_income": -1521.6,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": 8.96
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260515001165"
+       ],
+       "revenue": 7111.3,
+       "revenue_yoy_pct": -21.15,
+       "operating_income": 742.9,
+       "operating_income_yoy_pct": -40.67,
+       "net_income": 438.6,
+       "net_income_yoy_pct": -54.05,
+       "operating_margin_pct": 10.45
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260814001500"
+       ],
+       "revenue": 6864.0,
+       "revenue_yoy_pct": 5.6,
+       "operating_income": 860.3,
+       "operating_income_yoy_pct": 45.16,
+       "net_income": 610.6,
+       "net_income_yoy_pct": 56.9,
+       "operating_margin_pct": 12.53
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230831001644"
+       ],
+       "revenue": 13748.9,
+       "revenue_yoy_pct": 15.05,
+       "operating_income": 421.2,
+       "operating_income_yoy_pct": -58.35,
+       "net_income": -98.3,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": 3.06,
+       "net_margin_pct": -0.71
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240318000727"
+       ],
+       "revenue": 15201.6,
+       "revenue_yoy_pct": 10.57,
+       "operating_income": 1046.7,
+       "operating_income_yoy_pct": 148.48,
+       "net_income": 189.4,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": 6.89,
+       "net_margin_pct": 1.25
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250814002092"
+       ],
+       "revenue": 30725.3,
+       "revenue_yoy_pct": 102.12,
+       "operating_income": 2554.8,
+       "operating_income_yoy_pct": 145.19,
+       "net_income": 1436.7,
+       "net_income_yoy_pct": 679.02,
+       "operating_margin_pct": 8.32,
+       "net_margin_pct": 4.68
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260318001110"
+       ],
+       "revenue": 29316.5,
+       "revenue_yoy_pct": -4.59,
+       "operating_income": 3203.2,
+       "operating_income_yoy_pct": 25.38,
+       "net_income": 401.3,
+       "net_income_yoy_pct": -72.07,
+       "operating_margin_pct": 10.93,
+       "net_margin_pct": 1.37
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260814001500"
+       ],
+       "revenue": 13975.2,
+       "revenue_yoy_pct": -9.95,
+       "operating_income": 1603.2,
+       "operating_income_yoy_pct": -13.09,
+       "net_income": 1049.2,
+       "net_income_yoy_pct": -21.91,
+       "operating_margin_pct": 11.47,
+       "net_margin_pct": 7.51
+      }
+     ],
+     "sources": [
+      "20241114002176",
+      "20250814002092",
+      "20250515001027",
+      "20250814003538",
+      "20251114001284",
+      "20260318001110",
+      "20260515001165",
+      "20260814001500"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다.",
+      "분기 값이 나중에 다시 작성된 해는 4분기를 계산하지 않았습니다."
+     ],
+     "summary": "2026 2분기 매출 6,864억 원, 영업이익 860억 원, 영업이익 전년 동기 대비 +45.2%"
+    },
+    {
+     "kind": "health",
+     "title": "씨에스윈드 재무 체력",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 161.71,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 149.7,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 11.47,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260814001500"
+      ],
+      "total_assets": 35056.1,
+      "total_liabilities": 21661.1,
+      "total_equity": 13395.0,
+      "current_assets": 19042.6,
+      "current_liabilities": 12720.8,
+      "debt_ratio_pct": 161.71,
+      "current_ratio_pct": 149.7
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260318001110"
+      ],
+      "total_assets": 32165.9,
+      "total_liabilities": 20149.2,
+      "total_equity": 12016.7,
+      "current_assets": 16413.2,
+      "current_liabilities": 11277.6,
+      "debt_ratio_pct": 167.68,
+      "current_ratio_pct": 145.54
+     },
+     "market": "유가증권",
+     "sources": [
+      "20241114002176",
+      "20250814002092",
+      "20250515001027",
+      "20250814003538",
+      "20251114001284",
+      "20260318001110",
+      "20260515001165",
+      "20260814001500"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 161.71% (시장 중앙값 96.7%), 유동비율 149.7% (시장 중앙값 133.47%), 영업이익률 11.47% (시장 중앙값 5.1%)"
+    }
+   ],
+   "sources": [
+    "20250814003538",
+    "20260814001500"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "## 지배 구조와 주주 (씨에스윈드, 2026-10-16 기준)\n\n- **최대주주 및 특수관계인 합계**: 보통주 기말 기준 39.80%(16,785,740주), 기초 41.40%였다(사업보고서, 기준일 2025-12-31, 접수번호 20260318001110).\n- **최대주주 김성권**: 24.19%(10,202,850주)를 보유한 것으로 사업보고서에 기재되어 있다(기준일 2025-12-31, 접수번호 20260318001110). 특수관계인으로는 김창헌 6.40%, 김승연 4.06%, 이명애 3.57% 등 15명의 이름이 같은 표에 올라 있다.\n- **5% 대량보유 보고**: 김성권은 2026-08-21 주식담보대출계약 연장을 사유로 38.89%를 보고했다(접수번호 20260821000371). 국민연금공단은 2026-10-02 단순추가취득/처분을 사유로 10.95%를 보고했다(접수번호 20261002000374). 대량보유 보고의 비율은 대표보고자와 특별관계자를 합친 값이어서 사업보고서의 최대주주 현황과 기준이 다르다.\n- **타법인 출자**: 사업보고서 기준으로 이 회사가 지분을 가진 회사는 19곳이며, 이 중 15곳은 지분율 100%다(기준일 2025-12-31, 접수번호 20260318001110). 나머지 4곳의 지분율은 이 DB에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3905,
+    "output_tokens": 545,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "씨에스윈드 지분 구조도",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": null,
+       "name": "김성권",
+       "listed": false,
+       "pct": 24.19,
+       "role": "최대주주",
+       "rcept": "20260318001110",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "김창헌",
+       "listed": false,
+       "pct": 6.4,
+       "role": "자녀",
+       "rcept": "20260318001110",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "김승연",
+       "listed": false,
+       "pct": 4.06,
+       "role": "자녀",
+       "rcept": "20260318001110",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "이명애",
+       "listed": false,
+       "pct": 3.57,
+       "role": "배우자",
+       "rcept": "20260318001110",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "이계광",
+       "listed": false,
+       "pct": 0.78,
+       "role": "친인척",
+       "rcept": "20260318001110",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "김현준",
+       "listed": false,
+       "pct": 0.28,
+       "role": "친인척",
+       "rcept": "20260318001110",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "김현석",
+       "listed": false,
+       "pct": 0.11,
+       "role": "친인척",
+       "rcept": "20260318001110",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "김현주",
+       "listed": false,
+       "pct": 0.11,
+       "role": "친인척",
+       "rcept": "20260318001110",
+       "up": []
+      }
+     ],
+     "more_holders": 7,
+     "investees": [
+      {
+       "id": 2181,
+       "name": "씨에스베어링",
+       "listed": true,
+       "pct": 53.69,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CS Wind America Inc.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CS Wind Canada Inc.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CS Wind China Co., Ltd.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CS Wind Denmark ApS",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CS Wind Europe Ltd.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CS Wind Malaysia SDN. BHD",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CS Wind Offshore DK Holding A/S",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CS Wind Taiwan Ltd.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CS Wind Turkey KULE IMALATI AS.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CS Wind Vietnam Co., Ltd.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      },
+      {
+       "id": null,
+       "name": "CSWIND PORTUGAL S.A.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260318001110"
+      }
+     ],
+     "more_investees": 7,
+     "sources": [
+      "20260318001110",
+      "20260318001679"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 15곳(위 8곳 표시), 출자 대상 19곳(위 12곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "씨에스윈드 주주 분포",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 39.8,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "김성권",
+       "id": null,
+       "pct": 38.89,
+       "date": "2026-08-21",
+       "overlap": true
+      },
+      {
+       "name": "국민연금공단",
+       "id": null,
+       "pct": 10.95,
+       "date": "2026-10-02",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 49.25,
+     "sources": [
+      "20260821000371",
+      "20261002000374",
+      "20260318001110"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 39.8%, 국민연금공단 10.95%"
+    }
+   ],
+   "sources": [
+    "20260318001110",
+    "20260821000371",
+    "20261002000374"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "이 기간의 공시는 풍력 타워 공급계약 수주가 대부분이며, 상대는 Vestas 계열과 Siemens Gamesa가 중심입니다. 한 건의 공급계약 해지 공시도 함께 있고, 옛 계약에 대한 정정 공시는 새 계약으로 세지 않았습니다. 자본 결정은 '자본 변동과 주주 환원' 항목에서 보실 수 있습니다.\n\n- **공급계약 11건** (계약일 2025-10-16 이후): 이 회사가 수주한 계약 11건, 합계 1조 4,065억 원.\n- **가장 큰 계약**: 2025-11-12 계약, 2025-11-13 공시 · 수주 · 상대 Vestas American Wind Technology · 'WIND TOWER 공급계약 체결' · 2,902억 원 · 최근 매출액 대비 9.4% (접수번호 20251113800138)\n- 금액이 큰 순서로 8건 (나머지 3건은 카드와 접수번호로 볼 수 있다):\n  - 2025-11-12 계약, 2025-11-13 공시 · 수주 · 상대 Vestas American Wind Technology · 'WIND TOWER 공급계약 체결' · 2,902억 원 · 최근 매출액 대비 9.4% (접수번호 20251113800138)\n  - 2026-07-07 계약·공시 · 수주 · 상대 Vestas American Wind Technology · 'WIND TOWER 공급계약 체결' · 1,902억 원 · 최근 매출액 대비 6.5% (접수번호 20260707800128)\n  - 2025-12-04 계약, 2025-12-05 공시 · 수주 · 상대 Siemens Gamesa Renewable Energy · 'WIND TOWER 공급계약 체결' · 1,796억 원 · 최근 매출액 대비 5.8% (접수번호 20251205800112)\n  - 2026-09-04 계약, 2026-09-07 공시 · 수주 · 상대 Vestas American Wind Technology · 'WIND TOWER 공급계약 체결' · 1,510억 원 · 최근 매출액 대비 5.2% (접수번호 20260907800138)\n  - 2026-02-11 계약, 2026-02-12 공시 · 수주 · 상대 Vestas American Wind Technology · 'WIND TOWER 공급계약 체결' · 1,353억 원 · 최근 매출액 대비 4.4% (접수번호 20260212800142)\n  - 2025-11-05 계약·공시 · 수주 · 상대 Vestas American Wind Technology · 'WIND TOWER 공급계약 체결' · 1,140억 원 · 최근 매출액 대비 3.7% (접수번호 20251105800101)\n  - 2025-12-18 계약, 2025-12-19 공시 · 수주 · 상대 Siemens Gamesa Renewable Energy · 'WIND TOWER 공급계약 체결' · 808억 원 · 최근 매출액 대비 2.6% (접수번호 20251219800141)\n  - 2025-11-07 계약, 2025-11-10 공시 · 수주 · 상대 Vestas Asia Pacific A/S · 'WIND TOWER 공급계약 체결' · 773억 원 · 최근 매출액 대비 2.5% (접수번호 20251110800277)\n- **공급계약 해지 1건**:\n  - 2025-02-28 해지, 2025-12-30 공시 · 상대 Atlantic Shores Offshore Wind Project 1, LLC · '풍력발전기 구조물 공급계약 체결' · 해지금액 5,658억 원 · 사유: 고객사로부터 공급계약 해지 통보서 수령 (접수번호 20251230801114)\n- **옛 계약의 정정**: 계약일이 2025-10-16보다 이른 계약 1건을 이 기간에 정정한 공시 2건. 새 계약이 아니라 위 건수에 넣지 않았다. 계약금액을 바꾼 정정은 없다.\n- 같은 기간 증자·사채·자기주식 같은 자본 결정 3건은 '자본 변동과 주주 환원' 항목에 있다.\n- 이 DB의 공급계약·해지 공시는 2026-10-16 접수분까지 모았다. 그 뒤 공시는 여기에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1640,
+    "output_tokens": 161,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "written_by": "code+lede",
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "씨에스윈드 공급망 흐름",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 2182,
+        "name": "씨에스윈드",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Vestas American Wind Technology",
+        "listed": false
+       },
+       "amount": 1001636923568,
+       "count": 7
+      },
+      {
+       "from": {
+        "id": 2182,
+        "name": "씨에스윈드",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Siemens Gamesa Renewable Energy",
+        "listed": false
+       },
+       "amount": 327603785619,
+       "count": 3
+      },
+      {
+       "from": {
+        "id": 2182,
+        "name": "씨에스윈드",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Vestas Asia Pacific A/S",
+        "listed": false
+       },
+       "amount": 77287733427,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2182,
+        "name": "씨에스윈드",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Anma Offshore Wind Energy Co., Ltd",
+        "listed": false
+       },
+       "amount": 36656731250,
+       "count": 1
+      }
+     ],
+     "more": 0,
+     "sources": [
+      "20251105800101",
+      "20251110800277",
+      "20251113800138",
+      "20251114800258",
+      "20251125800045",
+      "20251205800112",
+      "20251219800141",
+      "20251222800051",
+      "20260212800142",
+      "20260421800625",
+      "20260707800128",
+      "20260907800138"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 12건, 상대 4쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "씨에스윈드 공시 타임라인",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-11-05",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Vestas American Wind Technology",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 113961117889.0,
+       "superseded": false,
+       "rcept": "20251105800101"
+      },
+      {
+       "date": "2025-11-10",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Vestas Asia Pacific A/S",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 77287733427.0,
+       "superseded": false,
+       "rcept": "20251110800277"
+      },
+      {
+       "date": "2025-11-13",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Vestas American Wind Technology",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 290196047887.0,
+       "superseded": false,
+       "rcept": "20251113800138"
+      },
+      {
+       "date": "2025-11-14",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "Siemens Gamesa Renewable Energy",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 67236931648.0,
+       "superseded": false,
+       "rcept": "20251114800258"
+      },
+      {
+       "date": "2025-11-25",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "Vestas American Wind Technology",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 75738349594.0,
+       "superseded": false,
+       "rcept": "20251125800045"
+      },
+      {
+       "date": "2025-12-05",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Siemens Gamesa Renewable Energy",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 179597279396.0,
+       "superseded": false,
+       "rcept": "20251205800112"
+      },
+      {
+       "date": "2025-12-19",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Siemens Gamesa Renewable Energy",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 80769574575.0,
+       "superseded": false,
+       "rcept": "20251219800141"
+      },
+      {
+       "date": "2025-12-22",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "Vestas American Wind Technology",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 45253099252.0,
+       "superseded": false,
+       "rcept": "20251222800051"
+      },
+      {
+       "date": "2025-12-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Atlantic Shores Offshore Wind Project 1, LLC",
+       "title": "풍력발전기 구조물 공급계약 체결",
+       "amount": 565784216191.0,
+       "superseded": true,
+       "rcept": "20251230801113"
+      },
+      {
+       "date": "2025-12-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약해지",
+       "counterparty": "Atlantic Shores Offshore Wind Project 1, LLC",
+       "title": "풍력발전기 구조물 공급계약 체결",
+       "amount": 565784216191.0,
+       "superseded": false,
+       "rcept": "20251230801114"
+      },
+      {
+       "date": "2026-01-09",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "Anma Offshore Wind Energy Co., Ltd",
+       "title": "풍력발전기 구조물 공급계약 체결",
+       "amount": 36005873050.0,
+       "superseded": true,
+       "rcept": "20260109800443"
+      },
+      {
+       "date": "2026-02-12",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Vestas American Wind Technology",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 135327564072.0,
+       "superseded": false,
+       "rcept": "20260212800142"
+      },
+      {
+       "date": "2026-04-21",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자율공시)",
+       "counterparty": "Anma Offshore Wind Energy Co., Ltd",
+       "title": "풍력발전기 구조물 공급계약 체결",
+       "amount": 36656731250.0,
+       "superseded": false,
+       "rcept": "20260421800625"
+      },
+      {
+       "date": "2026-07-07",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Vestas American Wind Technology",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 190178169481.0,
+       "superseded": false,
+       "rcept": "20260707800128"
+      },
+      {
+       "date": "2026-09-07",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Vestas American Wind Technology",
+       "title": "WIND TOWER 공급계약 체결",
+       "amount": 150982575393.0,
+       "superseded": false,
+       "rcept": "20260907800138"
+      }
+     ],
+     "sources": [
+      "20251105800101",
+      "20251110800277",
+      "20251113800138",
+      "20251114800258",
+      "20251125800045",
+      "20251205800112",
+      "20251219800141",
+      "20251222800051",
+      "20251230801113",
+      "20251230801114",
+      "20260109800443",
+      "20260212800142",
+      "20260421800625",
+      "20260707800128",
+      "20260907800138"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 15건"
+    }
+   ],
+   "sources": [
+    "20251105800101",
+    "20251110800277",
+    "20251113800138",
+    "20251205800112",
+    "20251219800141",
+    "20251230801114",
+    "20260212800142",
+    "20260707800128",
+    "20260907800138"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "씨에스윈드의 자본 변동과 주주 환원은 아래와 같습니다. 모든 내용은 결정 공시 기준이며, 실제 납입·취득·소각 결과는 이 자료에 없습니다.\n\n- **교환사채**: 2024-07-25에 사모 방식의 제2회 무기명식 이권부 무보증 신종교환사채 발행을 결정했습니다. 금액은 446억 원, 전환·교환 대상은 자기주식 741,922주로, 1.76% 규모입니다. 만기는 2054년 7월 31일이며, 자금 용도는 운영자금입니다(접수번호 20240725000467).\n- **자기주식 처분**: 3건이 있으며 합계는 460억 원, 764,172주입니다. 이 중 2024-07-25 결정은 교환사채 발행을 위한 446억 원 규모이고, 나머지 2건은 임원 상여금 지급 목적입니다(2026-04-03 결정 11.5억 원, 2026-10-07 결정 2.6억 원). 접수번호는 20240725000470, 20260403002591, 20261007000347입니다.\n- **자기주식 직접 취득**: 2026-04-03에 장내 매수 방식으로 50,000주, 32.5억 원 규모의 취득을 결정했습니다. 목적은 임원 상여금 지급이며, 신탁계약을 통한 취득은 없습니다(접수번호 20260403002466).\n- **자기주식 소각**: 감자 결정으로 공시된 소각은 없습니다.\n- **배당**: 보통주 주당 배당금은 2023 사업연도 500원, 2024 사업연도와 2025 사업연도 각 1,000원입니다. 현금배당 총액은 2023년 207억 원, 2024년과 2025년 각 414억 원입니다. 배당성향은 연결 기준으로 2023년 106.9%, 2024년 29.1%, 2025년 119.4%입니다. 배당수익률은 보통주 기준 각각 0.79%, 2.4%, 2.33%이고, 우선주 배당은 없습니다(접수번호 20260318001110).\n\n이 DB에는 교환사채의 실제 전환·교환 주식 수, 자기주식 취득의 실행 결과, 결정의 철회 여부, 2024년 1월 이전 결정이 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2007,
+    "output_tokens": 823,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "dilution",
+     "title": "씨에스윈드 희석 이력",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "from": "2024-01-01",
+     "events": [
+      {
+       "date": "2024-07-25",
+       "kind": "eb",
+       "label": "교환사채",
+       "cancel": false,
+       "shares": 741922,
+       "amount_eok": 445.5,
+       "ratio_pct": 1.76,
+       "pct_of_before": null,
+       "method": "사모",
+       "price": 60050.0,
+       "rcept_no": "20240725000467"
+      }
+     ],
+     "sources": [
+      "20240725000467"
+     ],
+     "notes": [
+      "결정 공시입니다. 실제 납입·발행, 사채의 실제 전환, 철회 여부는 이 자료에 없습니다.",
+      "사채의 주식 수는 전환·행사·교환되면 생길 수 있는 주식 수입니다. 감자 가운데 자기주식 소각은 따로 표시했습니다."
+     ],
+     "summary": "교환사채 1건"
+    },
+    {
+     "kind": "payout",
+     "title": "씨에스윈드 주주 환원",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "years": [
+      {
+       "year": 2023,
+       "cash_eok": 207.2,
+       "buyback_eok": 0.0,
+       "dps": 500.0,
+       "payout_ratio": 106.9
+      },
+      {
+       "year": 2024,
+       "cash_eok": 414.4,
+       "buyback_eok": 0.0,
+       "dps": 1000.0,
+       "payout_ratio": 29.1
+      },
+      {
+       "year": 2025,
+       "cash_eok": 414.4,
+       "buyback_eok": 0.0,
+       "dps": 1000.0,
+       "payout_ratio": 119.4
+      },
+      {
+       "year": 2026,
+       "cash_eok": null,
+       "buyback_eok": 32.5,
+       "dps": null,
+       "payout_ratio": null
+      }
+     ],
+     "sources": [
+      "20260318001110"
+     ],
+     "notes": [
+      "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
+      "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."
+     ],
+     "summary": "2023 주당 500원, 배당성향 106.9%; 2024 주당 1,000원, 배당성향 29.1%; 2025 주당 1,000원, 배당성향 119.4%"
+    }
+   ],
+   "sources": [
+    "20240725000467",
+    "20240725000470",
+    "20260318001110",
+    "20260403002466",
+    "20260403002591"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "- 조회 기간(2026-07-19~2026-10-16) 동안 내부자 매매 보고는 3건, 보고자는 2명(국민연금공단, 방성훈)이며, 모두 보유 주식을 늘린 보고입니다. 줄인 보고와 증감이 없는 보고는 없습니다 (접수번호 20260731000155, 20261006000223, 20260803000035).\n- 순증감 합계는 4,728,666주입니다. 이 가운데 국민연금공단 보고가 4,718,666주, 방성훈 대표이사 보고가 10,000주입니다 (접수번호 20260731000155, 20261006000223, 20260803000035).\n- 국민연금공단은 10%이상주주 자격으로 두 번 보고했습니다. 마지막 보고(접수일 2026-10-06) 기준 보유 주식은 4,718,666주이고 지분율은 11.19%입니다 (접수번호 20261006000223).\n- 방성훈 대표이사는 등기임원 자격으로 2026-08-03에 보고했습니다. 보고 후 보유 주식은 23,610주이고 지분율은 0.06%입니다 (접수번호 20260803000035).\n- 이 자료에는 거래 단가, 금액, 실제 거래일, 장내·장외 구분, 증여·상속 같은 사유가 없습니다. 날짜는 모두 보고 접수일 기준입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 951,
+    "output_tokens": 495,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "insiders",
+     "title": "씨에스윈드 내부자 매매",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "from": "2026-07-19",
+     "to": "2026-10-16",
+     "totals": {
+      "increased_reports": 3,
+      "increased_shares": 4728666,
+      "decreased_reports": 0,
+      "decreased_shares": 0,
+      "unchanged_reports": 0,
+      "net_shares": 4728666,
+      "reporters": 2
+     },
+     "by_day": [
+      {
+       "date": "2026-07-31",
+       "increased": 4231892,
+       "decreased": 0,
+       "reports": 1
+      },
+      {
+       "date": "2026-08-03",
+       "increased": 10000,
+       "decreased": 0,
+       "reports": 1
+      },
+      {
+       "date": "2026-10-06",
+       "increased": 486774,
+       "decreased": 0,
+       "reports": 1
+      }
+     ],
+     "returns": [
+      {
+       "date": "2026-07-20",
+       "pct": 0.0
+      },
+      {
+       "date": "2026-07-21",
+       "pct": -0.77
+      },
+      {
+       "date": "2026-07-22",
+       "pct": 1.41
+      },
+      {
+       "date": "2026-07-23",
+       "pct": 14.23
+      },
+      {
+       "date": "2026-07-24",
+       "pct": 10.77
+      },
+      {
+       "date": "2026-07-27",
+       "pct": 2.69
+      },
+      {
+       "date": "2026-07-28",
+       "pct": -3.46
+      },
+      {
+       "date": "2026-07-29",
+       "pct": -10.13
+      },
+      {
+       "date": "2026-07-30",
+       "pct": -8.85
+      },
+      {
+       "date": "2026-07-31",
+       "pct": -4.36
+      },
+      {
+       "date": "2026-08-03",
+       "pct": -1.67
+      },
+      {
+       "date": "2026-08-04",
+       "pct": 2.18
+      },
+      {
+       "date": "2026-08-05",
+       "pct": 5.13
+      },
+      {
+       "date": "2026-08-06",
+       "pct": 8.33
+      },
+      {
+       "date": "2026-08-07",
+       "pct": 12.44
+      },
+      {
+       "date": "2026-08-10",
+       "pct": 16.41
+      },
+      {
+       "date": "2026-08-11",
+       "pct": 15.13
+      },
+      {
+       "date": "2026-08-12",
+       "pct": 11.15
+      },
+      {
+       "date": "2026-08-13",
+       "pct": 20.26
+      },
+      {
+       "date": "2026-08-14",
+       "pct": 20.13
+      },
+      {
+       "date": "2026-08-18",
+       "pct": 17.18
+      },
+      {
+       "date": "2026-08-19",
+       "pct": 17.82
+      },
+      {
+       "date": "2026-08-20",
+       "pct": 24.1
+      },
+      {
+       "date": "2026-08-21",
+       "pct": 19.36
+      },
+      {
+       "date": "2026-08-24",
+       "pct": 20.9
+      },
+      {
+       "date": "2026-08-25",
+       "pct": 23.21
+      },
+      {
+       "date": "2026-08-26",
+       "pct": 28.21
+      },
+      {
+       "date": "2026-08-27",
+       "pct": 27.82
+      },
+      {
+       "date": "2026-08-28",
+       "pct": 26.67
+      },
+      {
+       "date": "2026-08-31",
+       "pct": 25.38
+      },
+      {
+       "date": "2026-09-01",
+       "pct": 21.28
+      },
+      {
+       "date": "2026-09-02",
+       "pct": 16.79
+      },
+      {
+       "date": "2026-09-03",
+       "pct": 17.69
+      },
+      {
+       "date": "2026-09-04",
+       "pct": 20.38
+      },
+      {
+       "date": "2026-09-07",
+       "pct": 25.64
+      },
+      {
+       "date": "2026-09-08",
+       "pct": 23.97
+      },
+      {
+       "date": "2026-09-09",
+       "pct": 30.26
+      },
+      {
+       "date": "2026-09-10",
+       "pct": 31.03
+      },
+      {
+       "date": "2026-09-11",
+       "pct": 35.38
+      },
+      {
+       "date": "2026-09-14",
+       "pct": 34.87
+      },
+      {
+       "date": "2026-09-15",
+       "pct": 35.9
+      },
+      {
+       "date": "2026-09-16",
+       "pct": 34.62
+      },
+      {
+       "date": "2026-09-17",
+       "pct": 32.31
+      },
+      {
+       "date": "2026-09-18",
+       "pct": 31.79
+      },
+      {
+       "date": "2026-09-21",
+       "pct": 29.23
+      },
+      {
+       "date": "2026-09-22",
+       "pct": 29.23
+      },
+      {
+       "date": "2026-09-23",
+       "pct": 28.46
+      },
+      {
+       "date": "2026-09-28",
+       "pct": 35.64
+      },
+      {
+       "date": "2026-09-29",
+       "pct": 29.23
+      },
+      {
+       "date": "2026-09-30",
+       "pct": 30.51
+      },
+      {
+       "date": "2026-10-01",
+       "pct": 40.0
+      },
+      {
+       "date": "2026-10-02",
+       "pct": 42.05
+      },
+      {
+       "date": "2026-10-06",
+       "pct": 47.44
+      },
+      {
+       "date": "2026-10-07",
+       "pct": 46.67
+      },
+      {
+       "date": "2026-10-08",
+       "pct": 42.82
+      },
+      {
+       "date": "2026-10-12",
+       "pct": 42.05
+      },
+      {
+       "date": "2026-10-13",
+       "pct": 37.18
+      },
+      {
+       "date": "2026-10-14",
+       "pct": 36.67
+      },
+      {
+       "date": "2026-10-15",
+       "pct": 29.49
+      },
+      {
+       "date": "2026-10-16",
+       "pct": 29.74
+      }
+     ],
+     "reporters": [
+      {
+       "reporter": "국민연금공단",
+       "reports": 2,
+       "change": 4718666,
+       "rcept_no": [
+        "20260731000155",
+        "20261006000223"
+       ],
+       "position": "-",
+       "registered": "-",
+       "major_holder": "10%이상주주",
+       "shares_after": 4718666,
+       "last_date": "2026-10-06",
+       "pct_after": 11.19
+      },
+      {
+       "reporter": "방성훈",
+       "reports": 1,
+       "change": 10000,
+       "rcept_no": [
+        "20260803000035"
+       ],
+       "position": "대표이사",
+       "registered": "등기임원",
+       "shares_after": 23610,
+       "last_date": "2026-08-03",
+       "pct_after": 0.06
+      }
+     ],
+     "sources": [
+      "20260731000155",
+      "20261006000223",
+      "20260803000035"
+     ],
+     "notes": [
+      "날짜는 실제 거래일이 아니라 보고 접수일입니다. 거래 단가와 금액, 장내·장외, 증여·상속 같은 사유는 이 보고 자료에 없습니다.",
+      "선은 2026-07-20 종가를 0으로 둔 주가 수익률입니다(한국거래소 통계정보를 가공). 매매의 원인을 말해 주지 않습니다."
+     ],
+     "summary": "2026-07-19~2026-10-16 늘린 보고 3건 4,728,666주, 줄인 보고 0건 0주, 순증감 +4,728,666주 (2명)"
+    }
+   ],
+   "sources": [
+    "20260731000155",
+    "20260803000035",
+    "20261006000223"
+   ]
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "- 최근 1주(2026-10-08~10-16) 종가 기준 수익률은 -9.16%로, 같은 시장(유가증권) 중앙값 -2.74%보다 6.42%p 낮았습니다.\n- 최근 1개월(2026-09-16~10-16) 수익률은 -3.62%로, 시장 중앙값 -3.73%와 거의 같은 수준(차이 0.11%p)이었습니다.\n- 최근 3개월(2026-07-16~10-16) 수익률은 26.98%로, 시장 중앙값 -0.97%보다 27.95%p 높았습니다.\n- 같은 제품(풍력 타워, 해상풍력 하부구조물)을 파는 비교 대상 4곳(SK오션플랜트, 동국S&C, 삼일씨엔에스, 유니슨)의 중앙값은 1주 -8.04%, 1개월 -3.62%, 3개월 +2.25%였습니다.\n- 위 수익률은 KRX 일별 시세를 가공한 과거 값이며, 이 자료만으로는 주가 변동의 원인을 확인할 수 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 805,
+    "output_tokens": 399,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "씨에스윈드 수익률 비교",
+     "company": {
+      "id": 2182,
+      "name": "씨에스윈드"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": -9.16,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": -8.04,
+       "peers_counted": 4,
+       "vs_market_pp": -6.42
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": -3.62,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": -3.62,
+       "peers_counted": 4,
+       "vs_market_pp": 0.11
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": 26.98,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": 2.25,
+       "peers_counted": 4,
+       "vs_market_pp": 27.95
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "풍력 타워",
+       "해상풍력 하부구조물"
+      ],
+      "names": [
+       "SK오션플랜트",
+       "동국S&C",
+       "삼일씨엔에스",
+       "유니슨"
+      ],
+      "total": 4
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 -9.16% (시장 -2.74%); 1개월 -3.62% (시장 -3.73%); 3개월 26.98% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)"
+ ],
+ "usage": {
+  "input_tokens": 20776,
+  "output_tokens": 3926,
+  "cache_read_input_tokens": 8552,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 14.2,
+ "cost_usd": 0.0041
+}

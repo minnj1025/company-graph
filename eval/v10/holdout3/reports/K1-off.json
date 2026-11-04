@@ -1,0 +1,1257 @@
+{
+ "company": {
+  "company_id": 2516,
+  "name": "SK디스커버리",
+  "stock_code": "006120",
+  "market": "유가증권",
+  "group": "SK"
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "SK디스커버리는 가스사업(매출 비중 93.9%)을 중심으로 한 순수지주회사로, SK케미칼·SK가스·SK플라즈마 등을 자회사로 두고 있습니다(접수번호 20260813001756). 2026년 2분기 연결 기준으로는 영업손실 304억 원과 당기순손실 586억 원으로 적자 전환했으나, 상반기 누적 당기순이익은 1,537억 원으로 43.83% 증가했습니다(접수번호 20260813001756). 2026년 6월 말 부채비율은 135.01%로, 같은 시장 상장사 중앙값 96.7%보다 높습니다. 최창원 가문 중심의 지배 구조 아래 최대주주 및 특수관계인 합계 지분은 51.00%입니다(접수번호 20260317000867). 최근 1개월 주가는 종가 기준 +18.02%로, 같은 시장 중앙값 -3.73%를 웃돌았습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "- 사업 구성은 2026년 반기보고서(접수번호 20260813001756) 기준입니다. 매출 비중이 가장 큰 것은 가스사업으로 93.9%이며, LPG 등 화학제품을 수입·저장·판매합니다 (접수번호 20260813001756).\n- Green Chemicals Biz.(PET 수지, DMT, 고기능성 PETG 수지, 폴리에스터 접착제, 유틸리티 등)의 비중은 16.5%이고, Life Science Biz.(의약품, 의료기기 등)는 9.2%입니다 (접수번호 20260813001756).\n- 혈장분획제제사업(혈액제제)의 비중은 1.7%입니다. 투자부문(자회사 관리 및 신규사업 투자 등)은 0.8%입니다 (접수번호 20260813001756).\n- 기타사업(내부거래) 등(에너지 발전, 부동산 데이터 솔루션, 조정 등)은 -22.2%로 표기되어 있으며, 내부거래 조정이 반영된 값입니다 (접수번호 20260813001756).\n- 보고서 본문에 따르면 SK디스커버리는 순수지주회사로, 주요 자회사는 SK케미칼(소재·제약), SK가스(가스), SK플라즈마(혈장분획제제)입니다. 그 밖에 SK디앤디, SK이터닉스, 프롭티어, SK바이오사이언스, 울산지피에스, SK어드밴스드, SK멀티유틸리티 등이 사업을 영위합니다 (접수번호 20260813001756).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4627,
+    "output_tokens": 566,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1069
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "SK디스커버리 매출 구성",
+     "company": {
+      "id": 2516,
+      "name": "SK디스커버리"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "자회사 관리 및 신규사업 투자 등",
+       "segment": "투자부문",
+       "share_pct": 0.8,
+       "family": null
+      },
+      {
+       "name": "PET 수지, DMT, 고기능성 PETG수지, 폴리에스터 접착제, 유틸리티 등",
+       "segment": "Green Chemicals Biz.",
+       "share_pct": 16.5,
+       "family": "기초·석유화학"
+      },
+      {
+       "name": "의약품, 의료기기 등",
+       "segment": "Life Science Biz.",
+       "share_pct": 9.2,
+       "family": "전문의약품"
+      },
+      {
+       "name": "LPG 등의 화학제품 수입, 저장, 판매",
+       "segment": "가스사업",
+       "share_pct": 93.9,
+       "family": "전력·가스·열 공급"
+      },
+      {
+       "name": "혈액제 관련 제품의 제조 및 판매",
+       "segment": "혈장분획제제사업",
+       "share_pct": 1.7,
+       "family": "바이오의약품"
+      },
+      {
+       "name": "에너지 발전, 부동산 데이터 솔루션 사업, 조정 등",
+       "segment": "기타사업(내부거래) 등",
+       "share_pct": -22.2,
+       "family": null
+      }
+     ],
+     "sources": [
+      "20260813001756"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 6줄, 비중 합 99.9%"
+    }
+   ],
+   "sources": [
+    "20260813001756"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "- **최근 분기(2026년 2분기, 연결)**: 매출 3조 556억 원(전년 동기 대비 22.33% 증가), 영업손실 304억 원으로 적자 전환, 당기순손실 586억 원으로 적자 전환입니다(접수번호 20260813001756). 같은 분기 보고서가 전년 동기 순이익을 280억 원으로 다시 작성해 적었으므로 순이익 증감은 이 값과 비교한 것이며, 2025년 2분기 보고서의 원래 값 220억 원과는 다릅니다(접수번호 20250813001603).\n- **2026년 상반기 누적(연결)**: 매출 6조 3,448억 원(29.38% 증가), 영업이익 1,594억 원(19.77% 감소), 당기순이익 1,537억 원(43.83% 증가)입니다(접수번호 20260813001756).\n- **2026년 1분기(연결)**: 매출 3조 2,892억 원, 영업이익 1,898억 원, 당기순이익 2,123억 원입니다(접수번호 20260515002242). 같은 보고서가 전년 동기 순이익을 788억 원으로 다시 작성해 적었고, 이를 기준으로 169.3% 증가로 나와 있습니다.\n- **2025년 연간(연결)**: 매출 10조 1,640억 원(12.44% 증가), 영업이익 3,614억 원(109.41% 증가), 당기순이익 1,446억 원(207.03% 증가)입니다(접수번호 20260317000867).\n- **재무구조(2026년 6월 말, 연결)**: 부채비율 135.01%, 유동비율 156.52%입니다(접수번호 20260813001756). 같은 시장(유가증권) 상장사 827곳의 중앙값은 부채비율 96.7%, 유동비율 133.47%로, 이 회사는 두 지표 모두 중앙값보다 높습니다. 이 수치는 이 DB가 같은 시장 상장사로 계산한 값입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4131,
+    "output_tokens": 711,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1069
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "SK디스커버리 실적 추이",
+     "company": {
+      "id": 2516,
+      "name": "SK디스커버리"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114002882"
+       ],
+       "revenue": 21895.8,
+       "revenue_yoy_pct": -7.21,
+       "operating_income": 210.4,
+       "operating_income_yoy_pct": -80.85,
+       "net_income": 382.2,
+       "net_income_yoy_pct": -74.6,
+       "operating_margin_pct": 0.96
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250318001277",
+        "20241114002882"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 25720.5,
+       "revenue_yoy_pct": 21.31,
+       "operating_income": 724.9,
+       "operating_income_yoy": "흑자 전환",
+       "net_income": -6.7,
+       "net_income_yoy": "적자 지속",
+       "operating_margin_pct": 2.82
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250515002371"
+       ],
+       "revenue": 24061.2,
+       "revenue_yoy_pct": 11.47,
+       "operating_income": 1106.9,
+       "operating_income_yoy_pct": 180.44,
+       "net_income": 734.7,
+       "net_income_yoy": "흑자 전환",
+       "operating_margin_pct": 4.6
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250813001603"
+       ],
+       "revenue": 24977.8,
+       "revenue_yoy_pct": 17.85,
+       "operating_income": 880.0,
+       "operating_income_yoy_pct": 122.46,
+       "net_income": 220.2,
+       "net_income_yoy_pct": 35.3,
+       "operating_margin_pct": 3.52
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251113000909"
+       ],
+       "revenue": 26012.8,
+       "revenue_yoy_pct": 18.8,
+       "operating_income": 1681.4,
+       "operating_income_yoy_pct": 698.99,
+       "net_income": 612.8,
+       "net_income_yoy_pct": 60.33,
+       "operating_margin_pct": 6.46
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260317000867",
+        "20251113000909"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 26588.3,
+       "revenue_yoy_pct": 3.37,
+       "operating_income": -54.7,
+       "operating_income_yoy": "적자 전환",
+       "net_income": -121.5,
+       "net_income_yoy": "적자 전환",
+       "operating_margin_pct": -0.21
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260515002242"
+       ],
+       "revenue": 32892.5,
+       "revenue_yoy_pct": 36.7,
+       "operating_income": 1897.6,
+       "operating_income_yoy_pct": 71.44,
+       "net_income": 2122.8,
+       "net_income_yoy_pct": 169.3,
+       "net_income_prior_restated": 788.3,
+       "prior_restated_note": "이 분기 보고서가 전년 같은 분기 값을 다시 작성해 적었습니다. yoy 는 *_prior_restated 와 견준 것이고, 목록에 있는 작년 분기 값(작년 보고서)과 다릅니다. 둘을 쓰면 어느 보고서의 값인지 밝힙니다",
+       "operating_margin_pct": 5.77
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260813001756"
+       ],
+       "revenue": 30555.8,
+       "revenue_yoy_pct": 22.33,
+       "operating_income": -303.5,
+       "operating_income_yoy": "적자 전환",
+       "net_income": -585.5,
+       "net_income_yoy": "적자 전환",
+       "net_income_prior_restated": 280.5,
+       "prior_restated_note": "이 분기 보고서가 전년 같은 분기 값을 다시 작성해 적었습니다. yoy 는 *_prior_restated 와 견준 것이고, 목록에 있는 작년 분기 값(작년 보고서)과 다릅니다. 둘을 쓰면 어느 보고서의 값인지 밝힙니다",
+       "operating_margin_pct": -0.99
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230321001269"
+       ],
+       "revenue": 87171.2,
+       "revenue_yoy_pct": 31.79,
+       "operating_income": 3622.3,
+       "operating_income_yoy_pct": 387.09,
+       "net_income": 5340.4,
+       "net_income_yoy_pct": 96.12,
+       "operating_margin_pct": 4.16,
+       "net_margin_pct": 6.13
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240320001824"
+       ],
+       "revenue": 89392.2,
+       "revenue_yoy_pct": 2.55,
+       "operating_income": 2567.0,
+       "operating_income_yoy_pct": -29.13,
+       "net_income": 2478.2,
+       "net_income_yoy_pct": -53.59,
+       "operating_margin_pct": 2.87,
+       "net_margin_pct": 2.77
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250318001277"
+       ],
+       "revenue": 90396.0,
+       "revenue_yoy_pct": 1.12,
+       "operating_income": 1725.6,
+       "operating_income_yoy_pct": -32.78,
+       "net_income": 319.2,
+       "net_income_yoy_pct": -87.12,
+       "operating_margin_pct": 1.91,
+       "net_margin_pct": 0.35
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260317000867"
+       ],
+       "revenue": 101640.1,
+       "revenue_yoy_pct": 12.44,
+       "operating_income": 3613.5,
+       "operating_income_yoy_pct": 109.41,
+       "net_income": 1446.3,
+       "net_income_yoy_pct": 207.03,
+       "operating_margin_pct": 3.56,
+       "net_margin_pct": 1.42
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260813001756"
+       ],
+       "revenue": 63448.3,
+       "revenue_yoy_pct": 29.38,
+       "operating_income": 1594.1,
+       "operating_income_yoy_pct": -19.77,
+       "net_income": 1537.2,
+       "net_income_yoy_pct": 43.83,
+       "operating_margin_pct": 2.51,
+       "net_margin_pct": 2.42
+      }
+     ],
+     "sources": [
+      "20241114002882",
+      "20250318001277",
+      "20250515002371",
+      "20250813001603",
+      "20251113000909",
+      "20260317000867",
+      "20260515002242",
+      "20260813001756"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 3조 556억 원, 영업이익 -304억 원, 영업이익 적자 전환"
+    },
+    {
+     "kind": "health",
+     "title": "SK디스커버리 재무 체력",
+     "company": {
+      "id": 2516,
+      "name": "SK디스커버리"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 135.01,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 156.52,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 2.51,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260813001756"
+      ],
+      "total_assets": 193403.5,
+      "total_liabilities": 111107.2,
+      "total_equity": 82296.3,
+      "current_assets": 81561.6,
+      "current_liabilities": 52109.5,
+      "debt_ratio_pct": 135.01,
+      "current_ratio_pct": 156.52
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260317000867"
+      ],
+      "total_assets": 162996.6,
+      "total_liabilities": 94484.1,
+      "total_equity": 68512.5,
+      "current_assets": 54659.7,
+      "current_liabilities": 37436.3,
+      "debt_ratio_pct": 137.91,
+      "current_ratio_pct": 146.01
+     },
+     "market": "유가증권",
+     "sources": [
+      "20241114002882",
+      "20250318001277",
+      "20250515002371",
+      "20250813001603",
+      "20251113000909",
+      "20260317000867",
+      "20260515002242",
+      "20260813001756"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 135.01% (시장 중앙값 96.7%), 유동비율 156.52% (시장 중앙값 133.47%), 영업이익률 2.51% (시장 중앙값 5.1%)"
+    }
+   ],
+   "sources": [
+    "20250813001603",
+    "20260317000867",
+    "20260515002242",
+    "20260813001756"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "SK디스커버리의 지배 구조는 최창원 가문 중심으로 짜여 있습니다. 기준일은 2025-12-31(사업보고서)입니다.\n\n- **최대주주 및 특수관계인 합계**: 보통주 51.00%(9,358,047주)입니다. 기초 대비 49.81%에서 늘었습니다(접수번호 20260317000867).\n- **최대주주 최창원**: 41.69%(7,650,128주)입니다. 최영근 5.05%, 최태원 3.22%, 최민근 2.64%가 뒤를 잇습니다(접수번호 20260317000867).\n- **이 회사가 지분을 가진 회사**: 16곳이 조회됐습니다. 상장사는 SK가스 72.08%, SK케미칼 40.79%, SK이터닉스 30.98%, 휴비스 25.50%, SK디앤디 0.00%(유가증권)입니다. 100% 자회사는 없습니다(접수번호 20260317000867).\n- **5% 이상 대량보유 보고**: 최창원이 2026-08-19 기준 56.46%를 보고했습니다. 사유는 주식 담보계약 변경(갱신)입니다(접수번호 20260819000303). 국민연금공단은 2026-04-01 기준 5.04%를 보고했습니다(접수번호 20260401002294).\n- 5% 보고의 비율은 대표보고자와 특별관계자를 합친 값이라 최대주주 현황과 기준이 다릅니다.\n- 한일홀딩스가 자기 사업보고서에 이 회사 주식 1.07%(196,260주)를 가졌다고 적었습니다. 최대주주 또는 특수관계인은 아닙니다(접수번호 20260318001536).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4050,
+    "output_tokens": 616,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1069
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "SK디스커버리 지분 구조도",
+     "company": {
+      "id": 2516,
+      "name": "SK디스커버리"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": null,
+       "name": "최창원",
+       "listed": false,
+       "pct": 41.69,
+       "role": "본인",
+       "rcept": "20260317000867",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "최영근",
+       "listed": false,
+       "pct": 5.05,
+       "role": "친인척",
+       "rcept": "20260317000867",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "최민근",
+       "listed": false,
+       "pct": 2.64,
+       "role": "친인척",
+       "rcept": "20260317000867",
+       "up": []
+      },
+      {
+       "id": 1333,
+       "name": "한일홀딩스",
+       "listed": true,
+       "pct": 1.07,
+       "role": null,
+       "rcept": "20260318001536",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "한국고등교육재단",
+       "listed": false,
+       "pct": 0.63,
+       "role": "계열사",
+       "rcept": "20260317000867",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "최예정",
+       "listed": false,
+       "pct": 0.36,
+       "role": "친인척",
+       "rcept": "20260317000867",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "최지원",
+       "listed": false,
+       "pct": 0.28,
+       "role": "친인척",
+       "rcept": "20260317000867",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "최정원",
+       "listed": false,
+       "pct": 0.12,
+       "role": "친인척",
+       "rcept": "20260317000867",
+       "up": []
+      }
+     ],
+     "more_holders": 3,
+     "investees": [
+      {
+       "id": 1460,
+       "name": "SK가스",
+       "listed": true,
+       "pct": 72.08,
+       "purpose": "경영참여",
+       "rcept": "20260317000867"
+      },
+      {
+       "id": 2926,
+       "name": "SK케미칼",
+       "listed": true,
+       "pct": 40.79,
+       "purpose": "경영참여",
+       "rcept": "20260317000867"
+      },
+      {
+       "id": 2008,
+       "name": "SK이터닉스",
+       "listed": true,
+       "pct": 30.98,
+       "purpose": "경영참여",
+       "rcept": "20260316001520"
+      },
+      {
+       "id": 4298,
+       "name": "휴비스",
+       "listed": true,
+       "pct": 25.5,
+       "purpose": "경영참여",
+       "rcept": "20260317000867"
+      },
+      {
+       "id": 5126,
+       "name": "한국거래소시스템즈",
+       "listed": false,
+       "pct": 66.46,
+       "purpose": "경영참여",
+       "rcept": "20260317000867"
+      },
+      {
+       "id": 5031,
+       "name": "SK플라즈마",
+       "listed": false,
+       "pct": 53.79,
+       "purpose": "경영참여",
+       "rcept": "20260317000867"
+      },
+      {
+       "id": null,
+       "name": "㈜케이알씨씨",
+       "listed": false,
+       "pct": 18.44,
+       "purpose": "단순투자",
+       "rcept": "20260317000867"
+      },
+      {
+       "id": null,
+       "name": "이지스현대차증권 프롭테크 신기술투자조합",
+       "listed": false,
+       "pct": 11.63,
+       "purpose": "단순투자",
+       "rcept": "20260317000867"
+      },
+      {
+       "id": null,
+       "name": "뮤렉스웨이브3호벤처투자조합",
+       "listed": false,
+       "pct": 7.6,
+       "purpose": "단순투자",
+       "rcept": "20260317000867"
+      },
+      {
+       "id": null,
+       "name": "Alpaca VC Fund Ⅲ LP",
+       "listed": false,
+       "pct": 6.3,
+       "purpose": "단순투자",
+       "rcept": "20260317000867"
+      },
+      {
+       "id": null,
+       "name": "TISHMAN SPEYER PROPTECH VENTURE FUND, L.P.",
+       "listed": false,
+       "pct": 2.83,
+       "purpose": "단순투자",
+       "rcept": "20260317000867"
+      },
+      {
+       "id": null,
+       "name": "뮤렉스웨이브2호액티브시니어투자조합",
+       "listed": false,
+       "pct": 1.81,
+       "purpose": "단순투자",
+       "rcept": "20260317000867"
+      }
+     ],
+     "more_investees": 1,
+     "sources": [
+      "20260317000867",
+      "20260318001536",
+      "20260813001480",
+      "20260319000495",
+      "20260316001520",
+      "20260701000444"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 11곳(위 8곳 표시), 출자 대상 13곳(위 12곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "SK디스커버리 주주 분포",
+     "company": {
+      "id": 2516,
+      "name": "SK디스커버리"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 51.0,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "최창원",
+       "id": null,
+       "pct": 56.46,
+       "date": "2026-08-19",
+       "overlap": true
+      },
+      {
+       "name": "국민연금공단",
+       "id": null,
+       "pct": 5.04,
+       "date": "2026-04-01",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 43.96,
+     "sources": [
+      "20260819000303",
+      "20260401002294",
+      "20260317000867",
+      "20260318001536"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 51.0%, 국민연금공단 5.04%"
+    }
+   ],
+   "sources": [
+    "20260317000867",
+    "20260318001536",
+    "20260401002294",
+    "20260819000303"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "이 기간에는 자회사 계약을 대신 공시한 공급계약이 주를 이루고, 다른 회사 지분의 취득·처분 결정이 함께 있습니다. 새 계약과 옛 계약의 정정은 구분해 두었습니다.\n\n- **공급계약 2건** (계약일 2025-10-16 이후): 자회사의 계약을 이 회사가 대신 공시한 것 2건.\n- **가장 큰 계약**: 2026-03-24 계약·공시 · 자회사 계약을 대신 공시 · 상대 SK온 · '석유제품 저장위탁계약' · 3,740억 원 · 최근 매출액 대비 5.27% (접수번호 20260324801343)\n- 금액이 큰 순서로 전부:\n  - 2026-03-24 계약·공시 · 자회사 계약을 대신 공시 · 상대 SK온 · '석유제품 저장위탁계약' · 3,740억 원 · 최근 매출액 대비 5.27% (접수번호 20260324801343)\n  - 2026-04-03 계약·공시, 2026-08-28 마지막 정정 · 자회사 계약을 대신 공시 · 상대 A.K.S.I.A HEALTH CARE FZC. · '혈액제제 공급 계약' · 462억 원 · 최근 매출액 대비 21.11% · 정정 공시 있음(정정 뒤 금액) (접수번호 20260828800631)\n- **옛 계약의 정정**: 계약일이 2025-10-16보다 이른 계약 4건을 이 기간에 정정한 공시 6건. 새 계약이 아니라 위 건수에 넣지 않았다. 금액이 바뀐 것:\n  - 2022-01-18 계약 '혈액제제 임가공 공급 계약' · 2026-09-11 정정 · 계약금액 정정 전 184억 원 → 정정 후 231억 원 (접수번호 20260911800500)\n  - 2022-02-22 계약 '혈액제제 공급 계약' · 2026-02-10 정정 · 계약금액 정정 전 89.6억 원 → 정정 후 48.4억 원 (접수번호 20260210800900)\n  - 2024-12-09 계약 '혈액제제 임가공 공급 계약' · 2025-12-29 정정 · 계약금액 정정 전 820억 원 → 정정 후 925억 원 (접수번호 20251229800498)\n- **다른 회사 지분의 취득·처분 결정 2건** (결의일 2025-10-16 이후, 결정이지 실행 결과가 아니다):\n  - 2026-04-03 결의·공시, 2026-05-29 마지막 정정 · 에스케이케미칼이 에스케이멀티유틸리티(SK multi utility Co., Ltd.) 지분 539,000주를 3,710억 원에 처분하기로 결정(그 뒤 지분율 51.0%) — 자회사의 결정, SK디스커버리가 대신 공시 (접수번호 20260529801202)\n  - 2026-03-06 결의·공시, 2026-08-11 마지막 정정(이 기간 정정 3번) · SK디스커버리가 에스케이이터닉스(SK eternix Co., Ltd.) 지분 10,455,825주를 2,515억 원에 처분하기로 결정(그 뒤 지분율 0%) — 이 회사의 결정, 이 회사가 공시 (접수번호 20260811800670)\n- **옛 지분 결정의 정정**: 결의일이 2025-10-16보다 이른 결정 5건을 이 기간에 정정한 공시 10건. 최근 1년의 새 결정이 아니다.\n  - 2024-05-08 결의·공시, 2026-06-22 마지막 정정 · SK플라즈마가 PT. SKPlasma Investment Indonesia 지분을 475억 원에 취득하기로 결정(그 뒤 지분율 100.00%) — 자회사의 결정, SK디스커버리가 대신 공시 (접수번호 20260622800661)\n  - 2022-09-15 결의, 2026-06-04 공시 · SK가스가 코리아에너지터미널(Korea Energy Terminal Co., Ltd.) 지분 808,917주를 404억 원에 취득하기로 결정(그 뒤 지분율 47.58%) — 자회사의 결정, SK디스커버리가 대신 공시 (접수번호 20260604800686)\n  - 2020-03-27 결의, 2025-12-02 공시, 2026-04-01 마지막 정정(이 기간 정정 3번) · SK가스가 SK Gas International Pte. Ltd. 지분 70,800,000주를 991억 원에 취득하기로 결정(그 뒤 지분율 100%) — 자회사의 결정, SK디스커버리가 대신 공시 (접수번호 20260401801416)\n- 같은 기간 증자·사채·자기주식 같은 자본 결정 1건은 '자본 변동과 주주 환원' 항목에 있다.\n- 이 DB의 공급계약·해지 공시는 2026-10-16 접수분까지 모았다. 그 뒤 공시는 여기에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1987,
+    "output_tokens": 94,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1069
+   },
+   "written_by": "code+lede",
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "SK디스커버리 공급망 흐름",
+     "company": {
+      "id": 2516,
+      "name": "SK디스커버리"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 2516,
+        "name": "SK디스커버리",
+        "listed": true
+       },
+       "to": {
+        "id": 5020,
+        "name": "SK온",
+        "listed": false
+       },
+       "amount": 374000000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2516,
+        "name": "SK디스커버리",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "PT. SKPLASMA CORE INDONESIA",
+        "listed": false
+       },
+       "amount": 92489761150,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2516,
+        "name": "SK디스커버리",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "A.K.S.I.A HEALTH CARE FZC.",
+        "listed": false
+       },
+       "amount": 46221420174,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2516,
+        "name": "SK디스커버리",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "AKSIA Health Care FZC",
+        "listed": false
+       },
+       "amount": 39369510540,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2516,
+        "name": "SK디스커버리",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "싱가폴 Health Sciences Authority",
+        "listed": false
+       },
+       "amount": 23111647692,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2516,
+        "name": "SK디스커버리",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Farmedical SRL",
+        "listed": false
+       },
+       "amount": 4838130000,
+       "count": 1
+      }
+     ],
+     "more": 0,
+     "sources": [
+      "20251229800498",
+      "20260210800900",
+      "20260324801343",
+      "20260403801392",
+      "20260828800631",
+      "20260911800500"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 6건, 상대 6쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "SK디스커버리 공시 타임라인",
+     "company": {
+      "id": 2516,
+      "name": "SK디스커버리"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-11-21",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "싱가폴 Health Sciences Authority",
+       "title": "혈액제제 임가공 공급 계약",
+       "amount": 18353367192.0,
+       "superseded": true,
+       "rcept": "20251121800445"
+      },
+      {
+       "date": "2025-12-02",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "SK Gas International Pte. Ltd.",
+       "title": null,
+       "amount": 143574862264.0,
+       "superseded": true,
+       "rcept": "20251202800421"
+      },
+      {
+       "date": "2025-12-17",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "PT. SKPLASMA CORE INDONESIA",
+       "title": "혈액제제 임가공 공급 계약",
+       "amount": 81960157572.0,
+       "superseded": true,
+       "rcept": "20251217800002"
+      },
+      {
+       "date": "2025-12-29",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "PT. SKPLASMA CORE INDONESIA",
+       "title": "혈액제제 임가공 공급 계약",
+       "amount": 92489761150.0,
+       "superseded": false,
+       "rcept": "20251229800498"
+      },
+      {
+       "date": "2026-01-23",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정(자회사의 주요경영사항)",
+       "counterparty": "SK HOLDCO PTE. LTD.",
+       "title": null,
+       "amount": null,
+       "superseded": false,
+       "rcept": "20260123800561"
+      },
+      {
+       "date": "2026-02-10",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "Farmedical SRL",
+       "title": "혈액제제 공급 계약",
+       "amount": 4838130000.0,
+       "superseded": false,
+       "rcept": "20260210800900"
+      },
+      {
+       "date": "2026-03-06",
+       "category": "지분 처분",
+       "report": "타법인주식및출자증권처분결정",
+       "counterparty": "에스케이이터닉스㈜ (SK eternix Co., Ltd.)",
+       "title": null,
+       "amount": 247800000000.0,
+       "superseded": true,
+       "rcept": "20260306800013"
+      },
+      {
+       "date": "2026-03-24",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "SK온",
+       "title": "석유제품 저장위탁계약",
+       "amount": 374000000000.0,
+       "superseded": false,
+       "rcept": "20260324801343"
+      },
+      {
+       "date": "2026-04-01",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "SK Gas International Pte. Ltd.",
+       "title": null,
+       "amount": 99120000000.0,
+       "superseded": true,
+       "rcept": "20260401800020"
+      },
+      {
+       "date": "2026-04-01",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "SK Gas International Pte. Ltd.",
+       "title": null,
+       "amount": 99120000000.0,
+       "superseded": false,
+       "rcept": "20260401801416"
+      },
+      {
+       "date": "2026-04-03",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "AKSIA Health Care FZC",
+       "title": "혈액제제 공급 계약",
+       "amount": 39369510540.0,
+       "superseded": false,
+       "rcept": "20260403801392"
+      },
+      {
+       "date": "2026-04-03",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "A.K.S.I.A HEALTH CARE FZC.",
+       "title": "혈액제제 공급 계약",
+       "amount": 18369878406.0,
+       "superseded": true,
+       "rcept": "20260403801446"
+      },
+      {
+       "date": "2026-04-03",
+       "category": "지분 처분",
+       "report": "타법인주식및출자증권처분결정(자회사의 주요경영사항)",
+       "counterparty": "에스케이멀티유틸리티(주) (SK multi utility Co., Ltd.)",
+       "title": null,
+       "amount": 370956509000.0,
+       "superseded": true,
+       "rcept": "20260403801472"
+      },
+      {
+       "date": "2026-04-29",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정(자율공시)",
+       "counterparty": "에스케이디앤디㈜ (SK D&D Co.,Ltd.)",
+       "title": null,
+       "amount": 109867509510.0,
+       "superseded": true,
+       "rcept": "20260429800736"
+      },
+      {
+       "date": "2026-05-29",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정(자회사의 주요경영사항)",
+       "counterparty": "에스케이멀티유틸리티(주) (SK multi utility Co., Ltd.)",
+       "title": null,
+       "amount": 370956509000.0,
+       "superseded": false,
+       "rcept": "20260529801202"
+      },
+      {
+       "date": "2026-06-04",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "코리아에너지터미널(주) (Korea Energy Terminal Co., Ltd.)",
+       "title": null,
+       "amount": 40445850000.0,
+       "superseded": false,
+       "rcept": "20260604800686"
+      },
+      {
+       "date": "2026-06-22",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)",
+       "counterparty": "PT. SKPlasma Investment Indonesia",
+       "title": null,
+       "amount": 47523000000.0,
+       "superseded": false,
+       "rcept": "20260622800661"
+      },
+      {
+       "date": "2026-06-30",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정",
+       "counterparty": "에스케이이터닉스㈜ (SK eternix Co., Ltd.)",
+       "title": null,
+       "amount": 247800000000.0,
+       "superseded": true,
+       "rcept": "20260630801201"
+      },
+      {
+       "date": "2026-07-31",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정",
+       "counterparty": "에스케이이터닉스㈜ (SK eternix Co., Ltd.)",
+       "title": null,
+       "amount": 247800000000.0,
+       "superseded": true,
+       "rcept": "20260731801112"
+      },
+      {
+       "date": "2026-08-04",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정(자율공시)",
+       "counterparty": "에스케이디앤디㈜ (SK D&D Co.,Ltd.)",
+       "title": null,
+       "amount": 109867509510.0,
+       "superseded": true,
+       "rcept": "20260804800594"
+      },
+      {
+       "date": "2026-08-05",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정(자율공시)",
+       "counterparty": "에스케이디앤디㈜ (SK D&D Co.,Ltd.)",
+       "title": null,
+       "amount": 109867509510.0,
+       "superseded": true,
+       "rcept": "20260805800012"
+      },
+      {
+       "date": "2026-08-11",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정(자율공시)",
+       "counterparty": "에스케이디앤디㈜ (SK D&D Co.,Ltd.)",
+       "title": null,
+       "amount": 109867509510.0,
+       "superseded": false,
+       "rcept": "20260811800592"
+      },
+      {
+       "date": "2026-08-11",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권처분결정",
+       "counterparty": "에스케이이터닉스㈜ (SK eternix Co., Ltd.)",
+       "title": null,
+       "amount": 251486427000.0,
+       "superseded": false,
+       "rcept": "20260811800670"
+      },
+      {
+       "date": "2026-08-28",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "A.K.S.I.A HEALTH CARE FZC.",
+       "title": "혈액제제 공급 계약",
+       "amount": 46221420174.0,
+       "superseded": false,
+       "rcept": "20260828800631"
+      },
+      {
+       "date": "2026-09-11",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결(자회사의 주요경영사항)",
+       "counterparty": "싱가폴 Health Sciences Authority",
+       "title": "혈액제제 임가공 공급 계약",
+       "amount": 23111647692.0,
+       "superseded": false,
+       "rcept": "20260911800500"
+      }
+     ],
+     "sources": [
+      "20251121800445",
+      "20251202800421",
+      "20251217800002",
+      "20251229800498",
+      "20260123800561",
+      "20260210800900",
+      "20260306800013",
+      "20260324801343",
+      "20260401800020",
+      "20260401801416",
+      "20260403801392",
+      "20260403801446",
+      "20260403801472",
+      "20260429800736",
+      "20260529801202",
+      "20260604800686",
+      "20260622800661",
+      "20260630801201",
+      "20260731801112",
+      "20260804800594",
+      "20260805800012",
+      "20260811800592",
+      "20260811800670",
+      "20260828800631",
+      "20260911800500"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 25건"
+    }
+   ],
+   "sources": [
+    "20251229800498",
+    "20260210800900",
+    "20260324801343",
+    "20260401801416",
+    "20260529801202",
+    "20260604800686",
+    "20260622800661",
+    "20260811800670",
+    "20260828800631",
+    "20260911800500"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "- **자기주식 취득 신탁계약**: 2024년 3월 200억 원, 2025년 3월 300억 원, 2026년 3월 200억 원 등 세 차례 결정을 공시했고, 합계는 700억 원입니다(접수번호 20240305000466, 20250304000511, 20260306000004). 목적은 모두 \"주가 안정을 통한 주주가치 제고\"입니다. 각 계약 기간은 6개월입니다.\n- **자기주식 직접 취득**: 이 DB에 해당 결정이 없습니다.\n- **자기주식 소각(감자)**: 이 DB에 소각 결정 공시가 없습니다.\n- **현금배당(연결 기준)**: 2023사업연도 현금배당 총액은 334억 원으로 payout 17.0%, 2024사업연도는 322억 원으로 88.4%, 2025사업연도는 368억 원으로 28.4%입니다(접수번호 20260317000867). 주당배당금 칸은 비어 있어 주당 금액은 확인할 수 없습니다.\n- 이 자료는 결정 공시만 담고 있어 실제 취득 주식 수나 신탁 집행 결과는 확인되지 않습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1529,
+    "output_tokens": 426,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1069
+   },
+   "views": [],
+   "sources": [
+    "20240305000466",
+    "20250304000511",
+    "20260306000004",
+    "20260317000867"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "- **1주(10/8~10/16)**: 종가 기준 -7.49%. 같은 시장(유가증권) 종목 중앙값은 -2.74%로, 시장 대비 -4.75%p입니다. 같은 제품(LPG, PET 수지, 코폴리에스터 수지)을 파는 6개 종목 중앙값은 -0.83%입니다.\n- **1개월(9/16~10/16)**: 종가 기준 +18.02%. 시장 중앙값은 -3.73%로, 시장 대비 +21.75%p입니다. 동종 6개 종목 중앙값은 +2.25%입니다.\n- **3개월(7/16~10/16)**: 종가 기준 +20.18%. 시장 중앙값은 -0.97%로, 시장 대비 +21.14%p입니다. 동종 6개 종목 중앙값은 +16.00%입니다.\n- 이 수익률은 지난 기간의 사실이며, 가격이 움직인 이유는 이 조회 결과에 나타나 있지 않습니다.\n- 동종 비교 대상은 같은 제품을 매출의 10% 이상으로 파는 상장사이며, 그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만 골랐습니다. 출처는 한국거래소(KRX) 일별 시세입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 818,
+    "output_tokens": 471,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1069
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "SK디스커버리 수익률 비교",
+     "company": {
+      "id": 2516,
+      "name": "SK디스커버리"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": -7.49,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": -0.83,
+       "peers_counted": 6,
+       "vs_market_pp": -4.75
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": 18.02,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": 2.25,
+       "peers_counted": 6,
+       "vs_market_pp": 21.75
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": 20.18,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": 16.0,
+       "peers_counted": 6,
+       "vs_market_pp": 21.14
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "LPG",
+       "PET 수지",
+       "코폴리에스터 수지"
+      ],
+      "names": [
+       "E1",
+       "SK가스",
+       "SK케미칼",
+       "대성산업",
+       "중앙에너비스",
+       "티케이케미칼"
+      ],
+      "total": 6
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 -7.49% (시장 -2.74%); 1개월 18.02% (시장 -3.73%); 3개월 20.18% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)",
+  "내부자 매매: 조회 시점까지 공시된 것이 없거나 모으지 않음"
+ ],
+ "usage": {
+  "input_tokens": 21971,
+  "output_tokens": 3236,
+  "cache_read_input_tokens": 1069,
+  "cache_creation_input_tokens": 6414
+ },
+ "seconds": 22.8,
+ "cost_usd": 0.0046
+}
