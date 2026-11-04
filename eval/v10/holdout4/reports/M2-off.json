@@ -1,0 +1,1359 @@
+{
+ "company": {
+  "company_id": 152,
+  "name": "현대로템",
+  "stock_code": "064350",
+  "market": "유가증권",
+  "group": "현대자동차"
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "현대로템은 2026년 반기 기준 방산(AD&RH)이 매출의 57%, 철도 차량(RS)이 37%를 차지합니다. 수주잔고는 304,046억 원입니다(접수번호 20260814002977). 2026년 2분기 매출은 1조 6,060억 원으로 전년 같은 분기보다 13.29% 늘었지만, 영업이익은 2,324억 원으로 9.78% 줄었습니다(접수번호 20260814002977). 6월 말 기준 부채비율 169.14%는 같은 시장 중앙값 96.7%보다 높습니다. 최대주주 현대자동차의 지분은 2025-12-31 기준 33.77%입니다(접수번호 20260319001275). 주가는 최근 3개월 수익률 -39.06%로, 같은 시장 중앙값보다 낮게 집계되었습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "## 현대로템 사업 구성 (반기보고서 2026.06, 접수번호 20260814002977)\n\n- **AD&RH 부문(방산물자)**: 매출의 57%를 차지합니다. 지상 무기체계가 주요 제품이며, K2전차와 차륜형장갑차를 포함합니다(접수번호 20260814002977).\n- **RS 부문(상품·제품)**: 매출의 37%를 차지합니다. 철도 차량을 공급하며, 고속철·전동차·경전철·트램 등을 포함합니다(접수번호 20260814002977).\n- **EP 부문(제철·프레스·환경·운반설비)**: 매출의 6%를 차지합니다. 제철 설비, 프레스 설비, 환경 설비, 운반 설비로 구성됩니다. 이 부문의 제품 분류는 보고서 표 그대로가 아니라 회사 사업 개요를 참고해 붙인 것이므로 확인이 필요합니다(접수번호 20260814002977).\n- **매출·수주 규모**: 2026년 반기 매출액은 30,635억 원이며, 수주잔고는 304,046억 원입니다(접수번호 20260814002977). 매출 비중은 이 반기 치 기준입니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3407,
+    "output_tokens": 441,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "현대로템 매출 구성",
+     "company": {
+      "id": 152,
+      "name": "현대로템"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "방산물자",
+       "segment": "AD&RH 부문",
+       "share_pct": 57.0,
+       "family": "방산"
+      },
+      {
+       "name": "상품 ·제품",
+       "segment": "RS 부문",
+       "share_pct": 37.0,
+       "family": "철도"
+      },
+      {
+       "name": "제철프레스환경운반설비",
+       "segment": "EP 부문",
+       "share_pct": 6.0,
+       "family": "플랜트 기자재"
+      }
+     ],
+     "sources": [
+      "20260814002977"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 3줄, 비중 합 100.0%"
+    }
+   ],
+   "sources": [
+    "20260814002977"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "## 실적과 재무 (현대로템, 연결 기준)\n\n- **최근 분기(2026년 2분기)**: 매출 1조 6,060억 원(전년 같은 분기 대비 13.29% 증가), 영업이익 2,324억 원(9.78% 감소), 당기순이익 1,863억 원(1.73% 감소), 영업이익률 14.47% (접수번호 20260814002977). 같은 분기 전년 값은 매출 1조 4,176억 원, 영업이익 2,576억 원, 순이익 1,896억 원, 영업이익률 18.17%입니다 (접수번호 20250814004080).\n- **2026년 상반기 누적**: 매출 3조 635억 원(18.11% 증가), 영업이익 4,566억 원(0.84% 감소), 순이익 3,890억 원(12.19% 증가), 영업이익률 14.9% (접수번호 20260814002977).\n- **연간 추이**: 2024년 매출 4조 3,766억 원, 영업이익 4,566억 원, 순이익 4,053억 원, 2025년 매출 5조 8,390억 원, 영업이익 1조 56억 원, 순이익 7,705억 원, 영업이익률 17.22%입니다 (접수번호 20250321001612, 20260319001275).\n- **재무 상태(2026년 6월 말 기준)**: 부채비율 169.14%, 유동비율 131.47%입니다. 같은 시장(유가증권) 상장사 중앙값은 부채비율 96.7%, 유동비율 133.47%로, 이 DB가 같은 시장 827개사로 계산한 값입니다. 부채비율은 중앙값보다 높고 유동비율은 중앙값보다 낮습니다 (접수번호 20260814002977).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3772,
+    "output_tokens": 619,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "현대로템 실적 추이",
+     "company": {
+      "id": 152,
+      "name": "현대로템"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114001739"
+       ],
+       "revenue": 10935.2,
+       "revenue_yoy_pct": 17.97,
+       "operating_income": 1374.3,
+       "operating_income_yoy_pct": 234.26,
+       "net_income": 1037.8,
+       "net_income_yoy_pct": 159.76,
+       "operating_margin_pct": 12.57
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250321001612",
+        "20241114001739"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 14407.7,
+       "revenue_yoy_pct": 45.65,
+       "operating_income": 1616.9,
+       "operating_income_yoy_pct": 131.7,
+       "net_income": 1450.2,
+       "net_income_yoy_pct": 213.99,
+       "operating_margin_pct": 11.22
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250515002957"
+       ],
+       "revenue": 11761.4,
+       "revenue_yoy_pct": 57.28,
+       "operating_income": 2028.5,
+       "operating_income_yoy_pct": 353.98,
+       "net_income": 1571.5,
+       "net_income_yoy_pct": 182.47,
+       "operating_margin_pct": 17.25
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250814004080"
+       ],
+       "revenue": 14176.3,
+       "revenue_yoy_pct": 29.52,
+       "operating_income": 2575.9,
+       "operating_income_yoy_pct": 128.43,
+       "net_income": 1895.5,
+       "net_income_yoy_pct": 87.98,
+       "operating_margin_pct": 18.17
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251114002366"
+       ],
+       "revenue": 16196.3,
+       "revenue_yoy_pct": 48.11,
+       "operating_income": 2777.4,
+       "operating_income_yoy_pct": 102.09,
+       "net_income": 1983.7,
+       "net_income_yoy_pct": 91.15,
+       "operating_margin_pct": 17.15
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260319001275",
+        "20251114002366"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 16256.2,
+       "revenue_yoy_pct": 12.83,
+       "operating_income": 2674.6,
+       "operating_income_yoy_pct": 65.42,
+       "net_income": 2254.3,
+       "net_income_yoy_pct": 55.45,
+       "operating_margin_pct": 16.45
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260515002876"
+       ],
+       "revenue": 14574.5,
+       "revenue_yoy_pct": 23.92,
+       "operating_income": 2242.0,
+       "operating_income_yoy_pct": 10.52,
+       "net_income": 2026.7,
+       "net_income_yoy_pct": 28.97,
+       "operating_margin_pct": 15.38
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260814002977"
+       ],
+       "revenue": 16060.5,
+       "revenue_yoy_pct": 13.29,
+       "operating_income": 2323.8,
+       "operating_income_yoy_pct": -9.78,
+       "net_income": 1862.7,
+       "net_income_yoy_pct": -1.73,
+       "operating_margin_pct": 14.47
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230310001083"
+       ],
+       "revenue": 31633.4,
+       "revenue_yoy_pct": 10.12,
+       "operating_income": 1474.9,
+       "operating_income_yoy_pct": 83.86,
+       "net_income": 1945.3,
+       "net_income_yoy_pct": 278.39,
+       "operating_margin_pct": 4.66,
+       "net_margin_pct": 6.15
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240320000873"
+       ],
+       "revenue": 35873.8,
+       "revenue_yoy_pct": 13.4,
+       "operating_income": 2100.5,
+       "operating_income_yoy_pct": 42.42,
+       "net_income": 1567.8,
+       "net_income_yoy_pct": -19.41,
+       "operating_margin_pct": 5.86,
+       "net_margin_pct": 4.37
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250321001612"
+       ],
+       "revenue": 43766.0,
+       "revenue_yoy_pct": 22.0,
+       "operating_income": 4565.7,
+       "operating_income_yoy_pct": 117.36,
+       "net_income": 4052.6,
+       "net_income_yoy_pct": 158.49,
+       "operating_margin_pct": 10.43,
+       "net_margin_pct": 9.26
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260319001275"
+       ],
+       "revenue": 58390.3,
+       "revenue_yoy_pct": 33.41,
+       "operating_income": 10056.4,
+       "operating_income_yoy_pct": 120.26,
+       "net_income": 7704.9,
+       "net_income_yoy_pct": 90.12,
+       "operating_margin_pct": 17.22,
+       "net_margin_pct": 13.2
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260814002977"
+       ],
+       "revenue": 30635.0,
+       "revenue_yoy_pct": 18.11,
+       "operating_income": 4565.8,
+       "operating_income_yoy_pct": -0.84,
+       "net_income": 3889.5,
+       "net_income_yoy_pct": 12.19,
+       "operating_margin_pct": 14.9,
+       "net_margin_pct": 12.7
+      }
+     ],
+     "sources": [
+      "20241114001739",
+      "20250321001612",
+      "20250515002957",
+      "20250814004080",
+      "20251114002366",
+      "20260319001275",
+      "20260515002876",
+      "20260814002977"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 1조 6,060억 원, 영업이익 2,324억 원, 영업이익 전년 동기 대비 -9.8%"
+    },
+    {
+     "kind": "health",
+     "title": "현대로템 재무 체력",
+     "company": {
+      "id": 152,
+      "name": "현대로템"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 169.14,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 131.47,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 14.9,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260814002977"
+      ],
+      "total_assets": 90695.5,
+      "total_liabilities": 56997.8,
+      "total_equity": 33697.7,
+      "current_assets": 68120.8,
+      "current_liabilities": 51816.6,
+      "debt_ratio_pct": 169.14,
+      "current_ratio_pct": 131.47
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260319001275"
+      ],
+      "total_assets": 93180.3,
+      "total_liabilities": 62768.0,
+      "total_equity": 30412.3,
+      "current_assets": 71630.4,
+      "current_liabilities": 57763.6,
+      "debt_ratio_pct": 206.39,
+      "current_ratio_pct": 124.01
+     },
+     "market": "유가증권",
+     "sources": [
+      "20241114001739",
+      "20250321001612",
+      "20250515002957",
+      "20250814004080",
+      "20251114002366",
+      "20260319001275",
+      "20260515002876",
+      "20260814002977"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 169.14% (시장 중앙값 96.7%), 유동비율 131.47% (시장 중앙값 133.47%), 영업이익률 14.9% (시장 중앙값 5.1%)"
+    }
+   ],
+   "sources": [
+    "20250321001612",
+    "20250814004080",
+    "20260319001275",
+    "20260814002977"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "## 지배 구조와 주주 (현대로템, 2026-10-16 기준)\n\n- **최대주주 현황 (2025-12-31 기준, 사업보고서):** 현대자동차가 36,852,432주, 33.77%를 보유합니다(접수번호 20260319001275). 김두홍, 김정훈, 이용배 등 특수관계인을 합치면 최대주주와 특수관계인의 합계는 36,856,636주, 33.77%입니다. 기초와 기말 비율은 같습니다.\n- **5% 대량보유 보고:** 현대자동차는 2026-06-12 보고에서 33.77%를 적었습니다(접수번호 20260612000626). 국민연금공단은 2026-08-03 보고에서 7.07%(접수번호 20260803000433), BlackRockFundAdvisors는 2026-04-21 보고에서 5.0%를 적었습니다(접수번호 20260421000396). 이 비율은 보고자와 특별관계자를 합친 값이라 최대주주 현황과 다를 수 있습니다.\n- **타법인 출자 (2025-12-31 기준, 사업보고서):** 이 회사가 지분을 가진 회사는 19곳이며(접수번호 20260319001275), 그중 10곳이 100% 자회사입니다. 여기에는 HR Mechanical Services Limited, HYUNDAI ROTEM AUSTRALIA PTY LTD, Hyundai Rotem USA Corporation, 김포골드라인에스알에스, 로템에스알에스, 메인트란스, 에스트랜스 등이 포함됩니다. Hyundai EURotem Demiryolu Araclari Sanayi ve Ticaret A.S의 지분율은 51.0%입니다.\n- **이 회사 주식을 가진 다른 회사:** 제일테크노스가 자기 사업보고서(타법인출자 현황)에 이 회사 주식을 가졌다고 적었습니다(접수번호 20260320000688). 최대주주나 특수관계인은 아닙니다. 이 DB에는 보유 주식 수가 적혀 있지 않습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 3082,
+    "output_tokens": 742,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "현대로템 지분 구조도",
+     "company": {
+      "id": 152,
+      "name": "현대로템"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": 54,
+       "name": "현대자동차",
+       "listed": true,
+       "pct": 33.77,
+       "role": "최대주주",
+       "rcept": "20260318001394",
+       "up": [
+        {
+         "id": 41,
+         "name": "현대모비스",
+         "listed": true,
+         "pct": 22.0
+        },
+        {
+         "id": null,
+         "name": "정몽구",
+         "listed": false,
+         "pct": 5.57
+        },
+        {
+         "id": null,
+         "name": "정의선",
+         "listed": false,
+         "pct": 2.73
+        }
+       ]
+      }
+     ],
+     "more_holders": 0,
+     "investees": [
+      {
+       "id": null,
+       "name": "HR Mechanical Services Limited",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": null,
+       "name": "HYUNDAI ROTEM AUSTRALIA PTY LTD",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": null,
+       "name": "HYUNDAI ROTEM EUROPE SP. Z O.O.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": null,
+       "name": "Hyundai Rotem Brasil Industria E Comercio De Trens Ltda.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": null,
+       "name": "Hyundai Rotem USA Corporation",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": null,
+       "name": "Rotem Equipments (Beijing) Co., Ltd",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": 121,
+       "name": "김포골드라인에스알에스",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": 123,
+       "name": "로템에스알에스",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": 124,
+       "name": "메인트란스",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": 134,
+       "name": "에스트랜스",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": null,
+       "name": "Hyundai EURotem Demiryolu Araclari Sanayi ve Ticaret A.S",
+       "listed": false,
+       "pct": 51.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      },
+      {
+       "id": null,
+       "name": "하이스테이션㈜",
+       "listed": false,
+       "pct": 11.0,
+       "purpose": "경영참여",
+       "rcept": "20260319001275"
+      }
+     ],
+     "more_investees": 3,
+     "sources": [
+      "20260318001394",
+      "20260319001275"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 1곳(위 1곳 표시), 출자 대상 15곳(위 12곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "현대로템 주주 분포",
+     "company": {
+      "id": 152,
+      "name": "현대로템"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 33.77,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "현대자동차",
+       "id": 54,
+       "pct": 33.77,
+       "date": "2026-06-12",
+       "overlap": true
+      },
+      {
+       "name": "국민연금공단",
+       "id": null,
+       "pct": 7.07,
+       "date": "2026-08-03",
+       "overlap": false
+      },
+      {
+       "name": "BlackRockFundAdvisors",
+       "id": null,
+       "pct": 5.0,
+       "date": "2026-04-21",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 54.16,
+     "sources": [
+      "20260612000626",
+      "20260803000433",
+      "20260421000396",
+      "20260318001394",
+      "20260319001275",
+      "20260320000688"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 33.77%, 국민연금공단 7.07%, BlackRockFundAdvisors 5.0%"
+    }
+   ],
+   "sources": [
+    "20260319001275",
+    "20260320000688",
+    "20260421000396",
+    "20260612000626",
+    "20260803000433"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "이 기간에는 수주 계약이 대부분이고, 해외 철도차량과 유지보수 사업이 큰 비중을 차지합니다. 계약 목록은 아래와 같고, 옛 계약의 금액 정정과 지분 취득 결정은 그 뒤에 나옵니다.\n\n- **공급계약 18건** (계약일 2025-10-16 이후): 이 회사가 수주한 계약 10건, 합계 3조 2,286억 원; 이 회사가 발주한 계약(상대 회사가 공시) 8건, 합계 3,318억 원.\n- **가장 큰 계약**: 2026-06-18 계약, 2026-06-19 공시 · 수주 · 상대 모로코 철도청 · '모로코 철도청 전동차 LTSS 사업' · 7,482억 원 · 최근 매출액 대비 12.8% (접수번호 20260619800001)\n- 금액이 큰 순서로 8건 (나머지 10건은 카드와 접수번호로 볼 수 있다):\n  - 2026-06-18 계약, 2026-06-19 공시 · 수주 · 상대 모로코 철도청 · '모로코 철도청 전동차 LTSS 사업' · 7,482억 원 · 최근 매출액 대비 12.8% (접수번호 20260619800001)\n  - 2026-02-03 계약, 2026-02-04 공시, 2026-07-03 마지막 정정 · 수주 · 상대 에드먼턴시(The City of Edmonton) · '에드먼턴 고상형 경전철 공급 사업' · 3,914억 원 · 최근 매출액 대비 8.9% · 정정 공시 있음(정정 뒤 금액) (접수번호 20260703800009)\n  - 2026-09-22 계약, 2026-09-23 공시 · 수주 · 상대 타오위안시정부 철도공정국 (Department of Rapid Transit Systems, Taoyuan) · '대만 타오위안 브라운라인 E&M 공급 사업' · 3,445억 원 · 최근 매출액 대비 5.9% (접수번호 20260923800386)\n  - 2026-04-23 계약·공시 · 수주 · 상대 Truong Hai Group Corporation · '베트남 호치민 2호선 전동차 현지화 사업(2,3단계)' · 3,345억 원 · 최근 매출액 대비 5.7% (접수번호 20260423800664)\n  - 2026-09-30 계약·공시 · 수주 · 상대 육상교통국 (Land Transport Authority, LTA) · 'LTA J151 계약 전동차 유지보수지원 사업(LTSS 옵션 5a)' · 3,103억 원 · 최근 매출액 대비 5.3% (접수번호 20260930800644)\n  - 2025-12-19 계약, 2025-12-22 공시 · 수주 · 상대 한국철도공사(KORAIL) · '코레일 전동차 공급사업' · 2,591억 원 · 최근 매출액 대비 5.9% (접수번호 20251222800117)\n  - 2025-12-09 계약·공시 · 수주 · 상대 방위사업청 · '장애물개척전차 2차 양산사업' · 2,500억 원 · 최근 매출액 대비 5.7% (접수번호 20251209800033)\n  - 2026-01-30 계약·공시 · 수주 · 상대 포스코이앤씨 · '신안산선 복선전철 민간투자사업 철도차량' · 2,353억 원 · 최근 매출액 대비 5.4% (접수번호 20260130801210)\n- **옛 계약의 정정**: 계약일이 2025-10-16보다 이른 계약을 이 기간에 정정한 공시 — 이 회사가 낸 정정 10건(계약 10개), 상대 회사가 이 회사와의 계약을 정정한 공시 2건(계약 2개). 새 계약이 아니라 위 건수에 넣지 않았다. 계약금액이 바뀐 계약:\n  - 2016-01-21 계약 '필리핀 MRT7 전동차 및 시스템(신호,통신 등) 공급 계약' · 2026-10-14 정정 · 계약금액 정정 전 7,281억 원 → 정정 후 8,240억 원 (접수번호 20261014800442)\n  - 2016-03-10 계약 '뉴질랜드 웰링턴 유지보수사업' · 2026-09-21 정정 · 계약금액 정정 전 1,871억 원 → 정정 후 2,273억 원 (접수번호 20260921800391)\n  - 2025-03-28 계약 '수도권광역급행철도 B노선 민간투자시설사업 철도차량 공급' · 2025-12-12 정정 · 계약금액 정정 전 5,812억 원 → 정정 후 5,922억 원 (접수번호 20251212800664)\n- **다른 회사 지분의 취득·처분 결정 1건** (결의일 2025-10-16 이후, 결정이지 실행 결과가 아니다):\n  - 2026-04-24 결의·공시, 2026-05-21 마지막 정정 · 현대로템이 에이치엠지퓨처콤플렉스(예정) 지분 460,800주를 4,608억 원에 취득하기로 결정(그 뒤 지분율 5.8%) — 이 회사의 결정, 이 회사가 공시 (접수번호 20260521800569)\n- 이 DB의 공급계약·해지 공시는 2026-10-16 접수분까지 모았다. 그 뒤 공시는 여기에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2112,
+    "output_tokens": 107,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "written_by": "code+lede",
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "현대로템 공급망 흐름",
+     "company": {
+      "id": 152,
+      "name": "현대로템"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 4093,
+        "name": "풍산",
+        "listed": true
+       },
+       "to": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "amount": 829870437122,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3571,
+        "name": "풍산홀딩스",
+        "listed": true
+       },
+       "to": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "amount": 829870437122,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": 7168,
+        "name": "포스코이앤씨",
+        "listed": false
+       },
+       "amount": 827475000000,
+       "count": 2
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "ULC(Universal LRT Corporation Limited)",
+        "listed": false
+       },
+       "amount": 823976904339,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "모로코 철도청",
+        "listed": false
+       },
+       "amount": 748248667606,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Truong Hai Group Corporation",
+        "listed": false
+       },
+       "amount": 491074582584,
+       "count": 2
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "에드먼턴시(The City of Edmonton)",
+        "listed": false
+       },
+       "amount": 391446073187,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "방위사업청",
+        "listed": false
+       },
+       "amount": 363646000000,
+       "count": 3
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "타오위안시정부 철도공정국 (Department of Rapid Transit Systems, Taoyuan)",
+        "listed": false
+       },
+       "amount": 344500969560,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "육상교통국 (Land Transport Authority, LTA)",
+        "listed": false
+       },
+       "amount": 310341883519,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "대전광역시",
+        "listed": false
+       },
+       "amount": 293408885000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "한국철도공사(KORAIL)",
+        "listed": false
+       },
+       "amount": 259116363636,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "에드먼턴 시정부",
+        "listed": false
+       },
+       "amount": 249985440880,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Transdev Wellington Ltd",
+        "listed": false
+       },
+       "amount": 227292598717,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 4165,
+        "name": "한화시스템",
+        "listed": true
+       },
+       "to": {
+        "id": 152,
+        "name": "현대로템",
+        "listed": true
+       },
+       "amount": 203096607056,
+       "count": 3
+      }
+     ],
+     "more": 8,
+     "sources": [
+      "20251112800698",
+      "20251114801272",
+      "20251125800005",
+      "20251209800033",
+      "20251209800224",
+      "20251212800664",
+      "20251222800117",
+      "20260130801210",
+      "20260423800661",
+      "20260423800664",
+      "20260427800817",
+      "20260429800816",
+      "20260528800926",
+      "20260619800001",
+      "20260625800570",
+      "20260703800009",
+      "20260921800391",
+      "20260923800386",
+      "20260930800644",
+      "20261014800442",
+      "20251128901168",
+      "20251201800534",
+      "20251211800069",
+      "20251212900733",
+      "20260115800526",
+      "20260115800573",
+      "20260128800424",
+      "20260316802355",
+      "20260723800695",
+      "20260911800620",
+      "20260923800239"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 31건, 상대 23쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "현대로템 공시 타임라인",
+     "company": {
+      "id": 152,
+      "name": "현대로템"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-11-12",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Mitsui & Co. Ltd",
+       "title": "아일랜드 철도청 디젤동차 41량 공급계약",
+       "amount": 127458276902.0,
+       "superseded": false,
+       "rcept": "20251112800698"
+      },
+      {
+       "date": "2025-11-14",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "터키 이스탄불 市",
+       "title": "터키 이스탄불 전동차 공급 사업",
+       "amount": 172314930240.0,
+       "superseded": false,
+       "rcept": "20251114801272"
+      },
+      {
+       "date": "2025-11-25",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "이집트 철도청 (Egyptian National Railways)",
+       "title": "이집트 나그하마디-룩소르 신호 현대화 사업",
+       "amount": 99932800000.0,
+       "superseded": false,
+       "rcept": "20251125800005"
+      },
+      {
+       "date": "2025-12-09",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "방위사업청",
+       "title": "장애물개척전차 2차 양산사업",
+       "amount": 250046000000.0,
+       "superseded": false,
+       "rcept": "20251209800033"
+      },
+      {
+       "date": "2025-12-09",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "방위사업청",
+       "title": null,
+       "amount": null,
+       "superseded": false,
+       "rcept": "20251209800224"
+      },
+      {
+       "date": "2025-12-12",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "(주)포스코이앤씨",
+       "title": "수도권광역급행철도 B노선 민간투자시설사업 철도차량 공급",
+       "amount": 592185000000.0,
+       "superseded": false,
+       "rcept": "20251212800664"
+      },
+      {
+       "date": "2025-12-22",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "한국철도공사(KORAIL)",
+       "title": "코레일 전동차 공급사업",
+       "amount": 259116363636.0,
+       "superseded": false,
+       "rcept": "20251222800117"
+      },
+      {
+       "date": "2026-01-30",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "㈜포스코이앤씨",
+       "title": "신안산선 복선전철 민간투자사업 철도차량",
+       "amount": 235290000000.0,
+       "superseded": false,
+       "rcept": "20260130801210"
+      },
+      {
+       "date": "2026-02-04",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "에드먼턴시(The City of Edmonton)",
+       "title": "에드먼턴 고상형 경전철 공급 사업",
+       "amount": 320290210477.0,
+       "superseded": true,
+       "rcept": "20260204800269"
+      },
+      {
+       "date": "2026-04-23",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Truong Hai Group Corporation",
+       "title": "베트남 호치민 2호선 전동차 현지화 사업(1단계)",
+       "amount": 156613137922.0,
+       "superseded": false,
+       "rcept": "20260423800661"
+      },
+      {
+       "date": "2026-04-23",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "Truong Hai Group Corporation",
+       "title": "베트남 호치민 2호선 전동차 현지화 사업(2,3단계)",
+       "amount": 334461444662.0,
+       "superseded": false,
+       "rcept": "20260423800664"
+      },
+      {
+       "date": "2026-04-24",
+       "category": "지분 취득",
+       "report": "타법인주식및출자증권취득결정",
+       "counterparty": "에이치엠지퓨처콤플렉스주식회사 (예정)",
+       "title": null,
+       "amount": 460800000000.0,
+       "superseded": true,
+       "rcept": "20260424800634"
+      },
+      {
+       "date": "2026-04-27",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "대전광역시",
+       "title": "대전도시철도 2호선 차량운행시스템일괄 제작구매 설치",
+       "amount": 293408885000.0,
+       "superseded": false,
+       "rcept": "20260427800817"
+      },
+      {
+       "date": "2026-04-29",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "방위사업청",
+       "title": "K2전차 창정비요소개발",
+       "amount": 113600000000.0,
+       "superseded": false,
+       "rcept": "20260429800816"
+      },
+      {
+       "date": "2026-05-21",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정",
+       "counterparty": "에이치엠지퓨처콤플렉스주식회사 (예정)",
+       "title": null,
+       "amount": 460800000000.0,
+       "superseded": false,
+       "rcept": "20260521800569"
+      },
+      {
+       "date": "2026-05-28",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "에드먼턴 시정부",
+       "title": "캐나다 에드먼턴 Valley Line West 트램 납품 사업",
+       "amount": 249985440880.0,
+       "superseded": false,
+       "rcept": "20260528800926"
+      },
+      {
+       "date": "2026-06-19",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "모로코 철도청",
+       "title": "모로코 철도청 전동차 LTSS 사업",
+       "amount": 748248667606.0,
+       "superseded": false,
+       "rcept": "20260619800001"
+      },
+      {
+       "date": "2026-06-25",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "방위사업청(Defense Acquisition Program Administation)",
+       "title": "K-1중구난차량,K-1교량전차 외주정비",
+       "amount": 198523000000.0,
+       "superseded": false,
+       "rcept": "20260625800570"
+      },
+      {
+       "date": "2026-07-03",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "에드먼턴시(The City of Edmonton)",
+       "title": "에드먼턴 고상형 경전철 공급 사업",
+       "amount": 391446073187.0,
+       "superseded": false,
+       "rcept": "20260703800009"
+      },
+      {
+       "date": "2026-09-21",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Transdev Wellington Ltd",
+       "title": "뉴질랜드 웰링턴 유지보수사업",
+       "amount": 227292598717.0,
+       "superseded": false,
+       "rcept": "20260921800391"
+      },
+      {
+       "date": "2026-09-23",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "타오위안시정부 철도공정국 (Department of Rapid Transit Systems, Taoyuan)",
+       "title": "대만 타오위안 브라운라인 E&M 공급 사업",
+       "amount": 344500969560.0,
+       "superseded": false,
+       "rcept": "20260923800386"
+      },
+      {
+       "date": "2026-09-30",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "육상교통국 (Land Transport Authority, LTA)",
+       "title": "LTA J151 계약 전동차 유지보수지원 사업(LTSS 옵션 5a)",
+       "amount": 310341883519.0,
+       "superseded": false,
+       "rcept": "20260930800644"
+      },
+      {
+       "date": "2026-10-14",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "ULC(Universal LRT Corporation Limited)",
+       "title": "필리핀 MRT7 전동차 및 시스템(신호,통신 등) 공급 계약",
+       "amount": 823976904339.0,
+       "superseded": false,
+       "rcept": "20261014800442"
+      }
+     ],
+     "sources": [
+      "20251112800698",
+      "20251114801272",
+      "20251125800005",
+      "20251209800033",
+      "20251209800224",
+      "20251212800664",
+      "20251222800117",
+      "20260130801210",
+      "20260204800269",
+      "20260423800661",
+      "20260423800664",
+      "20260424800634",
+      "20260427800817",
+      "20260429800816",
+      "20260521800569",
+      "20260528800926",
+      "20260619800001",
+      "20260625800570",
+      "20260703800009",
+      "20260921800391",
+      "20260923800386",
+      "20260930800644",
+      "20261014800442"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 23건"
+    }
+   ],
+   "sources": [
+    "20251209800033",
+    "20251212800664",
+    "20251222800117",
+    "20260130801210",
+    "20260423800664",
+    "20260521800569",
+    "20260619800001",
+    "20260703800009",
+    "20260921800391",
+    "20260923800386",
+    "20260930800644",
+    "20261014800442"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "- **배당 흐름(연결 기준)**: 2023사업연도 보통주 주당 100원, 현금배당총액 109억 원, 배당성향 6.8%다. 2024사업연도는 주당 200원, 218억 원, 5.4%다. 2025사업연도는 주당 600원, 655억 원, 8.5%다. 세 해 모두 같은 접수번호(20260319001275)에 담긴 자료다. (접수번호 20260319001275)\n- **배당수익률**: 보통주 기준 2023사업연도 0.4%, 2024사업연도 0.4%, 2025사업연도 0.3%다. 이 값은 공시에 적힌 그대로 옮겼다. (접수번호 20260319001275)\n- **우선주 배당**: 세 해 모두 우선주 배당 값이 없다.\n- **자사주 취득·소각**: 이 DB에는 자기주식 취득 결정도, 감자(소각) 결정도 없다. 조회 결과에 취득·소각 항목이 0건이다.\n- **자본 조달 결정**: 증자, 사채, 자기주식 관련 결정 공시가 없다. 실제 납입이나 발행 결과를 확인할 자료도 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 926,
+    "output_tokens": 426,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "payout",
+     "title": "현대로템 주주 환원",
+     "company": {
+      "id": 152,
+      "name": "현대로템"
+     },
+     "as_of": "2026-10-16",
+     "years": [
+      {
+       "year": 2023,
+       "cash_eok": 109.1,
+       "buyback_eok": 0.0,
+       "dps": 100.0,
+       "payout_ratio": 6.8
+      },
+      {
+       "year": 2024,
+       "cash_eok": 218.3,
+       "buyback_eok": 0.0,
+       "dps": 200.0,
+       "payout_ratio": 5.4
+      },
+      {
+       "year": 2025,
+       "cash_eok": 654.9,
+       "buyback_eok": 0.0,
+       "dps": 600.0,
+       "payout_ratio": 8.5
+      }
+     ],
+     "sources": [
+      "20260319001275"
+     ],
+     "notes": [
+      "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
+      "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."
+     ],
+     "summary": "2023 주당 100원, 배당성향 6.8%; 2024 주당 200원, 배당성향 5.4%; 2025 주당 600원, 배당성향 8.5%"
+    }
+   ],
+   "sources": [
+    "20260319001275"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "- 최근 1주(2026-10-08~10-16) 종가 기준 수익률은 -7.89%로, 같은 시장 상장 종목 중앙값(-2.74%)보다 5.15%p 낮았습니다.\n- 최근 1개월(2026-09-16~10-16) 수익률은 -18.91%로, 시장 중앙값(-3.73%)보다 15.18%p 낮았습니다.\n- 최근 3개월(2026-07-16~10-16) 수익률은 -39.06%로, 시장 중앙값(-0.97%)보다 38.09%p 낮았습니다.\n- 같은 철도 차량 제품을 매출의 10% 이상으로 파는 상장사는 다원시스 1곳이며, 이 기업의 기간별 수익률 중앙값은 0.0%로 집계되었습니다. 비교 대상이 1곳뿐이어서 업종 흐름을 대표하지는 않습니다.\n- 이 수치는 한국거래소(KRX) 일별 시세를 가공한 지난 기간의 결과이며, 주가 변동의 원인은 이 자료에서 확인되지 않습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 762,
+    "output_tokens": 401,
+    "cache_read_input_tokens": 1069,
+    "cache_creation_input_tokens": 0
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "현대로템 수익률 비교",
+     "company": {
+      "id": 152,
+      "name": "현대로템"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": -7.89,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": 0.0,
+       "peers_counted": 1,
+       "vs_market_pp": -5.15
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": -18.91,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": 0.0,
+       "peers_counted": 1,
+       "vs_market_pp": -15.18
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": -39.06,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": 0.0,
+       "peers_counted": 1,
+       "vs_market_pp": -38.09
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "철도 차량"
+      ],
+      "names": [
+       "다원시스"
+      ],
+      "total": 1
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 -7.89% (시장 -2.74%); 1개월 -18.91% (시장 -3.73%); 3개월 -39.06% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)",
+  "내부자 매매: 조회 시점까지 공시된 것이 없거나 모으지 않음"
+ ],
+ "usage": {
+  "input_tokens": 18867,
+  "output_tokens": 3047,
+  "cache_read_input_tokens": 7483,
+  "cache_creation_input_tokens": 0
+ },
+ "seconds": 23.2,
+ "cost_usd": 0.0035
+}
