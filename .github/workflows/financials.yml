@@ -37,7 +37,7 @@ jobs:
         timeout-minutes: 10
         continue-on-error: true
       - run: python -m company_graph.capital update 3
-        timeout-minutes: 10
+        timeout-minutes: 20
         continue-on-error: true
       - run: python -m company_graph.extract_supply update 3
         timeout-minutes: 20
