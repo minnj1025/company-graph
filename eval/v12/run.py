@@ -17,7 +17,7 @@ from pathlib import Path
 from sqlalchemy import select
 
 from company_graph.config import CACHE_DIR
-from company_graph.db import Company, Product, Relation, session
+from company_graph.db import BusinessSection, Company, Product, Relation, session
 
 OUT = CACHE_DIR / "v12"
 HERE = Path(__file__).resolve().parent
@@ -100,56 +100,65 @@ def grams(text: str) -> collections.Counter:
 
 
 class Docs:
-    """회사마다 그 시점의 최신 '주요 제품' 표 이름들. 달마다 전달 말일 기준으로 묶는다(뒤의 보고서를 보지 않게)."""
+    """회사마다 그 시점의 최신 정기보고서에서: '사업의 개요'와 '주요 제품 및 서비스' 글(각 앞 2,500자)과 제품 표의 이름.
+    인턴 때 사업 아이템 키워드를 뽑은 바로 그 두 소제목이다. 달마다 전달 말일 기준으로 묶는다(뒤의 보고서를 보지 않게)."""
+    SECTIONS, CHARS, TOP = (1, 2), 2500, 300
+
     def __init__(self, db, ids: dict[int, str]):
-        by_company = collections.defaultdict(lambda: collections.defaultdict(list))
+        texts = collections.defaultdict(list)          # (회사, 접수번호) → 글 조각
+        dated = {}                                      # (회사, 접수번호) → 공시일
+        self.products = collections.defaultdict(list)   # (회사, 접수번호) → 제품 줄
         for p in db.scalars(select(Product).where(Product.company_id.in_(list(ids)))):
-            by_company[p.company_id][(p.disclosed_date, p.rcept_no)].append(p)
-        self.reports = {cid: sorted(reports.items()) for cid, reports in by_company.items()}
+            key = (p.company_id, p.rcept_no)
+            self.products[key].append(p)
+            texts[key] += [p.name] + list(p.std_names or [])
+            dated[key] = p.disclosed_date
+        rows = db.execute(select(BusinessSection.company_id, BusinessSection.rcept_no, BusinessSection.disclosed_date, BusinessSection.text)
+                          .where(BusinessSection.company_id.in_(list(ids)), BusinessSection.section_no.in_(self.SECTIONS)))
+        for cid, rcept, disclosed, text in rows:
+            texts[(cid, rcept)].append((text or "")[:self.CHARS])
+            dated[(cid, rcept)] = disclosed
+        counts = {key: grams(" ".join(parts)) for key, parts in texts.items()}
         df = collections.Counter()
-        self.n = 0
-        for cid, reports in self.reports.items():
-            for _, rows in reports:
-                df.update(set(self._text_grams(rows)))
-                self.n += 1
+        for g in counts.values():
+            df.update(g.keys())
+        self.n = len(counts)
         self.idf = {g: math.log((1 + self.n) / (1 + c)) + 1 for g, c in df.items()}
+        self.vectors = {key: self.vector(g, top=self.TOP) for key, g in counts.items()}
+        by_company = collections.defaultdict(list)
+        for (cid, rcept), d in dated.items():
+            by_company[cid].append((d, rcept))
+        self.reports = {cid: sorted(v) for cid, v in by_company.items()}
         self._snap = {}
 
-    @staticmethod
-    def _text_grams(rows) -> collections.Counter:
-        names = []
-        for r in rows:
-            names += [r.name] + list(r.std_names or [])
-        return grams(" ".join(names))
-
-    def vector(self, g: collections.Counter) -> dict:
+    def vector(self, g: collections.Counter, top: int | None = None) -> dict:
         v = {k: c * self.idf.get(k, math.log(1 + self.n) + 1) for k, c in g.items()}
+        if top and len(v) > top:   # 무게가 큰 n그램만 남긴다 (메모리, 잡음)
+            v = dict(sorted(v.items(), key=lambda kv: -kv[1])[:top])
         norm = math.sqrt(sum(x * x for x in v.values())) or 1.0
         return {k: x / norm for k, x in v.items()}
 
     def snapshot(self, as_of: date):
-        """as_of(전달 말일)까지 공시된 최신 보고서로: 회사 → 벡터, n그램 → [(회사, 무게)], 좁은 제품 → 가진 회사."""
+        """as_of(전달 말일)까지 공시된 최신 보고서로: n그램 → [(회사, 무게)], 좁은 제품 → 가진 회사, 회사 → 가진 제품."""
         if as_of in self._snap:
             return self._snap[as_of]
-        vectors, holders, owned = {}, collections.defaultdict(set), collections.defaultdict(set)
+        self._snap.clear()   # 사건을 날짜 순서로 돌므로 하나만 둔다
+        index, holders, owned = collections.defaultdict(list), collections.defaultdict(set), collections.defaultdict(set)
         for cid, reports in self.reports.items():
-            usable = [rows for (d, _), rows in reports if d <= as_of]
+            usable = [rcept for d, rcept in reports if d <= as_of]
             if not usable:
                 continue
-            rows = usable[-1]
-            vectors[cid] = self.vector(self._text_grams(rows))
-            for r in rows:
+            for g, w in self.vectors[(cid, usable[-1])].items():
+                index[g].append((cid, w))
+            product_reports = [rcept for d, rcept in reports if d <= as_of and (cid, rcept) in self.products]
+            for r in self.products.get((cid, product_reports[-1]), []) if product_reports else []:
                 if r.share_pct is None or float(r.share_pct) >= MIN_SHARE:
                     for name in r.std_names or []:
                         if not name.endswith(("유통", "도소매")):
                             holders[name].add(cid)
                             owned[cid].add(name)
-        index = collections.defaultdict(list)
-        for cid, v in vectors.items():
-            for g, w in v.items():
-                index[g].append((cid, w))
         narrow = {name: members for name, members in holders.items() if 2 <= len(members) <= NARROW}
-        self._snap[as_of] = (vectors, index, narrow, owned)
+        self._snap[as_of] = (None, index, narrow, owned)
         return self._snap[as_of]
 
     def scores(self, as_of: date, words: list[str]) -> dict[int, float]:
@@ -272,7 +281,10 @@ def build_groups(evts: list[dict], prices: Prices, docs: Docs, graph: Graph, cod
         cand = {c: v for c, v in graph.candidates(cid, as_of, narrow, owned).items() if tradable(c)} if cid else {}
         c_kw = sorted(cand, key=lambda c: (-round(sim.get(c, 0.0), 6), cand[c][0], -cand[c][1]))[:SIZE]
         c0 = sorted(cand, key=lambda c: (cand[c][0], -cand[c][1]))[:SIZE]
-        e["groups"] = {"B": [code_of[c] for c in b], "C": [code_of[c] for c in c_kw], "C0": [code_of[c] for c in c0]}
+        # C12: ③(제품) 후보를 뺀 공시 관계만. hot.py 의 제품 규칙을 2026년 시세로 정했기 때문에 따로 본다 (수익률 계산 전에 더함)
+        c12 = sorted((c for c in cand if cand[c][0] < PRIORITY["product"]), key=lambda c: (-round(sim.get(c, 0.0), 6), cand[c][0], -cand[c][1]))[:SIZE]
+        e["groups"] = {"B": [code_of[c] for c in b], "C": [code_of[c] for c in c_kw], "C0": [code_of[c] for c in c0],
+                       "C12": [code_of[c] for c in c12]}
         e["why"] = {code_of[c]: cand[c][2] for c in set(c_kw) | set(c0)}
         e["name"] = names.get(cid, e["code"])
     return evts
@@ -307,7 +319,7 @@ def measure(evts: list[dict], prices: Prices) -> dict:
             main = prices.excess(e["code"], i, h)
             if main is not None:
                 rows["main"].append((i, main))
-            got = {k: group_excess(prices, e["groups"][k], i, h) for k in ("B", "C", "C0")}
+            got = {k: group_excess(prices, e["groups"][k], i, h) for k in ("B", "C", "C0", "C12")}
             for k, v in got.items():
                 if v is not None:
                     rows[k].append((i, v))
@@ -315,6 +327,8 @@ def measure(evts: list[dict], prices: Prices) -> dict:
                 rows["C-B"].append((i, got["C"] - got["B"]))
             if got["B"] is not None and got["C0"] is not None:
                 rows["C0-B"].append((i, got["C0"] - got["B"]))
+            if got["B"] is not None and got["C12"] is not None:
+                rows["C12-B"].append((i, got["C12"] - got["B"]))
         out[f"h{h}"] = {k: clustered(v) for k, v in rows.items()}
     return out
 
@@ -367,13 +381,13 @@ def main():
     sets = {}
     for kind in ("good", "bad", "other"):
         sets[kind] = build_groups(events(labels, prices, kind), prices, docs, graph, code_of, id_of, names)
-        filled = {g: sum(1 for e in sets[kind] if e["groups"][g]) for g in ("B", "C", "C0")}
+        filled = {g: sum(1 for e in sets[kind] if e["groups"][g]) for g in ("B", "C", "C0", "C12")}
         print(kind, "사건", len(sets[kind]), "묶음이 빈 것 아님", filled, flush=True)
     (OUT / "events.json").write_text(json.dumps(sets, ensure_ascii=False, default=str), encoding="utf-8")
     if step != "returns":
         for e in random.Random(3).sample(sets["good"], min(8, len(sets["good"]))):
             print(e["date"], e["name"], e["title"][:50], e["kw"])
-            for g in ("B", "C", "C0"):
+            for g in ("B", "C", "C0", "C12"):
                 print("   ", g, [(names_by_code.get(c, c), e["why"].get(c, "")) for c in e["groups"][g]])
         return
     result["good"] = {"full": measure(sets["good"], prices),
