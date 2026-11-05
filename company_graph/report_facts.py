@@ -73,7 +73,8 @@ def governance(company_id: int, holders: dict, investments: dict, major: dict) -
                                 "role": "이 회사 주식을 5% 이상 가졌다고 보고한 자 (5% 대량보유 보고)"} for h in full],
         "summary": {"largest_holder_rows": len(table),
                     "invested_companies": len(companies),
-                    "invested_companies_note": "이 회사가 지분을 가진 회사 수는 이 값을 쓴다(이 회사 사업보고서 타법인출자 현황의 회사 수. 보통주·우선주 줄은 한 회사, 기말에 다 내놓은 줄은 뺐다). investments 목록의 줄 수를 세지 않는다",
+                    "invested_companies_listed": len({_company_key(r) for r in own if (r.get("object") or {}).get("market")}),
+                    "invested_companies_note": "이 회사가 지분을 가진 회사 수는 이 값을, 그 가운데 상장사 수는 invested_companies_listed 를 쓴다(이 회사 사업보고서 타법인출자 현황의 회사 수. 보통주·우선주 줄은 한 회사, 기말에 다 내놓은 줄은 뺐다). investments 목록의 줄 수를 세지 않는다",
                     "investments_100pct": len({_company_key(r) for r in own if (r.get("value") or 0) >= 99.995}),
                     "major_holders_5pct": len(full)},
     }

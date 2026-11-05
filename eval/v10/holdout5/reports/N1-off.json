@@ -1,0 +1,1564 @@
+{
+ "company": {
+  "company_id": 3384,
+  "name": "삼성물산",
+  "stock_code": "028260",
+  "market": "유가증권",
+  "group": "삼성"
+ },
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "verified": false,
+ "summary": "삼성물산은 건설, 상사, 패션, 리조트, 급식/식자재유통, 바이오 여섯 부문을 운영하며, 2026년 반기말 기준 매출 비중은 상사 39.26%, 건설 32.95%입니다 (접수번호 20260814002969). 2026년 2분기 연결 매출은 11조 9,951억 원(19.69%↑), 영업이익은 1조 317억 원(37.09%↑)입니다 (접수번호 20260814002969). 6월 말 기준 부채비율은 44.02%로, 같은 시장 상장사 중앙값 96.7%보다 낮습니다. 최대주주 및 특수관계인 합계 지분율은 2025-12-31 기준 36.02%입니다 (접수번호 20260312000856). 주가는 2026-10-16 기준 최근 1개월 -18.95%로, 같은 기간 유가증권시장 중앙값 -3.73%보다 낮았습니다.",
+ "sections": [
+  {
+   "key": "business",
+   "title": "사업 구성",
+   "text": "**사업 구성 (반기보고서 2026.06, 접수번호 20260814002969 기준)**\n\n- 사업은 건설, 상사, 패션, 리조트, 급식/식자재유통, 바이오의 여섯 부문으로 나뉩니다. 2026년 반기말 기준 매출 비중은 상사 39.26%, 건설 32.95%, 바이오 13.60%, 급식/식자재유통 7.61%, 패션 5.19%, 리조트 1.39%입니다 (접수번호 20260814002969).\n- 건설부문은 건축·토목·플랜트·주택 공사를 하고, 상사부문은 철강·화학·에너지·테크 분야의 종합상사 거래를 합니다. 해외 거점은 42개국 64개입니다 (접수번호 20260814002969).\n- 패션부문은 자체 브랜드와 해외 브랜드 수입·판매를 합니다. 리조트부문은 에버랜드·캐리비안베이 등 테마파크, 골프장, 조경을 운영합니다 (접수번호 20260814002969).\n- 급식/식자재유통은 삼성웰스토리가 맡고, 바이오부문은 의약품 위탁생산(CMO)과 위탁개발(CDO), 바이오시밀러 사업을 합니다 (접수번호 20260814002969).\n- 부문별 매출 금액은 2026년 반기 기준으로 건설 7조 4,010억 원, 상사 8조 8,170억 원, 바이오 3조 557억 원 등입니다. 보고서 표 단위는 백만원이며, 이 금액은 반기 누적치입니다 (접수번호 20260814002969).",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 7636,
+    "output_tokens": 585,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1141
+   },
+   "views": [
+    {
+     "kind": "revenue",
+     "title": "삼성물산 매출 구성",
+     "company": {
+      "id": 3384,
+      "name": "삼성물산"
+     },
+     "as_of": "2026-10-16",
+     "report": "반기보고서 (2026.06)",
+     "rows": [
+      {
+       "name": "건설,주택사업",
+       "segment": "건 설",
+       "share_pct": 32.95,
+       "family": "건축 공사"
+      },
+      {
+       "name": "상/제품, 용역 등",
+       "segment": "상 사",
+       "share_pct": 39.26,
+       "family": "유통"
+      },
+      {
+       "name": "상/제품",
+       "segment": "패 션",
+       "share_pct": 5.19,
+       "family": "의류·패션"
+      },
+      {
+       "name": "리조트 및 골프,조경",
+       "segment": "리조트",
+       "share_pct": 1.39,
+       "family": "호텔·레저·여행"
+      },
+      {
+       "name": "전문급식서비스및 식자재 유통",
+       "segment": "급식/식자재유통",
+       "share_pct": 7.61,
+       "family": "식자재 유통·급식·외식"
+      },
+      {
+       "name": "제품,용역 등",
+       "segment": "바이오",
+       "share_pct": 13.6,
+       "family": "위탁개발생산·임상"
+      }
+     ],
+     "sources": [
+      "20260814002969"
+     ],
+     "notes": [
+      "보고서의 제품별 매출 표에 적힌 비중입니다."
+     ],
+     "summary": "반기보고서 (2026.06): 제품 6줄, 비중 합 100.0%"
+    }
+   ],
+   "sources": [
+    "20260814002969"
+   ]
+  },
+  {
+   "key": "financials",
+   "title": "실적과 재무",
+   "text": "**연결 기준 실적**\n- 2026년 2분기 매출은 11조 9,951억 원으로 전년 같은 분기 대비 19.69% 늘었고, 영업이익은 1조 317억 원(37.09%↑), 순이익은 9,155억 원(73.88%↑)입니다. 영업이익률은 8.6%입니다 (접수번호 20260814002969).\n- 2026 상반기 누적 매출은 22조 4,609억 원(13.67%↑), 영업이익은 1조 7,521억 원(18.62%↑), 순이익은 2조 14억 원(36.73%↑)입니다 (접수번호 20260814002969).\n- 2025년 연간 매출은 40조 7,422억 원(3.23%↓), 영업이익은 3조 2,928억 원(10.37%↑), 순이익은 3조 9,066억 원(40.93%↑)입니다. 순이익률은 9.59%입니다 (접수번호 20260312000856).\n\n**별도 기준 (이 회사 단독 재무제표)**\n- 2026년 2분기 별도 매출은 6조 1,829억 원(17.79%↑), 영업이익은 6,189억 원, 순이익은 5,186억 원입니다. 전년 같은 분기 영업이익 1,230억 원 대비 크게 늘었습니다 (접수번호 20260814002969).\n\n**재무 건전성 (2026년 6월 말 기준, 연결)**\n- 부채비율은 44.02%(2025년 말 50.5%)이고, 유동비율은 150.02%(2025년 말 153.95%)입니다 (접수번호 20260814002969).\n- 같은 시장(유가증권) 상장사 중앙값은 부채비율 96.7%, 유동비율 133.47%이며, 이 DB가 같은 시장 827개 기업으로 계산한 값입니다. 이 기준으로 부채비율은 중앙값보다 낮고 유동비율은 중앙값보다 높습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4146,
+    "output_tokens": 689,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1141
+   },
+   "views": [
+    {
+     "kind": "financials",
+     "title": "삼성물산 실적 추이",
+     "company": {
+      "id": 3384,
+      "name": "삼성물산"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "quarters": [
+      {
+       "period": "2024 3분기",
+       "fiscal_year": 2024,
+       "quarter": 3,
+       "end": "2024-09-30",
+       "rcept_no": [
+        "20241114001924"
+       ],
+       "revenue": 103098.7,
+       "revenue_yoy_pct": -6.03,
+       "operating_income": 7361.5,
+       "operating_income_yoy_pct": -11.35,
+       "net_income": 5600.3,
+       "net_income_yoy_pct": -20.13,
+       "operating_margin_pct": 7.14
+      },
+      {
+       "period": "2024 4분기",
+       "fiscal_year": 2024,
+       "quarter": 4,
+       "end": "2024-12-31",
+       "rcept_no": [
+        "20250814002350",
+        "20241114001924"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 99927.6,
+       "revenue_yoy_pct": -1.06,
+       "operating_income": 6345.6,
+       "operating_income_yoy_pct": 1.21,
+       "net_income": 6558.1,
+       "net_income_yoy_pct": 14.79,
+       "operating_margin_pct": 6.35
+      },
+      {
+       "period": "2025 1분기",
+       "fiscal_year": 2025,
+       "quarter": 1,
+       "end": "2025-03-31",
+       "rcept_no": [
+        "20250515001541"
+       ],
+       "revenue": 97367.8,
+       "revenue_yoy_pct": -9.81,
+       "operating_income": 7244.2,
+       "operating_income_yoy_pct": 1.7,
+       "net_income": 9372.4,
+       "net_income_yoy_pct": 14.0,
+       "operating_margin_pct": 7.44
+      },
+      {
+       "period": "2025 2분기",
+       "fiscal_year": 2025,
+       "quarter": 2,
+       "end": "2025-06-30",
+       "rcept_no": [
+        "20250814003110"
+       ],
+       "revenue": 100220.8,
+       "revenue_yoy_pct": -8.93,
+       "operating_income": 7526.1,
+       "operating_income_yoy_pct": -16.41,
+       "net_income": 5265.2,
+       "net_income_yoy_pct": -28.27,
+       "operating_margin_pct": 7.51
+      },
+      {
+       "period": "2025 3분기",
+       "fiscal_year": 2025,
+       "quarter": 3,
+       "end": "2025-09-30",
+       "rcept_no": [
+        "20251114001740"
+       ],
+       "revenue": 101509.5,
+       "revenue_yoy_pct": -1.54,
+       "operating_income": 9934.3,
+       "operating_income_yoy_pct": 34.95,
+       "net_income": 8846.0,
+       "net_income_yoy_pct": 57.96,
+       "operating_margin_pct": 9.79
+      },
+      {
+       "period": "2025 4분기",
+       "fiscal_year": 2025,
+       "quarter": 4,
+       "end": "2025-12-31",
+       "rcept_no": [
+        "20260312000856",
+        "20251114001740"
+       ],
+       "computed": "4분기는 공시되지 않아 사업보고서의 연간 값에서 3분기보고서의 누적 값을 뺐습니다",
+       "revenue": 108324.3,
+       "revenue_yoy_pct": 8.4,
+       "operating_income": 8222.8,
+       "operating_income_yoy_pct": 29.58,
+       "net_income": 15582.9,
+       "net_income_yoy_pct": 137.61,
+       "operating_margin_pct": 7.59
+      },
+      {
+       "period": "2026 1분기",
+       "fiscal_year": 2026,
+       "quarter": 1,
+       "end": "2026-03-31",
+       "rcept_no": [
+        "20260515001895"
+       ],
+       "revenue": 104658.2,
+       "revenue_yoy_pct": 7.49,
+       "operating_income": 7203.6,
+       "operating_income_yoy_pct": -0.56,
+       "net_income": 10858.7,
+       "net_income_yoy_pct": 15.86,
+       "operating_margin_pct": 6.88
+      },
+      {
+       "period": "2026 2분기",
+       "fiscal_year": 2026,
+       "quarter": 2,
+       "end": "2026-06-30",
+       "rcept_no": [
+        "20260814002969"
+       ],
+       "revenue": 119950.6,
+       "revenue_yoy_pct": 19.69,
+       "operating_income": 10317.4,
+       "operating_income_yoy_pct": 37.09,
+       "net_income": 9155.4,
+       "net_income_yoy_pct": 73.88,
+       "operating_margin_pct": 8.6
+      }
+     ],
+     "years": [
+      {
+       "period": "2022 연간",
+       "fiscal_year": 2022,
+       "through": "annual",
+       "rcept_no": [
+        "20230309000761"
+       ],
+       "revenue": 431616.5,
+       "revenue_yoy_pct": 25.27,
+       "operating_income": 25285.2,
+       "operating_income_yoy_pct": 111.42,
+       "net_income": 25449.6,
+       "net_income_yoy_pct": 39.14,
+       "operating_margin_pct": 5.86,
+       "net_margin_pct": 5.9
+      },
+      {
+       "period": "2023 연간",
+       "fiscal_year": 2023,
+       "through": "annual",
+       "rcept_no": [
+        "20240329002523"
+       ],
+       "revenue": 418956.8,
+       "revenue_yoy_pct": -2.93,
+       "operating_income": 28701.7,
+       "operating_income_yoy_pct": 13.51,
+       "net_income": 27191.1,
+       "net_income_yoy_pct": 6.84,
+       "operating_margin_pct": 6.85,
+       "net_margin_pct": 6.49
+      },
+      {
+       "period": "2024 연간",
+       "fiscal_year": 2024,
+       "through": "annual",
+       "rcept_no": [
+        "20250814002350"
+       ],
+       "revenue": 421032.4,
+       "revenue_yoy_pct": 0.5,
+       "operating_income": 29834.0,
+       "operating_income_yoy_pct": 3.94,
+       "net_income": 27720.1,
+       "net_income_yoy_pct": 1.95,
+       "operating_margin_pct": 7.09,
+       "net_margin_pct": 6.58
+      },
+      {
+       "period": "2025 연간",
+       "fiscal_year": 2025,
+       "through": "annual",
+       "rcept_no": [
+        "20260312000856"
+       ],
+       "revenue": 407422.4,
+       "revenue_yoy_pct": -3.23,
+       "operating_income": 32927.5,
+       "operating_income_yoy_pct": 10.37,
+       "net_income": 39066.5,
+       "net_income_yoy_pct": 40.93,
+       "operating_margin_pct": 8.08,
+       "net_margin_pct": 9.59
+      },
+      {
+       "period": "2026 상반기 누적",
+       "fiscal_year": 2026,
+       "through": "half",
+       "rcept_no": [
+        "20260814002969"
+       ],
+       "revenue": 224608.8,
+       "revenue_yoy_pct": 13.67,
+       "operating_income": 17521.0,
+       "operating_income_yoy_pct": 18.62,
+       "net_income": 20014.1,
+       "net_income_yoy_pct": 36.73,
+       "operating_margin_pct": 7.8,
+       "net_margin_pct": 8.91
+      }
+     ],
+     "sources": [
+      "20241114001924",
+      "20250814002350",
+      "20250515001541",
+      "20250814003110",
+      "20251114001740",
+      "20260312000856",
+      "20260515001895",
+      "20260814002969"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "4분기는 공시되지 않아 연간 값에서 3분기 누적을 빼서 계산했습니다."
+     ],
+     "summary": "2026 2분기 매출 11조 9,951억 원, 영업이익 1조 317억 원, 영업이익 전년 동기 대비 +37.1%"
+    },
+    {
+     "kind": "health",
+     "title": "삼성물산 재무 체력",
+     "company": {
+      "id": 3384,
+      "name": "삼성물산"
+     },
+     "as_of": "2026-10-16",
+     "unit": "억원",
+     "basis": "연결",
+     "date": "2026-06-30",
+     "measures": [
+      {
+       "key": "debt_ratio",
+       "label": "부채비율",
+       "value": 44.02,
+       "median": 96.7,
+       "better": "lower",
+       "how": "부채총계 / 자본총계"
+      },
+      {
+       "key": "current_ratio",
+       "label": "유동비율",
+       "value": 150.02,
+       "median": 133.47,
+       "better": "higher",
+       "how": "유동자산 / 유동부채"
+      },
+      {
+       "key": "operating_margin",
+       "label": "영업이익률",
+       "value": 7.8,
+       "median": 5.1,
+       "better": "higher",
+       "how": "영업이익 / 매출 (2026 상반기 누적)"
+      }
+     ],
+     "balance": {
+      "date": "2026-06-30",
+      "rcept_no": [
+       "20260814002969"
+      ],
+      "total_assets": 1637684.5,
+      "total_liabilities": 500598.1,
+      "total_equity": 1137086.4,
+      "current_assets": 240064.2,
+      "current_liabilities": 160025.3,
+      "debt_ratio_pct": 44.02,
+      "current_ratio_pct": 150.02
+     },
+     "previous": {
+      "date": "2025-12-31",
+      "rcept_no": [
+       "20260312000856"
+      ],
+      "total_assets": 865327.5,
+      "total_liabilities": 290358.0,
+      "total_equity": 574969.5,
+      "current_assets": 213564.0,
+      "current_liabilities": 138719.8,
+      "debt_ratio_pct": 50.5,
+      "current_ratio_pct": 153.95
+     },
+     "market": "유가증권",
+     "sources": [
+      "20241114001924",
+      "20250814002350",
+      "20250515001541",
+      "20250814003110",
+      "20251114001740",
+      "20260312000856",
+      "20260515001895",
+      "20260814002969"
+     ],
+     "notes": [
+      "연결 재무제표 기준, 금액 단위 억원. 정기보고서의 주요계정입니다.",
+      "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다. 좋고 나쁨의 기준이 아니라 견주어 보기 위한 값입니다."
+     ],
+     "summary": "부채비율 44.02% (시장 중앙값 96.7%), 유동비율 150.02% (시장 중앙값 133.47%), 영업이익률 7.8% (시장 중앙값 5.1%)"
+    }
+   ],
+   "sources": [
+    "20260312000856",
+    "20260814002969"
+   ]
+  },
+  {
+   "key": "governance",
+   "title": "지배 구조와 주주",
+   "text": "- **최대주주 및 특수관계인**: 보통주 기준 합계 36.02%(기말, 2025-12-31 기준, 접수번호 20260312000856). 이재용 19.76%, 이서현 6.8%, 이부진 6.1%가 주요 주주이며, 기초 대비 합계 지분율은 34.45%에서 36.02%로 올랐습니다(기초 34.45%).\n- **5% 대량보유 보고**: 이재용이 38.07%를 보고했습니다(2026-05-22, 보유주식수 변동 및 보유주식등에 관한 계약의 변경, 접수번호 20260522000567). 국민연금공단은 8.19%를 보고했고, 보유목적을 단순투자목적에서 일반투자목적으로 바꾼 사실을 공시했습니다(2025-11-19, 접수번호 20251119000236). 이 비율은 대표보고자와 특별관계자를 합친 값이라 최대주주 현황과 다를 수 있습니다.\n- **타법인 주식 보유 공시**: 케이씨씨가 이 회사 주식 10.01%를 가졌다고 자기 사업보고서에 적었습니다(2025-12-31 기준, 접수번호 20260309001896). 대신증권은 1.0%를 적었습니다(2025-12-31 기준, 접수번호 20260319000718). 두 곳 모두 최대주주나 특수관계인이 아닙니다.\n- **투자 현황**: 이 회사가 지분을 가진 회사는 50곳이며, 이 중 40곳은 지분율 100%입니다(2025-12-31 기준, 접수번호 20260312000856). 전부 비상장 회사로 적혀 있습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 4659,
+    "output_tokens": 601,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1141
+   },
+   "views": [
+    {
+     "kind": "ownership",
+     "title": "삼성물산 지분 구조도",
+     "company": {
+      "id": 3384,
+      "name": "삼성물산"
+     },
+     "as_of": "2026-10-16",
+     "holders": [
+      {
+       "id": null,
+       "name": "이 재 용",
+       "listed": false,
+       "pct": 19.76,
+       "role": "최대주주 본인",
+       "rcept": "20260312000856",
+       "up": []
+      },
+      {
+       "id": 2144,
+       "name": "케이씨씨",
+       "listed": true,
+       "pct": 10.01,
+       "role": null,
+       "rcept": "20260309001896",
+       "up": [
+        {
+         "id": null,
+         "name": "정몽진",
+         "listed": false,
+         "pct": 20.0
+        },
+        {
+         "id": null,
+         "name": "정몽열",
+         "listed": false,
+         "pct": 6.31
+        },
+        {
+         "id": null,
+         "name": "서전문화재단법인",
+         "listed": false,
+         "pct": 3.0
+        }
+       ]
+      },
+      {
+       "id": null,
+       "name": "이 서 현",
+       "listed": false,
+       "pct": 6.8,
+       "role": "친인척",
+       "rcept": "20260312000856",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "이 부 진",
+       "listed": false,
+       "pct": 6.1,
+       "role": "친인척",
+       "rcept": "20260312000856",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "삼성생명공익재단",
+       "listed": false,
+       "pct": 1.17,
+       "role": "계열비영리법인",
+       "rcept": "20260312000856",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "홍 라 희",
+       "listed": false,
+       "pct": 1.05,
+       "role": "친인척",
+       "rcept": "20260312000856",
+       "up": []
+      },
+      {
+       "id": 2881,
+       "name": "대신증권",
+       "listed": true,
+       "pct": 1.0,
+       "role": null,
+       "rcept": "20260319000718",
+       "up": []
+      },
+      {
+       "id": null,
+       "name": "삼성문화재단",
+       "listed": false,
+       "pct": 0.67,
+       "role": "계열비영리법인",
+       "rcept": "20260312000856",
+       "up": []
+      }
+     ],
+     "more_holders": 3,
+     "investees": [
+      {
+       "id": null,
+       "name": "CHEIL INDUSTRIES ITALY SRL",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "Erdsam Co., Ltd.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "S&WOO CONSTRUCTION PHILIPPINES, INC.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "SAM Gulf Investment Limited",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "SAMSUNG C&T (KL) SDN., BHD",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "SAMSUNG C&T CORPORATION (SHANGHAI) CO., LTD",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "SAMSUNG C&T CORPORATION SAUDI ARABIA",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "SAMSUNG C&T CORPORATION VIETNAM CO., LTD",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "SAMSUNG C&T HONGKONG Ltd.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "SAMSUNG C&T INVESTMENT Co.,Ltd.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "SAMSUNG C&T PHILIPPINES, CORP.",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      },
+      {
+       "id": null,
+       "name": "SAMSUNG VISTA C&I AUSTRALIA PTY LTD",
+       "listed": false,
+       "pct": 100.0,
+       "purpose": "경영참여",
+       "rcept": "20260312000856"
+      }
+     ],
+     "more_investees": 38,
+     "sources": [
+      "20260312000856",
+      "20260309001896",
+      "20260319000718"
+     ],
+     "notes": [
+      "주주는 최대주주와 특수관계인, 그리고 지분을 자기 보고서에 적은 회사만입니다. 5% 이상 주주 전체가 아닙니다.",
+      "지분율은 가장 최근 사업보고서의 표에 적힌 값입니다."
+     ],
+     "summary": "주주 11곳(위 8곳 표시), 출자 대상 50곳(위 12곳 표시)"
+    },
+    {
+     "kind": "holders",
+     "title": "삼성물산 주주 분포",
+     "company": {
+      "id": 3384,
+      "name": "삼성물산"
+     },
+     "as_of": "2026-10-16",
+     "stack": true,
+     "group_pct": 36.02,
+     "group_date": "2025-12-31",
+     "holders": [
+      {
+       "name": "이재용",
+       "id": null,
+       "pct": 38.07,
+       "date": "2026-05-22",
+       "overlap": true
+      },
+      {
+       "name": "국민연금공단",
+       "id": null,
+       "pct": 8.19,
+       "date": "2025-11-19",
+       "overlap": false
+      }
+     ],
+     "rest_pct": 55.79,
+     "sources": [
+      "20260522000567",
+      "20251119000236",
+      "20260312000856",
+      "20260309001896"
+     ],
+     "notes": [
+      "최대주주와 특수관계인 합계는 가장 최근 사업보고서의 최대주주 현황, 5% 보고자는 각자의 가장 최근 대량보유 보고입니다.",
+      "최대주주 쪽이 낸 5% 보고는 위의 합계와 겹치므로 막대에 더하지 않았습니다. 나머지는 100%에서 뺀 어림값이고 소액주주와 5% 미만 주주가 섞여 있습니다."
+     ],
+     "summary": "최대주주와 특수관계인 36.02%, 국민연금공단 8.19%"
+    }
+   ],
+   "sources": [
+    "20251119000236",
+    "20260309001896",
+    "20260312000856",
+    "20260319000718",
+    "20260522000567"
+   ]
+  },
+  {
+   "key": "deals",
+   "title": "최근 1년의 계약과 결정",
+   "text": "- **공급계약 20건** (계약일 2025-10-16 이후, 지금 유효한 것): 이 회사가 수주한 계약 5건, 합계 10조 2,728억 원; 이 회사가 발주한 계약(상대 회사가 공시) 15건, 합계 8,192억 원.\n- **위 계약의 정정**: 이 기간에 위 계약을 정정한 공시 5건(계약 5개). 새 계약이 아니다.\n- **가장 큰 계약**: 2026-03-25 계약, 2026-03-26 공시 · 수주 · 상대 삼성전자 · '평택캠퍼스 2단지 조성 공사 및 P5 FAB 건축 공사' · 2조 8,932억 원 · 최근 매출액 대비 6.87% (접수번호 20260326800003)\n- 금액이 큰 순서로 8건 (나머지 12건은 카드와 접수번호로 볼 수 있다):\n  - 2026-03-25 계약, 2026-03-26 공시 · 수주 · 상대 삼성전자 · '평택캠퍼스 2단지 조성 공사 및 P5 FAB 건축 공사' · 2조 8,932억 원 · 최근 매출액 대비 6.87% (접수번호 20260326800003)\n  - 2026-08-31 계약·공시 · 수주 · 상대 압구정아파트지구 특별계획구역4 재건축정비사업조합 · '압구정아파트지구 특별계획구역4 재건축정비사업' · 2조 1,154억 원 · 최근 매출액 대비 5.19% (접수번호 20260831800689)\n  - 2025-12-22 계약, 2025-12-23 공시 · 수주 · 상대 QatarEnergy LNG (카타르) · 'ENGINEERING, PROCUREMENT, CONSTRUCTION AND COMMISSIONING AGREEMENT FOR CO2 SEQUESTRATION PROJECT' · 2조 244억 원 · 최근 매출액 대비 4.81% (접수번호 20251223800010)\n  - 2026-03-12 계약·공시, 2026-08-31 마지막 정정 · 수주 · 상대 삼성전자 · '[P4 Ph2(하동)] FAB동/복합동 마감공사' · 1조 6,997억 원 · 최근 매출액 대비 4.04% · 이 기간 정정 공시 1건(정정 뒤 금액) (접수번호 20260831800587)\n  - 2025-12-11 계약, 2025-12-12 공시, 2026-08-19 마지막 정정 · 수주 · 상대 QatarEnergy (카타르) · 'ENGINEERING, PROCUREMENT, INSTALLATION AND COMMISSIONING OF DUKHAN SOLAR POWER PLANT' · 1조 5,401억 원 · 최근 매출액 대비 3.66% · 이 기간 정정 공시 1건(정정 뒤 금액) (접수번호 20260819800608)\n  - 2025-12-19 계약, 2025-12-22 공시 · 발주(상대 회사가 공시) · 상대 비에이치아이 · 'LNG 복합화력 발전설비 공급계약' · 1,492억 원 · 공시한 상대 회사의 최근 매출액 대비 36.9% (접수번호 20251222900119)\n  - 2026-09-07 계약·공시 · 발주(상대 회사가 공시) · 상대 한양이엔지 · 'P5 Ph1 일반배관1공구' · 1,481억 원 · 공시한 상대 회사의 최근 매출액 대비 13.24% (접수번호 20260907900137)\n  - 2026-09-14 계약·공시 · 발주(상대 회사가 공시) · 상대 세보엠이씨 · '평택 배관공사3' · 1,057억 원 · 공시한 상대 회사의 최근 매출액 대비 14.77% (접수번호 20260914900175)\n- **옛 계약의 정정**: 계약일이 2025-10-16보다 이른 계약을 이 기간에 정정한 공시 — 이 회사가 낸 정정 20건(계약 11개), 상대 회사가 이 회사와의 계약을 정정한 공시 7건(계약 4개). 새 계약이 아니라 위 건수에 넣지 않았다. 계약금액이 바뀐 계약:\n  - 2020-09-21 계약 '새울원자력 3,4호기 주설비공사' · 2026-09-18 정정 · 계약금액 정정 전 1조 2,959억 원 → 정정 후 1조 3,331억 원 (접수번호 20260918800764)\n  - 2024-03-29 계약 'SDR 신축공사' · 2026-08-07 정정 · 계약금액 정정 전 1조 801억 원 → 정정 후 1조 4,844억 원 (접수번호 20260807800913)\n  - 2025-07-18 계약 'P4 Ph4(상동) 마감공사' · 2026-07-28 정정 · 계약금액 정정 전 2조 3,671억 원 → 정정 후 2조 6,302억 원 (접수번호 20260728800846)\n  - 계약금액이 바뀐 계약은 모두 12개다.\n- **다른 회사 지분의 취득·처분 결정 1건** (결의일 2025-10-16 이후, 결정이지 실행 결과가 아니다):\n  - 2026-07-17 결의, 2026-07-20 공시, 2026-08-28 마지막 정정 · 삼성바이오로직스가 PolyPeptide Group AG 지분 33,016,411주를 2조 7,062억 원에 취득하기로 결정(그 뒤 지분율 100%) — 자회사의 결정, 삼성물산이 대신 공시 (접수번호 20260828800834)\n- 같은 기간 증자·사채·자기주식 같은 자본 결정 1건은 '자본 변동과 주주 환원' 항목에 있다.\n- 이 DB의 공급계약·해지 공시는 2026-10-16 접수분까지 모았다. 그 뒤 공시는 여기에 없다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 2415,
+    "output_tokens": 148,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1141
+   },
+   "written_by": "code",
+   "views": [
+    {
+     "kind": "supply_flow",
+     "title": "삼성물산 공급망 흐름",
+     "company": {
+      "id": 3384,
+      "name": "삼성물산"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "flows": [
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": 3506,
+        "name": "삼성전자",
+        "listed": true
+       },
+       "amount": 13629790000000,
+       "count": 6
+      },
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Ras Abu Fontas Power Company Q.P.S.C.(카타르)",
+        "listed": false
+       },
+       "amount": 3970888000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "ABU DHABI OFFSHORE POWER TRANSMISSION COMPANY LIMITED LLC",
+        "listed": false
+       },
+       "amount": 2876415902953,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "압구정아파트지구 특별계획구역4 재건축정비사업조합",
+        "listed": false
+       },
+       "amount": 2115400000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "QatarEnergy LNG (카타르)",
+        "listed": false
+       },
+       "amount": 2024383112140,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "QatarEnergy (카타르)",
+        "listed": false
+       },
+       "amount": 1540071611480,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": 4903,
+        "name": "삼성디스플레이",
+        "listed": false
+       },
+       "amount": 1484450000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": 9151,
+        "name": "한국수력원자력",
+        "listed": false
+       },
+       "amount": 1333126655850,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "Taoyuan International Airport Co., Ltd.",
+        "listed": false
+       },
+       "amount": 1302131798253,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "반포아파트(제3주구) 주택재건축정비사업조합",
+        "listed": false
+       },
+       "amount": 1209810000000,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "to": {
+        "id": null,
+        "name": "푸본생명보험(Fubon Life Insurance Co., Ltd)",
+        "listed": false
+       },
+       "amount": 1115054450932,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 1578,
+        "name": "세보엠이씨",
+        "listed": true
+       },
+       "to": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "amount": 349798000000,
+       "count": 5
+      },
+      {
+       "from": {
+        "id": 2880,
+        "name": "세아제강",
+        "listed": true
+       },
+       "to": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "amount": 172462992029,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 2146,
+        "name": "세아제강지주",
+        "listed": true
+       },
+       "to": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "amount": 172462992029,
+       "count": 1
+      },
+      {
+       "from": {
+        "id": 3623,
+        "name": "비에이치아이",
+        "listed": true
+       },
+       "to": {
+        "id": 3384,
+        "name": "삼성물산",
+        "listed": true
+       },
+       "amount": 149197200000,
+       "count": 1
+      }
+     ],
+     "more": 9,
+     "sources": [
+      "20251209800570",
+      "20251212801338",
+      "20251223800010",
+      "20251226800770",
+      "20251229800860",
+      "20260326800003",
+      "20260422800001",
+      "20260424800768",
+      "20260424800793",
+      "20260724800002",
+      "20260728800846",
+      "20260807800913",
+      "20260819800608",
+      "20260831800587",
+      "20260831800689",
+      "20260918800764",
+      "20251222900119",
+      "20260320900862",
+      "20260331800911",
+      "20260427900751",
+      "20260429800308",
+      "20260429800321",
+      "20260507900854",
+      "20260707900311",
+      "20260715800052",
+      "20260715900077",
+      "20260727900670",
+      "20260730900172",
+      "20260810900581",
+      "20260904900182",
+      "20260907900137",
+      "20260914900175",
+      "20260914900422",
+      "20260922800513",
+      "20260923800642",
+      "20261013900129"
+     ],
+     "notes": [
+      "건별로 공시한 공급계약만입니다. 계약금액의 합이며 실제 매출과 다릅니다. 정정 뒤의 값이고 해지된 계약은 빠집니다."
+     ],
+     "summary": "2025-10-16 이후 공급계약 36건, 상대 24쌍"
+    },
+    {
+     "kind": "timeline",
+     "title": "삼성물산 공시 타임라인",
+     "company": {
+      "id": 3384,
+      "name": "삼성물산"
+     },
+     "as_of": "2026-10-16",
+     "period": {
+      "from": "2025-10-16",
+      "to": "2026-10-16"
+     },
+     "events": [
+      {
+       "date": "2025-10-31",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Taoyuan International Airport Co., Ltd.",
+       "title": "대만 Taoyuan 국제공항 제3터미널 토목건축공사",
+       "amount": 1281705806074.0,
+       "superseded": true,
+       "rcept": "20251031800872"
+      },
+      {
+       "date": "2025-11-21",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "한국수력원자력주식회사",
+       "title": "새울원자력 3,4호기 주설비공사",
+       "amount": 1203903060360.0,
+       "superseded": true,
+       "rcept": "20251121800643"
+      },
+      {
+       "date": "2025-12-09",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "푸본생명보험(Fubon Life Insurance Co., Ltd)",
+       "title": "푸본생명보험 가오슝 MRT 아오지디역 상업지역 개발 프로젝트",
+       "amount": 1115054450932.0,
+       "superseded": false,
+       "rcept": "20251209800570"
+      },
+      {
+       "date": "2025-12-12",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "QatarEnergy (카타르)",
+       "title": "ENGINEERING, PROCUREMENT, INSTALLATION AND COMMISSIONING OF DUKHAN SOLAR POWER PLANT",
+       "amount": 1540071611480.0,
+       "superseded": true,
+       "rcept": "20251212801312"
+      },
+      {
+       "date": "2025-12-12",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "삼성전자 주식회사",
+       "title": "[P4 Ph1(하서)] FAB동/복합동 마감공사",
+       "amount": 2963510000000.0,
+       "superseded": false,
+       "rcept": "20251212801338"
+      },
+      {
+       "date": "2025-12-19",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "한국수력원자력주식회사",
+       "title": "새울원자력 3,4호기 주설비공사",
+       "amount": 1209982521990.0,
+       "superseded": true,
+       "rcept": "20251219800737"
+      },
+      {
+       "date": "2025-12-23",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "QatarEnergy LNG (카타르)",
+       "title": "ENGINEERING, PROCUREMENT, CONSTRUCTION AND COMMISSIONING AGREEMENT FOR CO2 SEQUESTRATION PROJECT",
+       "amount": 2024383112140.0,
+       "superseded": false,
+       "rcept": "20251223800010"
+      },
+      {
+       "date": "2025-12-24",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "ABU DHABI OFFSHORE POWER TRANSMISSION COMPANY LIMITED LLC",
+       "title": "PROJECT LIGHTNING (UAE 고압직류 송전공사)",
+       "amount": 2731043361960.0,
+       "superseded": true,
+       "rcept": "20251224800715"
+      },
+      {
+       "date": "2025-12-26",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "삼성전자 주식회사",
+       "title": "P4 Ph3(상서) FAB동, 복합동 마감공사",
+       "amount": 2334365000000.0,
+       "superseded": false,
+       "rcept": "20251226800770"
+      },
+      {
+       "date": "2025-12-29",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Ras Abu Fontas Power Company Q.P.S.C.(카타르)",
+       "title": "카타르 Facility E Independent Water and Power Production Project",
+       "amount": 3970888000000.0,
+       "superseded": false,
+       "rcept": "20251229800860"
+      },
+      {
+       "date": "2025-12-31",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "삼성디스플레이 주식회사(SAMSUNG DISPLAY)",
+       "title": "SDR 신축공사",
+       "amount": 1080090000000.0,
+       "superseded": true,
+       "rcept": "20251231800513"
+      },
+      {
+       "date": "2026-01-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "한국수력원자력주식회사",
+       "title": "새울원자력 3,4호기 주설비공사",
+       "amount": 1295873938920.0,
+       "superseded": true,
+       "rcept": "20260130800946"
+      },
+      {
+       "date": "2026-03-12",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "삼성전자 주식회사",
+       "title": "[P4 Ph2(하동)] FAB동/복합동 마감공사",
+       "amount": 1379170000000.0,
+       "superseded": true,
+       "rcept": "20260312801732"
+      },
+      {
+       "date": "2026-03-26",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "삼성전자 주식회사",
+       "title": "평택캠퍼스 2단지 조성 공사 및 P5 FAB 건축 공사",
+       "amount": 2893220000000.0,
+       "superseded": false,
+       "rcept": "20260326800003"
+      },
+      {
+       "date": "2026-03-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "삼성전자 주식회사",
+       "title": "[천안단지 마감공사] C-PJT 공사(물산)",
+       "amount": 1064000000000.0,
+       "superseded": true,
+       "rcept": "20260330802054"
+      },
+      {
+       "date": "2026-04-20",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "ABU DHABI OFFSHORE POWER TRANSMISSION COMPANY LIMITED LLC",
+       "title": "PROJECT LIGHTNING (UAE 고압직류 송전공사)",
+       "amount": 2769333902953.0,
+       "superseded": true,
+       "rcept": "20260420800005"
+      },
+      {
+       "date": "2026-04-22",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "ABU DHABI OFFSHORE POWER TRANSMISSION COMPANY LIMITED LLC",
+       "title": "PROJECT LIGHTNING (UAE 고압직류 송전공사)",
+       "amount": 2876415902953.0,
+       "superseded": false,
+       "rcept": "20260422800001"
+      },
+      {
+       "date": "2026-04-24",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "삼성전자 주식회사",
+       "title": "[천안단지 마감공사] C-PJT 공사(물산)",
+       "amount": 1108830000000.0,
+       "superseded": false,
+       "rcept": "20260424800768"
+      },
+      {
+       "date": "2026-04-24",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "Taoyuan International Airport Co., Ltd.",
+       "title": "대만 Taoyuan 국제공항 제3터미널 토목건축공사",
+       "amount": 1302131798253.0,
+       "superseded": false,
+       "rcept": "20260424800793"
+      },
+      {
+       "date": "2026-06-30",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "삼성디스플레이 주식회사(SAMSUNG DISPLAY)",
+       "title": "SDR 신축공사",
+       "amount": 1080090000000.0,
+       "superseded": true,
+       "rcept": "20260630801427"
+      },
+      {
+       "date": "2026-07-20",
+       "category": "지분 취득",
+       "report": "타법인주식및출자증권취득결정(종속회사의주요경영사항)",
+       "counterparty": "PolyPeptide Group AG",
+       "title": null,
+       "amount": 2706163546103.0,
+       "superseded": true,
+       "rcept": "20260720800774"
+      },
+      {
+       "date": "2026-07-24",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "반포아파트(제3주구) 주택재건축정비사업조합",
+       "title": "반포아파트(제3주구) 주택재건축정비사업",
+       "amount": 1209810000000.0,
+       "superseded": false,
+       "rcept": "20260724800002"
+      },
+      {
+       "date": "2026-07-28",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "삼성전자 주식회사",
+       "title": "P4 Ph4(상동) 마감공사",
+       "amount": 2630155000000.0,
+       "superseded": false,
+       "rcept": "20260728800846"
+      },
+      {
+       "date": "2026-08-07",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "삼성디스플레이 주식회사(SAMSUNG DISPLAY)",
+       "title": "SDR 신축공사",
+       "amount": 1484450000000.0,
+       "superseded": false,
+       "rcept": "20260807800913"
+      },
+      {
+       "date": "2026-08-19",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "QatarEnergy (카타르)",
+       "title": "ENGINEERING, PROCUREMENT, INSTALLATION AND COMMISSIONING OF DUKHAN SOLAR POWER PLANT",
+       "amount": 1540071611480.0,
+       "superseded": false,
+       "rcept": "20260819800608"
+      },
+      {
+       "date": "2026-08-28",
+       "category": "정정",
+       "report": "[기재정정]타법인주식및출자증권취득결정(종속회사의주요경영사항)",
+       "counterparty": "PolyPeptide Group AG",
+       "title": null,
+       "amount": 2706163546103.0,
+       "superseded": false,
+       "rcept": "20260828800834"
+      },
+      {
+       "date": "2026-08-31",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "삼성전자 주식회사",
+       "title": "[P4 Ph2(하동)] FAB동/복합동 마감공사",
+       "amount": 1699710000000.0,
+       "superseded": false,
+       "rcept": "20260831800587"
+      },
+      {
+       "date": "2026-08-31",
+       "category": "공급계약",
+       "report": "단일판매ㆍ공급계약체결",
+       "counterparty": "압구정아파트지구 특별계획구역4 재건축정비사업조합",
+       "title": "압구정아파트지구 특별계획구역4 재건축정비사업",
+       "amount": 2115400000000.0,
+       "superseded": false,
+       "rcept": "20260831800689"
+      },
+      {
+       "date": "2026-09-18",
+       "category": "정정",
+       "report": "[기재정정]단일판매ㆍ공급계약체결",
+       "counterparty": "한국수력원자력주식회사",
+       "title": "새울원자력 3,4호기 주설비공사",
+       "amount": 1333126655850.0,
+       "superseded": false,
+       "rcept": "20260918800764"
+      }
+     ],
+     "sources": [
+      "20251031800872",
+      "20251121800643",
+      "20251209800570",
+      "20251212801312",
+      "20251212801338",
+      "20251219800737",
+      "20251223800010",
+      "20251224800715",
+      "20251226800770",
+      "20251229800860",
+      "20251231800513",
+      "20260130800946",
+      "20260312801732",
+      "20260326800003",
+      "20260330802054",
+      "20260420800005",
+      "20260422800001",
+      "20260424800768",
+      "20260424800793",
+      "20260630801427",
+      "20260720800774",
+      "20260724800002",
+      "20260728800846",
+      "20260807800913",
+      "20260819800608",
+      "20260828800834",
+      "20260831800587",
+      "20260831800689",
+      "20260918800764"
+     ],
+     "notes": [
+      "공급계약과 지분 취득·처분 결정 공시만입니다(사업보고서 같은 정기 공시는 빠짐). 원의 크기는 계약·거래 금액입니다."
+     ],
+     "summary": "2025-10-16 이후 공시 29건"
+    }
+   ],
+   "sources": [
+    "20251222900119",
+    "20251223800010",
+    "20260326800003",
+    "20260728800846",
+    "20260807800913",
+    "20260819800608",
+    "20260828800834",
+    "20260831800587",
+    "20260831800689",
+    "20260907900137",
+    "20260914900175",
+    "20260918800764"
+   ]
+  },
+  {
+   "key": "capital",
+   "title": "자본 변동과 주주 환원",
+   "text": "- **감자(자기주식 소각) 결정 2건**: 2024년 1월 31일 결정으로 보유 자기주식 2,048,724주를 소각했습니다(접수번호 20240214002792, 2024년 4월 19일 감자 기준일, 감자 후 발행주식 총수 183,702,781주). 2026년 4월 29일 공시분은 주식매수청구권 행사로 취득한 자기주식 1,400주의 소각 결정입니다(접수번호 20260429001078). 두 건 모두 결정 공시이며, 실제 소각 완료 여부는 이 자료에 없습니다.\n- **자기주식 직접 취득·신탁계약**: 이 DB에는 자기주식 취득 공시가 없습니다. 같은 기간 자기주식 소각은 위 두 건만 확인됩니다.\n- **주주 환원 배당**: 보통주 주당 배당금은 2023사업연도 2,550원, 2024사업연도 2,600원, 2025사업연도 2,800원이며, 우선주는 각각 2,600원, 2,650원, 2,850원입니다(접수번호 20260312000856). 연결 기준 배당성향은 18.8%, 19.1%, 18.8%입니다. 현금배당 총액은 4,173억 원, 4,255억 원, 4,583억 원입니다.\n- **배당 수익률**: 보통주 기준 2.0%, 2.2%, 1.2%입니다.\n- **신주 발행·사채 결정**: 이 자료에는 자본 증가 관련 결정이 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 1684,
+    "output_tokens": 548,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1141
+   },
+   "views": [
+    {
+     "kind": "dilution",
+     "title": "삼성물산 희석 이력",
+     "company": {
+      "id": 3384,
+      "name": "삼성물산"
+     },
+     "as_of": "2026-10-16",
+     "from": "2024-01-01",
+     "events": [
+      {
+       "date": "2024-02-14",
+       "kind": "capital_reduction",
+       "label": "감자",
+       "cancel": true,
+       "shares": 2048724,
+       "amount_eok": null,
+       "ratio_pct": 1.0,
+       "pct_of_before": 1.09,
+       "method": "자기주식 소각",
+       "price": null,
+       "rcept_no": "20240214002792"
+      },
+      {
+       "date": "2026-04-29",
+       "kind": "capital_reduction",
+       "label": "감자",
+       "cancel": true,
+       "shares": 1400,
+       "amount_eok": null,
+       "ratio_pct": 0.0,
+       "pct_of_before": 0.0,
+       "method": "자기주식 소각",
+       "price": null,
+       "rcept_no": "20260429001078"
+      }
+     ],
+     "sources": [
+      "20240214002792",
+      "20260429001078"
+     ],
+     "notes": [
+      "결정 공시입니다. 실제 납입·발행, 사채의 실제 전환, 철회 여부는 이 자료에 없습니다.",
+      "사채의 주식 수는 전환·행사·교환되면 생길 수 있는 주식 수입니다. 감자 가운데 자기주식 소각은 따로 표시했습니다."
+     ],
+     "summary": "감자 2건"
+    },
+    {
+     "kind": "payout",
+     "title": "삼성물산 주주 환원",
+     "company": {
+      "id": 3384,
+      "name": "삼성물산"
+     },
+     "as_of": "2026-10-16",
+     "years": [
+      {
+       "year": 2023,
+       "cash_eok": 4173.5,
+       "buyback_eok": 0.0,
+       "dps": 2550.0,
+       "payout_ratio": 18.8
+      },
+      {
+       "year": 2024,
+       "cash_eok": 4255.2,
+       "buyback_eok": 0.0,
+       "dps": 2600.0,
+       "payout_ratio": 19.1
+      },
+      {
+       "year": 2025,
+       "cash_eok": 4582.5,
+       "buyback_eok": 0.0,
+       "dps": 2800.0,
+       "payout_ratio": 18.8
+      }
+     ],
+     "sources": [
+      "20260312000856"
+     ],
+     "notes": [
+      "배당은 사업보고서의 배당에 관한 사항(2025 사업보고서의 당기·전기·전전기)입니다.",
+      "자기주식은 그해 공시한 취득 결정과 신탁계약의 예정 금액이고 실제 취득액이 아닙니다(2024-01 부터 모음). 소각은 감자결정으로 공시한 것만 셉니다."
+     ],
+     "summary": "2023 주당 2,550원, 배당성향 18.8%; 2024 주당 2,600원, 배당성향 19.1%; 2025 주당 2,800원, 배당성향 18.8%"
+    }
+   ],
+   "sources": [
+    "20240214002792",
+    "20260312000856",
+    "20260429001078"
+   ]
+  },
+  {
+   "key": "insiders",
+   "title": "내부자 매매",
+   "text": "이 회사의 이 항목은 조회 시점까지 공시된 것이 없거나 이 DB가 모으지 않았습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {},
+   "views": [],
+   "sources": []
+  },
+  {
+   "key": "price",
+   "title": "주가",
+   "text": "삼성물산(028260)의 주가는 2026-10-16 기준 최근 1주 -9.76%, 1개월 -18.95%, 3개월 -17.20%였습니다. 같은 기간 유가증권시장 상장 종목 수익률의 중앙값은 각각 -2.74%, -3.73%, -0.97%로, 차이는 -7.02%p, -15.22%p, -16.23%p입니다.\n\n- 같은 제품을 주력으로 파는 상장사 23곳(바이오시밀러, 의약품 위탁생산, 종합상사, 주택 건설 기준)의 수익률 중앙값은 1주 -3.41%, 1개월 -4.77%, 3개월 +6.13%입니다.\n- 이 값은 한국거래소 통계정보의 일별 시세를 가공한 것으로, 원인을 설명하지 않는 지난 사실입니다. 앞으로의 주가 방향은 이 자료로 말할 수 없습니다.",
+   "flagged": [],
+   "retried": false,
+   "usage": {
+    "input_tokens": 880,
+    "output_tokens": 341,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1141
+   },
+   "views": [
+    {
+     "kind": "returns",
+     "title": "삼성물산 수익률 비교",
+     "company": {
+      "id": 3384,
+      "name": "삼성물산"
+     },
+     "as_of": "2026-10-16",
+     "last_trading_day": "2026-10-16",
+     "periods": [
+      {
+       "period": "1주",
+       "from": "2026-10-08",
+       "to": "2026-10-16",
+       "change_pct": -9.76,
+       "market_median_pct": -2.74,
+       "market": "유가증권",
+       "peers_median_pct": -3.41,
+       "peers_counted": 23,
+       "vs_market_pp": -7.02
+      },
+      {
+       "period": "1개월",
+       "from": "2026-09-16",
+       "to": "2026-10-16",
+       "change_pct": -18.95,
+       "market_median_pct": -3.73,
+       "market": "유가증권",
+       "peers_median_pct": -4.77,
+       "peers_counted": 23,
+       "vs_market_pp": -15.22
+      },
+      {
+       "period": "3개월",
+       "from": "2026-07-16",
+       "to": "2026-10-16",
+       "change_pct": -17.2,
+       "market_median_pct": -0.97,
+       "market": "유가증권",
+       "peers_median_pct": 6.13,
+       "peers_counted": 23,
+       "vs_market_pp": -16.23
+      }
+     ],
+     "peers": {
+      "basis": "같은 제품을 매출의 10% 이상으로 파는 상장사(그 제품을 가진 곳이 12곳 이하인 좁은 제품 이름만)",
+      "products": [
+       "바이오시밀러",
+       "의약품 위탁생산",
+       "종합상사",
+       "주택 건설"
+      ],
+      "names": [
+       "DL이앤씨",
+       "HDC",
+       "IPARK현대산업개발",
+       "LX인터내셔널",
+       "금호건설",
+       "대화제약",
+       "삼성에피스홀딩스",
+       "삼익제약",
+       "셀트리온",
+       "에피바이오텍",
+       "위더스제약",
+       "이연제약"
+      ],
+      "total": 23
+     },
+     "sources": [],
+     "notes": [
+      "종가 기준 수익률입니다. 장중 값이 아니며 원인을 말해 주지 않습니다. 한국거래소(KRX) 통계정보를 가공했습니다."
+     ],
+     "summary": "1주 -9.76% (시장 -2.74%); 1개월 -18.95% (시장 -3.73%); 3개월 -17.2% (시장 -0.97%)"
+    }
+   ],
+   "sources": []
+  }
+ ],
+ "unknown": [
+  "실적 전망과 증권사 의견, 목표주가",
+  "사업부문별 실적과 현금흐름표",
+  "업황, 원자재 가격, 수급(기관·외국인), 공매도",
+  "결정 공시의 실제 실행 결과(납입, 사채 전환, 자기주식 실제 취득·소각, 계약 이행)",
+  "주가 자체(수익률만 가공해 보여 준다)",
+  "내부자 매매: 조회 시점까지 공시된 것이 없거나 모으지 않음"
+ ],
+ "usage": {
+  "input_tokens": 26558,
+  "output_tokens": 3252,
+  "cache_read_input_tokens": 1141,
+  "cache_creation_input_tokens": 6846
+ },
+ "seconds": 19.1,
+ "cost_usd": 0.0051
+}

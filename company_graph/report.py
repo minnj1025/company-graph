@@ -72,7 +72,10 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
     year_ago = (as_of - timedelta(days=365)).isoformat()
     clean = lambda r: {k: v for k, v in r.items() if not k.startswith("_")}
     holders = clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="equity", direction="in"))
-    invested = clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="equity", direction="out", listed_only=False))
+    # 조회 도구는 50줄에서 자른다. 출자 회사 수는 전체로 세야 한다 (평가 10판 다섯 번째: 삼성물산 138곳을 50곳으로 씀)
+    from . import query
+    invested = {"relations": [agent_tools._edge(db, e) for e in query.relations(db, as_of, company_ids=[company_id], rel_types=["equity"],
+                                                                                 direction="out", include_exited=True)]}
     major = clean(_call(db, "get_major_holders", company_id=company_id, as_of=when))
     events = clean(_call(db, "get_capital_events", company_id=company_id, as_of=when))
     recent_events = sum(1 for e in events.get("events", []) if (e.get("decided") or e.get("date", "")) >= year_ago)
