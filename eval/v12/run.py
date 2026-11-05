@@ -217,9 +217,17 @@ class Graph:
 
 # ---------- 사건 ----------
 def load_labels() -> dict[str, list[dict]]:
+    """1단계(제목) 판정 위에 2단계(본문) 판정을 덮는다. 본문이 제목과 다른 기사였으면 2단계도 제목만으로 판정한 것이다."""
     out = {}
     for path in (OUT / "labels").glob("*.json"):
-        rows = [r for chunk in json.loads(path.read_text(encoding="utf-8")).values() for r in chunk if r.get("labeled")]
+        second_path = OUT / "labels2" / path.name
+        second = json.loads(second_path.read_text(encoding="utf-8")) if second_path.exists() else {}
+        rows = []
+        for chunk in json.loads(path.read_text(encoding="utf-8")).values():
+            for r in chunk:
+                if r.get("labeled"):
+                    s = second.get(r["title"])
+                    rows.append({**r, **s, "stage": 2} if s else {**r, "stage": 1})
         out[path.stem] = sorted(rows, key=lambda r: r["date"])
     return out
 

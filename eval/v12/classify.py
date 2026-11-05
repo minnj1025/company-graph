@@ -6,6 +6,8 @@
 실행: python -m eval.v12.classify count                      제목 수와 예상 비용만
       python -m eval.v12.classify run --batches=1            한 묶음만 (모델과 비용 확인용)
       python -m eval.v12.classify run --cap=3.0              전부. 쓴 돈이 cap 달러를 넘으면 멈춘다
+      python -m eval.v12.classify body --cap=2.0             2단계: 후보(주인공·산업·중요도 0.5 이상) 가운데 본문을 가져온 기사를
+                                                             본문과 함께 다시 읽어 요약하고 다시 판정한다 (bodies.py 다음에)
 """
 import hashlib
 import json
@@ -50,6 +52,22 @@ SCHEMA = {"type": "object", "additionalProperties": False, "required": ["items"]
     "properties": {"i": {"type": "integer"}, "about": {"type": "boolean"}, "cat": {"type": "string", "enum": ["산업", "경제", "정치", "그외"]},
                    "imp": {"type": "number"}, "dir": {"type": "integer", "enum": [-1, 0, 1]}, "kind": {"type": "string", "enum": KINDS},
                    "kw": {"type": "array", "items": {"type": "string"}}}}}}}
+
+
+SYSTEM2 = """당신은 한국 주식시장 뉴스를 분류하는 사람입니다. 한 회사의 이름과, 그 회사 기사의 제목과 본문 앞부분(없으면 언론사 요약문)을 받습니다.
+본문은 웹 페이지에서 자동으로 뽑은 것이라 다른 기사나 광고 문구가 섞일 수 있습니다.
+
+기사마다 아래 칸을 채웁니다.
+- body_matches: 본문이 이 제목의 기사 내용인가. 다른 기사·광고·안내문이면 false 이고, 그때는 본문을 무시하고 제목만으로 나머지 칸을 채웁니다.
+- summary: 이 기사가 전한 사실을 두 문장 안쪽으로. 주체, 대상(제품·서비스·기술), 행위, 금액·상대가 있으면 넣습니다. 기사에 없는 내용과 전망은 쓰지 않습니다.
+- about, cat, imp, dir, kind, kw: 아래 기준. 본문에서 확인한 사실로 판단합니다.
+""" + SYSTEM.split("제목마다 아래 칸을 채웁니다.", 1)[1].split("제목은 \"번호.", 1)[0] + """
+기사는 "번호. 날짜 제목" 다음 줄에 "본문:" 이나 "요약문:" 으로 옵니다. 모든 번호에 하나씩 답합니다."""
+
+SCHEMA2 = {"type": "object", "additionalProperties": False, "required": ["items"], "properties": {"items": {"type": "array", "items": {
+    "type": "object", "additionalProperties": False, "required": ["i", "body_matches", "summary", "about", "cat", "imp", "dir", "kind", "kw"],
+    "properties": {**SCHEMA["properties"]["items"]["items"]["properties"], "body_matches": {"type": "boolean"}, "summary": {"type": "string"}}}}}}
+BATCH2 = 15
 
 
 def _clean(title: str) -> str:
@@ -133,7 +151,65 @@ def run(limit: int | None, cap: float):
     print("쓴 돈", f"${cost(usage):.4f}", dict(usage))
 
 
+def run_bodies(limit: int | None, cap: float):
+    """2단계: 1단계 후보 가운데 본문(또는 요약문)을 가져온 기사를 다시 읽는다. 결과는 labels2/{종목코드}.json"""
+    client = anthropic.Anthropic(api_key=secret("ANTHROPIC_API_KEY"))
+    names = {r["stock_code"]: r["name"] for r in json.loads((OUT / "universe.json").read_text(encoding="utf-8"))["rows"]}
+    usage, lock, stop = Counter(), threading.Lock(), threading.Event()
+    folder = OUT / "labels2"
+    folder.mkdir(parents=True, exist_ok=True)
+    done = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in folder.glob("*.json")}
+    jobs = []
+    for path in (OUT / "labels").glob("*.json"):
+        code = path.stem
+        bodies_path = OUT / "bodies" / f"{code}.json"
+        bodies = json.loads(bodies_path.read_text(encoding="utf-8")) if bodies_path.exists() else {}
+        rows = [r for chunk in json.loads(path.read_text(encoding="utf-8")).values() for r in chunk
+                if r.get("about") and r.get("cat") == "산업" and (r.get("imp") or 0) >= 0.5
+                and bodies.get(r["title"], {}).get("ok") and r["title"] not in done.get(code, {})]
+        for start in range(0, len(rows), BATCH2):
+            jobs.append((code, [{**r, "body": bodies[r["title"]]} for r in rows[start:start + BATCH2]]))
+    if limit:
+        jobs = jobs[:limit]
+    print("남은 묶음", len(jobs), flush=True)
+
+    def one(job):
+        code, chunk = job
+        if stop.is_set():
+            return
+        content = f"회사: {names[code]} ({code})\n\n" + "\n\n".join(
+            f"{i + 1}. {c['date']} {c['title']}\n{c['body'].get('kind', '본문')}: {c['body']['text']}" for i, c in enumerate(chunk))
+        response = client.messages.create(
+            model=MODEL, max_tokens=8000, system=[{"type": "text", "text": SYSTEM2, "cache_control": {"type": "ephemeral"}}],
+            messages=[{"role": "user", "content": content}],
+            output_config={"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA2}})
+        if not response.model.startswith(MODEL):
+            raise RuntimeError(f"다른 모델이 답함: {response.model}")
+        got = {} if response.stop_reason != "end_turn" else {
+            it["i"]: it for it in json.loads(next(b.text for b in response.content if b.type == "text"))["items"]}
+        with lock:
+            for key in PRICE:
+                usage[key] += getattr(response.usage, key, 0) or 0
+            for i, c in enumerate(chunk):
+                if (i + 1) in got:
+                    done.setdefault(code, {})[c["title"]] = {k: v for k, v in got[i + 1].items() if k != "i"} | {"body_kind": c["body"].get("kind", "본문")}
+            (folder / f"{code}.json").write_text(json.dumps(done.get(code, {}), ensure_ascii=False), encoding="utf-8")
+            spent = cost(usage)
+            print(f"{code} {len(chunk)}건 · 누적 ${spent:.4f}", flush=True)
+            if spent > cap:
+                print("상한을 넘어 멈춘다", flush=True)
+                stop.set()
+    with ThreadPoolExecutor(4) as pool:
+        list(pool.map(one, jobs))
+    print("쓴 돈", f"${cost(usage):.4f}", dict(usage))
+
+
 def main():
+    if sys.argv[1] == "body":
+        limit = next((int(a.split("=")[1]) for a in sys.argv if a.startswith("--batches=")), None)
+        cap = next((float(a.split("=")[1]) for a in sys.argv if a.startswith("--cap=")), 0.05)
+        run_bodies(limit, cap)
+        return
     if sys.argv[1] == "count":
         by_code = titles()
         n = sum(len(v) for v in by_code.values())
