@@ -43,6 +43,8 @@ def governance(company_id: int, holders: dict, investments: dict, major: dict) -
         row = {"name": _name(r.get("subject")), "pct": pct, "shares": (r.get("detail") or {}).get("shares"),
                "date": r.get("as_of_date"), "rcept_no": rcept}
         share_class = (r.get("detail") or {}).get("share_class")
+        if not mine and (r.get("detail") or {}).get("exited"):
+            continue
         if not mine:   # 그 회사가 자기 보고서(타법인출자 현황)에 적은 것뿐이다. 이 회사의 최대주주 표에는 없다
             others.append({**row, "role": "다른 회사가 자기 사업보고서(타법인출자 현황)에 이 회사 주식을 가졌다고 적은 것. 최대주주·특수관계인이 아니다"})
         elif share_class:   # 평가 10판 SK디스커버리: 우선주 비율을 보통주 순위에 섞어 썼다
@@ -50,6 +52,9 @@ def governance(company_id: int, holders: dict, investments: dict, major: dict) -
                                   "role": f"이 회사의 최대주주 또는 특수관계인이 가진 {share_class}. 보통주 비율과 섞어 순위를 매기지 않는다"})
         else:
             table.append({**row, "role": "이 회사의 최대주주 또는 특수관계인 (이 회사 사업보고서의 최대주주 현황, 보통주)"})
+    # 평가 10판 네 번째 처음 보는 5곳: 조회 결과의 출자 줄 수(보통주·우선주 줄, 상대 회사 보고서의 줄, 다 내놓은 줄이 섞임)를 회사 수로 썼다
+    own = [r for r in investments.get("relations", []) if r.get("disclosed_by") != "상대가 공시" and not (r.get("detail") or {}).get("exited")]
+    companies = sorted({_company_key(r) for r in own})
     invested = [{"name": _name(r.get("object")), "pct": r.get("value"), "listed": ((r.get("object") or {}).get("market") or "비상장"),
                  "date": r.get("as_of_date"), "rcept_no": r.get("rcept_no"),
                  "role": "이 회사가 지분을 가진 회사 (이 회사 사업보고서의 타법인출자 현황)"} for r in investments.get("relations", [])]
@@ -58,15 +63,27 @@ def governance(company_id: int, holders: dict, investments: dict, major: dict) -
     return {
         "note": ROLE_NOTE + " 지분율은 기준일(date)과 함께 쓴다. 5% 보고의 비율은 대표보고자와 특별관계자를 합친 값이라 최대주주 현황과 다를 수 있다.",
         "largest_holder_table": {"total": holders.get("holder_table_total"), "rows": table[:15]},
-        **({"largest_holder_table_other_share_classes": other_classes[:10]} if other_classes else {}),
+        **({"largest_holder_table_other_share_classes": other_classes[:10],
+            "other_share_classes_total": {k: round(sum(r["pct"] or 0 for r in other_classes if r["share_class"] == k), 2)
+                                          for k in sorted({r["share_class"] for r in other_classes})},
+            "other_share_classes_total_note": "우선주·종류주 줄의 비율을 종류별로 더한 값(코드가 더함). 보통주 합계와 따로 쓴다"} if other_classes else {}),
         "others_reporting_this_company_shares": others[:8],
         "investments": invested[:15],
         "major_holders_5pct": [{"reporter": h["reporter"], "pct": h["pct"], "date": h["date"], "reason": h.get("reason"), "rcept_no": h["rcept_no"],
                                 "role": "이 회사 주식을 5% 이상 가졌다고 보고한 자 (5% 대량보유 보고)"} for h in full],
-        "summary": {"largest_holder_rows": len(table), "investments": investments.get("total", len(invested)),
-                    "investments_100pct": sum(1 for r in invested if (r["pct"] or 0) >= 99.995),
+        "summary": {"largest_holder_rows": len(table),
+                    "invested_companies": len(companies),
+                    "invested_companies_note": "이 회사가 지분을 가진 회사 수는 이 값을 쓴다(이 회사 사업보고서 타법인출자 현황의 회사 수. 보통주·우선주 줄은 한 회사, 기말에 다 내놓은 줄은 뺐다). investments 목록의 줄 수를 세지 않는다",
+                    "investments_100pct": len({_company_key(r) for r in own if (r.get("value") or 0) >= 99.995}),
                     "major_holders_5pct": len(full)},
     }
+
+
+def _company_key(r: dict) -> str:
+    """출자 줄 하나가 가리키는 회사. '㈜대한항공 보통주 (주2)'와 '㈜대한항공 우선주 (주2)'는 같은 회사다."""
+    target = r.get("object") or {}
+    name = re.sub(r"\(주\d*\)|㈜|주식회사|보통주|우선주|종류주|\s", "", str(target.get("name") or r.get("object_name_raw") or ""))
+    return name or str(target.get("company_id"))
 
 
 def _side(company_id: int, r: dict, mine: str, theirs: str) -> str:
@@ -173,7 +190,7 @@ def _termination(company_id: int, r: dict) -> dict:
 
 
 def deals(company_id: int, supply: dict, acquisitions: dict, disposals: dict, capital_events: int, since: str = "",
-          terminations: dict | None = None, collected_until: str | None = None) -> dict:
+          terminations: dict | None = None, collected_until: str | None = None, ended_in_window: int = 0) -> dict:
     """supply 는 잘리지 않은 전체 목록이어야 한다(조회 도구는 50건에서 자른다).
     계약일(지분 결정은 결의일)이 since 보다 이른 것은 옛 계약·결정의 정정 공시라 따로 둔다 (10판: 이것을 새 것으로 세거나 수를 줄여 썼다)."""
     rows = _proxy_duplicates(supply.get("relations", []))
@@ -197,7 +214,7 @@ def deals(company_id: int, supply: dict, acquisitions: dict, disposals: dict, ca
     ended = [e for e in ended if e not in old_ended]
     return {
         "note": ROLE_NOTE + " 정정 공시는 corrections 의 '정정 전 → 정정 후' 방향대로 쓴다.",
-        "since": since, "collected_until": collected_until,
+        "since": since, "collected_until": collected_until, "ended_in_window": ended_in_window,
         "summary": {"contracts": len(contracts), "contracts_note": f"계약일이 {since} 이후인 공급계약. 옛 계약의 정정 {len(older)}건은 따로 셌다",
                     "sold_by_this_company": len(sold), "bought_by_this_company": len(bought), "filed_for_subsidiaries": len(proxy),
                     "sold_total": won(sum(raw[id(c)] for c in sold)), "bought_total": won(sum(raw[id(c)] for c in bought)),
@@ -267,8 +284,9 @@ def _contract_line(c: dict) -> str:
     if c.get("ratio_pct_of_sales"):
         whose = "공시한 상대 회사의 최근 매출액" if c["role"].startswith("이 회사가 산") else "최근 매출액"
         parts.append(f"{whose} 대비 {c['ratio_pct_of_sales']}%")
-    if c.get("corrected"):
-        parts.append("정정 공시 있음(정정 뒤 금액)")
+    if c.get("corrected") or c.get("correction_filings_in_period"):
+        n = c.get("correction_filings_in_period")
+        parts.append(f"이 기간 정정 공시 {n}건(정정 뒤 금액)" if n else "정정 공시 있음(정정 뒤 금액)")
     return " · ".join(parts) + f" (접수번호 {_receipts(c)})"
 
 
@@ -301,7 +319,9 @@ def deals_text(d: dict, shown: int = 8) -> str:
     s, since = d["summary"], d.get("since") or ""
     out = []
     if s["contracts"]:
-        head = f"- **공급계약 {s['contracts']}건** (계약일 {since} 이후):"
+        ended_note = (f" 이 밖에 계약일이 {since} 이후인데 해지돼 지금 목록에 없는 계약이 {d['ended_in_window']}건 있다(아래 해지 줄)."
+                      if d.get("ended_in_window") else "")
+        head = f"- **공급계약 {s['contracts']}건** (계약일 {since} 이후, 지금 유효한 것):"
         bits = []
         if s["sold_by_this_company"]:
             bits.append(f"이 회사가 수주한 계약 {s['sold_by_this_company']}건, 합계 {s['sold_total']}")
@@ -309,7 +329,10 @@ def deals_text(d: dict, shown: int = 8) -> str:
             bits.append(f"이 회사가 발주한 계약(상대 회사가 공시) {s['bought_by_this_company']}건, 합계 {s['bought_total']}")
         if s["filed_for_subsidiaries"]:
             bits.append(f"자회사의 계약을 이 회사가 대신 공시한 것 {s['filed_for_subsidiaries']}건")
-        out.append(head + " " + "; ".join(bits) + ".")
+        out.append(head + " " + "; ".join(bits) + "." + ended_note)
+        fixed = [c for c in d["contracts"] if c.get("correction_filings_in_period")]
+        if fixed:
+            out.append(f"- **위 계약의 정정**: 이 기간에 위 계약을 정정한 공시 {sum(c['correction_filings_in_period'] for c in fixed)}건(계약 {len(fixed)}개). 새 계약이 아니다.")
         big = s.get("largest_contract")
         if big and big.get("amount"):
             out.append(f"- **가장 큰 계약**: {_contract_line(big)}")
@@ -368,8 +391,17 @@ def deals_text(d: dict, shown: int = 8) -> str:
 def capital(events: dict, dividends: dict) -> dict:
     years = dividends.get("years", [])
     none = bool(years) and all(not (y.get("dps_common_won") or 0) and y.get("cash_total") in (None, "현금배당 없음") for y in years)
+    lines = []
+    for y in years:
+        common, pref = y.get("dps_common_won"), y.get("dps_preferred_won")
+        if common or pref:
+            bits = [f"보통주 {common:,.0f}원" if common else "보통주 없음"] + ([f"우선주 {pref:,.0f}원"] if pref else [])
+            ratio = f", 배당성향 {y['payout_ratio_pct']}%({y.get('payout_basis') or ''})" if y.get("payout_ratio_pct") is not None else ""
+            lines.append(f"{y.get('fiscal_year')}사업연도 주당 배당금: {', '.join(bits)}{ratio}")
     return {
-        "note": ROLE_NOTE + " by_kind 의 건수와 합계를 쓴다. 자기주식은 직접 취득(direct)과 신탁계약(trust)을 따로 쓴다.",
+        "note": ROLE_NOTE + " by_kind 의 건수와 합계를 쓴다. 자기주식은 직접 취득(direct)과 신탁계약(trust)을 따로 쓴다. "
+                "배당은 dividend_lines 를 쓴다. 우선주 배당이 있으면 보통주와 함께 쓴다.",
+        "dividend_lines": lines,
         "decisions_by_kind": events.get("by_kind"),
         "decisions": [{("filed_date_maybe_last_correction" if k == "date" else k): v for k, v in e.items()} for e in events.get("events", [])[:15]],
         "decision_note": events.get("note"),
@@ -379,14 +411,27 @@ def capital(events: dict, dividends: dict) -> dict:
     }
 
 
-def financials(found: dict) -> dict:
-    """가장 최근 분기와 그 전년 같은 분기를 나란히 준다(증감률만 쓰지 않게)."""
-    quarters = found.get("quarters", [])
+def _latest_pair(found: dict) -> tuple[dict | None, dict | None]:
+    quarters = (found or {}).get("quarters", [])
     latest = next((q for q in reversed(quarters) if q.get("revenue") or q.get("operating_income")), None)
     before = None
     if latest:
         before = next((q for q in quarters if q.get("fiscal_year") == latest["fiscal_year"] - 1 and q.get("quarter") == latest["quarter"]), None)
-    return {**found, "latest_quarter": latest, "same_quarter_last_year": before,
+    return latest, before
+
+
+def financials(found: dict, separate: dict | None = None) -> dict:
+    """가장 최근 분기와 그 전년 같은 분기를 나란히 준다(증감률만 쓰지 않게). 연결 재무제표가 있는 회사는 별도 기준의 같은 두 분기도 준다."""
+    latest, before = _latest_pair(found)
+    extra = {}
+    if separate and separate.get("basis") == "OFS" and found.get("basis") != "OFS":
+        s_latest, s_before = _latest_pair(separate)
+        if s_latest:
+            keep = ("period", "rcept_no", "revenue", "revenue_yoy_pct", "operating_income", "operating_income_yoy_pct", "net_income", "net_income_yoy_pct")
+            extra = {"separate_basis": {"latest_quarter": {k: s_latest.get(k) for k in keep if s_latest.get(k) is not None},
+                                        "same_quarter_last_year": {k: s_before.get(k) for k in keep if s_before and s_before.get(k) is not None} or None,
+                                        "note": "별도 재무제표(이 회사 하나) 기준. 연결 값을 쓴 뒤 한 줄로 '별도 기준'이라고 밝혀 함께 쓴다"}}
+    return {**found, "latest_quarter": latest, "same_quarter_last_year": before, **extra,
             "note": "latest_quarter 와 same_quarter_last_year 의 금액을 함께 쓴다. 금액은 이미 조·억 원 글이다. "
                     "latest_quarter 에 *_last_year_restated 가 있으면 전년 같은 분기 값은 그 값(올해 보고서가 다시 작성한 값)을 쓰고 그렇다고 밝힌다. "
                     "다른 줄에 붙은 *_last_year_restated 는 그 줄의 한 해 전 값이다(last_year_restated_note). "
@@ -396,4 +441,5 @@ def financials(found: dict) -> dict:
 def insiders(found: dict) -> dict:
     t = found.get("totals") or {}
     return {**found, "summary": {"reports_total": t.get("increased_reports", 0) + t.get("decreased_reports", 0) + t.get("unchanged_reports", 0), **t},
-            "note": ROLE_NOTE + " 보고 건수는 summary.reports_total 이다. 날짜는 보고 접수일이다."}
+            "note": ROLE_NOTE + " 보고 건수는 summary.reports_total 이다. 날짜는 보고 접수일이다. "
+                    "증가·감소는 보고마다 적힌 증감 값의 부호대로 쓴다. 같은 날 여러 보고의 주식 수를 더해 한 방향으로 묶지 않는다."}

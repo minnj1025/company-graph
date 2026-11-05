@@ -35,7 +35,7 @@ RULES = """당신은 한국 상장사의 공시(DART)에서 모은 사실로 기
 - 사실마다 근거 접수번호를 괄호에 붙입니다. 예: (접수번호 20260814003699)
 - 원인을 판단하거나 앞을 전망하지 않습니다. "~때문에", "긍정적", "부정적", "기대된다", "우려된다" 같은 말을 쓰지 않습니다. 매수·매도·목표주가는 말하지 않습니다.
 - 결정 공시(증자, 사채, 자기주식, 공급계약, 지분 취득·처분)는 결정이지 실행 결과가 아닙니다. "했다"가 아니라 "결정을 공시했다"로 씁니다.
-- 금액은 조회 결과에 적힌 '89조 4,924억 원' 같은 글을 그대로 옮깁니다. 원 단위로 풀어 쓰지 않습니다. 기간(석 달, 누적, 사업연도)과 연결·별도를 밝힙니다.
+- 금액은 조회 결과에 적힌 '89조 4,924억 원' 같은 글을 그대로 옮깁니다. 원 단위로 풀어 쓰지 않습니다. 사업의 내용 원문처럼 '백만원'·'천원' 단위로 적힌 금액은 그 단위 그대로 옮기고 억 원·조 원으로 바꾸지 않습니다. 기간(석 달, 누적, 사업연도)과 연결·별도를 밝힙니다.
 - 자료가 없으면 "공시 없음" 또는 "이 DB에 없음"이라고 한 문장으로 적고 끝냅니다. 다른 항목에 있는 결정이면 그 항목을 가리킵니다.
 - 관계의 방향은 조회 결과의 role 에 적힌 대로 씁니다(누가 누구의 주식을 가졌는지, 누가 팔고 누가 샀는지). 뒤집지 않습니다.
 - 건수, 합계, 가장 큰 것은 summary 나 by_kind 에 계산된 값만 씁니다. 목록을 직접 세거나 더하지 않습니다. 서로 다른 종류의 금액(예: 자기주식 직접 취득과 신탁계약)을 더하지 않습니다.
@@ -81,7 +81,8 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
          "facts": {"products": clean(_call(db, "get_products", company_id=company_id, as_of=when)),
                    "business": clean(_call(db, "get_business", company_id=company_id, as_of=when, sections=[1]))}},
         {"key": "financials", "title": "실적과 재무", "cards": ["financials", "health"],
-         "facts": {"financials": shape.financials(clean(_call(db, "get_financials", company_id=company_id, as_of=when)))}},
+         "facts": {"financials": shape.financials(clean(_call(db, "get_financials", company_id=company_id, as_of=when)),
+                                                  clean(_call(db, "get_financials", company_id=company_id, as_of=when, basis="OFS")))}},
         {"key": "governance", "title": "지배 구조와 주주", "cards": ["ownership", "holders"],
          "facts": {"governance": shape.governance(company_id, holders, invested, major)}},
         {"key": "deals", "title": "최근 1년의 계약과 결정", "cards": ["supply_flow", "timeline"],
@@ -92,7 +93,7 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
              {"relations": chains(db, full_relations(db, company_id, as_of, "stake_disposal", as_of - timedelta(days=365)), as_of)},
              recent_events, year_ago,
              terminations={"relations": full_relations(db, company_id, as_of, "supply_termination", as_of - timedelta(days=365))},
-             collected_until=collected_until(db, as_of))}},
+             collected_until=collected_until(db, as_of), ended_in_window=ended_in_window(db, company_id, as_of))}},
         {"key": "capital", "title": "자본 변동과 주주 환원", "cards": ["dilution", "payout"],
          "facts": {"capital": shape.capital(events, clean(_call(db, "get_dividends", company_id=company_id, as_of=when)))}},
         {"key": "insiders", "title": "내부자 매매", "cards": ["insiders"],
@@ -108,6 +109,24 @@ def full_relations(db, company_id: int, as_of: date, rel_type: str, since: date)
     from . import query
     rows = [e for e in query.relations(db, as_of, company_ids=[company_id], rel_types=[rel_type]) if e["disclosed_date"] >= since]
     return [agent_tools._edge(db, e) for e in sorted(rows, key=lambda e: e["disclosed_date"], reverse=True)]
+
+
+def ended_in_window(db, company_id: int, as_of: date) -> int:
+    """계약일이 최근 1년 안인데 그 뒤 해지돼 지금 목록에 없는 공급계약 수. 해지 공시가 그 계약 공시를 이었는지로 정정과 가른다."""
+    from sqlalchemy import select
+    from . import query
+    from .db import Document
+    since = as_of - timedelta(days=365)
+    alive = {str(e["rcept_no"]) for e in query.relations(db, as_of, company_ids=[company_id], rel_types=["supply_contract"])}
+    count = 0
+    for e in query.relations(db, as_of, company_ids=[company_id], rel_types=["supply_contract"], include_superseded=True):
+        if str(e["rcept_no"]) in alive or not e.get("as_of_date") or e["as_of_date"] < since:
+            continue
+        numbers = e["rcept_no"] if isinstance(e["rcept_no"], list) else [e["rcept_no"]]
+        names = db.scalars(select(Document.report_nm).where(Document.corrects_rcept_no.in_(numbers), Document.rcept_dt <= as_of)).all()
+        if any(("해지" in n or "해제" in n) for n in names):
+            count += 1
+    return count
 
 
 def chains(db, rows: list[dict], as_of: date) -> list[dict]:
