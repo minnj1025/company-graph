@@ -125,15 +125,18 @@ def pick(client, db, day: date, spent: list, limit: int = LIMIT, cap: float = CA
 def choose(labeled: list[dict], limit: int = LIMIT) -> tuple[list[dict], list[dict]]:
     """핵심 뉴스(주인공이 그 회사, 산업, 중요도 MIN_IMP 이상)와, 그 가운데 메모할 것: 중요도 순, 한 회사 한 건, 같은 제목 한 번."""
     core = [r for r in labeled if r["about"] and r["cat"] == "산업" and (r["imp"] or 0) >= MIN_IMP]
-    chosen, firms_taken, titles_taken, events_taken = [], set(), set(), set()
+    chosen, firms_taken, titles_taken, events_taken = [], set(), set(), []
     for row in sorted(core, key=lambda r: -r["imp"]):
-        # 같은 사건이 여러 회사에서 잡힌다(HD현대·HD한국조선해양·HD현대중공업의 '6301억 암모니아선'). 같은 종류에 같은 금액이면 한 사건으로 본다
-        event = {(row.get("kind"), n.replace(",", "")) for n in EVENT_NUMBER.findall(row["title"]) if not re.fullmatch(r"20\d\d", n)}
-        if row["company_id"] in firms_taken or row["title"] in titles_taken or event & events_taken:
+        # 같은 사건이 여러 회사에서 잡힌다(HD한국조선해양의 '6301억', HD현대중공업의 '6300억원' 암모니아선).
+        # 같은 종류에 금액이 2% 안으로 같으면 한 사건으로 본다. 연도(2030 등)는 금액으로 보지 않는다
+        amounts = [float(n) for n in (m.replace(",", "").rstrip(".") for m in EVENT_NUMBER.findall(row["title"]))
+                   if re.fullmatch(r"\d+(\.\d+)?", n) and not re.fullmatch(r"20\d\d", n)]
+        same = any(kind == row.get("kind") and abs(a - b) <= 0.02 * max(a, b) for kind, b in events_taken for a in amounts)
+        if row["company_id"] in firms_taken or row["title"] in titles_taken or same:
             continue
         firms_taken.add(row["company_id"])
         titles_taken.add(row["title"])
-        events_taken |= event
+        events_taken += [(row.get("kind"), a) for a in amounts]
         chosen.append(row)
     return core, chosen[:limit]
 

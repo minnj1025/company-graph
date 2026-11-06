@@ -20,3 +20,10 @@ def test_same_event_from_several_companies_is_one_memo():
                {**row(2, "HD한국조선해양, 암모니아선 6,301억 수주…2030년 일감", 0.85), "kind": "수주·공급계약"},
                {**row(3, "B사, 2030년까지 공장 증설", 0.8), "kind": "투자·증설"}]
     assert [r["company_id"] for r in choose(labeled)[1]] == [1, 3]   # 연도(2030)는 같은 사건의 표시로 보지 않는다
+
+
+def test_nearly_equal_amounts_are_the_same_event():
+    labeled = [{**row(1, "HD한국조선해양, 암모니아선 6301억 수주", 0.9), "kind": "수주·공급계약"},
+               {**row(2, "HD현대중공업, VLAC 4척 공급키로… 6300억원 규모", 0.85), "kind": "수주·공급계약"},
+               {**row(3, "C사 6300억 공장 증설", 0.8), "kind": "투자·증설"}]   # 종류가 다르면 다른 사건
+    assert [r["company_id"] for r in choose(labeled)[1]] == [1, 3]
