@@ -77,3 +77,14 @@ def test_unseen_numbers_ignores_commas_and_news_numbers():
     assert news_agent.unseen_numbers("2026-09-22 1조 742억 원(매출액 대비 36.6%), 1,074,200,000,000원", seen, "") == []
     assert news_agent.unseen_numbers("2만4480만원 공급", seen, "") == ["4480"]
     assert news_agent.unseen_numbers("3605억원 수주", seen, "삼성전기, 메모리 기판 3605억원 수주") == []
+
+
+def test_shape_problems_drops_rows_that_are_not_objects():
+    memo = {"summary": "s", "subjects": [{"company_id": 1}], "related": ["삼성전자", {"company_id": 2, "rcept_nos": "20260101000001"}]}
+    out, wrong = news_agent.shape_problems(memo)
+    assert out["related"] == [{"company_id": 2, "rcept_nos": ["20260101000001"]}]
+    assert out["subject_facts"] == []
+    assert len(wrong) == 1 and "related" in wrong[0]
+    assert memo["related"][1]["rcept_nos"] == "20260101000001"   # 받은 것은 바꾸지 않는다
+    same, none = news_agent.shape_problems({"subjects": [], "subject_facts": [], "related": [{"company_id": 3, "rcept_nos": []}]})
+    assert none == [] and same["related"] == [{"company_id": 3, "rcept_nos": []}]

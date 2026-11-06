@@ -118,6 +118,24 @@ def _bad_rcept(db, no: str, company_id: int | None, subject_ids: set[int], close
     return f"접수번호 {no} 는 {filer.label if filer else doc.company_id} 이(가) 낸 공시라 company_id {company_id} 의 근거가 아닙니다"
 
 
+def shape_problems(memo: dict) -> tuple[dict, list[str]]:
+    """목록 칸의 한 줄이 객체가 아니면(모델이 글자만 적은 경우) 그 줄을 빼고 문제로 알린다. 모양이 맞는 메모는 그대로 돌려준다."""
+    wrong, out = [], dict(memo)
+    for key in ("subjects", "subject_facts", "related"):
+        rows = memo.get(key) or []
+        if not isinstance(rows, list):
+            rows = []
+            wrong.append(f"{key} 는 목록이어야 합니다")
+        good = [dict(r) for r in rows if isinstance(r, dict)]
+        if len(good) < len(rows):
+            wrong.append(f"{key} 의 {len(rows) - len(good)}줄이 객체가 아닙니다. 칸 이름을 갖춘 객체로 적으세요")
+        for r in good:
+            if isinstance(r.get("rcept_nos"), str):
+                r["rcept_nos"] = [r["rcept_nos"]]
+        out[key] = good
+    return out, wrong
+
+
 def check(db, memo: dict, seen_rcepts: set[str], seen_ids: set[int]) -> list[str]:
     """메모에 적힌 것 가운데 조회 결과로 확인되지 않는 것."""
     wrong = []
@@ -247,8 +265,8 @@ def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_i
                 if block.type != "tool_use":
                     continue
                 if block.name == MEMO_TOOL["name"]:
-                    candidate = dict(block.input)
-                    wrong = check(db, candidate, seen_rcepts, seen_ids)
+                    candidate, wrong = shape_problems(dict(block.input))
+                    wrong += check(db, candidate, seen_rcepts, seen_ids)
                     if check_numbers:
                         wrong += number_problems(candidate, " ".join(bodies), news_text)
                     if wrong and not retried:   # 한 번은 고치게 한다
