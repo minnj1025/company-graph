@@ -351,7 +351,11 @@ def _won_text(value) -> str:
     return readable(float(value) / 1e8)
 
 
-def _edge(db, edge: dict) -> dict:
+def _edge(db, edge: dict, as_of: date | None = None) -> dict:
+    # as_of 를 주면 그 뒤에 일어난 무효(정정·해지·철회)는 알리지 않는다. 그 시점에는 아직 몰랐던 일이다
+    invalidated = edge["invalidated_date"]
+    if as_of is not None and invalidated is not None and invalidated > as_of:
+        invalidated = None
     subject = db.get(Company, edge["subject_id"]) if edge["subject_id"] else None
     obj = db.get(Company, edge["object_id"]) if edge["object_id"] else None
     value = edge["value"]
@@ -371,7 +375,7 @@ def _edge(db, edge: dict) -> dict:
                              "value": float(r["value"]), "shares": r["shares"], "rcept_no": r["rcept_no"]} for r in edge["reports"]],
                 "differs": edge["differs"]} if edge.get("reports") else {}),
             "stale": edge["stale"] or None,
-            "superseded_on": edge["invalidated_date"] and edge["invalidated_date"].isoformat(),
+            "superseded_on": invalidated and invalidated.isoformat(),
             "detail": _detail(edge["attrs"]),
             "rcept_no": edge["evidence"]}
 
@@ -394,7 +398,7 @@ def get_relations(db, company_id, as_of, rel_type: str, direction: str, disclose
         other = _company(db, counterparty_id).company_id
         edges = [e for e in edges if other in (e["subject_id"], e["object_id"])]
     edges = [e for e in edges if (start is None or e["disclosed_date"] >= start) and (end is None or e["disclosed_date"] <= end)]
-    rows = [_edge(db, e) for e in edges]
+    rows = [_edge(db, e, when) for e in edges]
     # 최대주주 현황 표의 합계 줄 (그 표가 적은 값. 줄마다의 지분율을 더한 값과 다를 수 있다)
     mine = [e for e in edges if e["type"] == "equity" and e["object_id"] == company.company_id and e["attrs"].get("table_total")] if direction == "in" else []
     holder_total = next((e["attrs"]["table_total"] for e in mine if not e["attrs"].get("share_class")), None)
@@ -564,7 +568,7 @@ def find_paths(db, from_company_id, to_company_id, as_of) -> dict:
     start, goal, when = _company(db, from_company_id), _company(db, to_company_id), _date(as_of, "as_of", required=True)
     found = query.paths(db, start.company_id, goal.company_id, when)
     return {"from": _brief(start), "to": _brief(goal), "as_of": when.isoformat(), "total": len(found),
-            "paths": [[_edge(db, e) for e in path] for path in found[:10]],
+            "paths": [[_edge(db, e, when) for e in path] for path in found[:10]],
             "note": None if found else "3단계 안에서 잇는 공시된 관계가 없습니다"}
 
 

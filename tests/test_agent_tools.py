@@ -23,6 +23,16 @@ def test_as_of_changes_the_answer_and_is_required(db):
     assert "YYYY-MM-DD" in ask("작년 말")["error"]
 
 
+def test_later_correction_is_not_told_before_it_happens(db):
+    """조회 시점에 유효했던 계약이 나중에 정정됐다는 날짜는 그 시점의 결과에 나오지 않는다 (뉴스 메모 시험에서 나온 미래 정보)."""
+    ask = lambda when: agent_tools.call(db, "get_relations", {"company_id": SUPPLIER, "as_of": when, "rel_type": "supply_contract",
+                                                              "direction": "out", "include_superseded": True})
+    before = ask("2026-07-31")["relations"]
+    assert [r["value"] for r in before] == [100] and before[0]["superseded_on"] is None
+    after = {r["value"]: r["superseded_on"] for r in ask("2026-08-31")["relations"]}
+    assert after[100] is not None and after[120] is None
+
+
 def test_empty_result_says_what_is_covered(db):
     out = agent_tools.call(db, "get_relations", {"company_id": MOBIS, "as_of": "2026-09-30", "rel_type": "supply_contract",
                                                  "direction": "out", "disclosed_from": "2026-01-01"})

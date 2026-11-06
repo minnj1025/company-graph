@@ -74,7 +74,7 @@ def gather(db, company_id: int, as_of: date) -> list[dict]:
     holders = clean(_call(db, "get_relations", company_id=company_id, as_of=when, rel_type="equity", direction="in"))
     # 조회 도구는 50줄에서 자른다. 출자 회사 수는 전체로 세야 한다 (평가 10판 다섯 번째: 삼성물산 138곳을 50곳으로 씀)
     from . import query
-    invested = {"relations": [agent_tools._edge(db, e) for e in query.relations(db, as_of, company_ids=[company_id], rel_types=["equity"],
+    invested = {"relations": [agent_tools._edge(db, e, as_of) for e in query.relations(db, as_of, company_ids=[company_id], rel_types=["equity"],
                                                                                  direction="out", include_exited=True)]}
     major = clean(_call(db, "get_major_holders", company_id=company_id, as_of=when))
     events = clean(_call(db, "get_capital_events", company_id=company_id, as_of=when))
@@ -111,7 +111,7 @@ def full_relations(db, company_id: int, as_of: date, rel_type: str, since: date)
     """조회 도구(get_relations)는 50건에서 자른다. 보고서의 건수·합계는 전체로 세야 해서 원장에서 바로 읽는다."""
     from . import query
     rows = [e for e in query.relations(db, as_of, company_ids=[company_id], rel_types=[rel_type]) if e["disclosed_date"] >= since]
-    return [agent_tools._edge(db, e) for e in sorted(rows, key=lambda e: e["disclosed_date"], reverse=True)]
+    return [agent_tools._edge(db, e, as_of) for e in sorted(rows, key=lambda e: e["disclosed_date"], reverse=True)]
 
 
 def ended_in_window(db, company_id: int, as_of: date) -> int:

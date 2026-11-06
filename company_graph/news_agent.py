@@ -240,7 +240,7 @@ def markdown(out: dict) -> str:
     lines += [memo["summary"], ""]
     if memo["subjects"]:
         lines.append("**주인공** " + ", ".join(f"{s['name']}({s['stock_code']}) — {s['role']}" for s in memo["subjects"]))
-    if memo["topics"]:
+    if memo.get("topics"):
         lines.append("**닿는 제품·사업** " + ", ".join(memo["topics"]))
     for f in memo.get("subject_facts", []):
         lines.append(f"- 주인공의 관련 공시: {f['fact']} ({', '.join(f['rcept_nos'])})")
@@ -251,9 +251,9 @@ def markdown(out: dict) -> str:
             lines.append(f"| {r['name']}({r['stock_code']}) | {r['link']} · {r['closeness']} | {r['fact']} | {r['why']} | {', '.join(r['rcept_nos'])} |")
     else:
         lines.append("공시로 이어진 상장사를 찾지 못했습니다.")
-    if memo["unknown"]:
+    if memo.get("unknown"):
         lines += ["", "**공시로 확인하지 못한 것**"] + [f"- {x}" for x in memo["unknown"]]
-    if memo["next"]:
+    if memo.get("next"):
         lines += ["", "**이어서 볼 것**"] + [f"- {x}" for x in memo["next"]]
     if out["dropped"]:
         lines += ["", f"(근거가 조회 결과에 없어 뺀 종목 {len(out['dropped'])}곳)"]
