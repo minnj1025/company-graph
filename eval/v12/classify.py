@@ -24,6 +24,7 @@ from company_graph.config import CACHE_DIR, secret
 MODEL = "claude-haiku-5-5"
 PRICE = {"input_tokens": 0.10, "output_tokens": 0.50, "cache_read_input_tokens": 0.01, "cache_creation_input_tokens": 0.125}   # 달러 / 100만 토큰
 BATCH = 60
+WORKERS = int(next((a.split("=")[1] for a in sys.argv if a.startswith("--workers=")), 4))
 OUT = CACHE_DIR / "v12"
 KINDS = ["수주·공급계약", "인수합병·지분", "실적", "신제품·기술", "인허가·임상", "투자·증설", "자금조달·주주환원",
          "소송·제재·사고", "인사·지배구조", "주가·시황", "기타"]
@@ -77,8 +78,13 @@ def _clean(title: str) -> str:
 def titles() -> dict[str, list[dict]]:
     """회사별로 같은 제목을 합친다. 날짜는 가장 이른 것."""
     universe = {r["stock_code"]: r for r in json.loads((OUT / "universe.json").read_text(encoding="utf-8"))["rows"]}
+    from .collect_news import halves
+    from datetime import date
+    expected = len(list(halves(date(2025, 7, 1), date(2026, 10, 24))))
     out = {}
     for code, row in universe.items():
+        if len(list((OUT / "news" / code).glob("*.json"))) < expected:   # 아직 모으는 중인 회사는 다 모은 뒤에 (묶음이 바뀌지 않게)
+            continue
         seen = {}
         for path in sorted((OUT / "news" / code).glob("*.json")):
             for item in json.loads(path.read_text(encoding="utf-8")):
@@ -107,10 +113,13 @@ def ask(client, name: str, code: str, chunk: list[dict], usage: Counter, lock) -
     with lock:
         for key in PRICE:
             usage[key] += getattr(response.usage, key, 0) or 0
-    if response.stop_reason != "end_turn":
-        raise RuntimeError(f"답이 끝까지 오지 않음: {response.stop_reason}")
     if response.model != MODEL and not response.model.startswith(MODEL):
         raise RuntimeError(f"다른 모델이 답함: {response.model}")
+    if response.stop_reason == "max_tokens" and len(chunk) > 1:   # 답이 잘리면 반으로 나눠 다시 묻는다
+        half = len(chunk) // 2
+        return ask(client, name, code, chunk[:half], usage, lock) + ask(client, name, code, chunk[half:], usage, lock)
+    if response.stop_reason != "end_turn":
+        raise RuntimeError(f"답이 끝까지 오지 않음: {response.stop_reason}")
     got = {it["i"]: it for it in json.loads(next(b.text for b in response.content if b.type == "text"))["items"]}
     return [{**c, **{k: v for k, v in got.get(i + 1, {}).items() if k != "i"}, "labeled": (i + 1) in got} for i, c in enumerate(chunk)]
 
@@ -137,7 +146,11 @@ def run(limit: int | None, cap: float):
         code, name, key, chunk = job
         if stop.is_set():
             return
-        labeled = ask(client, name, code, chunk, usage, lock)
+        try:
+            labeled = ask(client, name, code, chunk, usage, lock)
+        except Exception as error:   # 한 묶음이 실패해도 나머지는 계속한다 (다음 실행에서 다시 묻는다)
+            print(f"{code} {name} 실패: {error}", flush=True)
+            return
         with lock:
             done[code][key] = labeled
             (folder / f"{code}.json").write_text(json.dumps(done[code], ensure_ascii=False), encoding="utf-8")
@@ -146,7 +159,7 @@ def run(limit: int | None, cap: float):
             if spent > cap:
                 print("상한을 넘어 멈춘다", flush=True)
                 stop.set()
-    with ThreadPoolExecutor(4) as pool:
+    with ThreadPoolExecutor(WORKERS) as pool:
         list(pool.map(one, todo))
     print("쓴 돈", f"${cost(usage):.4f}", dict(usage))
 
@@ -199,7 +212,7 @@ def run_bodies(limit: int | None, cap: float):
             if spent > cap:
                 print("상한을 넘어 멈춘다", flush=True)
                 stop.set()
-    with ThreadPoolExecutor(4) as pool:
+    with ThreadPoolExecutor(WORKERS) as pool:
         list(pool.map(one, jobs))
     print("쓴 돈", f"${cost(usage):.4f}", dict(usage))
 

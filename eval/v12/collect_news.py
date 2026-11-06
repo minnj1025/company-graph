@@ -63,6 +63,8 @@ def rss(query: str) -> list[dict]:
             print("  막힘", r.status_code, "쉼", 120 * (attempt + 1), flush=True)
             time.sleep(120 * (attempt + 1))
             continue
+        if r.status_code == 404:   # 결과가 없는 검색에 404 가 올 때가 있다
+            return []
         r.raise_for_status()
         items = []
         for it in ET.fromstring(r.content).findall(".//item"):
