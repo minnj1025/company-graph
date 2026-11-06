@@ -143,7 +143,9 @@ def prune(db, memo: dict, seen_rcepts: set[str], seen_ids: set[int]) -> tuple[di
     kept, dropped = [], []
     for r in memo.get("related", []):
         good = [no for no in r.get("rcept_nos", []) if not _bad_rcept(db, no, r.get("company_id"), subject_ids, r.get("closeness"), seen_rcepts)]
-        if r.get("company_id") in seen_ids and r.get("company_id") not in subject_ids and good:
+        if any(k["company_id"] == r.get("company_id") for k in kept):   # 같은 회사가 두 줄이면 앞의 것만 (HD현대 메모에서 나옴)
+            dropped.append(r)
+        elif r.get("company_id") in seen_ids and r.get("company_id") not in subject_ids and good:
             kept.append({**r, "rcept_nos": good})
         else:
             dropped.append(r)
