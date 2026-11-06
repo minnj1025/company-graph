@@ -225,12 +225,13 @@ class Graph:
 
 
 # ---------- 사건 ----------
-def load_labels() -> dict[str, list[dict]]:
-    """1단계(제목) 판정 위에 2단계(본문) 판정을 덮는다. 본문이 제목과 다른 기사였으면 2단계도 제목만으로 판정한 것이다."""
+def load_labels(second_stage: bool = True) -> dict[str, list[dict]]:
+    """1단계(제목) 판정 위에 2단계(본문) 판정을 덮는다. 본문이 제목과 다른 기사였으면 2단계도 제목만으로 판정한 것이다.
+    second_stage=False 면 제목 단계 판정만 쓴다(비교용)."""
     out = {}
     for path in (OUT / "labels").glob("*.json"):
         second_path = OUT / "labels2" / path.name
-        second = json.loads(second_path.read_text(encoding="utf-8")) if second_path.exists() else {}
+        second = json.loads(second_path.read_text(encoding="utf-8")) if second_stage and second_path.exists() else {}
         rows = []
         for chunk in json.loads(path.read_text(encoding="utf-8")).values():
             for r in chunk:
@@ -265,7 +266,7 @@ def events(labels: dict, prices: Prices, kind: str) -> list[dict]:
                 continue
             last = i
             out.append({"code": code, "date": r["date"], "entry": i, "title": r["title"], "kw": r.get("kw") or [],
-                        "imp": r.get("imp"), "kind": r.get("kind")})
+                        "imp": r.get("imp"), "kind": r.get("kind"), "stage": r.get("stage", 1)})
     return sorted(out, key=lambda e: (e["entry"], e["code"]))
 
 
@@ -398,6 +399,11 @@ def main():
     result["verdict"] = verdict(result["good"]["full"])
     result["cases"] = cases(sets["good"], prices, names_by_code)
     result["counts"] = {k: len(v) for k, v in sets.items()}
+    result["good_by_stage"] = dict(collections.Counter(f"stage{e.get('stage', 1)}" for e in sets["good"]))
+    # 비교용: 본문 단계 없이 제목 단계 판정만으로 고른 핵심 뉴스
+    title_only = build_groups(events(load_labels(second_stage=False), prices, "good"), prices, docs, graph, code_of, id_of, names)
+    result["title_only"] = {"events": len(title_only), "full": measure(title_only, prices)}
+    result["title_only"]["verdict"] = verdict(result["title_only"]["full"])
     (HERE / "results.json").write_text(json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps({k: result[k] for k in ("verdict", "counts")}, ensure_ascii=False))
     for h in HORIZONS:

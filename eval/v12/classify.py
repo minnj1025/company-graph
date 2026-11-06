@@ -192,10 +192,14 @@ def run_bodies(limit: int | None, cap: float):
             return
         content = f"회사: {names[code]} ({code})\n\n" + "\n\n".join(
             f"{i + 1}. {c['date']} {c['title']}\n{c['body'].get('kind', '본문')}: {c['body']['text']}" for i, c in enumerate(chunk))
-        response = client.messages.create(
-            model=MODEL, max_tokens=8000, system=[{"type": "text", "text": SYSTEM2, "cache_control": {"type": "ephemeral"}}],
-            messages=[{"role": "user", "content": content}],
-            output_config={"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA2}})
+        try:
+            response = client.messages.create(
+                model=MODEL, max_tokens=8000, system=[{"type": "text", "text": SYSTEM2, "cache_control": {"type": "ephemeral"}}],
+                messages=[{"role": "user", "content": content}],
+                output_config={"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA2}})
+        except anthropic.APIError as error:   # 한 묶음이 실패해도 나머지는 계속한다 (다음 실행에서 다시 묻는다)
+            print(f"{code} 실패: {error}", flush=True)
+            return
         if not response.model.startswith(MODEL):
             raise RuntimeError(f"다른 모델이 답함: {response.model}")
         got = {} if response.stop_reason != "end_turn" else {
