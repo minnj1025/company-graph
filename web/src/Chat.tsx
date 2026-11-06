@@ -69,7 +69,7 @@ const squeeze = (text: string) => text.replace(/\s/g, "").toLowerCase();
 /** steps 와 partial 은 답이 오는 동안에만 쓴다: Agent가 지금까지 한 조회와, 흘러나오고 있는 답의 글 */
 type Turn = { question: string; result?: AskResult; error?: string; steps: string[]; partial: string; views?: View[] };
 
-const TOOL_LABELS: Record<string, string> = {
+export const TOOL_LABELS: Record<string, string> = {
   show_on_graph: "그래프에 표시",
   show_view: "시각화 카드",
   get_price_moves: "주가 움직임 조회",

@@ -157,8 +157,14 @@ def prune(db, memo: dict, seen_rcepts: set[str], seen_ids: set[int]) -> tuple[di
     return {**memo, "related": kept, "subjects": subjects, "subject_facts": facts}, dropped
 
 
-def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = None, max_turns: int = MAX_TURNS) -> dict:
-    """news: {title, date(YYYY-MM-DD), text(선택), source(선택), company(선택: 주인공 이름 힌트)}"""
+def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = None, max_turns: int = MAX_TURNS,
+        on_event=None, on_result=None) -> dict:
+    """news: {title, date(YYYY-MM-DD), text(선택), source(선택), company(선택: 주인공 이름 힌트)}
+
+    on_event(kind, value): 화면에 진행을 보이려고 부른다. 모델에게 가는 말과 도구는 바뀌지 않는다.
+      say(모델이 조회 사이에 쓴 말), tool(부를 도구와 입력), result(도구 결과의 건수와 찾은 기업),
+      check(메모를 검사해 고치게 한 까닭들), memo(검사를 통과해 받은 메모)
+    on_result(name, input, result): 도구 결과 전체 (그래프를 그리는 쪽이 쓴다)"""
     client = client or anthropic.Anthropic(api_key=secret("ANTHROPIC_API_KEY"))
     when = as_of or (date.fromisoformat(news["date"]) - timedelta(days=1))
     parts = [f"조회 시점: {when.isoformat()}", f"뉴스 날짜: {news['date']}", f"제목: {news['title']}"]
@@ -173,7 +179,8 @@ def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = Non
     style = os.environ.get("ANSWER_STYLE")
     os.environ["ANSWER_STYLE"] = "2"   # 도구가 원 단위 금액을 '억·조 원' 글(value_text)로도 주게 한다. 끝나면 되돌린다
     try:
-        return _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_ids, max_turns, started)
+        return _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_ids, max_turns, started,
+                     on_event or (lambda kind, value: None), on_result)
     finally:
         if style is None:
             os.environ.pop("ANSWER_STYLE", None)
@@ -181,7 +188,7 @@ def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = Non
             os.environ["ANSWER_STYLE"] = style
 
 
-def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_ids, max_turns, started) -> dict:
+def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_ids, max_turns, started, emit, on_result) -> dict:
     memo, problems, retried = None, [], False
     with session() as db:
         for _ in range(max_turns):
@@ -193,6 +200,11 @@ def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_i
             for key in usage:
                 usage[key] += getattr(response.usage, key, 0) or 0
             messages.append({"role": "assistant", "content": response.content})
+            for block in response.content:
+                if block.type == "text" and block.text.strip():
+                    emit("say", {"text": block.text.strip()[:600]})
+                elif block.type == "tool_use" and block.name != MEMO_TOOL["name"]:
+                    emit("tool", {"name": block.name, "input": dict(block.input)})
             if response.stop_reason != "tool_use":
                 messages.append({"role": "user", "content": "조회를 마쳤으면 write_memo 를 불러 메모를 내세요."})
                 continue
@@ -205,16 +217,24 @@ def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_i
                     wrong = check(db, candidate, seen_rcepts, seen_ids)
                     if wrong and not retried:   # 한 번은 고치게 한다
                         retried, problems = True, wrong
+                        emit("check", {"problems": wrong, "related": len(candidate.get("related", []))})
                         results.append({"type": "tool_result", "tool_use_id": block.id, "is_error": True,
                                         "content": "메모에 조회 결과로 확인되지 않는 것이 있습니다. 조회해서 확인하거나 빼고 다시 write_memo 를 부르세요.\n- " + "\n- ".join(wrong)})
                         continue
                     memo = candidate
+                    emit("memo", {"related": len(candidate.get("related", [])), "left": len(wrong), "retried": retried})
                     results.append({"type": "tool_result", "tool_use_id": block.id, "content": "받았습니다."})
                     continue
                 result = agent_tools.call(db, block.name, dict(block.input))
                 body = json.dumps({k: v for k, v in result.items() if not k.startswith("_")}, ensure_ascii=False, default=str)
+                found = {int(x) for x in re.findall(r'"(?:\w+_)?id": (\d+)', body)}
                 seen_rcepts.update(re.findall(r"\b\d{14}\b", body))
-                seen_ids.update(int(x) for x in re.findall(r'"(?:\w+_)?id": (\d+)', body))
+                seen_ids.update(found)
+                if on_result:
+                    on_result(block.name, dict(block.input), result)
+                total = result.get("total", len(result["candidates"]) if isinstance(result.get("candidates"), list) else None)
+                emit("result", {"name": block.name, "total": total, "error": result.get("error"),
+                                "receipts": len(set(re.findall(r"\b\d{14}\b", body))), "companies": sorted(found)[:60]})
                 calls.append({"tool": block.name, "input": dict(block.input), "error": result.get("error"),
                               "total": result.get("total"), "chars": len(body)})
                 results.append({"type": "tool_result", "tool_use_id": block.id, "content": body, "is_error": "error" in result})

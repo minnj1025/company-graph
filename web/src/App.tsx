@@ -6,6 +6,7 @@ import { ChatLog, Composer, useChat } from "./Chat";
 import { LevelList, NO_FILTER, Settings, TimeBar, type Filters } from "./Controls";
 import { Graph, MENTIONED, shortName } from "./Graph";
 import { Credit } from "./Credit";
+import { MemoPane, useMemoAgent } from "./Memo";
 import { Panel } from "./Panel";
 import type { AskResult, Company, CompanyDetail, GraphData, GraphNode, LinkType, Meta, RelType, Suggestion, Taxonomy } from "./types";
 
@@ -17,6 +18,8 @@ type Shown = Pick<AskResult, "question" | "graph"> & {
   picked?: boolean;
   /** Agent가 답을 쓰기 전에 "이 기업들을 보여 줘"라고 해서 먼저 그려 둔 것. 답이 끝나면 완성된 그래프로 바뀐다 */
   early?: boolean;
+  /** 뉴스 메모 Agent가 찾은 것 */
+  memo?: boolean;
 };
 
 // 그래프 말고 다른 탭은 누를 때 받는다. 첫 화면이 받는 양이 준다
@@ -32,7 +35,7 @@ const ALL_TYPES: RelType[] = ["equity", "supply_contract", "affiliate", "stake_a
 const EMPTY: GraphData = { nodes: [], links: [] };
 
 /** 오른쪽에서 밀려 나오는 칸에 무엇을 보일지. 닫혀 있으면 그래프가 화면을 다 쓴다 */
-type Drawer = "answer" | "company" | "feed" | null;
+type Drawer = "answer" | "memo" | "company" | "feed" | null;
 /** 그래프가 무엇을 그리고 있는지. 바뀔 때마다 쌓아 두어 앞뒤로 오갈 수 있다 (브라우저의 뒤로·앞으로와 같다) */
 interface View {
   /** 한 기업 중심으로 볼 때 그 기업 */
@@ -54,7 +57,7 @@ const KIND_LEGEND: [NonNullable<GraphNode["kind"]>, string, string][] = [
   ["topic", "사업 낱말", TOPIC_COLOR],
 ];
 
-const DRAWER_TITLES: Record<Exclude<Drawer, null>, string> = { answer: "채팅", company: "기업 상세", feed: "최근 공시" };
+const DRAWER_TITLES: Record<Exclude<Drawer, null>, string> = { answer: "채팅", memo: "뉴스 메모", company: "기업 상세", feed: "최근 공시" };
 
 type Layout = Map<number, { x: number; y: number; z: number }>;
 const LAYOUT_KEY = "layout";
@@ -119,7 +122,7 @@ export function App() {
   const [drawerWidth, setDrawerWidth] = useState(widest);
   const resized = useRef(false);
   useEffect(() => {
-    if (drawer === "answer" && !resized.current) setDrawerWidth(widest());
+    if ((drawer === "answer" || drawer === "memo") && !resized.current) setDrawerWidth(widest());
   }, [drawer]);
   const [level, setLevel] = useState<Level>("family");
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -230,10 +233,15 @@ export function App() {
   // 답이 끝나 완성된 그래프가 오면, 이미 모여 있는 점은 그 자리에 두고 새 점(제품 등)만 더한다
   const early = useRef<GraphData | null>(null);
   /** 이 기업들만 지금 그래프의 점과 선으로 모아 보인다. Agent의 화면 도구와, 주소의 ?show= 로 연 링크(MCP 결과의 "그래프로 보기")가 쓴다 */
-  const focusOn = (question: string, highlight: number[], also: number[], waiting = true) => {
+  const focusOn = (question: string, highlight: number[], also: number[], waiting = true, replace = false, memo = false) => {
       const wanted = new Set([...highlight, ...also]);
       const strong = new Set(highlight);
-      const nodes = data.nodes.filter((node) => wanted.has(node.id)).map(({ x: _x, y: _y, z: _z, ...node }) => ({ ...node, vx: undefined, vy: undefined, vz: undefined, focus: strong.has(node.id) }));
+      // 같은 일을 이어 그리는 중이면(뉴스 메모가 조회할 때마다) 이미 모인 점은 그 자리에 둔다
+      const placed = new Map((replace && early.current ? early.current.nodes : []).map((node) => [node.id, node]));
+      const nodes = data.nodes.filter((node) => wanted.has(node.id)).map(({ x: _x, y: _y, z: _z, ...node }) => {
+        const at = placed.get(node.id);
+        return { ...node, vx: undefined, vy: undefined, vz: undefined, focus: strong.has(node.id), ...(at?.x !== undefined ? { x: at.x, y: at.y, z: at.z } : {}) };
+      });
       if (nodes.length === 0) return false;   // 지금 그래프에 없는 기업들이다. 답이 끝날 때까지 기다린다
       const kept = new Set(nodes.map((node) => node.id));
       const end = (value: unknown) => (typeof value === "object" && value !== null ? (value as GraphNode).id : (value as number));
@@ -241,11 +249,11 @@ export function App() {
       const graph = { nodes, links } as GraphData;
       if (waiting) early.current = graph;   // 답이 끝나면 이 자리에 이어 그린다
       seed(graph);
-      go({ found: { question, graph, early: true } });
+      go({ found: { question, graph, early: true, memo } }, replace);
       return true;
   };
-  const chat = useChat(
-    (result) => {
+  /** Agent가 끝낸 결과를 그린다. 먼저 모아 둔 그림이 있으면 그 자리에 이어 그린다 */
+  const finishFound = (result: Shown | null) => {
       const before = early.current;
       early.current = null;
       if (result && before) {
@@ -258,10 +266,21 @@ export function App() {
         go({ found: result }, true);   // 먼저 그려 둔 자리를 고쳐 쓴다. 뒤로 가기에 두 걸음이 쌓이지 않게
         return;
       }
-      showFound(result);
-    },
+      if (result) seed(result.graph);
+      go({ found: result });
+  };
+  const chat = useChat(
+    (result) => finishFound(result),
     focusOn,
   );
+  const memoAgent = useMemoAgent({
+    onFound: (title, highlight, also, first) => focusOn(`뉴스 메모 · ${title}`, highlight, also, true, !first, true),
+    onDone: (title, result) => finishFound({ question: `뉴스 메모 · ${title}`, graph: result.graph, memo: true }),
+  });
+  const nameOf = useMemo(() => {
+    const names = new Map(data.nodes.map((node) => [node.id, node.name]));
+    return (id: number) => names.get(id);
+  }, [data]);
 
   // MCP 결과의 "그래프로 보기" 링크(?show=기업 번호들)로 들어오면, 전체 그래프가 그려진 뒤 그 기업들을 한 번 모아 보인다
   const shown = useRef(false);
@@ -359,7 +378,7 @@ export function App() {
       setSpotlight(null);
       return;
     }
-    if (drawn?.early && !found.early && drawn.question === found.question) {
+    if (drawn?.early && drawn.question === found.question) {
       // 먼저 모아 둔 그림에서 이어 간다. 다시 흐렸다가 바꾸면 두 번 깜빡인다
       setDrawn(found);
       setSpotlight(null);
@@ -430,7 +449,7 @@ export function App() {
   const companies = shownData.nodes.filter((node) => !node.kind).length;
   const products = shownData.nodes.filter((node) => node.kind === "product").length;
   const families = shownData.nodes.filter((node) => node.kind === "family").length;
-  const drawerTabs = (["answer", "company", "feed"] as const).filter(
+  const drawerTabs = (["answer", "memo", "company", "feed"] as const).filter(
     (kind) => kind !== "company" || kind === drawer || detail !== null,
   );
 
@@ -448,8 +467,18 @@ export function App() {
           Corpath <span>공시에서 뽑은 기업 사이의 관계</span>
         </h1>
         <nav className="tabs">
-          <button className={tab === "graph" ? "on" : ""} onClick={() => setTab("graph")}>
+          <button className={tab === "graph" && drawer !== "memo" ? "on" : ""} onClick={() => setTab("graph")}>
             탐색
+          </button>
+          <button
+            className={tab === "graph" && drawer === "memo" ? "on" : ""}
+            onClick={() => {
+              setTab("graph");
+              setDrawer("memo");
+            }}
+            title="뉴스를 넣으면 Agent가 공시로 이어진 종목을 찾아 메모를 남깁니다"
+          >
+            뉴스 메모 <span className="tab-badge">Agent</span>
           </button>
           <button className={tab === "hot" ? "on" : ""} onClick={() => setTab("hot")}>
             이슈 종목
@@ -496,7 +525,7 @@ export function App() {
             onSelect={onSelect}
             spotlight={spotlight}
             light={theme === "light"}
-            fitKey={drawn ? `ask-${drawn.question}${drawn.early ? "-early" : ""}` : `${center?.id ?? scope}-${hops}`}
+            fitKey={drawn ? `ask-${drawn.question}${drawn.early ? `-early${drawn.memo ? Math.ceil(drawn.graph.nodes.length / 8) : ""}` : ""}` : `${center?.id ?? scope}-${hops}`}
             refit={refit}
           />
 
@@ -511,7 +540,7 @@ export function App() {
                 </button>
               </div>
               <div className={narrowed ? "crumb narrowed" : "crumb"}>
-                <em>{found ? (found.picked ? "고른 것" : "질문으로 찾은 것") : center ? "한 기업 중심" : filtering ? "솎아 보는 중" : "보는 범위"}</em>
+                <em>{found ? (found.memo ? "뉴스 메모로 찾은 것" : found.picked ? "고른 것" : "질문으로 찾은 것") : center ? "한 기업 중심" : filtering ? "솎아 보는 중" : "보는 범위"}</em>
                 <b>{found ? found.question : scopeLabel}</b>
                 {!found && filtering && center && <em>· 솎아 보는 중</em>}
               </div>
@@ -709,6 +738,16 @@ export function App() {
                 onShow={showFound}
                 onCompany={(result, id) => go({ found: result, selected: id })}
               />}
+            {drawer === "memo" && (
+              <MemoPane
+                agent={memoAgent}
+                nameOf={nameOf}
+                closed={chat.closed}
+                onCompany={(id) => {
+                  setSelectedId(id);
+                }}
+              />
+            )}
             {drawer === "company" &&
               (detail ? (
                 <Panel

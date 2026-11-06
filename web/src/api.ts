@@ -220,3 +220,82 @@ export async function fetchPortfolio(items: { id: number; qty: number | null }[]
   return response.json();
 }
 export const fetchView = (kind: string, companyId: number, asOf: string) => get<View>("/view", { kind, company_id: companyId, as_of: asOf });
+
+/** 뉴스 메모의 관련 종목 한 줄 */
+export interface MemoRow {
+  company_id: number;
+  name: string | null;
+  stock_code: string | null;
+  link: string;
+  closeness: string;
+  fact: string;
+  why: string;
+  rcept_nos: string[];
+}
+
+export interface Memo {
+  summary: string;
+  subjects: { company_id: number; name: string | null; stock_code: string | null; role: string }[];
+  topics: string[];
+  subject_facts: { fact: string; rcept_nos: string[] }[];
+  related: MemoRow[];
+  unknown: string[];
+  next: string[];
+}
+
+export interface MemoResult {
+  news: { title: string; date: string };
+  as_of: string;
+  model: string;
+  memo: Memo | null;
+  dropped: { name: string | null; link: string | null }[];
+  first_problems: string[];
+  seconds: number;
+  tokens: number;
+  tools: { name: string; input: Record<string, unknown>; total: number | null; error: string | null }[];
+  sources: Record<string, { url: string; report: string; filed: string; company: string | null }>;
+  graph: GraphData;
+  left_for_you: number | null;
+}
+
+/** 뉴스 메모를 만드는 동안 서버가 보내는 것 */
+export type MemoEvent =
+  | { kind: "say"; text: string }
+  | { kind: "tool"; name: string; input: Record<string, unknown> }
+  | { kind: "result"; name: string; total: number | null; error: string | null; receipts: number; companies: number[] }
+  | { kind: "check"; problems: string[]; related: number }
+  | { kind: "memo"; related: number; left: number; retried: boolean };
+
+/** 뉴스 한 건으로 메모를 만든다. 조회할 때마다 onEvent 가 불리고, 다 끝나면 메모 전체를 돌려준다 */
+export async function memoStream(news: { title: string; text?: string; day?: string }, onEvent: (event: MemoEvent) => void): Promise<MemoResult> {
+  const response = await fetch("/api/memo/stream", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...ownerHeaders() },
+    body: JSON.stringify(news),
+  });
+  if (!response.ok || !response.body) {
+    const body = await response.json().catch(() => null);
+    const detail = body?.detail;
+    throw new Error(typeof detail === "string" ? detail : Array.isArray(detail) ? "뉴스 제목은 5자 이상, 200자 이하로 적어 주세요." : REFUSED);
+  }
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    buffer += decoder.decode(value, { stream: !done });
+    let end: number;
+    while ((end = buffer.indexOf("\n\n")) >= 0) {
+      const block = buffer.slice(0, end);
+      buffer = buffer.slice(end + 2);
+      const kind = /^event: (.+)$/m.exec(block)?.[1];
+      const data = /^data: (.*)$/m.exec(block)?.[1];
+      if (!kind || data === undefined) continue;
+      const parsed = JSON.parse(data);
+      if (kind === "done") return parsed as MemoResult;
+      if (kind === "error") throw new Error(typeof parsed === "string" ? parsed : REFUSED);
+      onEvent({ kind, ...parsed } as MemoEvent);
+    }
+    if (done) throw new Error(REFUSED);
+  }
+}

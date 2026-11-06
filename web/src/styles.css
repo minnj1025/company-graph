@@ -5722,3 +5722,377 @@ details.more .notes {
   white-space: nowrap;
 }
 .answer a.receipt:hover { color: var(--text); border-color: var(--accent); text-decoration: none; }
+
+/* ---------- 뉴스 메모 Agent ---------- */
+.tab-badge {
+  margin-left: 4px;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-size: 10.5px;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.memo-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px 16px 28px;
+  overflow-y: auto;
+  min-height: 0;
+  flex: 1;
+}
+
+.memo-intro b {
+  font-size: 15px;
+}
+
+.memo-intro p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.memo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.memo-form input:not([type="date"]),
+.memo-form textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: rgb(var(--ink) / 0.05);
+  color: var(--text);
+  resize: vertical;
+}
+
+.memo-form input[type="date"] {
+  margin-left: 6px;
+  padding: 5px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: rgb(var(--ink) / 0.05);
+  color: var(--text);
+}
+
+.memo-form details summary {
+  color: var(--muted);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.memo-form details textarea {
+  margin-top: 6px;
+}
+
+.memo-form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.memo-form button[type="submit"] {
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--accent);
+  color: var(--on-accent, #0b0f16);
+  font-weight: 600;
+}
+
+.memo-form button[type="submit"]:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.memo-examples,
+.memo-past {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.memo-examples em,
+.memo-past em {
+  color: var(--muted);
+  font-size: 12px;
+  font-style: normal;
+}
+
+.memo-examples button,
+.memo-past button {
+  text-align: left;
+  padding: 6px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 12.5px;
+}
+
+.memo-examples button:hover:not(:disabled),
+.memo-past button:hover {
+  border-color: var(--accent);
+}
+
+.memo-run h3 {
+  margin: 0 0 10px;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+/* Agent가 한 일: 세로 줄 위에 단계가 쌓인다 */
+.trace {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0 0 0 18px;
+  border-left: 2px solid rgb(var(--ink) / 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.trace > li {
+  position: relative;
+}
+
+.trace > li::before {
+  content: "";
+  position: absolute;
+  left: -24px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--good);
+}
+
+.trace > li b {
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.trace > li em {
+  margin-left: 6px;
+  color: var(--good);
+  font-style: normal;
+}
+
+.t-input {
+  color: var(--muted);
+}
+
+.t-start::before,
+.t-end::before {
+  background: var(--accent) !important;
+}
+
+.t-start span,
+.t-end span {
+  color: var(--muted);
+}
+
+.t-say {
+  color: var(--text-2, var(--muted));
+  font-style: italic;
+}
+
+.trace > li.t-say::before {
+  background: rgb(var(--ink) / 0.3);
+}
+
+.trace > li.t-now::before,
+.trace > li.t-wait::before {
+  background: var(--accent);
+  animation: memo-pulse 1s ease-in-out infinite alternate;
+}
+
+.t-wait {
+  color: var(--muted);
+}
+
+.trace > li.t-error::before {
+  background: var(--muted);
+}
+
+.trace > li.t-check::before,
+.trace > li.t-warn::before {
+  background: var(--warn);
+}
+
+.t-check b,
+.t-warn b {
+  color: var(--warn);
+}
+
+.t-check span {
+  display: block;
+  color: var(--muted);
+}
+
+.t-check ul {
+  margin: 4px 0 0;
+  padding-left: 16px;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.t-error-line {
+  color: var(--bad);
+}
+
+@keyframes memo-pulse {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.memo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: rgb(var(--ink) / 0.03);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.memo-card h4 {
+  margin: 8px 0 0;
+  font-size: 13px;
+}
+
+.memo-summary {
+  margin: 0;
+  font-size: 13.5px;
+}
+
+.memo-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.memo-line em {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 12px;
+  margin-right: 2px;
+}
+
+.memo-card .co {
+  padding: 1px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: rgb(var(--ink) / 0.06);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.memo-card .co:hover {
+  border-color: var(--accent);
+}
+
+.memo-card .topic {
+  padding: 1px 7px;
+  border-radius: 3px;
+  background: rgb(var(--ink) / 0.07);
+  font-size: 12px;
+}
+
+.memo-fact {
+  margin: 0;
+  color: var(--text-2, var(--text));
+}
+
+.memo-row {
+  padding: 9px 0 2px;
+  border-top: 1px solid var(--border);
+}
+
+.memo-row p {
+  margin: 4px 0 0;
+}
+
+.memo-row .why {
+  color: var(--muted);
+}
+
+.memo-row-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.memo-card .tag {
+  font-size: 11.5px;
+  padding: 0 6px;
+  border-radius: 3px;
+}
+
+.tag-near {
+  color: var(--good);
+  border: 1px solid color-mix(in srgb, var(--good) 45%, transparent);
+}
+
+.tag-far {
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.receipts {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.receipts a {
+  font-size: 11px;
+  padding: 0 6px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  text-decoration: none;
+}
+
+.memo-list {
+  margin: 2px 0 0;
+  padding-left: 18px;
+  color: var(--text-2, var(--text));
+}
+
+.memo-card .small,
+.memo-pane .small {
+  font-size: 11.5px;
+  margin: 0;
+}
+
+.memo-pane .muted {
+  color: var(--muted);
+}
+
+/* 좁은 화면에서는 칸이 위아래로 놓여 화면 너비를 다 쓴다. 넓은 화면에서 끌어 정한 너비(인라인 값)를 따르지 않는다 */
+@media (max-width: 900px) {
+  .drawer .drawer-inner {
+    width: 100%;
+  }
+}

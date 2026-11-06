@@ -834,7 +834,8 @@ class _Found:
     답에 이름이 나온 회사는 반드시 그래프에 있고 크게 보이게 한다.
     """
 
-    def __init__(self):
+    def __init__(self, as_of: date | None = None):
+        self.as_of = as_of or date.today()                # 둘레를 덧그릴 때 이날까지의 공시만 본다 (뉴스 메모는 뉴스 전날)
         self.companies: set[int] = set()
         self.focus: set[int] = set()
         self.links: dict[tuple, dict] = {}
@@ -955,7 +956,7 @@ class _Found:
         if not self.receipts:
             return
         receipts = list(self.receipts)[:200]
-        for edge in query.relations(db, date.today(), company_ids=list(self.focus), rel_types=["supply_contract", *query.EVENT_TYPES]):
+        for edge in query.relations(db, self.as_of, company_ids=list(self.focus), rel_types=["supply_contract", *query.EVENT_TYPES]):
             if edge["rcept_no"] in receipts and edge["type"] not in ("equity", "affiliate"):
                 self._link(edge)
 
@@ -969,7 +970,7 @@ class _Found:
         if not alone or len(self.focus) > 3:
             return
         for company_id in alone:
-            edges = query.relations(db, date.today(), company_ids=[company_id], rel_types=["equity", "supply_contract"])
+            edges = query.relations(db, self.as_of, company_ids=[company_id], rel_types=["equity", "supply_contract"])
             edges = [e for e in edges if e["subject_id"] and e["object_id"]]
             other = lambda e: e["object_id"] if e["subject_id"] == company_id else e["subject_id"]
             seen = set()
@@ -985,7 +986,7 @@ class _Found:
         added: set[int] = set()
         listed = listed_names(db).keys()
         for center in centers:
-            edges = [e for e in query.relations(db, date.today(), company_ids=[center], rel_types=["equity", "affiliate", "supply_contract"])
+            edges = [e for e in query.relations(db, self.as_of, company_ids=[center], rel_types=["equity", "affiliate", "supply_contract"])
                      if e["subject_id"] and e["object_id"] and e["subject_id"] != e["object_id"]]
             other = lambda e: e["object_id"] if e["subject_id"] == center else e["subject_id"]
             # 지분은 큰 것, 계열은 상장사, 공급계약은 금액이 큰 것부터. 셋을 고루 섞는다
@@ -1063,7 +1064,7 @@ class _Found:
 
         # 3. 답에 나왔는데 어디에도 이어지지 않은 회사는 자기 제품에 잇는다 (매출 비중이 큰 둘)
         linked = set(degree) | {i for members in (*products.values(), *topics.values()) for i in members}
-        own = product_index(db, date.today())
+        own = product_index(db, self.as_of)
         for company_id in mentioned - linked:
             for name, item in sorted(own.get(company_id, {}).items(), key=lambda x: -x[1]["share"])[:2]:
                 products.setdefault(name, {})[company_id] = round(item["share"], 2)
@@ -1232,6 +1233,86 @@ def report_stream(body: ReportAsk, request: Request, db=Depends(get_db)):
                 own.commit()
             result["markdown"] = report.markdown(result)
             events.put(("done", result))
+        except Exception:
+            events.put(("error", UNAVAILABLE))
+
+    threading.Thread(target=work, daemon=True).start()
+
+    def stream():
+        while True:
+            try:
+                kind, value = events.get(timeout=10)
+            except queue.Empty:
+                yield ": 기다리는 중\n\n"
+                continue
+            yield f"event: {kind}\ndata: {json.dumps(value, ensure_ascii=False, default=str)}\n\n"
+            if kind in ("done", "error"):
+                return
+
+    return StreamingResponse(stream(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"})
+
+
+# ---------- 뉴스 메모 Agent (유료 API를 부른다. 질문 한 번으로 센다) ----------
+
+class MemoAsk(BaseModel):
+    title: str = Field(min_length=5, max_length=200)
+    text: str | None = Field(default=None, max_length=4000)   # 기사 앞부분 (선택). 모델에게 자료로만 넘긴다
+    day: date | None = None                                    # 뉴스가 나온 날. 비우면 오늘. 조회는 그 전날까지의 공시로 한다
+
+
+def _memo_answered(db, out: dict, found: _Found, ask_id: int, visitor: str) -> dict:
+    entry = db.get(AskLog, ask_id)
+    entry.ok, entry.tokens, entry.seconds = True, sum(out["usage"].values()), out["seconds"]
+    db.commit()
+    return {**memo_json(db, out, found), "left_for_you": None if visitor == OWNER else max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}
+
+
+def memo_json(db, out: dict, found: _Found) -> dict:
+    """메모를 화면에 줄 모양으로: 근거 공시의 보고서 이름과 낸 회사, 빠진 종목의 이름, 메모의 회사를 강조한 그래프."""
+    memo, sources, graph = out["memo"], {}, {"nodes": [], "links": []}
+    if memo:
+        ids = [s["company_id"] for s in memo["subjects"]] + [r["company_id"] for r in memo["related"]]
+        found.shown = {"highlight": ids, "also": []}
+        found.companies.update(ids)
+        graph = found.graph(db)
+        numbers = sorted({no for row in memo["related"] + memo.get("subject_facts", []) for no in row["rcept_nos"]})
+        for d in db.scalars(select(Document).where(Document.rcept_no.in_(numbers))).all() if numbers else []:
+            filer = db.get(Company, d.company_id) if d.company_id else None
+            sources[d.rcept_no] = {"url": query.DART_VIEWER + d.rcept_no, "report": d.report_nm.strip(),
+                                   "filed": d.rcept_dt.isoformat(), "company": filer.label if filer else None}
+    dropped = []
+    for row in out["dropped"]:
+        company = db.get(Company, row.get("company_id")) if isinstance(row.get("company_id"), int) else None
+        dropped.append({"name": company.label if company else None, "link": row.get("link")})
+    return {"news": out["news"], "as_of": out["as_of"], "model": out["model"], "memo": memo, "dropped": dropped,
+            "first_problems": out["first_problems"], "seconds": out["seconds"], "tokens": sum(out["usage"].values()),
+            "tools": [{"name": c["tool"], "input": c["input"], "total": c["total"], "error": c["error"]} for c in out["tool_calls"]],
+            "sources": sources, "graph": graph, "left_for_you": None}
+
+
+@app.post("/api/memo/stream")
+def memo_stream(body: MemoAsk, request: Request, db=Depends(get_db)):
+    """뉴스 한 건을 news_agent 에 넘겨, 조회하는 과정과 메모를 흘려보낸다 (Server-Sent Events).
+
+    사건: say(Agent가 조회 사이에 쓴 말), tool(부르는 도구와 입력), result(그 결과의 건수와 찾은 기업),
+    check(메모를 검사해 고치게 한 까닭), memo(검사를 마친 메모를 받음), done(전체), error(사유)."""
+    from . import news_agent
+
+    day = body.day or date.today()
+    if not date(2025, 1, 2) <= day <= date.today():
+        raise HTTPException(422, "뉴스 날짜는 2025-01-02부터 오늘까지로 적어 주세요")
+    title = " ".join(body.title.split())
+    _, visitor, ask_id = _admit(Ask(question=f"[뉴스 메모] {title}"[:300]), request, db)
+    news = {"title": title, "date": day.isoformat(), "text": (body.text or "").strip() or None, "kind": "붙여 넣은 기사"}
+    events: queue.Queue = queue.Queue()
+
+    def work():
+        found = _Found(day - timedelta(days=1))
+        try:
+            out = news_agent.run(news, model=ASK_MODEL, on_event=lambda kind, value: events.put((kind, value)), on_result=found.take)
+            with session(_engine) as own:
+                events.put(("done", _memo_answered(own, out, found, ask_id, visitor)))
         except Exception:
             events.put(("error", UNAVAILABLE))
 
