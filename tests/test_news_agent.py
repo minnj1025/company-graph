@@ -47,3 +47,33 @@ def test_progress_events_do_not_change_what_the_model_sees(db, monkeypatch):
     assert events[2][1]["total"] == 1 and MOBIS in events[2][1]["companies"]
     assert "20991231000009" in events[3][1]["problems"][0]
     assert results == ["get_relations"]
+
+
+def test_number_check_only_when_turned_on(db, monkeypatch):
+    @contextmanager
+    def same_db():
+        yield db
+    monkeypatch.setattr(news_agent, "session", same_db)
+
+    def with_fact(fact):
+        m = memo("20260312000001")
+        m["related"][0]["fact"] = fact
+        return m
+
+    def script():
+        return [replies()[0],
+                reply("tool_use", NS(type="tool_use", id="t2", name="write_memo", input=with_fact("기아가 현대모비스 지분 99.9%를 가짐"))),
+                reply("tool_use", NS(type="tool_use", id="t3", name="write_memo", input=with_fact("기아가 현대모비스 지분을 가짐")))]
+    off = news_agent.run(NEWS, client=FakeClient(script()))
+    assert off["first_problems"] == [] and "99.9" in off["memo"]["related"][0]["fact"]   # 끄면 예전과 같다(첫 메모를 받는다)
+    events = []
+    on = news_agent.run(NEWS, client=FakeClient(script()), check_numbers=True, on_event=lambda kind, value: events.append((kind, value)))
+    assert "99.9" in on["first_problems"][0] and on["memo"]["related"][0]["unchecked_numbers"] == []
+    assert [kind for kind, _ in events][-2:] == ["check", "memo"]
+
+
+def test_unseen_numbers_ignores_commas_and_news_numbers():
+    seen = '{"value_text": "1조 742억 원", "ratio": 36.60, "date": "2026-09-22", "value": 1074200000000}'
+    assert news_agent.unseen_numbers("2026-09-22 1조 742억 원(매출액 대비 36.6%), 1,074,200,000,000원", seen, "") == []
+    assert news_agent.unseen_numbers("2만4480만원 공급", seen, "") == ["4480"]
+    assert news_agent.unseen_numbers("3605억원 수주", seen, "삼성전기, 메모리 기판 3605억원 수주") == []

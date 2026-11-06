@@ -24,10 +24,12 @@ import time
 from datetime import date, timedelta
 
 import anthropic
+from sqlalchemy import select
 
 from . import agent_tools
 from .config import CACHE_DIR, secret
 from .db import Company, Document, session
+from .query import DART_VIEWER
 
 MODEL = "claude-haiku-5-5"
 MAX_TURNS = 14
@@ -136,6 +138,34 @@ def check(db, memo: dict, seen_rcepts: set[str], seen_ids: set[int]) -> list[str
     return wrong
 
 
+NUMBER = re.compile(r"\d{4}-\d{2}-\d{2}|\d[\d,]*(?:\.\d+)?")
+
+
+def unseen_numbers(text: str | None, seen: str, news: str) -> list[str]:
+    """글에 적힌 숫자·날짜 가운데 조회 결과에도 뉴스(제목·붙인 글)에도 없는 것. 쉼표는 떼고 견준다. 한 자리 숫자는 보지 않는다."""
+    bag = seen.replace(",", "") + " " + news.replace(",", "")
+    out = []
+    for token in NUMBER.findall(text or ""):
+        number = token.replace(",", "").rstrip(".")
+        if len(number) >= 2 and number not in bag and number not in out:
+            out.append(number)
+    return out
+
+
+def number_problems(memo: dict, seen: str, news: str) -> list[str]:
+    """메모의 공시 사실(fact)에 적힌 금액·비율·날짜가 조회 결과에 그대로 있는지. 모델이 단위를 바꾸거나 직접 계산한 값을 잡는다."""
+    wrong = []
+    for r in memo.get("related", []):
+        if missing := unseen_numbers(r.get("fact"), seen, news):
+            wrong.append(f"related 의 company_id {r.get('company_id')} 의 fact 에 적은 숫자 {', '.join(missing)} 는 조회 결과에 없습니다. "
+                         "조회 결과의 값을 그대로 옮기거나 빼세요")
+    for f in memo.get("subject_facts", []):
+        if missing := unseen_numbers(f.get("fact"), seen, news):
+            wrong.append(f"subject_facts 의 '{(f.get('fact') or '')[:30]}…' 에 적은 숫자 {', '.join(missing)} 는 조회 결과에 없습니다. "
+                         "조회 결과의 값을 그대로 옮기거나 빼세요")
+    return wrong
+
+
 def prune(db, memo: dict, seen_rcepts: set[str], seen_ids: set[int]) -> tuple[dict, list[dict]]:
     """조회 결과로 확인되지 않는 것을 뺀다. 접수번호 일부만 틀렸으면 그 번호만 뺀다."""
     subjects = [s for s in memo.get("subjects", []) if s.get("company_id") in seen_ids]
@@ -158,13 +188,15 @@ def prune(db, memo: dict, seen_rcepts: set[str], seen_ids: set[int]) -> tuple[di
 
 
 def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = None, max_turns: int = MAX_TURNS,
-        on_event=None, on_result=None) -> dict:
+        on_event=None, on_result=None, check_numbers: bool = False) -> dict:
     """news: {title, date(YYYY-MM-DD), text(선택), source(선택), company(선택: 주인공 이름 힌트)}
 
     on_event(kind, value): 화면에 진행을 보이려고 부른다. 모델에게 가는 말과 도구는 바뀌지 않는다.
       say(모델이 조회 사이에 쓴 말), tool(부를 도구와 입력), result(도구 결과의 건수와 찾은 기업),
       check(메모를 검사해 고치게 한 까닭들), memo(검사를 통과해 받은 메모)
-    on_result(name, input, result): 도구 결과 전체 (그래프를 그리는 쪽이 쓴다)"""
+    on_result(name, input, result): 도구 결과 전체 (그래프를 그리는 쪽이 쓴다)
+    check_numbers: 메모의 금액·비율·날짜가 조회 결과에 있는지도 검사해 고치게 하고, 고친 뒤에도 남으면 그 줄에 unchecked_numbers 로 적는다.
+      화면과 매일 메모에서 켠다. 평가 12판의 덧붙인 시험은 미리 적은 대로 끈 채 돈다"""
     client = client or anthropic.Anthropic(api_key=secret("ANTHROPIC_API_KEY"))
     when = as_of or (date.fromisoformat(news["date"]) - timedelta(days=1))
     parts = [f"조회 시점: {when.isoformat()}", f"뉴스 날짜: {news['date']}", f"제목: {news['title']}"]
@@ -180,7 +212,7 @@ def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = Non
     os.environ["ANSWER_STYLE"] = "2"   # 도구가 원 단위 금액을 '억·조 원' 글(value_text)로도 주게 한다. 끝나면 되돌린다
     try:
         return _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_ids, max_turns, started,
-                     on_event or (lambda kind, value: None), on_result)
+                     on_event or (lambda kind, value: None), on_result, check_numbers)
     finally:
         if style is None:
             os.environ.pop("ANSWER_STYLE", None)
@@ -188,8 +220,10 @@ def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = Non
             os.environ["ANSWER_STYLE"] = style
 
 
-def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_ids, max_turns, started, emit, on_result) -> dict:
-    memo, problems, retried = None, [], False
+def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_ids, max_turns, started, emit, on_result,
+          check_numbers=False) -> dict:
+    memo, problems, retried, bodies = None, [], False, []
+    news_text = f"{news['title']} {news.get('text') or ''}"
     with session() as db:
         for _ in range(max_turns):
             response = client.messages.create(
@@ -215,6 +249,8 @@ def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_i
                 if block.name == MEMO_TOOL["name"]:
                     candidate = dict(block.input)
                     wrong = check(db, candidate, seen_rcepts, seen_ids)
+                    if check_numbers:
+                        wrong += number_problems(candidate, " ".join(bodies), news_text)
                     if wrong and not retried:   # 한 번은 고치게 한다
                         retried, problems = True, wrong
                         emit("check", {"problems": wrong, "related": len(candidate.get("related", []))})
@@ -230,6 +266,7 @@ def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_i
                 found = {int(x) for x in re.findall(r'"(?:\w+_)?id": (\d+)', body)}
                 seen_rcepts.update(re.findall(r"\b\d{14}\b", body))
                 seen_ids.update(found)
+                bodies.append(body)
                 if on_result:
                     on_result(block.name, dict(block.input), result)
                 total = result.get("total", len(result["candidates"]) if isinstance(result.get("candidates"), list) else None)
@@ -244,6 +281,9 @@ def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_i
         dropped = []
         if memo is not None:
             memo, dropped = prune(db, memo, seen_rcepts, seen_ids)
+            if check_numbers:   # 고친 뒤에도 조회 결과에서 찾지 못한 숫자는 줄에 남겨 화면이 알린다
+                for row in memo["related"] + memo.get("subject_facts", []):
+                    row["unchecked_numbers"] = unseen_numbers(row.get("fact"), " ".join(bodies), news_text)
             for r in memo["related"] + memo["subjects"]:
                 company = db.get(Company, r["company_id"])
                 r["name"], r["stock_code"] = (company.label, company.stock_code) if company else (None, None)
@@ -251,6 +291,24 @@ def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_i
     return {"news": {k: news.get(k) for k in ("title", "date", "source", "company", "code", "kind")}, "as_of": when.isoformat(),
             "model": model, "memo": memo, "dropped": dropped, "first_problems": problems, "tool_calls": calls,
             "usage": usage, "cost_usd": round(cost, 5), "seconds": round(time.time() - started, 1)}
+
+
+def view(db, out: dict) -> dict:
+    """run 의 결과를 화면에 줄 모양으로 (그래프 빼고): 근거 공시의 보고서 이름과 낸 회사, 뺀 종목의 이름, 부른 도구."""
+    memo, sources = out["memo"], {}
+    numbers = sorted({no for row in (memo["related"] + memo.get("subject_facts", []) if memo else []) for no in row["rcept_nos"]})
+    for d in db.scalars(select(Document).where(Document.rcept_no.in_(numbers))).all() if numbers else []:
+        filer = db.get(Company, d.company_id) if d.company_id else None
+        sources[d.rcept_no] = {"url": DART_VIEWER + d.rcept_no, "report": d.report_nm.strip(),
+                               "filed": d.rcept_dt.isoformat(), "company": filer.label if filer else None}
+    dropped = []
+    for row in out["dropped"]:
+        company = db.get(Company, row.get("company_id")) if isinstance(row.get("company_id"), int) else None
+        dropped.append({"name": company.label if company else None, "link": row.get("link")})
+    return {"news": out["news"], "as_of": out["as_of"], "model": out["model"], "memo": memo, "dropped": dropped,
+            "first_problems": out["first_problems"], "seconds": out["seconds"], "tokens": sum(out["usage"].values()),
+            "tools": [{"name": c["tool"], "input": c["input"], "total": c["total"], "error": c["error"]} for c in out["tool_calls"]],
+            "sources": sources}
 
 
 def markdown(out: dict) -> str:

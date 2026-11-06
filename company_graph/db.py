@@ -303,6 +303,23 @@ class AskLog(Base):
     seconds: Mapped[float | None] = mapped_column(Numeric(6, 1))
 
 
+class NewsMemo(Base):
+    """뉴스 메모 Agent가 매일 아침 스스로 고른 전날 뉴스에 남긴 메모 (daily_memos.py). 배포용 DB에서 날마다 쌓인다.
+    기사 본문은 두지 않는다. 제목·주소와, 고른 까닭, 조회 과정(사건), 메모만 둔다."""
+    __tablename__ = "news_memo"
+    memo_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    news_date: Mapped[date] = mapped_column(Date, index=True)
+    company_id: Mapped[int | None] = mapped_column(Integer)
+    title: Mapped[str] = mapped_column(String(300))
+    link: Mapped[str | None] = mapped_column(String(1000))
+    source: Mapped[str | None] = mapped_column(String(100))
+    picked: Mapped[dict] = mapped_column(JSON)    # 고른 까닭: 중요도, 종류, 방향, 키워드, 그날 모은 제목 수와 핵심 뉴스 수
+    events: Mapped[list] = mapped_column(JSON)    # Agent가 한 일 (화면이 다시 보여 준다)
+    result: Mapped[dict] = mapped_column(JSON)    # 메모, 근거 공시, 뺀 종목, 부른 도구 (그래프는 볼 때 만든다)
+    cost_usd: Mapped[float] = mapped_column(Numeric(8, 5))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+
+
 @lru_cache(maxsize=1)
 def get_engine():
     """프로세스에 엔진은 하나. 요청마다 새로 만들면 연결이 쌓인다."""

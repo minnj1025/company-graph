@@ -20,7 +20,7 @@ from sqlalchemy import func, or_, select
 
 from . import agent_tools, ksic, query
 from .display_names import group_key, group_label
-from .db import AskLog, Base, BusinessSection, Company, Document, HotDay, Product, ProductCode, Relation, SiteText, get_engine, session
+from .db import AskLog, Base, BusinessSection, Company, Document, HotDay, NewsMemo, Product, ProductCode, Relation, SiteText, get_engine, session
 from .product_families import FAMILY_FIELD
 from .stages import sector, stage
 
@@ -33,7 +33,8 @@ app.router.routes.append(Route("/api/mcp", endpoint=mcp_server.App(), methods=["
 # 읽기만 하는 응답은 CDN 이 들고 있다가 바로 내준다. 첫 화면의 그래프(/api/overview)는 만드는 데 1~4초가 걸린다.
 # 공시 자료는 DB를 다시 옮기고 배포할 때만 바뀌고(배포하면 CDN 의 것은 버려진다), 이슈 종목만 날마다 바뀌어 짧게 둔다.
 # 사람마다 다른 응답(/api/ask…)과 실패한 응답에는 붙이지 않는다
-_CACHED = {"/api/hot": "public, s-maxage=600, stale-while-revalidate=86400"}
+_CACHED = {"/api/hot": "public, s-maxage=600, stale-while-revalidate=86400",
+           "/api/memos": "public, s-maxage=600, stale-while-revalidate=86400"}   # 매일 아침 새 메모가 쌓인다
 _CACHE_DEFAULT = "public, s-maxage=86400, stale-while-revalidate=604800"
 
 
@@ -1268,27 +1269,27 @@ def _memo_answered(db, out: dict, found: _Found, ask_id: int, visitor: str) -> d
     return {**memo_json(db, out, found), "left_for_you": None if visitor == OWNER else max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}
 
 
+def memo_graph(db, memo: dict | None, as_of: date) -> dict:
+    """메모의 주인공과 관련 종목을 강조하고, 그 둘레의 지분·계열·공급계약을 옅게 덧그린 그래프 (as_of 까지의 공시로)."""
+    if not memo:
+        return {"nodes": [], "links": []}
+    found = _Found(as_of)
+    ids = [s["company_id"] for s in memo["subjects"]] + [r["company_id"] for r in memo["related"]]
+    found.shown, found.calls = {"highlight": ids, "also": []}, 1
+    found.companies.update(ids)
+    return found.graph(db)
+
+
 def memo_json(db, out: dict, found: _Found) -> dict:
     """메모를 화면에 줄 모양으로: 근거 공시의 보고서 이름과 낸 회사, 빠진 종목의 이름, 메모의 회사를 강조한 그래프."""
-    memo, sources, graph = out["memo"], {}, {"nodes": [], "links": []}
-    if memo:
-        ids = [s["company_id"] for s in memo["subjects"]] + [r["company_id"] for r in memo["related"]]
+    graph = {"nodes": [], "links": []}
+    if out["memo"]:
+        ids = [s["company_id"] for s in out["memo"]["subjects"]] + [r["company_id"] for r in out["memo"]["related"]]
         found.shown = {"highlight": ids, "also": []}
         found.companies.update(ids)
         graph = found.graph(db)
-        numbers = sorted({no for row in memo["related"] + memo.get("subject_facts", []) for no in row["rcept_nos"]})
-        for d in db.scalars(select(Document).where(Document.rcept_no.in_(numbers))).all() if numbers else []:
-            filer = db.get(Company, d.company_id) if d.company_id else None
-            sources[d.rcept_no] = {"url": query.DART_VIEWER + d.rcept_no, "report": d.report_nm.strip(),
-                                   "filed": d.rcept_dt.isoformat(), "company": filer.label if filer else None}
-    dropped = []
-    for row in out["dropped"]:
-        company = db.get(Company, row.get("company_id")) if isinstance(row.get("company_id"), int) else None
-        dropped.append({"name": company.label if company else None, "link": row.get("link")})
-    return {"news": out["news"], "as_of": out["as_of"], "model": out["model"], "memo": memo, "dropped": dropped,
-            "first_problems": out["first_problems"], "seconds": out["seconds"], "tokens": sum(out["usage"].values()),
-            "tools": [{"name": c["tool"], "input": c["input"], "total": c["total"], "error": c["error"]} for c in out["tool_calls"]],
-            "sources": sources, "graph": graph, "left_for_you": None}
+    from .news_agent import view   # anthropic 패키지는 여기서만 필요하다
+    return {**view(db, out), "graph": graph, "left_for_you": None}
 
 
 @app.post("/api/memo/stream")
@@ -1310,7 +1311,8 @@ def memo_stream(body: MemoAsk, request: Request, db=Depends(get_db)):
     def work():
         found = _Found(day - timedelta(days=1))
         try:
-            out = news_agent.run(news, model=ASK_MODEL, on_event=lambda kind, value: events.put((kind, value)), on_result=found.take)
+            out = news_agent.run(news, model=ASK_MODEL, on_event=lambda kind, value: events.put((kind, value)), on_result=found.take,
+                                 check_numbers=True)
             with session(_engine) as own:
                 events.put(("done", _memo_answered(own, out, found, ask_id, visitor)))
         except Exception:
@@ -1331,3 +1333,43 @@ def memo_stream(body: MemoAsk, request: Request, db=Depends(get_db)):
 
     return StreamingResponse(stream(), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"})
+
+
+# ---------- 매일 아침 Agent가 스스로 고른 뉴스의 메모 (daily_memos.py 가 쌓는다. 읽기만 하므로 무료) ----------
+
+_memos_ready = False
+
+
+def _prepare_memos():
+    global _memos_ready
+    if not _memos_ready:   # 매일 작업이 처음 돌기 전에도 목록이 비어 있을 뿐 오류가 나지 않게
+        Base.metadata.create_all(_engine, tables=[NewsMemo.__table__])
+        _memos_ready = True
+
+
+@app.get("/api/memos")
+def daily_memos(db=Depends(get_db)):
+    """최근 7일 동안 Agent가 고른 뉴스와 메모의 목록 (최근 날부터)."""
+    _prepare_memos()
+    latest = db.scalar(select(func.max(NewsMemo.news_date)))
+    if latest is None:
+        return []
+    rows = db.scalars(select(NewsMemo).where(NewsMemo.news_date >= latest - timedelta(days=6))
+                      .order_by(NewsMemo.news_date.desc(), NewsMemo.memo_id)).all()
+    names = {c.company_id: c.label for c in db.scalars(select(Company).where(Company.company_id.in_({r.company_id for r in rows if r.company_id})))}
+    return [{"id": r.memo_id, "day": r.news_date.isoformat(), "title": r.title, "source": r.source, "company": names.get(r.company_id),
+             "picked": r.picked, "related": len((r.result.get("memo") or {}).get("related", []))} for r in rows]
+
+
+@app.get("/api/memos/{memo_id}")
+def daily_memo(memo_id: int, db=Depends(get_db)):
+    """메모 하나: 화면이 다시 보여 줄 사건과 결과. 그래프는 메모의 회사로 그때(조회 시점)의 공시에서 만든다."""
+    _prepare_memos()
+    row = db.get(NewsMemo, memo_id)
+    if row is None:
+        raise HTTPException(404, "그런 메모가 없습니다")
+    result = dict(row.result)
+    result["graph"] = memo_graph(db, result.get("memo"), date.fromisoformat(result["as_of"]))
+    result["left_for_you"] = None
+    return {"news": {"title": row.title, "day": row.news_date.isoformat()}, "events": row.events, "result": result,
+            "picked": row.picked, "link": row.link, "source": row.source}

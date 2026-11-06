@@ -30,3 +30,19 @@ jobs:
       - run: python -m company_graph.hot store
       # 뚜렷한 연관 급등·급락마다 그날의 기사를 찾아 한 줄로 적는다 (유료: 한 건에 검색 3번 안쪽과 Haiku 한 번). 이미 찾은 것은 건너뛴다
       - run: python -m company_graph.hot_news store
+  # 매일 아침: 전날 시가총액 상위 200곳의 뉴스 제목에서 Agent가 핵심 뉴스를 골라 메모를 남긴다 (유료: 제목 분류와 메모 10건, 하루 $0.2 상한).
+  # 그날 메모가 이미 있으면 아무것도 하지 않고 끝나므로 여러 번 돌아도 한 번만 쓴다
+  memos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      COMPANY_GRAPH_DB_URL: ${{ secrets.TARGET_DB_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt requests
+      - run: python -m company_graph.daily_memos store --limit=10 --cap=0.2

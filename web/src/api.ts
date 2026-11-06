@@ -231,13 +231,15 @@ export interface MemoRow {
   fact: string;
   why: string;
   rcept_nos: string[];
+  /** 고쳐 쓴 뒤에도 조회 결과에서 찾지 못한 숫자 (숫자 검사를 켠 메모만) */
+  unchecked_numbers?: string[];
 }
 
 export interface Memo {
   summary: string;
   subjects: { company_id: number; name: string | null; stock_code: string | null; role: string }[];
   topics: string[];
-  subject_facts: { fact: string; rcept_nos: string[] }[];
+  subject_facts: { fact: string; rcept_nos: string[]; unchecked_numbers?: string[] }[];
   related: MemoRow[];
   unknown: string[];
   next: string[];
@@ -299,3 +301,39 @@ export async function memoStream(news: { title: string; text?: string; day?: str
     if (done) throw new Error(REFUSED);
   }
 }
+
+/** Agent가 매일 아침 스스로 고른 뉴스 한 건 (목록) */
+export interface DailyMemoItem {
+  id: number;
+  day: string;
+  title: string;
+  source: string | null;
+  company: string | null;
+  picked: DailyPicked;
+  related: number;
+}
+
+/** 고른 까닭과 그날의 수: 중요도, 종류, 그날 모은 제목 수, 핵심 뉴스 수 */
+export interface DailyPicked {
+  imp: number;
+  kind: string;
+  dir: number;
+  kw: string[];
+  companies: number;
+  with_news: number;
+  titles: number;
+  core: number;
+}
+
+/** 메모 하나: 그때의 사건과 결과 (화면이 다시 보여 준다) */
+export interface DailyMemo {
+  news: { title: string; day: string };
+  events: { at: number; event: MemoEvent }[];
+  result: MemoResult;
+  picked: DailyPicked;
+  link: string | null;
+  source: string | null;
+}
+
+export const fetchDailyMemos = () => get<DailyMemoItem[]>("/memos");
+export const fetchDailyMemo = (id: number) => get<DailyMemo>(`/memos/${id}`);
