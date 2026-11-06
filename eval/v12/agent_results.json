@@ -1,0 +1,127 @@
+{
+ "events": 100,
+ "memos": 100,
+ "filled": {
+  "A": 93,
+  "A직접": 40,
+  "B": 100,
+  "C": 100
+ },
+ "h3": {
+  "A": {
+   "events": 93,
+   "days": 64,
+   "mean_pct": 0.009,
+   "t": 0.01,
+   "hit_rate": 0.462
+  },
+  "B": {
+   "events": 100,
+   "days": 66,
+   "mean_pct": 0.359,
+   "t": 0.56,
+   "hit_rate": 0.4
+  },
+  "C": {
+   "events": 100,
+   "days": 66,
+   "mean_pct": 0.368,
+   "t": 0.49,
+   "hit_rate": 0.49
+  },
+  "A-B": {
+   "events": 93,
+   "days": 64,
+   "mean_pct": -0.439,
+   "t": -0.52,
+   "hit_rate": 0.452
+  },
+  "A-C": {
+   "events": 93,
+   "days": 64,
+   "mean_pct": -0.281,
+   "t": -0.43,
+   "hit_rate": 0.419
+  },
+  "C-B": {
+   "events": 100,
+   "days": 66,
+   "mean_pct": 0.009,
+   "t": 0.01,
+   "hit_rate": 0.5
+  },
+  "A직접": {
+   "events": 40,
+   "days": 36,
+   "mean_pct": 0.716,
+   "t": 0.71,
+   "hit_rate": 0.525
+  },
+  "A직접-B": {
+   "events": 40,
+   "days": 36,
+   "mean_pct": 0.176,
+   "t": 0.21,
+   "hit_rate": 0.475
+  }
+ },
+ "h7": {
+  "A": {
+   "events": 93,
+   "days": 64,
+   "mean_pct": -1.765,
+   "t": -1.72,
+   "hit_rate": 0.376
+  },
+  "B": {
+   "events": 100,
+   "days": 66,
+   "mean_pct": -1.271,
+   "t": -1.49,
+   "hit_rate": 0.41
+  },
+  "C": {
+   "events": 100,
+   "days": 66,
+   "mean_pct": -1.474,
+   "t": -1.59,
+   "hit_rate": 0.46
+  },
+  "A-B": {
+   "events": 93,
+   "days": 64,
+   "mean_pct": -0.514,
+   "t": -0.58,
+   "hit_rate": 0.505
+  },
+  "A-C": {
+   "events": 93,
+   "days": 64,
+   "mean_pct": 0.002,
+   "t": 0.0,
+   "hit_rate": 0.473
+  },
+  "C-B": {
+   "events": 100,
+   "days": 66,
+   "mean_pct": -0.203,
+   "t": -0.23,
+   "hit_rate": 0.51
+  },
+  "A직접": {
+   "events": 40,
+   "days": 36,
+   "mean_pct": -1.652,
+   "t": -1.35,
+   "hit_rate": 0.425
+  },
+  "A직접-B": {
+   "events": 40,
+   "days": 36,
+   "mean_pct": -0.773,
+   "t": -0.61,
+   "hit_rate": 0.5
+  }
+ },
+ "say": "이 표본에서는 차이를 보이지 못함"
+}
