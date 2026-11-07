@@ -393,3 +393,29 @@ export interface MemoFollowups {
 }
 export const fetchMemoFollowups = (after: string, ids: number[], title: string) =>
   get<MemoFollowups>("/memo-followups", { after, ids: ids.join(","), title });
+
+/** 매일 분석 전체에서 뉴스가 전한 금액이 주인공의 공시로 뒤따라 확인된 수 (뉴스 종류별) */
+export interface ScoreKind {
+  kind: string;
+  /** 이 종류를 확인해 줄 공시를 받고 있는가 */
+  checkable: boolean;
+  confirms: string[];
+  analyses: number;
+  with_amount: number;
+  with_filing: number;
+  same_amount: number;
+  /** 뉴스 뒤 확인 기간(60일)이 다 지난 분석 수 */
+  window_done: number;
+  hits: { id: number; day: string; title: string; filed: string; amount: number | null; days_after_news: number }[];
+}
+
+export interface MemoScoreboard {
+  checked_through: string | null;
+  analyses: number;
+  first_day: string | null;
+  last_day: string | null;
+  window: number;
+  kinds: ScoreKind[];
+}
+
+export const fetchMemoScoreboard = () => get<MemoScoreboard>("/memo-scoreboard");

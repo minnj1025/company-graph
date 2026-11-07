@@ -1,7 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchDailyMemo, fetchDailyMemos, memoStream, type DailyMemoItem, type DailyPicked, type MemoEvent, type MemoResult } from "./api";
+import {
+  fetchDailyMemo,
+  fetchDailyMemos,
+  fetchMemoScoreboard,
+  memoStream,
+  type DailyMemoItem,
+  type DailyPicked,
+  type MemoEvent,
+  type MemoResult,
+  type MemoScoreboard,
+} from "./api";
 import { TOOL_LABELS } from "./Chat";
-import { Followups } from "./MemoFollowups";
+import { Followups, won } from "./MemoFollowups";
 import { PriceMoves, type PriceCompany } from "./MemoPrices";
 import type { GraphNode } from "./types";
 
@@ -509,6 +519,83 @@ function MemoCard({ result, newsTitle, onCompany, onTrace }: {
 }
 
 /** Agent가 매일 아침 스스로 고른 전날 뉴스와 메모. 누르면 그때의 과정을 다시 보여 준다(Agent를 다시 부르지 않는다) */
+/** 지금까지의 매일 분석에서 뉴스가 전한 금액이 주인공의 공시로 뒤따라 확인된 수. Agent를 채점하는 것이 아니라 뉴스를 공시와 맞춰 본 것 */
+function Scoreboard({ onOpen, busy }: { onOpen: (id: number) => void; busy: boolean }) {
+  const [board, setBoard] = useState<MemoScoreboard | null>(null);
+  useEffect(() => {
+    fetchMemoScoreboard().then(setBoard).catch(() => undefined);
+  }, []);
+  if (!board || board.analyses === 0) return null;
+  const checkable = board.kinds.filter((k) => k.checkable);
+  const rest = board.kinds.filter((k) => !k.checkable);
+  const days = board.first_day === board.last_day ? `${board.last_day?.slice(5)} 뉴스` : `${board.first_day?.slice(5)}~${board.last_day?.slice(5)} 뉴스`;
+  const waiting = board.kinds.reduce((n, k) => n + k.analyses - k.window_done, 0);
+  return (
+    <details className="memo-score">
+      <summary>
+        뉴스 뒤 공시로 확인된 것 ·{" "}
+        {checkable.map((k, i) => (
+          <span key={k.kind}>
+            {i > 0 && ", "}
+            {k.kind} {k.analyses}건 중 <b>{k.same_amount}건</b>
+          </span>
+        ))}
+      </summary>
+      <p className="muted small">
+        {days} 매일 분석 {board.analyses}건{board.checked_through && ` · 공시는 ${board.checked_through.slice(5)}까지 받음`}. 분석은 뉴스 전날까지의 공시만 보고, 그 뒤{" "}
+        {board.window}일 안에 주인공이 같은 종류·같은 금액(3% 안쪽)의 공시를 냈는지 셉니다.
+      </p>
+      <table className="score-table">
+        <thead>
+          <tr>
+            <th>뉴스 종류</th>
+            <th>분석</th>
+            <th>제목에 금액</th>
+            <th>뒤에 낸 공시</th>
+            <th>금액 같음</th>
+          </tr>
+        </thead>
+        <tbody>
+          {checkable.map((k) => (
+            <tr key={k.kind}>
+              <td>
+                {k.kind}
+                <small className="muted"> ({k.confirms.join("·")})</small>
+              </td>
+              <td>{k.analyses}</td>
+              <td>{k.with_amount}</td>
+              <td>{k.with_filing}</td>
+              <td className={k.same_amount > 0 ? "g-hit" : undefined}>{k.same_amount}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {checkable.some((k) => k.hits.length > 0) && (
+        <ul className="score-hits">
+          {checkable.flatMap((k) =>
+            k.hits.map((h) => (
+              <li key={h.id}>
+                <button disabled={busy} onClick={() => onOpen(h.id)} title="이 분석 열기">
+                  {h.title}
+                </button>
+                <small className="muted">
+                  {" "}
+                  → {h.days_after_news === 0 ? "뉴스 당일" : `뉴스 ${h.days_after_news}일 뒤`} 공시{h.amount ? ` ${won(h.amount)}` : ""}
+                </small>
+              </li>
+            )),
+          )}
+        </ul>
+      )}
+      <p className="muted small">
+        {rest.length > 0 && `${rest.map((k) => `${k.kind} ${k.analyses}건`).join(", ")}은 확인해 줄 공시(시설투자, 실적 등)를 아직 받지 않아 세지 않았습니다. `}
+        Agent의 판단을 채점한 것이 아니며, 같은 일인지는 원문으로 확인해야 합니다.
+        {waiting > 0 && ` ${board.window}일이 다 지나지 않은 분석 ${waiting}건은 수가 더 늘 수 있습니다.`}
+      </p>
+    </details>
+  );
+}
+
 function Daily({ agent, onOpen }: { agent: MemoAgent; onOpen: () => void }) {
   const [items, setItems] = useState<DailyMemoItem[] | null>(null);
   const [opening, setOpening] = useState<number | null>(null);
@@ -527,6 +614,10 @@ function Daily({ agent, onOpen }: { agent: MemoAgent; onOpen: () => void }) {
   return (
     <div className="memo-daily">
       <em>Agent가 매일 아침 스스로 고른 뉴스</em>
+      <Scoreboard busy={agent.busy || opening !== null} onOpen={(id) => {
+        setOpening(id);
+        agent.openDaily(id, onOpen).catch(() => undefined).finally(() => setOpening(null));
+      }} />
       {days.map((day, i) => {
         const today = items.filter((item) => item.day === day);
         const p = today[0].picked;

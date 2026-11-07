@@ -6766,3 +6766,63 @@ details.more .notes {
 .memo-sec .trace-hint {
   margin: -4px 0 10px;
 }
+
+/* 매일 분석 전체에서 뉴스 뒤 공시로 확인된 수 */
+.memo-score {
+  margin: 2px 0 6px;
+  padding: 6px 8px;
+  border-radius: 3px;
+  background: rgb(var(--ink) / 0.04);
+  font-size: 12.5px;
+}
+.memo-score summary {
+  cursor: pointer;
+}
+.memo-score summary b {
+  color: var(--good);
+}
+.memo-score p {
+  margin: 6px 0;
+}
+.score-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.score-table th,
+.score-table td {
+  padding: 3px 6px;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  font-weight: 400;
+}
+.score-table th {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.score-table th:first-child,
+.score-table td:first-child {
+  text-align: left;
+}
+.score-table td.g-hit {
+  color: var(--good);
+  font-weight: 600;
+}
+.score-hits {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.memo-daily .score-hits button {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  text-align: left;
+  font-size: 12.5px;
+  cursor: pointer;
+}

@@ -34,7 +34,8 @@ app.router.routes.append(Route("/api/mcp", endpoint=mcp_server.App(), methods=["
 # 공시 자료는 DB를 다시 옮기고 배포할 때만 바뀌고(배포하면 CDN 의 것은 버려진다), 이슈 종목만 날마다 바뀌어 짧게 둔다.
 # 사람마다 다른 응답(/api/ask…)과 실패한 응답에는 붙이지 않는다
 _CACHED = {"/api/hot": "public, s-maxage=600, stale-while-revalidate=86400",
-           "/api/memos": "public, s-maxage=600, stale-while-revalidate=86400",   # 매일 아침 새 메모가 쌓인다
+           "/api/memos": "public, s-maxage=600, stale-while-revalidate=86400",
+           "/api/memo-scoreboard": "public, s-maxage=3600, stale-while-revalidate=86400",   # 공시는 매일 아침 들어온다   # 매일 아침 새 메모가 쌓인다
            "/api/memo-prices": "public, s-maxage=3600, stale-while-revalidate=86400",   # 시세가 날마다 하루씩 늘어난다
            "/api/memo-followups": "public, s-maxage=3600, stale-while-revalidate=86400"}   # 공시는 매일 아침 들어온다
 _CACHE_DEFAULT = "public, s-maxage=86400, stale-while-revalidate=604800"
@@ -1401,6 +1402,13 @@ def memo_followup_filings(after: date, ids: str = Query(max_length=400), title: 
     except ValueError:
         raise HTTPException(400, "ids 는 쉼표로 이은 숫자입니다")
     return memo_followups.memo_followups(db, after, company_ids, title)
+
+
+@app.get("/api/memo-scoreboard")
+def memo_scoreboard(db=Depends(get_db)):
+    """매일 분석 전체에서 뉴스가 전한 금액이 주인공의 공시로 뒤따라 확인된 수 (뉴스 종류별)."""
+    _prepare_memos()
+    return memo_followups.scoreboard(db)
 
 
 @app.get("/api/memos/{memo_id}")

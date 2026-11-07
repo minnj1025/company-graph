@@ -95,3 +95,49 @@ def memo_followups(db, after: date, company_ids: list[int], title: str = "") -> 
     through = checked_through(db)
     return {"after": after.isoformat(), "until": (after + timedelta(days=WINDOW)).isoformat(), "checked_through": through.isoformat() if through else None,
             "filings": rows, **summarize(rows, title)}
+
+
+# 뉴스 종류마다 그 일을 확인해 주는 공시. 여기 없는 종류(투자·증설, 실적 등)는 그 공시를 아직 받지 않아 셀 수 없다
+CONFIRMS = {"수주·공급계약": ("공급계약",), "인수합병·지분": ("지분 취득 결정", "지분 처분 결정")}
+
+
+def scoreboard(db) -> dict:
+    """매일 분석 전체에서 뉴스가 전한 금액이 주인공의 공시로 뒤따라 확인된 수 (뉴스 종류별).
+
+    Agent의 판단을 채점하는 것이 아니다. 분석은 뉴스 전날까지의 공시만 보고 "아직 공시로 확인 안 됨"이라 적는데,
+    그 뒤 받은 공시에 같은 종류·같은 금액(3% 안쪽)의 것이 나왔는지를 센다. 같은 일인지는 원문으로 확인해야 한다.
+    """
+    from .db import NewsMemo
+
+    rows = db.scalars(select(NewsMemo).order_by(NewsMemo.news_date, NewsMemo.memo_id)).all()
+    through = checked_through(db)
+    out = {"checked_through": through.isoformat() if through else None, "analyses": len(rows),
+           "first_day": rows[0].news_date.isoformat() if rows else None, "last_day": rows[-1].news_date.isoformat() if rows else None,
+           "window": WINDOW, "kinds": []}
+    if not rows:
+        return out
+    subjects = [[s["company_id"] for s in (r.result.get("memo") or {}).get("subjects", [])] for r in rows]
+    afters = [date.fromisoformat(r.result["as_of"]) for r in rows]
+    filed = filings_after(db, sorted({cid for ids in subjects for cid in ids}), min(afters), max(afters) + timedelta(days=WINDOW))
+    kinds: dict[str, dict] = {}
+    for r, ids, after in zip(rows, subjects, afters):
+        kind = (r.picked or {}).get("kind") or "기타"
+        box = kinds.setdefault(kind, {"kind": kind, "checkable": kind in CONFIRMS, "confirms": list(CONFIRMS.get(kind, ())),
+                                      "analyses": 0, "with_amount": 0, "with_filing": 0, "same_amount": 0, "window_done": 0, "hits": []})
+        box["analyses"] += 1
+        news = title_amounts(r.title)
+        box["with_amount"] += bool(news)
+        until = after + timedelta(days=WINDOW)
+        if through and through >= until:
+            box["window_done"] += 1
+        if kind not in CONFIRMS:
+            continue
+        mine = [f for f in filed if f["company_id"] in ids and after.isoformat() < f["filed"] <= until.isoformat() and f["kind"] in CONFIRMS[kind]]
+        box["with_filing"] += bool(mine)
+        hit = next((f for f in mine if same_amount(f["amount"], news)), None)
+        if hit:
+            box["same_amount"] += 1
+            box["hits"].append({"id": r.memo_id, "day": r.news_date.isoformat(), "title": r.title, "filed": hit["filed"], "amount": hit["amount"],
+                                "days_after_news": (date.fromisoformat(hit["filed"]) - r.news_date).days})
+    out["kinds"] = sorted(kinds.values(), key=lambda k: (not k["checkable"], -k["analyses"]))
+    return out

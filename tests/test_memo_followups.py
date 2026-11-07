@@ -44,3 +44,23 @@ def test_filings_after_the_analysis():
     assert fixed["corrected"] is True and fixed["same_amount"] is False
     assert (out["count"], out["same_amount"], out["contracts"]) == (3, 1, 2)
     assert out["checked_through"] == "2026-12-20" and out["until"] == "2026-12-04"
+
+
+def test_scoreboard_counts_by_news_kind():
+    from company_graph.db import NewsMemo
+    from company_graph.memo_followups import scoreboard
+
+    db = _db()
+    memo = {"subjects": [{"company_id": 1, "name": "회사1"}], "related": []}
+    for kind, title in (("수주·공급계약", "회사1, 암모니아선 6301억 수주"),      # 10-06 공급계약 6300억과 같다
+                        ("수주·공급계약", "회사1, 9천만 달러 수주"),             # 제목에 원 금액이 없다
+                        ("실적", "회사1 3분기 영업익 6300억")):                  # 실적 공시는 받지 않아 세지 않는다
+        db.add(NewsMemo(news_date=date(2026, 10, 6), company_id=1, title=title, source="test", picked={"kind": kind},
+                        events=[], result={"as_of": "2026-10-05", "memo": memo}, cost_usd=0))
+    db.commit()
+    out = scoreboard(db)
+    contract, earnings = out["kinds"]
+    assert out["analyses"] == 3 and contract["kind"] == "수주·공급계약" and earnings["checkable"] is False
+    assert (contract["analyses"], contract["with_amount"], contract["with_filing"], contract["same_amount"]) == (2, 1, 2, 1)
+    assert contract["hits"][0]["days_after_news"] == 0
+    assert (earnings["with_amount"], earnings["with_filing"], earnings["same_amount"]) == (1, 0, 0)
