@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchDailyMemo, fetchDailyMemos, memoStream, type DailyMemoItem, type DailyPicked, type MemoEvent, type MemoResult } from "./api";
 import { TOOL_LABELS } from "./Chat";
+import { PriceMoves, type PriceCompany } from "./MemoPrices";
 import type { GraphNode } from "./types";
 
 /** 뉴스 메모 Agent: 뉴스 한 건을 받아, 무엇을 조회할지 스스로 정해 공시를 찾아보고, 근거를 코드가 검사한 메모를 남긴다.
@@ -146,6 +147,7 @@ export function useMemoAgent(screen: MemoScreen) {
   const [current, setCurrent] = useState<string | null>(() => load().at(-1)?.id ?? null);
   const [busy, setBusy] = useState(false);
   const [left, setLeft] = useState<number | null>(null);
+  const skipRef = useRef(false);
   const screenRef = useRef(screen);
   screenRef.current = screen;
   useEffect(() => save(runs), [runs]);
@@ -199,14 +201,15 @@ export function useMemoAgent(screen: MemoScreen) {
       setBusy(true);
       setRuns((all) => [...all.filter((run) => !run.replay), { id, news: example.news, steps: [], replay: true, picked: example.picked }]);
       setCurrent(id);
+      skipRef.current = false;
       const hear = listener(id, example.news.title);
       let clock = 0;
       for (const { at, event } of example.events) {
-        await new Promise((done) => setTimeout(done, Math.min(1400, Math.max(250, (at - clock) * 0.35))));
+        if (!skipRef.current) await new Promise((done) => setTimeout(done, Math.min(1400, Math.max(250, (at - clock) * 0.35))));
         clock = at;
         hear(event);
       }
-      await new Promise((done) => setTimeout(done, 500));
+      if (!skipRef.current) await new Promise((done) => setTimeout(done, 500));
       finish(id, example.news.title, structuredClone(example.result));
       setBusy(false);
     },
@@ -219,7 +222,12 @@ export function useMemoAgent(screen: MemoScreen) {
     if (run?.result && run.result.graph.nodes.length > 0) screenRef.current.onDone(run.news.title, structuredClone(run.result));
   }, [runs]);
 
-  return { runs, current: runs.find((run) => run.id === current) ?? null, busy, left, start, replay, show };
+  /** 다시 보여 주는 중이면 남은 과정을 기다리지 않고 바로 메모를 보인다 */
+  const skip = useCallback(() => {
+    skipRef.current = true;
+  }, []);
+
+  return { runs, current: runs.find((run) => run.id === current) ?? null, busy, left, start, replay, show, skip };
 }
 
 export type MemoAgent = ReturnType<typeof useMemoAgent>;
@@ -247,7 +255,6 @@ function Trace({ run, nameOf }: { run: MemoRun; nameOf: (id: number) => string |
     const timer = setInterval(() => setSeconds((n) => n + 1), 1000);
     return () => clearInterval(timer);
   }, [working, run.id]);
-  const tools = run.steps.filter((step) => step.kind === "tool").length;
   const asOf = run.result?.as_of;
   return (
     <ol className="trace">
@@ -312,14 +319,6 @@ function Trace({ run, nameOf }: { run: MemoRun; nameOf: (id: number) => string |
           {run.steps.length === 0 ? "뉴스를 읽고 조회 계획을 세우는 중" : "조회한 것을 읽는 중"} · {seconds}초
         </li>
       )}
-      {run.result && (
-        <li className="t-end">
-          <b>메모 완성</b>
-          <span>
-            조회 {tools}번 · {Math.round(run.result.seconds)}초{run.replay ? (run.picked ? " · 매일 아침 저장한 과정을 다시 보여 줌" : " · 미리 돌려 둔 예시") : ""}
-          </span>
-        </li>
-      )}
       {run.error && <li className="t-error-line">{run.error}</li>}
     </ol>
   );
@@ -357,67 +356,105 @@ function Unchecked({ numbers }: { numbers?: string[] }) {
   return <span className="unchecked" title="Agent가 고쳐 쓴 뒤에도 이 숫자를 조회 결과에서 찾지 못했습니다. 원문으로 확인해 주세요">조회 결과에서 확인 안 된 숫자: {numbers.join(", ")}</span>;
 }
 
-function MemoCard({ result, onCompany }: { result: MemoResult; onCompany: (id: number) => void }) {
+function MemoCard({ result, newsTitle, onCompany }: { result: MemoResult; newsTitle: string; onCompany: (id: number) => void }) {
   const memo = result.memo;
+  const rowRefs = useRef(new Map<number, HTMLDivElement>());
   if (!memo) return <p className="empty drawer-note">메모를 만들지 못했습니다. 다른 제목으로 다시 해 보세요.</p>;
+  const near = memo.related.filter((row) => row.closeness === "직접").length;
+  const jump = (id: number) => rowRefs.current.get(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const priced: PriceCompany[] = [
+    ...memo.subjects.map((s) => ({ id: s.company_id, role: "주인공" as const })),
+    ...memo.related.map((r) => ({ id: r.company_id, role: r.closeness === "직접" ? ("직접" as const) : ("간접" as const) })),
+  ];
   return (
     <article className="memo-card">
       <p className="memo-summary">{memo.summary}</p>
-      {memo.subjects.length > 0 && (
-        <div className="memo-line">
-          <em>주인공</em>
-          {memo.subjects.map((s) => (
-            <button key={s.company_id} className="co" onClick={() => onCompany(s.company_id)} title={s.role}>
-              {s.name}
-            </button>
+
+      <section className="memo-sec">
+        <h4>뉴스에서 공시로 이어진 길</h4>
+        <ol className="memo-flow">
+          <li className="f-news">
+            <em>뉴스</em>
+            <span>{newsTitle}</span>
+          </li>
+          {memo.subjects.length > 0 && (
+            <li className="f-subject">
+              <em>주인공</em>
+              <span>
+                {memo.subjects.map((s) => (
+                  <button key={s.company_id} className="co" onClick={() => onCompany(s.company_id)} title="그래프에서 이 기업 보기">
+                    {s.name}
+                  </button>
+                ))}
+                {memo.topics.length > 0 && <small> · 닿는 제품·사업: {memo.topics.join(", ")}</small>}
+              </span>
+            </li>
+          )}
+          {memo.related.length === 0 && (
+            <li className="f-none">
+              <em>이어진 종목</em>
+              <span className="muted">공시로 이어진 상장사를 찾지 못했습니다</span>
+            </li>
+          )}
+          {memo.related.map((row) => (
+            <li key={row.company_id} className={row.closeness === "직접" ? "f-rel f-near" : "f-rel"}>
+              <em>{row.link}</em>
+              <span>
+                <button className={`jump jump-${row.closeness === "직접" ? "near" : "far"}`} onClick={() => jump(row.company_id)} title="눌러서 근거 공시 보기">
+                  {row.name}
+                </button>
+                <small className={row.closeness === "직접" ? "near" : undefined}> {row.closeness}</small>
+                <span className="f-why">{row.why}</span>
+              </span>
+            </li>
           ))}
-        </div>
-      )}
-      {memo.topics.length > 0 && (
-        <div className="memo-line">
-          <em>닿는 제품·사업</em>
-          {memo.topics.map((t) => (
-            <span key={t} className="topic">
-              {t}
-            </span>
-          ))}
-        </div>
-      )}
-      {memo.subject_facts.map((f, i) => (
-        <p key={i} className="memo-fact">
-          주인공의 관련 공시: {f.fact} <Receipts numbers={f.rcept_nos} result={result} />
-          <Unchecked numbers={f.unchecked_numbers} />
-        </p>
-      ))}
-      <h4>공시로 이어진 종목 {memo.related.length}곳</h4>
-      {memo.related.length === 0 && <p className="muted">공시로 이어진 상장사를 찾지 못했습니다.</p>}
-      {memo.related.map((row) => (
-        <div key={row.company_id} className="memo-row">
-          <div className="memo-row-head">
-            <button className="co" onClick={() => onCompany(row.company_id)}>
-              {row.name}
-            </button>
-            <span className={`tag tag-${row.closeness === "직접" ? "near" : "far"}`}>
-              {row.link} · {row.closeness}
-            </span>
+        </ol>
+      </section>
+
+      {priced.length > 0 && <PriceMoves day={result.news.date} companies={priced} onCompany={onCompany} />}
+
+      <section className="memo-sec">
+        <h4>
+          근거 공시{memo.related.length > 0 && <span className="muted"> · 이어진 종목 {memo.related.length}곳{near > 0 && `(직접 ${near}곳)`}</span>}
+        </h4>
+        {memo.subject_facts.map((f, i) => (
+          <div key={i} className="memo-row row-subject">
+            <div className="memo-row-head">
+              <span className="tag tag-far">주인공의 관련 공시</span>
+            </div>
+            <p className="fact">{f.fact}</p>
+            <Unchecked numbers={f.unchecked_numbers} />
+            <Receipts numbers={f.rcept_nos} result={result} />
           </div>
-          <p>{row.fact}</p>
-          <Unchecked numbers={row.unchecked_numbers} />
-          <p className="why">{row.why}</p>
-          <Receipts numbers={row.rcept_nos} result={result} />
-        </div>
-      ))}
+        ))}
+        {memo.related.map((row) => (
+          <div key={row.company_id} className={`memo-row ${row.closeness === "직접" ? "row-near" : "row-far"}`}
+               ref={(el) => { if (el) rowRefs.current.set(row.company_id, el); else rowRefs.current.delete(row.company_id); }}>
+            <div className="memo-row-head">
+              <button className="co" onClick={() => onCompany(row.company_id)} title="그래프에서 이 기업 보기">
+                {row.name}
+              </button>
+              <span className={`tag tag-${row.closeness === "직접" ? "near" : "far"}`}>
+                {row.link} · {row.closeness}
+              </span>
+            </div>
+            <p className="fact">{row.fact}</p>
+            <Unchecked numbers={row.unchecked_numbers} />
+            <Receipts numbers={row.rcept_nos} result={result} />
+          </div>
+        ))}
+      </section>
       {memo.unknown.length > 0 && (
-        <>
-          <h4>공시로 확인하지 못한 것</h4>
+        <details className="memo-more">
+          <summary>공시로 확인하지 못한 것 {memo.unknown.length}개</summary>
           <ul className="memo-list">{memo.unknown.map((x, i) => <li key={i}>{x}</li>)}</ul>
-        </>
+        </details>
       )}
       {memo.next.length > 0 && (
-        <>
-          <h4>이어서 볼 것</h4>
+        <details className="memo-more">
+          <summary>이어서 볼 것 {memo.next.length}개</summary>
           <ul className="memo-list">{memo.next.map((x, i) => <li key={i}>{x}</li>)}</ul>
-        </>
+        </details>
       )}
       {result.dropped.length > 0 && (
         <p className="muted small">근거가 조회 결과로 확인되지 않아 뺀 종목 {result.dropped.length}곳: {result.dropped.map((d) => d.name ?? "?").join(", ")}</p>
@@ -428,7 +465,7 @@ function MemoCard({ result, onCompany }: { result: MemoResult; onCompany: (id: n
 }
 
 /** Agent가 매일 아침 스스로 고른 전날 뉴스와 메모. 누르면 그때의 과정을 다시 보여 준다(Agent를 다시 부르지 않는다) */
-function Daily({ agent }: { agent: MemoAgent }) {
+function Daily({ agent, onOpen }: { agent: MemoAgent; onOpen: () => void }) {
   const [items, setItems] = useState<DailyMemoItem[] | null>(null);
   const [opening, setOpening] = useState<number | null>(null);
   useEffect(() => {
@@ -439,7 +476,10 @@ function Daily({ agent }: { agent: MemoAgent }) {
   const open = (item: DailyMemoItem) => {
     setOpening(item.id);
     fetchDailyMemo(item.id)
-      .then((memo) => agent.replay({ news: memo.news, events: memo.events, result: memo.result, picked: memo.picked }))
+      .then((memo) => {
+        onOpen();
+        return agent.replay({ news: memo.news, events: memo.events, result: memo.result, picked: memo.picked });
+      })
       .catch(() => undefined)
       .finally(() => setOpening(null));
   };
@@ -497,26 +537,80 @@ export function MemoPane({ agent, nameOf, onCompany, closed }: {
       .catch(() => setExamples([]));
   }, []);
   const run = agent.current;
-  // 새 메모를 시작하거나 목록에서 고르면 그 과정이 보이는 곳으로 내려간다
-  const runRef = useRef<HTMLElement | null>(null);
-  const firstRun = useRef(run?.id);
+  // 목록(입력 칸, 매일 메모, 예시)과 메모 한 건을 나눠 보인다. 메모를 고르면 메모만 보인다
+  const [view, setView] = useState<"list" | "run">("list");
+  const paneRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (run?.id !== firstRun.current) runRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });   // 칸을 처음 열 때는 맨 위(매일 메모)를 보인다
-  }, [run?.id]);
+    paneRef.current?.scrollTo({ top: 0 });
+  }, [view, run?.id]);
+  const openRun = () => setView("run");
   const submit = () => {
     if (title.trim().length < 5) return;
+    openRun();
     void agent.start({ title: title.trim(), text: text.trim() || undefined, day });
   };
   const past = agent.runs.filter((r) => r.result && !r.replay && r.id !== run?.id).reverse();
+  if (view === "run" && run) {
+    const tools = run.steps.filter((step) => step.kind === "tool").length;
+    const plans = run.steps.filter((step) => step.kind === "plan").length;
+    const fixed = run.steps.some((step) => step.kind === "check");
+    const newsDay = run.news.day ?? run.result?.news.date;
+    return (
+      <div className="memo-pane" ref={paneRef}>
+        <div className="memo-top">
+          <button className="memo-back" onClick={() => setView("list")}>
+            ← 목록
+          </button>
+          {working(run) && run.replay && (
+            <button className="memo-skip" onClick={agent.skip} title="저장해 둔 과정을 기다리지 않고 메모를 바로 봅니다">
+              메모 바로 보기
+            </button>
+          )}
+        </div>
+        <header className="memo-head">
+          <span className="memo-kicker">
+            {newsDay && `${newsDay} 뉴스 · `}
+            {run.picked ? `Agent가 고름 · 중요도 ${run.picked.imp.toFixed(2)} · ${run.picked.kind}` : run.replay ? "미리 돌려 둔 예시" : "직접 넣은 뉴스"}
+          </span>
+          <h3>{run.news.title}</h3>
+          {run.result && (
+            <span className="memo-meta">
+              조회 {tools}번 · {Math.round(run.result.seconds)}초 · 근거 검사 {fixed ? "뒤 고쳐 씀" : "통과"}
+              {run.result.as_of && ` · ${run.result.as_of}까지 나온 공시만 봄`}
+            </span>
+          )}
+        </header>
+        {run.result ? (
+          <>
+            <MemoCard result={run.result} newsTitle={run.news.title} onCompany={onCompany} />
+            <details className="memo-how">
+              <summary>
+                Agent가 조사한 과정 보기{plans > 0 && (plans > 1 ? " · 조회 계획(중간에 바꿈)" : " · 조회 계획")} · 조회 {tools}번
+              </summary>
+              <Trace run={run} nameOf={nameOf} />
+            </details>
+          </>
+        ) : (
+          <Trace run={run} nameOf={nameOf} />
+        )}
+      </div>
+    );
+  }
   return (
-    <div className="memo-pane">
+    <div className="memo-pane" ref={paneRef}>
       <div className="memo-intro">
         <b>뉴스 메모 Agent</b>
         <p>
-          뉴스를 넣으면 Agent가 무엇을 조회할지 스스로 정해 공시를 찾아보고, 공시로 이어진 상장사를 메모로 남깁니다. 메모의 회사와 접수번호는 조회 결과에
-          있었는지 코드가 검사하고, 걸리면 Agent가 고쳐 씁니다.
+          뉴스를 넣으면 Agent가 조회 계획을 세워 공시를 찾아보고, 공시로 이어진 상장사를 메모로 남깁니다. 메모의 회사·접수번호·금액은 조회 결과에 있었는지
+          코드가 검사합니다.
         </p>
       </div>
+      {run && (
+        <button className="memo-resume" onClick={openRun}>
+          <small>{working(run) ? "조사하는 중 · 이어 보기" : "보던 메모"}</small>
+          <span>{run.news.title}</span>
+        </button>
+      )}
       <form
         className="memo-form"
         onSubmit={(event) => {
@@ -541,29 +635,22 @@ export function MemoPane({ agent, nameOf, onCompany, closed }: {
         {closed && <p className="muted small">오늘 받을 수 있는 횟수를 다 썼습니다. 아래 예시는 비용 없이 볼 수 있습니다.</p>}
         {agent.left !== null && !closed && <p className="muted small">오늘 남은 횟수 {agent.left}번 (채팅과 함께 셉니다)</p>}
       </form>
-      <Daily agent={agent} />
+      <Daily agent={agent} onOpen={openRun} />
       {examples.length > 0 && (
         <div className="memo-examples">
           <em>미리 돌려 둔 예시 (Agent를 다시 부르지 않고 그때의 과정을 보여 줍니다)</em>
           {examples.map((example) => (
-            <button key={example.news.title} disabled={agent.busy} onClick={() => void agent.replay(example)}>
+            <button key={example.news.title} disabled={agent.busy} onClick={() => { openRun(); void agent.replay(example); }}>
               {example.news.day} · {example.news.title}
             </button>
           ))}
         </div>
       )}
-      {run && (
-        <section className="memo-run" ref={runRef}>
-          <h3>{run.news.title}</h3>
-          <Trace run={run} nameOf={nameOf} />
-          {run.result && <MemoCard result={run.result} onCompany={onCompany} />}
-        </section>
-      )}
       {past.length > 0 && (
         <div className="memo-past">
           <em>이 브라우저에서 만든 메모</em>
           {past.map((r) => (
-            <button key={r.id} onClick={() => agent.show(r.id)}>
+            <button key={r.id} onClick={() => { agent.show(r.id); openRun(); }}>
               {r.news.day ?? r.result?.news.date} · {r.news.title}
             </button>
           ))}
@@ -572,3 +659,5 @@ export function MemoPane({ agent, nameOf, onCompany, closed }: {
     </div>
   );
 }
+
+const working = (run: MemoRun) => !run.result && !run.error;

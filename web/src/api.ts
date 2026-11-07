@@ -338,3 +338,18 @@ export interface DailyMemo {
 
 export const fetchDailyMemos = () => get<DailyMemoItem[]>("/memos");
 export const fetchDailyMemo = (id: number) => get<DailyMemo>(`/memos/${id}`);
+
+/** 뉴스 메모의 회사들이 뉴스 뒤에 어떻게 움직였는지. 뉴스 전 거래일 종가를 0으로 둔 누적 %(가격은 오지 않는다) */
+export interface MemoPrices {
+  news_day: string;
+  base_day: string | null;
+  days: string[];
+  /** 시가총액 가중 */
+  market: (number | null)[];
+  /** 보통 종목(수익률 중앙값) */
+  median: (number | null)[];
+  companies: { company_id: number; name: string; series: (number | null)[] }[];
+  source: string;
+  note?: string;
+}
+export const fetchMemoPrices = (day: string, ids: number[]) => get<MemoPrices>("/memo-prices", { day, ids: ids.join(",") });

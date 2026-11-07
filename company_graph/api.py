@@ -18,7 +18,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
-from . import agent_tools, ksic, query
+from . import agent_tools, ksic, memo_prices, query
 from .display_names import group_key, group_label
 from .db import AskLog, Base, BusinessSection, Company, Document, HotDay, NewsMemo, Product, ProductCode, Relation, SiteText, get_engine, session
 from .product_families import FAMILY_FIELD
@@ -34,7 +34,8 @@ app.router.routes.append(Route("/api/mcp", endpoint=mcp_server.App(), methods=["
 # 공시 자료는 DB를 다시 옮기고 배포할 때만 바뀌고(배포하면 CDN 의 것은 버려진다), 이슈 종목만 날마다 바뀌어 짧게 둔다.
 # 사람마다 다른 응답(/api/ask…)과 실패한 응답에는 붙이지 않는다
 _CACHED = {"/api/hot": "public, s-maxage=600, stale-while-revalidate=86400",
-           "/api/memos": "public, s-maxage=600, stale-while-revalidate=86400"}   # 매일 아침 새 메모가 쌓인다
+           "/api/memos": "public, s-maxage=600, stale-while-revalidate=86400",   # 매일 아침 새 메모가 쌓인다
+           "/api/memo-prices": "public, s-maxage=3600, stale-while-revalidate=86400"}   # 시세가 날마다 하루씩 늘어난다
 _CACHE_DEFAULT = "public, s-maxage=86400, stale-while-revalidate=604800"
 
 
@@ -1359,6 +1360,16 @@ def daily_memos(db=Depends(get_db)):
     names = {c.company_id: c.label for c in db.scalars(select(Company).where(Company.company_id.in_({r.company_id for r in rows if r.company_id})))}
     return [{"id": r.memo_id, "day": r.news_date.isoformat(), "title": r.title, "source": r.source, "company": names.get(r.company_id),
              "picked": r.picked, "related": len((r.result.get("memo") or {}).get("related", []))} for r in rows]
+
+
+@app.get("/api/memo-prices")
+def memo_price_moves(day: date, ids: str = Query(max_length=400), db=Depends(get_db)):
+    """뉴스 메모의 회사들이 뉴스 뒤에 어떻게 움직였는지 (뉴스 전 거래일 종가 대비 누적 %, 시장은 시가총액 가중). 가격은 내보내지 않는다."""
+    try:
+        company_ids = [int(x) for x in ids.split(",") if x.strip()][:20]
+    except ValueError:
+        raise HTTPException(400, "ids 는 쉼표로 이은 숫자입니다")
+    return memo_prices.memo_prices(db, day, company_ids)
 
 
 @app.get("/api/memos/{memo_id}")
