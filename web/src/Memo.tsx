@@ -375,12 +375,32 @@ function Unchecked({ numbers }: { numbers?: string[] }) {
   return <span className="unchecked" title="Agent가 고쳐 쓴 뒤에도 이 숫자를 조회 결과에서 찾지 못했습니다. 원문으로 확인해 주세요">조회 결과에서 확인 안 된 숫자: {numbers.join(", ")}</span>;
 }
 
-function MemoCard({ result, newsTitle, onCompany }: { result: MemoResult; newsTitle: string; onCompany: (id: number) => void }) {
+/** 줄에 마우스를 올리면(또는 키보드로 들어가면) 그래프에서 주인공부터 그 종목까지의 길을 밝힌다 */
+type Trace = (to: number | null, from: number[]) => void;
+
+function MemoCard({ result, newsTitle, onCompany, onTrace }: {
+  result: MemoResult;
+  newsTitle: string;
+  onCompany: (id: number) => void;
+  onTrace?: Trace;
+}) {
   const memo = result.memo;
   const rowRefs = useRef(new Map<number, HTMLDivElement>());
   if (!memo) return <p className="empty drawer-note">분석을 만들지 못했습니다. 다른 제목으로 다시 해 보세요.</p>;
   const near = memo.related.filter((row) => row.closeness === "직접").length;
   const jump = (id: number) => rowRefs.current.get(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const subjectIds = memo.subjects.map((s) => s.company_id);
+  // 카드가 사라질 때 밝혀 둔 길도 지운다
+  useEffect(() => () => onTrace?.(null, []), [onTrace]);
+  const traced = (id: number) =>
+    onTrace
+      ? {
+          onMouseEnter: () => onTrace(id, subjectIds),
+          onMouseLeave: () => onTrace(null, []),
+          onFocus: () => onTrace(id, subjectIds),
+          onBlur: () => onTrace(null, []),
+        }
+      : {};
   const priced: PriceCompany[] = [
     ...memo.subjects.map((s) => ({ id: s.company_id, role: "주인공" as const })),
     ...memo.related.map((r) => ({ id: r.company_id, role: r.closeness === "직접" ? ("직접" as const) : ("간접" as const) })),
@@ -391,6 +411,7 @@ function MemoCard({ result, newsTitle, onCompany }: { result: MemoResult; newsTi
 
       <section className="memo-sec">
         <h4>뉴스에서 공시로 이어진 길</h4>
+        {memo.related.length > 0 && onTrace && <p className="muted small trace-hint">종목 줄에 마우스를 올리면 그래프에서 주인공부터 그 종목까지의 길이 밝아집니다.</p>}
         <ol className="memo-flow">
           <li className="f-news">
             <em>뉴스</em>
@@ -416,7 +437,7 @@ function MemoCard({ result, newsTitle, onCompany }: { result: MemoResult; newsTi
             </li>
           )}
           {memo.related.map((row) => (
-            <li key={row.company_id} className={row.closeness === "직접" ? "f-rel f-near" : "f-rel"}>
+            <li key={row.company_id} className={row.closeness === "직접" ? "f-rel f-near" : "f-rel"} {...traced(row.company_id)}>
               <em>{row.link}</em>
               <span>
                 <button className={`jump jump-${row.closeness === "직접" ? "near" : "far"}`} onClick={() => jump(row.company_id)} title="눌러서 근거 공시 보기">
@@ -451,7 +472,7 @@ function MemoCard({ result, newsTitle, onCompany }: { result: MemoResult; newsTi
           </div>
         ))}
         {memo.related.map((row) => (
-          <div key={row.company_id} className={`memo-row ${row.closeness === "직접" ? "row-near" : "row-far"}`}
+          <div key={row.company_id} className={`memo-row ${row.closeness === "직접" ? "row-near" : "row-far"}`} {...traced(row.company_id)}
                ref={(el) => { if (el) rowRefs.current.set(row.company_id, el); else rowRefs.current.delete(row.company_id); }}>
             <div className="memo-row-head">
               <button className="co" onClick={() => onCompany(row.company_id)} title="그래프에서 이 기업 보기">
@@ -559,7 +580,7 @@ function Glance({ glance }: { glance: NonNullable<DailyMemoItem["glance"]> }) {
   );
 }
 
-export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed }: {
+export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed, onTrace }: {
   agent: MemoAgent;
   nameOf: (id: number) => string | undefined;
   onCompany: (id: number) => void;
@@ -568,6 +589,8 @@ export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed 
   /** 주소(?analysis=)로 들어와서 바로 열 분석: 매일 분석 번호나 예시 ex1… */
   linked?: string | null;
   onLinkUsed?: () => void;
+  /** 종목 줄에 마우스를 올리면 그래프에서 길을 밝힌다 */
+  onTrace?: Trace;
 }) {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
@@ -670,7 +693,7 @@ export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed 
         </header>
         {run.result ? (
           <>
-            <MemoCard result={run.result} newsTitle={run.news.title} onCompany={onCompany} />
+            <MemoCard result={run.result} newsTitle={run.news.title} onCompany={onCompany} onTrace={onTrace} />
             <details className="memo-how">
               <summary>
                 Agent가 조사한 과정 보기{plans > 0 && (plans > 1 ? " · 조회 계획(중간에 바꿈)" : " · 조회 계획")} · 조회 {tools}번

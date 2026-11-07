@@ -4,7 +4,7 @@ import { categoryColors, CLASS_COLOR, FAMILY_COLOR, legend, LINK_COLORS, LINK_LA
 import { Cards } from "./Cards";
 import { ChatLog, Composer, useChat } from "./Chat";
 import { LevelList, NO_FILTER, Settings, TimeBar, type Filters } from "./Controls";
-import { Graph, MENTIONED, shortName } from "./Graph";
+import { Graph, MENTIONED, pathBetween, shortName } from "./Graph";
 import { Credit } from "./Credit";
 import { MemoPane, useMemoAgent } from "./Memo";
 import { Panel } from "./Panel";
@@ -405,6 +405,16 @@ export function App() {
     return () => clearTimeout(timer);
   }, [found]);
   const shownData = drawn ? drawn.graph : filtered;
+  // 뉴스 분석의 종목 줄에 마우스를 올리면 주인공에서 그 종목까지 그래프의 길만 밝힌다. 그래프가 바뀌면 지운다
+  const [trace, setTrace] = useState<Set<number> | null>(null);
+  const traceData = useRef(shownData);
+  traceData.current = shownData;
+  useEffect(() => setTrace(null), [shownData]);
+  const onTrace = useCallback((to: number | null, from: number[]) => {
+    if (to === null) return setTrace(null);
+    const path = pathBetween(traceData.current, to, from);
+    setTrace(path.size > 0 ? path : null);
+  }, []);
   // 전체에서 기업 수가 많은 순서. 이 순서의 앞쪽 분류는 어느 화면에서나 같은 색을 받는다
   const colorOrder = useMemo(() => (meta ? meta.categories[colorBy === "sector" ? "sector" : "group"].map((c) => c.name) : []), [meta, colorBy]);
   const groups = useMemo(() => categoryColors(shownData.nodes, colorBy, colorOrder), [shownData, colorBy, colorOrder]);
@@ -538,6 +548,7 @@ export function App() {
             onSelect={onSelect}
             spotlight={spotlight}
             light={theme === "light"}
+            trace={drawer === "memo" ? trace : null}
             fitKey={drawn ? `ask-${drawn.question}${drawn.early ? `-early${drawn.memo ? Math.ceil(drawn.graph.nodes.length / 8) : ""}` : ""}` : `${center?.id ?? scope}-${hops}`}
             refit={refit}
           />
@@ -758,6 +769,7 @@ export function App() {
                 closed={chat.closed}
                 linked={linkedAnalysis}
                 onLinkUsed={() => setLinkedAnalysis(null)}
+                onTrace={onTrace}
                 onCompany={(id) => {
                   setSelectedId(id);
                 }}

@@ -6746,3 +6746,23 @@ details.more .notes {
   color: var(--good);
   font-weight: 600;
 }
+
+/* 종목 줄에 마우스를 올리면 그래프에서 그 길이 밝아진다. 어느 줄이 비추는 중인지 칸에서도 보인다 */
+@media (hover: hover) {
+  .memo-flow > li.f-rel,
+  .memo-card .memo-row:not(.row-subject) {
+    transition: background-color 0.12s;
+  }
+  .memo-flow > li.f-rel:hover,
+  .memo-card .memo-row:not(.row-subject):hover {
+    background: rgb(var(--ink) / 0.05);
+  }
+}
+@media (hover: none) {
+  .trace-hint {
+    display: none;
+  }
+}
+.memo-sec .trace-hint {
+  margin: -4px 0 10px;
+}

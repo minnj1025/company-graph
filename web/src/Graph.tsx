@@ -65,6 +65,38 @@ const SPIN = 0.00058;
 const IDLE = 7000;
 
 const endId = (end: number | GraphNode) => (typeof end === "number" ? end : end.id);
+
+/** 그래프에서 to 부터 from 가운데 가장 가까운 점까지 선을 따라가는 짧은 길의 점들. 길이 없으면 그래프에 있는 끝점만 */
+export function pathBetween(data: GraphData, to: number, from: number[]): Set<number> {
+  const present = new Set(data.nodes.map((node) => node.id));
+  const ends = new Set(from.filter((id) => present.has(id)));
+  if (!present.has(to)) return ends;
+  const near = new Map<number, number[]>();
+  for (const link of data.links) {
+    const [a, b] = [endId(link.source), endId(link.target)];
+    near.set(a, [...(near.get(a) ?? []), b]);
+    near.set(b, [...(near.get(b) ?? []), a]);
+  }
+  const before = new Map<number, number>([[to, to]]);
+  const queue = [to];
+  for (let i = 0; i < queue.length; i++) {
+    const at = queue[i];
+    if (ends.has(at)) {
+      const path = new Set<number>();
+      for (let step = at; ; step = before.get(step)!) {
+        path.add(step);
+        if (step === to) break;
+      }
+      return path;
+    }
+    for (const next of near.get(at) ?? []) {
+      if (before.has(next)) continue;
+      before.set(next, at);
+      queue.push(next);
+    }
+  }
+  return new Set([to, ...ends]);
+}
 // 제품군 점은 기업이 수십 곳씩 달려서, 연결 수 그대로 키우면 화면을 덮는다
 /** 범주 점(공식 분류, 제품군)이 그려져 있는가. 그때는 범주가 가장 큰 공이어야 해서 기업 점을 작게 묶어 둔다 */
 let grouped = false;
@@ -123,9 +155,11 @@ interface Props {
   spotlight: Set<number> | null;
   /** 밝은 바탕인가. 바탕색과 이름표의 글자색이 바뀐다 */
   light: boolean;
+  /** 잠깐 이 점들과 그 사이 선만 밝게 둔다(뉴스 분석의 종목 줄에 마우스를 올렸을 때). 점을 옮기거나 카메라를 움직이지 않는다 */
+  trace?: Set<number> | null;
 }
 
-export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey, refit, spotlight, light }: Props) {
+export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, onSelect, fitKey, refit, spotlight, light, trace = null }: Props) {
   grouped = data.nodes.some((node) => node.kind === "class" || node.kind === "family");
   const container = useRef<HTMLDivElement>(null);
   const graph = useRef<ForceGraphMethods<GraphNode, GraphLink> | undefined>(undefined);
@@ -227,6 +261,8 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     }
     return ids;
   }, [data, selectedId, spotlight]);
+  // 밝게 그릴 점. 길을 비추는 동안은 그 길만. 고른 기업 둘레로 점을 모으는 일은 그대로 lit 을 따른다
+  const shine = trace ?? lit;
 
   // 이름표는 연결이 많은 기업부터. 전부 붙이면 글자가 겹쳐 읽을 수 없다
   const labeled = useMemo(() => {
@@ -325,27 +361,27 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
   useEffect(() => {
     const made = layer.current;
     if (!made) return;
-    litNow.current = lit;
+    litNow.current = shine;
     made.data.nodes.forEach((node, i) => made.balls.setColorAt(i, paint.set(nodeColor(node, colorBy, groups))));
     if (made.balls.instanceColor) made.balls.instanceColor.needsUpdate = true;
     const { lines, arrows } = made;
     if (lines && arrows) {
       const colors = lines.geometry.getAttribute("color") as BufferAttribute;
       made.data.links.forEach((link, i) => {
-        paint.set(lit === null ? LINK_COLORS[link.type] : DIM);
+        paint.set(shine === null ? LINK_COLORS[link.type] : DIM);
         paint.toArray(colors.array, i * 6);
         paint.toArray(colors.array, i * 6 + 3);
         arrows.setColorAt(i, paint);
       });
       // 기업을 고르면 묶어 그리는 선은 전부 이어지지 않은 선이다. 아주 옅게 두고 화살표는 뺀다
-      lines.material.opacity = lit === null ? LINK_OPACITY : DIM_LINK_OPACITY;
-      lines.material.depthWrite = lit === null;
-      arrows.visible = lit === null;
+      lines.material.opacity = shine === null ? LINK_OPACITY : DIM_LINK_OPACITY;
+      lines.material.depthWrite = shine === null;
+      arrows.visible = shine === null;
       colors.needsUpdate = true;
       if (arrows.instanceColor) arrows.instanceColor.needsUpdate = true;
     }
     place();
-  }, [data, batch, lit, selectedId, colorBy, groups, place]);
+  }, [data, batch, shine, selectedId, colorBy, groups, place]);
 
   // 아래 함수들은 값이 바뀔 때만 새로 만든다. 그릴 때마다 새 함수를 넘기면 라이브러리가 점과 선을 전부 다시 만든다
   const nodeLabel = useCallback(
@@ -365,9 +401,9 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
     (node: GraphNode) => {
       const hit = new Mesh(hitShape(nodeRadius(node)), HIT);
       // 흐려진 점은 눌리지 않는다. 눌리면 화면을 돌리려고 끄는 것이 점을 끄는 것이 된다
-      if (lit !== null && !lit.has(node.id)) hit.raycast = () => {};
-      const chosen = node.focus || node.mentioned || node.id === selectedId;
-      const show = chosen || (lit === null ? labeled.has(node.id) : lit.has(node.id));
+      if (shine !== null && !shine.has(node.id)) hit.raycast = () => {};
+      const chosen = trace ? trace.has(node.id) : node.focus || node.mentioned || node.id === selectedId;
+      const show = chosen || (shine === null ? labeled.has(node.id) : shine.has(node.id));
       if (!show) return hit;
       const label = new SpriteText(node.kind === "topic" ? `# ${node.name}` : shortName(node.name));
       label.color = node.kind && !(light && node.kind === "class") ? nodeColor(node, "group", new Map()) : light ? "#1b1c1f" : "#e8edf5";
@@ -384,41 +420,45 @@ export const Graph = memo(function Graph({ data, colorBy, groups, selectedId, on
       hit.add(label);
       return hit;
     },
-    [selectedId, lit, labeled, light],
+    [selectedId, shine, trace, labeled, light],
   );
   const linkLit = useCallback(
     (link: GraphLink) =>
-      spotlight
-        ? spotlight.has(endId(link.source)) && spotlight.has(endId(link.target))
+      trace ?? spotlight
+        ? (trace ?? spotlight)!.has(endId(link.source)) && (trace ?? spotlight)!.has(endId(link.target))
         : selectedId === null || endId(link.source) === selectedId || endId(link.target) === selectedId,
-    [selectedId, spotlight],
+    [selectedId, spotlight, trace],
   );
   const linkShown = useCallback(
     (link: GraphLink) => {
-      if (lit === null) return !batch;
+      if (shine === null) return !batch;
       if (linkLit(link)) return true;
       // 고른 기업과 이어진 점에서 다른 곳으로 가는 선은 감춘다
-      return !batch && !lit.has(endId(link.source)) && !lit.has(endId(link.target));
+      return !batch && !shine.has(endId(link.source)) && !shine.has(endId(link.target));
     },
-    [batch, selectedId, lit, linkLit],
+    [batch, shine, linkLit],
   );
   const linkColor = useCallback((link: GraphLink) => (linkLit(link) ? LINK_COLORS[link.type] : DIM_LINK), [linkLit]);
   const linkWidth = useCallback(
     (link: GraphLink) => {
       if (!linkLit(link)) return 0.1;
+      if (trace) return 1.8;   // 비추는 길은 종류와 상관없이 굵게
       if (link.type === "equity") return 0.4 + (link.value ?? 0) / 35;
       if (link.type === "business") return 0.3 + Math.min(link.count, 40) / 16;
       if (link.type === "product") return 0.3 + (link.value ?? 0) / 30;
       return link.type === "affiliate" ? 0.15 : 0.9;
     },
-    [linkLit],
+    [linkLit, trace],
   );
   const linkLabel = useCallback(
     (link: GraphLink) => `${shortName((link.source as GraphNode).name)} → ${shortName((link.target as GraphNode).name)} · ${link.label}`,
     [],
   );
   const arrowLength = useCallback((link: GraphLink) => (["affiliate", "product", "family"].includes(link.type) ? 0 : ARROW), []);
-  const particles = useCallback((link: GraphLink) => (link.type === "supply_contract" && linkLit(link) ? 2 : 0), [linkLit]);
+  const particles = useCallback(
+    (link: GraphLink) => (linkLit(link) && (trace || link.type === "supply_contract") ? (trace ? 3 : 2) : 0),
+    [linkLit, trace],
+  );
   const onNodeClick = useCallback(
     (node: GraphNode) => {
       // 고른 점을 다시 누르면 푼다. 낱말 점과 제품 점은 기업이 아니라서 상세를 열지 않고, 이어진 기업만 밝힌다
