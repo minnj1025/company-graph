@@ -34,6 +34,7 @@ export function Followups({ after, subjects, title }: { after: string; subjects:
   const through = data.checked_through && data.checked_through < data.until ? data.checked_through : data.until;
   const notYet = !data.checked_through || data.checked_through < from;
   const hasAmount = data.news_amounts.length > 0;
+  const span = from === through ? `${from.slice(5)} 하루 동안` : `${from.slice(5)}부터 ${through.slice(5)}까지`;
   return (
     <section className="memo-sec followups">
       <h4>뉴스 뒤에 나온 주인공의 공시</h4>
@@ -42,11 +43,11 @@ export function Followups({ after, subjects, title }: { after: string; subjects:
           <>분석한 뒤의 공시를 아직 받지 않았습니다. 공시는 매일 아침 들어옵니다.</>
         ) : data.count === 0 ? (
           <>
-            {from.slice(5)}부터 {through.slice(5)}까지 {who}의 공급계약·지분·증자 공시가 없습니다.
+            {span} {who}의 공급계약·지분·증자 공시가 없습니다.
           </>
         ) : (
           <>
-            {from.slice(5)}부터 {through.slice(5)}까지 {who}의 공시 {data.count}건
+            {span} {who}의 공시 {data.count}건
             {data.contracts > 0 && ` (공급계약 ${data.contracts}건)`}
             {hasAmount && (data.same_amount > 0 ? ` · 뉴스 제목의 금액과 같은 공시 ${data.same_amount}건` : " · 뉴스 제목의 금액과 같은 공시는 없음")}.
           </>
@@ -78,7 +79,7 @@ export function Followups({ after, subjects, title }: { after: string; subjects:
         </ul>
       )}
       <p className="muted small">
-        분석은 {data.after}까지 나온 공시만 봤습니다. 그 뒤 {data.until.slice(5)}까지 매일 아침 받는 공시(공급계약·해지, 지분 취득·처분 결정, 증자·사채·자기주식
+        분석은 {data.after}까지 나온 공시만 봤습니다. 그 뒤 {data.until}까지 매일 아침 받는 공시(공급계약·해지, 지분 취득·처분 결정, 증자·사채·자기주식
         결정)에서 찾았습니다{hasAmount && `. 뉴스 제목의 금액 ${data.news_amounts.map(won).join(", ")}과 3% 안쪽이면 같다고 표시합니다`}. 같은 일인지는 원문으로
         확인해 주세요.
       </p>
