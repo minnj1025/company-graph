@@ -10,7 +10,8 @@ type Step =
   | { kind: "say"; text: string }
   | { kind: "tool"; name: string; input: Record<string, unknown>; done: boolean; total?: number | null; receipts?: number; error?: string | null; found?: number }
   | { kind: "check"; problems: string[] }
-  | { kind: "memo"; left: number; retried: boolean };
+  | { kind: "memo"; left: number; retried: boolean }
+  | { kind: "plan"; lookFor: string; plan: { do: string; tool: string }[]; changed: string | null };
 
 interface News {
   title: string;
@@ -92,7 +93,46 @@ function advance(steps: Step[], event: MemoEvent): Step[] {
       return [...steps, { kind: "check", problems: event.problems }];
     case "memo":
       return [...steps, { kind: "memo", left: event.left, retried: event.retried }];
+    case "plan":
+      return [...steps, { kind: "plan", lookFor: event.look_for, plan: event.steps ?? [], changed: event.changed }];
+    default:
+      return steps;
   }
+}
+
+/** 계획의 단계마다 그 뒤(다음 계획 전까지)에 그 도구의 결과가 왔는지. 한 번 부른 것은 한 단계에만 센다 */
+function planDone(steps: Step[], at: number): boolean[] {
+  const plan = steps[at] as Extract<Step, { kind: "plan" }>;
+  const next = steps.findIndex((step, i) => i > at && step.kind === "plan");
+  const called = steps.slice(at + 1, next < 0 ? undefined : next).flatMap((step) => (step.kind === "tool" && step.done ? [step.name] : []));
+  return plan.plan.map((item) => {
+    const i = called.indexOf(item.tool);
+    if (i < 0) return false;
+    called.splice(i, 1);
+    return true;
+  });
+}
+
+function PlanCard({ steps, at, live }: { steps: Step[]; at: number; live: boolean }) {
+  const step = steps[at] as Extract<Step, { kind: "plan" }>;
+  const done = planDone(steps, at);
+  const now = live ? done.indexOf(false) : -1;
+  return (
+    <li className={step.changed ? "t-plan t-replan" : "t-plan"}>
+      <b>{step.changed ? "계획을 바꿈" : "조회 계획"}</b>
+      {step.changed && <span className="t-changed">{step.changed}</span>}
+      {step.lookFor && <span>{step.lookFor}</span>}
+      <ol>
+        {step.plan.map((item, i) => (
+          <li key={i} className={done[i] ? "p-done" : i === now ? "p-now" : undefined}>
+            <i aria-hidden>{done[i] ? "✓" : "○"}</i>
+            <span>{item.do}</span>
+            <small>{TOOL_LABELS[item.tool] ?? item.tool}</small>
+          </li>
+        ))}
+      </ol>
+    </li>
+  );
 }
 
 /** 화면 바깥(그래프)에 알리는 것: 조회하면서 찾은 기업, 끝난 메모 */
@@ -242,6 +282,8 @@ function Trace({ run, nameOf }: { run: MemoRun; nameOf: (id: number) => string |
               </em>
             )}
           </li>
+        ) : step.kind === "plan" ? (
+          <PlanCard key={i} steps={run.steps} at={i} live={working && !run.steps.some((s, j) => j > i && s.kind === "plan")} />
         ) : step.kind === "check" ? (
           <li key={i} className="t-check">
             <b>근거 검사에서 걸림 {step.problems.length}개</b>
@@ -267,7 +309,7 @@ function Trace({ run, nameOf }: { run: MemoRun; nameOf: (id: number) => string |
       )}
       {working && (
         <li className="t-wait">
-          {run.steps.length === 0 ? "뉴스를 읽고 무엇을 조회할지 정하는 중" : "조회한 것을 읽는 중"} · {seconds}초
+          {run.steps.length === 0 ? "뉴스를 읽고 조회 계획을 세우는 중" : "조회한 것을 읽는 중"} · {seconds}초
         </li>
       )}
       {run.result && (

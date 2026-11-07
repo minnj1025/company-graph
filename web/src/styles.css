@@ -5952,6 +5952,85 @@ details.more .notes {
   color: var(--bad);
 }
 
+/* 조회 계획: Agent가 첫 응답에서 낸 단계. 그 도구를 부르면 ✓ */
+.t-plan {
+  padding: 8px 10px;
+  border: 1px solid rgb(var(--ink) / 0.12);
+  border-radius: 8px;
+  background: rgb(var(--ink) / 0.03);
+}
+
+.trace > li.t-plan::before {
+  top: 14px;
+  background: var(--accent);
+}
+
+.t-plan b {
+  color: var(--accent);
+}
+
+.t-plan > span {
+  display: block;
+  color: var(--muted);
+}
+
+.t-plan > span.t-changed {
+  color: var(--warn);
+}
+
+.t-plan ol {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.t-plan ol li {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  color: var(--muted);
+}
+
+.t-plan ol li i {
+  flex: none;
+  width: 1em;
+  font-style: normal;
+  text-align: center;
+}
+
+.t-plan ol li span {
+  flex: 1;
+  min-width: 0;
+}
+
+.t-plan ol li small {
+  flex: none;
+  font-size: 10.5px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgb(var(--ink) / 0.07);
+}
+
+.t-plan ol li.p-done {
+  color: var(--text, inherit);
+}
+
+.t-plan ol li.p-done i {
+  color: var(--good);
+}
+
+.t-plan ol li.p-now i {
+  color: var(--accent);
+  animation: memo-pulse 1s ease-in-out infinite alternate;
+}
+
+.trace > li.t-replan::before {
+  background: var(--warn);
+}
+
 @keyframes memo-pulse {
   from {
     opacity: 0.35;

@@ -1312,7 +1312,7 @@ def memo_stream(body: MemoAsk, request: Request, db=Depends(get_db)):
         found = _Found(day - timedelta(days=1))
         try:
             out = news_agent.run(news, model=ASK_MODEL, on_event=lambda kind, value: events.put((kind, value)), on_result=found.take,
-                                 check_numbers=True)
+                                 check_numbers=True, plan=True)
             with session(_engine) as own:
                 events.put(("done", _memo_answered(own, out, found, ask_id, visitor)))
         except Exception:

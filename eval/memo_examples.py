@@ -1,6 +1,7 @@
 """'뉴스 메모' 화면의 미리 돌려 둔 예시를 만든다. 방문자가 예시를 누르면 Agent를 부르지 않고 그때 서버가 보낸 사건을 다시 보여 준다.
 
   python -m eval.memo_examples real --cap=0.10      예시 뉴스마다 news_agent 를 한 번 돌려 기록한다 (유료, claude-haiku-5-5)
+  python -m eval.memo_examples real --redo --limit=1 조회 계획 없이 녹화한 예시를 다시 녹화한다 (유료)
   python -m eval.memo_examples fake <메모 JSON>...  지난 시험 메모의 조회 순서를 가짜 모델로 다시 돌린다 (무료, 화면 확인용. 배포하지 않는다)
 
 결과: web/public/memo-examples.json (real) 또는 data/cache/memo-examples-fake.json (fake).
@@ -30,7 +31,7 @@ def record(news: dict, client=None) -> dict:
     """news_agent 를 돌리며 사건과 걸린 시각을 적는다. 화면의 /api/memo/stream 과 같은 순서로 만든다."""
     day = date.fromisoformat(news["day"])
     found, events, started = api._Found(day - timedelta(days=1)), [], time.time()
-    out = news_agent.run({"title": news["title"], "date": news["day"]}, client=client,
+    out = news_agent.run({"title": news["title"], "date": news["day"]}, client=client, check_numbers=True, plan=True,
                          on_event=lambda kind, value: events.append({"at": round((time.time() - started) * 1000), "event": {"kind": kind, **value}}),
                          on_result=found.take)
     with session() as db:
@@ -73,12 +74,18 @@ def main():
         client = anthropic.Anthropic(api_key=secret("ANTHROPIC_API_KEY"))
         target = pathlib.Path("web/public/memo-examples.json")
         done = json.loads(target.read_text(encoding="utf-8")) if target.exists() else []
-        have = {e["news"]["title"] for e in done}
+        # --redo: 조회 계획(plan) 없이 녹화한 예시를 다시 녹화해 그 자리에 바꿔 넣는다
+        redo = "--redo" in sys.argv
+        have = {e["news"]["title"] for e in done if not redo or any(x["event"]["kind"] == "plan" for x in e["events"])}
         spent = 0.0
         for news in [n for n in REAL if n["title"] and n["title"] not in have][:limit]:
             example = record(news, client=client)
             spent += example.pop("cost_usd")
-            done.append(example)
+            at = next((i for i, e in enumerate(done) if e["news"]["title"] == news["title"]), None)
+            if at is None:
+                done.append(example)
+            else:
+                done[at] = example
             target.write_text(json.dumps(done, ensure_ascii=False, default=str), encoding="utf-8")
             memo = example["result"]["memo"] or {}
             print(f"{news['day']} {news['title'][:30]} | 조회 {len(example['result']['tools'])}번 | 관련 {len(memo.get('related', []))}곳"

@@ -88,3 +88,45 @@ def test_shape_problems_drops_rows_that_are_not_objects():
     assert memo["related"][1]["rcept_nos"] == "20260101000001"   # 받은 것은 바꾸지 않는다
     same, none = news_agent.shape_problems({"subjects": [], "subject_facts": [], "related": [{"company_id": 3, "rcept_nos": []}]})
     assert none == [] and same["related"] == [{"company_id": 3, "rcept_nos": []}]
+
+
+def test_plan_only_when_turned_on(db, monkeypatch):
+    @contextmanager
+    def same_db():
+        yield db
+    monkeypatch.setattr(news_agent, "session", same_db)
+    off = FakeClient(replies())
+    news_agent.run(NEWS, client=off)
+    assert all("tool_choice" not in r for r in off.requests)
+    assert all("write_plan" not in [t["name"] for t in r["tools"]] for r in off.requests)
+    assert off.requests[0]["system"][0]["text"] == news_agent.SYSTEM   # 끄면 평가 12판과 같은 지시문
+
+    first = {"look_for": "기아의 부품 계약 상대가 공시에 있는지", "steps": [{"do": "지분 관계를 본다", "tool": "get_relations"},
+                                                                    {"do": "같은 부품을 파는 곳을 본다", "tool": "find_by_product"}]}
+    again = {**first, "steps": first["steps"][:1], "changed": "계약 상대가 공시에 없어 지분 관계만 본다"}
+    script = [reply("tool_use", NS(type="tool_use", id="p1", name="write_plan", input=first))] + replies()[:1] + [
+        reply("tool_use", NS(type="tool_use", id="p2", name="write_plan", input=again),
+              NS(type="tool_use", id="t3", name="write_memo", input=memo("20260312000001")))]
+    on, events = FakeClient(script), []
+    out = news_agent.run(NEWS, client=on, plan=True, on_event=lambda kind, value: events.append((kind, value)))
+    assert on.requests[0]["tool_choice"] == {"type": "tool", "name": "write_plan"}
+    assert all("tool_choice" not in r for r in on.requests[1:])
+    assert on.requests[0]["system"][0]["text"].startswith(news_agent.SYSTEM) and "write_plan" in on.requests[0]["system"][0]["text"]
+    assert [kind for kind, _ in events] == ["plan", "say", "tool", "result", "plan", "memo"]
+    assert events[0][1]["changed"] is None and events[4][1]["changed"].startswith("계약 상대")
+    assert events[4][1]["after_calls"] == 1
+    assert len(out["plans"]) == 2 and out["memo"]["related"][0]["rcept_nos"] == ["20260312000001"]
+
+
+def test_plan_shown_before_lookups_of_the_same_reply(db, monkeypatch):
+    @contextmanager
+    def same_db():
+        yield db
+    monkeypatch.setattr(news_agent, "session", same_db)
+    plan = {"look_for": "지분 관계", "steps": [{"do": "지분을 본다", "tool": "get_relations"}, {"do": "메모를 쓴다", "tool": "get_filings"}]}
+    lookup = replies()[0].content[1]
+    script = [reply("tool_use", lookup, NS(type="tool_use", id="p1", name="write_plan", input=plan)),
+              reply("tool_use", NS(type="tool_use", id="t3", name="write_memo", input=memo("20260312000001")))]
+    events = []
+    news_agent.run(NEWS, client=FakeClient(script), plan=True, on_event=lambda kind, value: events.append(kind))
+    assert events == ["plan", "tool", "result", "memo"]

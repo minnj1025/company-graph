@@ -159,7 +159,7 @@ def store(day: date, limit: int = LIMIT, cap: float = CAP):
                 break
             events, started = [], time.time()
             out = news_agent.run({"title": row["title"], "date": day.isoformat(), "company": row["company"], "code": row["code"]},
-                                 client=client, check_numbers=True,
+                                 client=client, check_numbers=True, plan=True,
                                  on_event=lambda kind, value: events.append({"at": round((time.time() - started) * 1000), "event": {"kind": kind, **value}}))
             spent[0] += out["cost_usd"]
             db.add(NewsMemo(news_date=day, company_id=row["company_id"], title=row["title"][:300], link=(row.get("link") or "")[:1000] or None,

@@ -266,7 +266,8 @@ export type MemoEvent =
   | { kind: "tool"; name: string; input: Record<string, unknown> }
   | { kind: "result"; name: string; total: number | null; error: string | null; receipts: number; companies: number[] }
   | { kind: "check"; problems: string[]; related: number }
-  | { kind: "memo"; related: number; left: number; retried: boolean };
+  | { kind: "memo"; related: number; left: number; retried: boolean }
+  | { kind: "plan"; look_for: string; steps: { do: string; tool: string }[]; changed: string | null; after_calls: number };
 
 /** 뉴스 한 건으로 메모를 만든다. 조회할 때마다 onEvent 가 불리고, 다 끝나면 메모 전체를 돌려준다 */
 export async function memoStream(news: { title: string; text?: string; day?: string }, onEvent: (event: MemoEvent) => void): Promise<MemoResult> {

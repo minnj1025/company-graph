@@ -101,9 +101,31 @@ SYSTEM = f"""당신은 증권사 사내 분석가를 돕습니다. 뉴스 한 �
 - link 는 {", ".join(LINKS)} 가운데, closeness 는 {", ".join(CLOSENESS)} 가운데 고릅니다."""
 
 
-def tools() -> list[dict]:
+PLAN_TOOL = {
+    "name": "write_plan",
+    "description": "조회 계획을 낸다. 첫 응답에서 조회 전에 한 번 부르고, 조회 결과를 보고 계획을 바꿀 때 다시 부른다. 분석가 화면에 그대로 보인다.",
+    "input_schema": {"type": "object", "properties": {
+        "look_for": {"type": "string", "description": "이 뉴스에서 공시로 확인하려는 것 한 문장 (예: 수주 상대가 공시에 있는지, 같은 선박을 만드는 상장사)"},
+        "steps": {"type": "array", "minItems": 2, "maxItems": 6, "items": {"type": "object", "properties": {
+            "do": {"type": "string", "description": "이 단계에서 무엇을 왜 보는지 우리말 한 문장. 도구 이름과 칸 이름은 쓰지 않는다"},
+            "tool": {"type": "string", "enum": TOOL_NAMES}},
+            "required": ["do", "tool"]}},
+        "changed": {"type": "string", "description": "다시 낼 때만: 앞의 조회에서 무엇을 보고 계획을 바꾸는지 한 문장"}},
+        "required": ["look_for", "steps"]}}
+
+# 화면과 매일 메모에서만 덧붙인다(plan=True). 평가 12판의 덧붙인 시험은 SYSTEM 만 쓴다.
+PLAN_RULES = """
+
+계획
+- 첫 응답에서는 조회하기 전에 write_plan 으로 계획을 냅니다. 무엇을 확인하려는지(look_for)와 2~6단계(steps)를 적습니다. 단계마다 쓸 도구 하나를 고릅니다.
+- 조회 결과가 계획과 다르면(상대가 공시에 없음, 제품 이름이 다름 등) write_plan 을 다시 부르고 changed 에 무엇을 보고 바꾸는지 적습니다. 계획대로 되면 다시 부르지 않습니다.
+- 계획은 분석가가 읽습니다. 도구 이름이나 칸 이름(company_id, supply_contract, direction, as_of 같은 것)을 쓰지 않고 우리말로 씁니다. (예: "포스코퓨처엠의 최근 1년 공급계약에 삼성SDI가 있는지 본다")
+- 계획에도 위의 쓰지 않는 말을 쓰지 않습니다."""
+
+
+def tools(plan: bool = False) -> list[dict]:
     by_name = {t["name"]: t for t in agent_tools.TOOLS}
-    return [by_name[n] for n in TOOL_NAMES] + [MEMO_TOOL]
+    return [by_name[n] for n in TOOL_NAMES] + [MEMO_TOOL] + ([PLAN_TOOL] if plan else [])
 
 
 def _bad_rcept(db, no: str, company_id: int | None, subject_ids: set[int], closeness: str | None, seen_rcepts: set[str]) -> str | None:
@@ -206,7 +228,7 @@ def prune(db, memo: dict, seen_rcepts: set[str], seen_ids: set[int]) -> tuple[di
 
 
 def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = None, max_turns: int = MAX_TURNS,
-        on_event=None, on_result=None, check_numbers: bool = False) -> dict:
+        on_event=None, on_result=None, check_numbers: bool = False, plan: bool = False) -> dict:
     """news: {title, date(YYYY-MM-DD), text(선택), source(선택), company(선택: 주인공 이름 힌트)}
 
     on_event(kind, value): 화면에 진행을 보이려고 부른다. 모델에게 가는 말과 도구는 바뀌지 않는다.
@@ -214,7 +236,9 @@ def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = Non
       check(메모를 검사해 고치게 한 까닭들), memo(검사를 통과해 받은 메모)
     on_result(name, input, result): 도구 결과 전체 (그래프를 그리는 쪽이 쓴다)
     check_numbers: 메모의 금액·비율·날짜가 조회 결과에 있는지도 검사해 고치게 하고, 고친 뒤에도 남으면 그 줄에 unchecked_numbers 로 적는다.
-      화면과 매일 메모에서 켠다. 평가 12판의 덧붙인 시험은 미리 적은 대로 끈 채 돈다"""
+      화면과 매일 메모에서 켠다. 평가 12판의 덧붙인 시험은 미리 적은 대로 끈 채 돈다
+    plan: 첫 응답에서 write_plan 으로 조회 계획을 내게 하고(그 한 번은 도구를 정해 부르게 한다), 바꿀 때 다시 내게 한다.
+      on_event 의 plan 으로 알린다. 화면과 매일 메모에서 켠다. 끄면 지시문과 도구가 전과 같다"""
     client = client or anthropic.Anthropic(api_key=secret("ANTHROPIC_API_KEY"))
     when = as_of or (date.fromisoformat(news["date"]) - timedelta(days=1))
     parts = [f"조회 시점: {when.isoformat()}", f"뉴스 날짜: {news['date']}", f"제목: {news['title']}"]
@@ -229,8 +253,8 @@ def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = Non
     style = os.environ.get("ANSWER_STYLE")
     os.environ["ANSWER_STYLE"] = "2"   # 도구가 원 단위 금액을 '억·조 원' 글(value_text)로도 주게 한다. 끝나면 되돌린다
     try:
-        return _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_ids, max_turns, started,
-                     on_event or (lambda kind, value: None), on_result, check_numbers)
+        return _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_ids, max_turns + (1 if plan else 0), started,
+                     on_event or (lambda kind, value: None), on_result, check_numbers, plan)
     finally:
         if style is None:
             os.environ.pop("ANSWER_STYLE", None)
@@ -239,23 +263,32 @@ def run(news: dict, *, model: str = MODEL, client=None, as_of: date | None = Non
 
 
 def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_ids, max_turns, started, emit, on_result,
-          check_numbers=False) -> dict:
-    memo, problems, retried, bodies = None, [], False, []
+          check_numbers=False, plan=False) -> dict:
+    memo, problems, retried, bodies, plans = None, [], False, [], []
     news_text = f"{news['title']} {news.get('text') or ''}"
+    system = SYSTEM + (PLAN_RULES if plan else "")
     with session() as db:
-        for _ in range(max_turns):
+        for turn in range(max_turns):
+            extra = {"tool_choice": {"type": "tool", "name": PLAN_TOOL["name"]}} if plan and turn == 0 else {}
             response = client.messages.create(
-                model=model, max_tokens=8000, system=[{"type": "text", "text": SYSTEM, "cache_control": {"type": "ephemeral"}}],
-                tools=tools(), messages=messages, output_config={"effort": "low"})
+                model=model, max_tokens=8000, system=[{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
+                tools=tools(plan), messages=messages, output_config={"effort": "low"}, **extra)
             if not response.model.startswith(model):
                 raise RuntimeError(f"다른 모델이 답함: {response.model}")
             for key in usage:
                 usage[key] += getattr(response.usage, key, 0) or 0
             messages.append({"role": "assistant", "content": response.content})
+            for block in response.content:   # 계획은 같은 응답의 조회보다 먼저 알린다
+                if block.type == "tool_use" and block.name == PLAN_TOOL["name"]:
+                    given = dict(block.input)
+                    steps = [{"do": str(s.get("do", "")), "tool": s.get("tool")} for s in given.get("steps") or [] if isinstance(s, dict)]
+                    plans.append({"look_for": str(given.get("look_for") or ""), "steps": steps,
+                                  "changed": given.get("changed") if plans else None, "after_calls": len(calls)})
+                    emit("plan", plans[-1])
             for block in response.content:
                 if block.type == "text" and block.text.strip():
                     emit("say", {"text": block.text.strip()[:600]})
-                elif block.type == "tool_use" and block.name != MEMO_TOOL["name"]:
+                elif block.type == "tool_use" and block.name not in (MEMO_TOOL["name"], PLAN_TOOL["name"]):
                     emit("tool", {"name": block.name, "input": dict(block.input)})
             if response.stop_reason != "tool_use":
                 messages.append({"role": "user", "content": "조회를 마쳤으면 write_memo 를 불러 메모를 내세요."})
@@ -263,6 +296,10 @@ def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_i
             results = []
             for block in response.content:
                 if block.type != "tool_use":
+                    continue
+                if block.name == PLAN_TOOL["name"]:
+                    results.append({"type": "tool_result", "tool_use_id": block.id,
+                                    "content": "계획을 받았습니다. 계획대로 조회하세요." if len(plans) == 1 else "바꾼 계획을 받았습니다."})
                     continue
                 if block.name == MEMO_TOOL["name"]:
                     candidate, wrong = shape_problems(dict(block.input))
@@ -308,7 +345,7 @@ def _loop(client, model, news, when, messages, usage, calls, seen_rcepts, seen_i
     cost = sum(usage[k] * p / 1e6 for k, p in PRICE.items())
     return {"news": {k: news.get(k) for k in ("title", "date", "source", "company", "code", "kind")}, "as_of": when.isoformat(),
             "model": model, "memo": memo, "dropped": dropped, "first_problems": problems, "tool_calls": calls,
-            "usage": usage, "cost_usd": round(cost, 5), "seconds": round(time.time() - started, 1)}
+            "usage": usage, "cost_usd": round(cost, 5), "seconds": round(time.time() - started, 1), "plans": plans}
 
 
 def view(db, out: dict) -> dict:
@@ -326,7 +363,7 @@ def view(db, out: dict) -> dict:
     return {"news": out["news"], "as_of": out["as_of"], "model": out["model"], "memo": memo, "dropped": dropped,
             "first_problems": out["first_problems"], "seconds": out["seconds"], "tokens": sum(out["usage"].values()),
             "tools": [{"name": c["tool"], "input": c["input"], "total": c["total"], "error": c["error"]} for c in out["tool_calls"]],
-            "sources": sources}
+            "sources": sources, "plans": out.get("plans", [])}
 
 
 def markdown(out: dict) -> str:
