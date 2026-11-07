@@ -18,7 +18,7 @@ type Shown = Pick<AskResult, "question" | "graph"> & {
   picked?: boolean;
   /** Agent가 답을 쓰기 전에 "이 기업들을 보여 줘"라고 해서 먼저 그려 둔 것. 답이 끝나면 완성된 그래프로 바뀐다 */
   early?: boolean;
-  /** 뉴스 메모 Agent가 찾은 것 */
+  /** 뉴스 분석 Agent가 찾은 것 */
   memo?: boolean;
 };
 
@@ -57,7 +57,7 @@ const KIND_LEGEND: [NonNullable<GraphNode["kind"]>, string, string][] = [
   ["topic", "사업 낱말", TOPIC_COLOR],
 ];
 
-const DRAWER_TITLES: Record<Exclude<Drawer, null>, string> = { answer: "채팅", memo: "뉴스 메모", company: "기업 상세", feed: "최근 공시" };
+const DRAWER_TITLES: Record<Exclude<Drawer, null>, string> = { answer: "채팅", memo: "뉴스 분석", company: "기업 상세", feed: "최근 공시" };
 
 type Layout = Map<number, { x: number; y: number; z: number }>;
 const LAYOUT_KEY = "layout";
@@ -236,7 +236,7 @@ export function App() {
   const focusOn = (question: string, highlight: number[], also: number[], waiting = true, replace = false, memo = false) => {
       const wanted = new Set([...highlight, ...also]);
       const strong = new Set(highlight);
-      // 같은 일을 이어 그리는 중이면(뉴스 메모가 조회할 때마다) 이미 모인 점은 그 자리에 둔다
+      // 같은 일을 이어 그리는 중이면(뉴스 분석이 조회할 때마다) 이미 모인 점은 그 자리에 둔다
       const placed = new Map((replace && early.current ? early.current.nodes : []).map((node) => [node.id, node]));
       const nodes = data.nodes.filter((node) => wanted.has(node.id)).map(({ x: _x, y: _y, z: _z, ...node }) => {
         const at = placed.get(node.id);
@@ -274,8 +274,8 @@ export function App() {
     focusOn,
   );
   const memoAgent = useMemoAgent({
-    onFound: (title, highlight, also, first) => focusOn(`뉴스 메모 · ${title}`, highlight, also, true, !first, true),
-    onDone: (title, result) => finishFound({ question: `뉴스 메모 · ${title}`, graph: result.graph, memo: true }),
+    onFound: (title, highlight, also, first) => focusOn(`뉴스 분석 · ${title}`, highlight, also, true, !first, true),
+    onDone: (title, result) => finishFound({ question: `뉴스 분석 · ${title}`, graph: result.graph, memo: true }),
   });
   const nameOf = useMemo(() => {
     const names = new Map(data.nodes.map((node) => [node.id, node.name]));
@@ -290,6 +290,19 @@ export function App() {
     if (ids.length === 0) return;
     shown.current = true;
     focusOn("링크로 연 기업", ids.slice(0, 12), ids.slice(12), false);
+  }, [data]);
+
+  // 분석 한 건의 주소(?analysis=매일 분석 번호, 예시는 ex1…)로 들어오면, 전체 그래프가 그려진 뒤 뉴스 분석 칸에서 그 분석을 바로 연다
+  const [linkedAnalysis, setLinkedAnalysis] = useState<string | null>(null);
+  const analysisRead = useRef(false);
+  useEffect(() => {
+    if (analysisRead.current || data.nodes.length === 0) return;
+    analysisRead.current = true;
+    const link = new URLSearchParams(window.location.search).get("analysis");
+    if (!link || !/^(\d{1,9}|ex\d{1,2})$/.test(link)) return;
+    setTab("graph");
+    setDrawer("memo");
+    setLinkedAnalysis(link);
   }, [data]);
 
   useEffect(() => {
@@ -476,9 +489,9 @@ export function App() {
               setTab("graph");
               setDrawer("memo");
             }}
-            title="뉴스를 넣으면 Agent가 공시로 이어진 종목을 찾아 메모를 남깁니다"
+            title="뉴스를 넣으면 Agent가 공시로 이어진 종목과 그 까닭, 뉴스 뒤 주가 변화를 한 장에 모읍니다"
           >
-            뉴스 메모 <span className="tab-badge">Agent</span>
+            뉴스 분석 <span className="tab-badge">Agent</span>
           </button>
           <button className={tab === "hot" ? "on" : ""} onClick={() => setTab("hot")}>
             이슈 종목
@@ -540,7 +553,7 @@ export function App() {
                 </button>
               </div>
               <div className={narrowed ? "crumb narrowed" : "crumb"}>
-                <em>{found ? (found.memo ? "뉴스 메모로 찾은 것" : found.picked ? "고른 것" : "질문으로 찾은 것") : center ? "한 기업 중심" : filtering ? "솎아 보는 중" : "보는 범위"}</em>
+                <em>{found ? (found.memo ? "뉴스 분석으로 찾은 것" : found.picked ? "고른 것" : "질문으로 찾은 것") : center ? "한 기업 중심" : filtering ? "솎아 보는 중" : "보는 범위"}</em>
                 <b>{found ? found.question : scopeLabel}</b>
                 {!found && filtering && center && <em>· 솎아 보는 중</em>}
               </div>
@@ -743,6 +756,8 @@ export function App() {
                 agent={memoAgent}
                 nameOf={nameOf}
                 closed={chat.closed}
+                linked={linkedAnalysis}
+                onLinkUsed={() => setLinkedAnalysis(null)}
                 onCompany={(id) => {
                   setSelectedId(id);
                 }}

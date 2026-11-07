@@ -5723,7 +5723,7 @@ details.more .notes {
 }
 .answer a.receipt:hover { color: var(--text); border-color: var(--accent); text-decoration: none; }
 
-/* ---------- 뉴스 메모 Agent ---------- */
+/* ---------- 뉴스 분석 Agent ---------- */
 .tab-badge {
   margin-left: 4px;
   padding: 0 5px;
@@ -6233,7 +6233,7 @@ details.more .notes {
   font-size: 11px;
 }
 
-/* 뉴스 메모 한 건: 목록과 나눠 보이고, 메모가 먼저, 조사 과정은 접어 둔다 */
+/* 뉴스 분석 한 건: 목록과 나눠 보이고, 메모가 먼저, 조사 과정은 접어 둔다 */
 .memo-top {
   display: flex;
   align-items: center;
@@ -6639,4 +6639,110 @@ details.more .notes {
 .price-table .pc-open:hover {
   color: var(--text);
   border-color: var(--accent);
+}
+
+/* 분석 한 건의 주소 복사 */
+.memo-top .memo-back {
+  margin-right: auto;
+}
+
+.memo-link {
+  padding: 5px 12px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.memo-link:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* 매일 분석 목록 한 줄: 주인공의 뉴스 뒤 주가와 뒤 공시 */
+.memo-day button .memo-glance {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.memo-glance .g-hit {
+  color: var(--good);
+}
+
+/* 뉴스 뒤에 나온 주인공의 공시: 뉴스가 전한 일을 공시가 뒤따라 확인했는지 */
+.fu-sum {
+  margin: 0;
+}
+
+.fu-sum.fu-hit {
+  padding: 8px 10px;
+  border-radius: 3px;
+  border-left: 3px solid var(--good);
+  background: color-mix(in srgb, var(--good) 8%, transparent);
+}
+
+.fu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fu-list li {
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  align-items: start;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 12.5px;
+}
+
+.fu-list li.fu-same {
+  border-color: color-mix(in srgb, var(--good) 55%, transparent);
+}
+
+.fu-day {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.fu-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fu-body a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.fu-body a:hover {
+  text-decoration: underline;
+}
+
+.fu-what {
+  overflow-wrap: anywhere;
+}
+
+.fu-tag {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.fu-tag-same {
+  color: var(--good);
+  font-weight: 600;
 }

@@ -312,6 +312,19 @@ export interface DailyMemoItem {
   company: string | null;
   picked: DailyPicked;
   related: number;
+  /** 열지 않고 보는 한 줄: 주인공의 뉴스 뒤 누적 %와 뉴스 뒤 주인공의 공시 */
+  glance?: MemoGlance;
+}
+
+export interface MemoGlance {
+  /** 뉴스 날부터 센 거래일 수 (0이면 시세가 없음) */
+  days: number;
+  change: number | null;
+  vs_median: number | null;
+  /** 뉴스 뒤 주인공의 공시 수, 그 가운데 공급계약, 금액이 뉴스 제목과 같은 것 */
+  count: number;
+  contracts: number;
+  same_amount: number;
 }
 
 /** 고른 까닭과 그날의 수: 중요도, 종류, 그날 모은 제목 수, 핵심 뉴스 수 */
@@ -353,3 +366,30 @@ export interface MemoPrices {
   note?: string;
 }
 export const fetchMemoPrices = (day: string, ids: number[]) => get<MemoPrices>("/memo-prices", { day, ids: ids.join(",") });
+
+/** 분석의 조회 시점 뒤에 주인공이 낸 공시와, 뉴스 제목의 금액과 같은지 */
+export interface FollowupFiling {
+  company_id: number;
+  rcept_no: string;
+  filed: string;
+  kind: string;
+  report: string;
+  amount: number | null;
+  party: string | null;
+  what: string | null;
+  corrected: boolean;
+  same_amount: boolean;
+  url: string;
+}
+export interface MemoFollowups {
+  after: string;
+  until: string;
+  checked_through: string | null;
+  filings: FollowupFiling[];
+  count: number;
+  contracts: number;
+  same_amount: number;
+  news_amounts: number[];
+}
+export const fetchMemoFollowups = (after: string, ids: number[], title: string) =>
+  get<MemoFollowups>("/memo-followups", { after, ids: ids.join(","), title });

@@ -18,7 +18,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
-from . import agent_tools, ksic, memo_prices, query
+from . import agent_tools, ksic, memo_followups, memo_prices, query
 from .display_names import group_key, group_label
 from .db import AskLog, Base, BusinessSection, Company, Document, HotDay, NewsMemo, Product, ProductCode, Relation, SiteText, get_engine, session
 from .product_families import FAMILY_FIELD
@@ -35,7 +35,8 @@ app.router.routes.append(Route("/api/mcp", endpoint=mcp_server.App(), methods=["
 # 사람마다 다른 응답(/api/ask…)과 실패한 응답에는 붙이지 않는다
 _CACHED = {"/api/hot": "public, s-maxage=600, stale-while-revalidate=86400",
            "/api/memos": "public, s-maxage=600, stale-while-revalidate=86400",   # 매일 아침 새 메모가 쌓인다
-           "/api/memo-prices": "public, s-maxage=3600, stale-while-revalidate=86400"}   # 시세가 날마다 하루씩 늘어난다
+           "/api/memo-prices": "public, s-maxage=3600, stale-while-revalidate=86400",   # 시세가 날마다 하루씩 늘어난다
+           "/api/memo-followups": "public, s-maxage=3600, stale-while-revalidate=86400"}   # 공시는 매일 아침 들어온다
 _CACHE_DEFAULT = "public, s-maxage=86400, stale-while-revalidate=604800"
 
 
@@ -1359,7 +1360,27 @@ def daily_memos(db=Depends(get_db)):
                       .order_by(NewsMemo.news_date.desc(), NewsMemo.memo_id)).all()
     names = {c.company_id: c.label for c in db.scalars(select(Company).where(Company.company_id.in_({r.company_id for r in rows if r.company_id})))}
     return [{"id": r.memo_id, "day": r.news_date.isoformat(), "title": r.title, "source": r.source, "company": names.get(r.company_id),
-             "picked": r.picked, "related": len((r.result.get("memo") or {}).get("related", []))} for r in rows]
+             "picked": r.picked, "related": len((r.result.get("memo") or {}).get("related", [])), "glance": glance}
+            for r, glance in zip(rows, _memo_glances(db, rows))]
+
+
+def _memo_glances(db, rows: list) -> list[dict]:
+    """목록에서 열지 않고 보는 한 줄: 주인공의 뉴스 뒤 누적 %, 보통 종목 대비, 뉴스 뒤 주인공의 공시 수와 금액이 뉴스와 같은 것."""
+    subjects = [[s["company_id"] for s in (r.result.get("memo") or {}).get("subjects", [])] for r in rows]
+    moves = memo_prices.last_changes(db, [(r.news_date, ids) for r, ids in zip(rows, subjects)])
+    afters = [date.fromisoformat(r.result["as_of"]) for r in rows]
+    filed = memo_followups.filings_after(db, sorted({cid for ids in subjects for cid in ids}), min(afters),
+                                         max(afters) + timedelta(days=memo_followups.WINDOW)) if rows else []
+    out = []
+    for r, ids, move, after in zip(rows, subjects, moves, afters):
+        until = (after + timedelta(days=memo_followups.WINDOW)).isoformat()
+        mine = [dict(f) for f in filed if f["company_id"] in ids and after.isoformat() < f["filed"] <= until]
+        first = ids[0] if ids else None
+        change = move["companies"].get(first)
+        out.append({"days": move["days"], "change": change,
+                    "vs_median": None if change is None or move["median"] is None else round(change - move["median"], 2),
+                    **memo_followups.summarize(mine, r.title)})
+    return out
 
 
 @app.get("/api/memo-prices")
@@ -1370,6 +1391,16 @@ def memo_price_moves(day: date, ids: str = Query(max_length=400), db=Depends(get
     except ValueError:
         raise HTTPException(400, "ids 는 쉼표로 이은 숫자입니다")
     return memo_prices.memo_prices(db, day, company_ids)
+
+
+@app.get("/api/memo-followups")
+def memo_followup_filings(after: date, ids: str = Query(max_length=400), title: str = Query("", max_length=300), db=Depends(get_db)):
+    """분석의 조회 시점 뒤에 주인공이 낸 공시(공급계약·해지, 지분 취득·처분, 증자·사채·자기주식 결정)와, 뉴스 제목의 금액과 같은지."""
+    try:
+        company_ids = [int(x) for x in ids.split(",") if x.strip()][:10]
+    except ValueError:
+        raise HTTPException(400, "ids 는 쉼표로 이은 숫자입니다")
+    return memo_followups.memo_followups(db, after, company_ids, title)
 
 
 @app.get("/api/memos/{memo_id}")

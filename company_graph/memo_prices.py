@@ -67,3 +67,30 @@ def memo_prices(db, day: date, company_ids: list[int]) -> dict:
         series = [pct(now[company.stock_code][0], start[0]) if start and company.stock_code in now else None for now in later]
         out["companies"].append({"company_id": company.company_id, "name": company.label, "series": series})
     return out
+
+
+def last_changes(db, items: list[tuple[date, list[int]]]) -> list[dict]:
+    """목록에 붙일 한 줄: 뉴스마다 뉴스 날부터 AFTER 거래일 안의 마지막 날까지 회사별 누적 %와 보통 종목(중앙값).
+    같은 날의 시세는 한 번만 읽는다."""
+    closes: dict[date, dict] = {}
+    get = lambda day: closes.setdefault(day, _closes(db, day))
+    codes = {c.company_id: c.stock_code for c in db.scalars(select(Company).where(
+        Company.company_id.in_({cid for _, ids in items for cid in ids}), Company.stock_code.isnot(None)))}
+    spans: dict[date, tuple[date | None, list[date]]] = {}
+    out = []
+    for day, ids in items:
+        if day not in spans:
+            base_day = db.scalar(select(PriceDaily.trade_date).where(PriceDaily.trade_date < day, PriceDaily.trade_date >= day - timedelta(days=14))
+                                 .order_by(PriceDaily.trade_date.desc()).limit(1))
+            days = list(db.scalars(select(PriceDaily.trade_date).where(PriceDaily.trade_date >= day).group_by(PriceDaily.trade_date)
+                                   .order_by(PriceDaily.trade_date).limit(AFTER))) if base_day else []
+            spans[day] = (base_day, days)
+        base_day, days = spans[day]
+        if not base_day or not days:
+            out.append({"days": 0, "median": None, "companies": {}})
+            continue
+        base, now = get(base_day), get(days[-1])
+        changes = {cid: pct(now[codes[cid]][0], base[codes[cid]][0]) for cid in ids
+                   if cid in codes and codes[cid] in base and codes[cid] in now}
+        out.append({"days": len(days), "median": median_change(base, now), "companies": changes})
+    return out

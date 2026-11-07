@@ -37,3 +37,10 @@ def test_changes_from_the_close_before_the_news():
 def test_no_prices_kept_for_that_day():
     out = memo_prices(_db(), date(2026, 7, 2), [1])
     assert out["days"] == [] and "보관" in out["note"]
+
+
+def test_last_changes_for_the_list():
+    from company_graph.memo_prices import last_changes
+    out = last_changes(_db(), [(date(2026, 10, 6), [1, 2]), (date(2026, 7, 2), [1])])
+    assert out[0] == {"days": 2, "median": 0.0, "companies": {1: 20.0, 2: -20.0}}
+    assert out[1]["days"] == 0 and out[1]["companies"] == {}
