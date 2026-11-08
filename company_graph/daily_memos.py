@@ -3,7 +3,8 @@
 1. 대상: 최근 거래일 시가총액 상위 200개 보통주(스팩·우선주 제외)
 2. 뉴스: Google 뉴스 RSS 검색으로 회사마다 전날 기사 제목을 모은다(무료). 막히면 그 회사는 건너뛴다. 본문은 받지 않는다
 3. 고르기: 평가 12판과 같은 제목 분류 지시문(eval/v12/classify.py)으로 주인공·분야·중요도를 매기고,
-   주인공이 그 회사이고 산업 뉴스이며 중요도 0.7 이상인 것을 중요도 순으로. 한 회사에서 한 건, 같은 제목은 한 번
+   주인공이 그 회사이고 산업 뉴스이며 중요도 0.7 이상인 것을 중요도 순으로. 한 회사에서 한 건, 같은 제목은 한 번.
+   앞선 7일 안에 이미 메모한 사건(같은 제목, 또는 같은 종류에 금액이 2% 안)은 다시 하지 않는다
 4. 메모: news_agent.run(check_numbers=True). 조회 시점은 뉴스 전날(화면의 뉴스 메모와 같다)
 5. 저장: news_memo 표. 그날 이미 메모가 있으면 다시 하지 않는다(매일 작업이 여러 번 돌아도 한 번만 쓴다)
 하루 상한: 분류와 메모를 합쳐 cap 달러를 넘으면 멈춘다(기본 $0.2, 10건)
@@ -35,6 +36,7 @@ PER_FIRM = 10   # 한 회사에서 분류할 제목 수의 상한 (큰 회사는
 # 분류기가 어차피 낮게 매기는 주가·시황 기사(평가 12판 지시문의 '단순 주가·시황 변동, 증권사 목표가')는 묻기 전에 뺀다
 MARKET_TALK = re.compile(r"특징주|주가|목표가|목표주가|급등|급락|신고가|상한가|하한가|시가총액|시총|순매수|순매도|외국인|코스피|코스닥|증시|\[포토\]|\[인사\]|부고")
 EVENT_NUMBER = re.compile(r"\d[\d,.]{2,}")
+EARLIER_DAYS = 7   # 같은 사건 기사가 다음 날에도 이어진다(11-06·11-07 의 HD한국조선해양 6301억). 이 기간에 메모한 사건은 다시 하지 않는다
 KST = timezone(timedelta(hours=9))
 
 
@@ -117,20 +119,30 @@ def pick(client, db, day: date, spent: list, limit: int = LIMIT, cap: float = CA
     with ThreadPoolExecutor(4) as pool:
         for firm_id, rows in zip(gathered, pool.map(lambda i: classify(client, by_id[i], gathered[i], spent, lock) if spent[0] <= cap else [], gathered)):
             labeled += [{**row, "company_id": firm_id, "company": by_id[firm_id].label, "code": by_id[firm_id].stock_code} for row in rows]
-    core, chosen = choose(labeled, limit)
+    earlier = [{"title": m.title, "kind": (m.picked or {}).get("kind")}
+               for m in db.scalars(select(NewsMemo).where(NewsMemo.news_date >= day - timedelta(days=EARLIER_DAYS), NewsMemo.news_date < day))]
+    core, chosen = choose(labeled, limit, earlier)
     counts = {"companies": len(firms), "with_news": len(gathered), "blocked": blocked, "titles": sum(map(len, gathered.values())), "core": len(core)}
     return chosen, counts
 
 
-def choose(labeled: list[dict], limit: int = LIMIT) -> tuple[list[dict], list[dict]]:
-    """핵심 뉴스(주인공이 그 회사, 산업, 중요도 MIN_IMP 이상)와, 그 가운데 메모할 것: 중요도 순, 한 회사 한 건, 같은 제목 한 번."""
+def _amounts(title: str) -> list[float]:
+    """제목 속 사건의 숫자(6301, 6,300 등). 연도(2030 등)는 뺀다"""
+    return [float(n) for n in (m.replace(",", "").rstrip(".") for m in EVENT_NUMBER.findall(title))
+            if re.fullmatch(r"\d+(\.\d+)?", n) and not re.fullmatch(r"20\d\d", n)]
+
+
+def choose(labeled: list[dict], limit: int = LIMIT, earlier: list[dict] = ()) -> tuple[list[dict], list[dict]]:
+    """핵심 뉴스(주인공이 그 회사, 산업, 중요도 MIN_IMP 이상)와, 그 가운데 메모할 것: 중요도 순, 한 회사 한 건, 같은 제목 한 번.
+    earlier 는 앞선 날 이미 메모한 것({title, kind}). 그 사건은 다시 고르지 않는다"""
     core = [r for r in labeled if r["about"] and r["cat"] == "산업" and (r["imp"] or 0) >= MIN_IMP]
-    chosen, firms_taken, titles_taken, events_taken = [], set(), set(), []
+    chosen, firms_taken = [], set()
+    titles_taken = {m["title"] for m in earlier}
+    events_taken = [(m.get("kind"), a) for m in earlier for a in _amounts(m["title"])]
     for row in sorted(core, key=lambda r: -r["imp"]):
         # 같은 사건이 여러 회사에서 잡힌다(HD한국조선해양의 '6301억', HD현대중공업의 '6300억원' 암모니아선).
-        # 같은 종류에 금액이 2% 안으로 같으면 한 사건으로 본다. 연도(2030 등)는 금액으로 보지 않는다
-        amounts = [float(n) for n in (m.replace(",", "").rstrip(".") for m in EVENT_NUMBER.findall(row["title"]))
-                   if re.fullmatch(r"\d+(\.\d+)?", n) and not re.fullmatch(r"20\d\d", n)]
+        # 같은 종류에 금액이 2% 안으로 같으면 한 사건으로 본다
+        amounts = _amounts(row["title"])
         same = any(kind == row.get("kind") and abs(a - b) <= 0.02 * max(a, b) for kind, b in events_taken for a in amounts)
         if row["company_id"] in firms_taken or row["title"] in titles_taken or same:
             continue

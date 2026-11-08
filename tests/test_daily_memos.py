@@ -27,3 +27,13 @@ def test_nearly_equal_amounts_are_the_same_event():
                {**row(2, "HD현대중공업, VLAC 4척 공급키로… 6300억원 규모", 0.85), "kind": "수주·공급계약"},
                {**row(3, "C사 6300억 공장 증설", 0.8), "kind": "투자·증설"}]   # 종류가 다르면 다른 사건
     assert [r["company_id"] for r in choose(labeled)[1]] == [1, 3]
+
+
+def test_event_already_memoed_on_an_earlier_day_is_skipped():
+    earlier = [{"title": "HD한국조선해양, 암모니아선 6301억 수주", "kind": "수주·공급계약"}, {"title": "D사 신제품 공개", "kind": "신제품·기술"}]
+    labeled = [{**row(1, "HD한국조선해양, VLAC 4척 6301억원 수주…연간 목표 91% 달성", 0.9), "kind": "수주·공급계약"},   # 다음 날 이어진 기사
+               {**row(2, "HD현대중공업, 6300억원 규모 VLAC 공급", 0.85), "kind": "수주·공급계약"},
+               {**row(3, "D사 신제품 공개", 0.8), "kind": "신제품·기술"},   # 같은 제목
+               {**row(4, "E사 6301억 공장 증설", 0.8), "kind": "투자·증설"},   # 종류가 다르면 다른 사건
+               {**row(1, "HD한국조선해양, 1조 LNG선 수주", 0.75), "kind": "수주·공급계약"}]   # 같은 회사의 새 사건
+    assert [r["title"] for r in choose(labeled, earlier=earlier)[1]] == ["E사 6301억 공장 증설", "HD한국조선해양, 1조 LNG선 수주"]
