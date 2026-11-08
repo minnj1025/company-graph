@@ -1359,6 +1359,13 @@ def daily_memos(db=Depends(get_db)):
         return []
     rows = db.scalars(select(NewsMemo).where(NewsMemo.news_date >= latest - timedelta(days=6))
                       .order_by(NewsMemo.news_date.desc(), NewsMemo.memo_id)).all()
+    return _memo_items(db, rows)
+
+
+def _memo_items(db, rows: list) -> list[dict]:
+    """매일 분석 목록의 한 줄들 (제목, 주인공, 고른 까닭, 이어진 종목 수, 뉴스 뒤 한 줄)."""
+    if not rows:
+        return []
     names = {c.company_id: c.label for c in db.scalars(select(Company).where(Company.company_id.in_({r.company_id for r in rows if r.company_id})))}
     return [{"id": r.memo_id, "day": r.news_date.isoformat(), "title": r.title, "source": r.source, "company": names.get(r.company_id),
              "picked": r.picked, "related": len((r.result.get("memo") or {}).get("related", [])), "glance": glance}
@@ -1421,5 +1428,8 @@ def daily_memo(memo_id: int, db=Depends(get_db)):
     result = dict(row.result)
     result["graph"] = memo_graph(db, result.get("memo"), date.fromisoformat(result["as_of"]))
     result["left_for_you"] = None
+    # 같은 회사가 주인공인 다른 날의 분석 (기간 제한 없이 최근 것부터 10건)
+    others = db.scalars(select(NewsMemo).where(NewsMemo.company_id == row.company_id, NewsMemo.memo_id != row.memo_id)
+                        .order_by(NewsMemo.news_date.desc(), NewsMemo.memo_id.desc()).limit(10)).all() if row.company_id else []
     return {"news": {"title": row.title, "day": row.news_date.isoformat()}, "events": row.events, "result": result,
-            "picked": row.picked, "link": row.link, "source": row.source}
+            "picked": row.picked, "link": row.link, "source": row.source, "others": _memo_items(db, others)}

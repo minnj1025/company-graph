@@ -347,6 +347,8 @@ export interface DailyMemo {
   picked: DailyPicked;
   link: string | null;
   source: string | null;
+  /** 같은 회사가 주인공인 다른 날의 분석 (최근 것부터) */
+  others?: DailyMemoItem[];
 }
 
 export const fetchDailyMemos = () => get<DailyMemoItem[]>("/memos");

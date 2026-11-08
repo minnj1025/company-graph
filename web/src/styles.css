@@ -6211,7 +6211,8 @@ details.more .notes {
   cursor: pointer;
 }
 
-.memo-day button {
+.memo-day button,
+.memo-others button {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -6224,11 +6225,13 @@ details.more .notes {
   font-size: 12.5px;
 }
 
-.memo-day button:hover:not(:disabled) {
+.memo-day button:hover:not(:disabled),
+.memo-others button:hover:not(:disabled) {
   border-color: var(--accent);
 }
 
-.memo-day button small {
+.memo-day button small,
+.memo-others button small {
   color: var(--muted);
   font-size: 11px;
 }
@@ -6661,7 +6664,8 @@ details.more .notes {
 }
 
 /* 매일 분석 목록 한 줄: 주인공의 뉴스 뒤 주가와 뒤 공시 */
-.memo-day button .memo-glance {
+.memo-day button .memo-glance,
+.memo-others button .memo-glance {
   display: flex;
   flex-wrap: wrap;
   gap: 2px 10px;
@@ -6825,4 +6829,17 @@ details.more .notes {
   text-align: left;
   font-size: 12.5px;
   cursor: pointer;
+}
+
+/* 같은 회사의 다른 분석 */
+.memo-others {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.memo-others button {
+  margin: 0;
+}
+.memo-others p {
+  margin: 2px 0 0;
 }

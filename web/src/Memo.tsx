@@ -43,12 +43,15 @@ export interface MemoRun {
   picked?: DailyPicked;
   /** 바로 여는 주소(?analysis=)에 쓰는 이름: 매일 분석은 번호, 예시는 ex1·ex2… (직접 넣은 뉴스는 없음) */
   link?: string;
+  /** 매일 분석이면 같은 회사가 주인공인 다른 날의 분석 */
+  others?: DailyMemoItem[];
 }
 
 /** 다시 보여 줄 때: 주소에 쓸 이름, 과정을 기다리지 않고 바로 결과를 보일지 */
 interface ReplayOptions {
   link?: string;
   instant?: boolean;
+  others?: DailyMemoItem[];
 }
 
 /** 미리 돌려 둔 예시: 그때 서버가 보낸 사건과 걸린 시각(밀리초), 그리고 결과 */
@@ -218,7 +221,7 @@ export function useMemoAgent(screen: MemoScreen) {
       if (busy) return;
       const id = newId();
       setBusy(true);
-      setRuns((all) => [...all.filter((run) => !run.replay), { id, news: example.news, steps: [], replay: true, picked: example.picked, link: options.link }]);
+      setRuns((all) => [...all.filter((run) => !run.replay), { id, news: example.news, steps: [], replay: true, picked: example.picked, link: options.link, others: options.others }]);
       setCurrent(id);
       skipRef.current = options.instant ?? false;
       const hear = listener(id, example.news.title);
@@ -251,7 +254,7 @@ export function useMemoAgent(screen: MemoScreen) {
     (memoId: number, ready: () => void, instant = false) =>
       fetchDailyMemo(memoId).then((memo) => {
         ready();
-        return replay({ news: memo.news, events: memo.events, result: memo.result, picked: memo.picked }, { link: String(memoId), instant });
+        return replay({ news: memo.news, events: memo.events, result: memo.result, picked: memo.picked }, { link: String(memoId), instant, others: memo.others });
       }),
     [replay],
   );
@@ -652,6 +655,29 @@ function Daily({ agent, onOpen }: { agent: MemoAgent; onOpen: () => void }) {
   );
 }
 
+/** 같은 회사가 주인공인 다른 날의 분석. 눌러서 바로 연다 */
+function Others({ items, busy, onOpen }: { items: DailyMemoItem[]; busy: boolean; onOpen: (id: number) => void }) {
+  return (
+    <section className="memo-sec memo-others">
+      <h4>
+        {items[0].company ?? "이 회사"}의 다른 분석<span className="muted"> · {items.length}건</span>
+      </h4>
+      {items.map((item) => (
+        <button key={item.id} disabled={busy} onClick={() => onOpen(item.id)} title="이 분석 열기">
+          <span>
+            <small>{item.day.slice(5)}</small> {item.title}
+          </span>
+          <small>
+            {item.picked.kind} · 이어진 종목 {item.related}곳
+          </small>
+          {item.glance && <Glance glance={item.glance} />}
+        </button>
+      ))}
+      <p className="muted small">뉴스 뒤 주가와 공시는 분석마다 그 뉴스 날부터 셉니다.</p>
+    </section>
+  );
+}
+
 /** 목록 한 줄: 주인공의 뉴스 뒤 누적 %와 뉴스 뒤 주인공의 공시 */
 function Glance({ glance }: { glance: NonNullable<DailyMemoItem["glance"]> }) {
   const signed = (v: number, unit: string) => `${v > 0 ? "+" : ""}${v.toFixed(1)}${unit}`;
@@ -785,6 +811,9 @@ export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed,
         {run.result ? (
           <>
             <MemoCard result={run.result} newsTitle={run.news.title} onCompany={onCompany} onTrace={onTrace} />
+            {run.others && run.others.length > 0 && (
+              <Others items={run.others} busy={agent.busy} onOpen={(id) => void agent.openDaily(id, () => undefined, true).catch(() => undefined)} />
+            )}
             <details className="memo-how">
               <summary>
                 Agent가 조사한 과정 보기{plans > 0 && (plans > 1 ? " · 조회 계획(중간에 바꿈)" : " · 조회 계획")} · 조회 {tools}번
