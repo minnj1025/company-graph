@@ -1307,7 +1307,7 @@ def memo_stream(body: MemoAsk, request: Request, db=Depends(get_db)):
     if not date(2025, 1, 2) <= day <= date.today():
         raise HTTPException(422, "뉴스 날짜는 2025-01-02부터 오늘까지로 적어 주세요")
     title = " ".join(body.title.split())
-    _, visitor, ask_id = _admit(Ask(question=f"[뉴스 메모] {title}"[:300]), request, db)
+    _, visitor, ask_id = _admit(Ask(question=f"[뉴스 분석] {title}"[:300]), request, db)
     news = {"title": title, "date": day.isoformat(), "text": (body.text or "").strip() or None, "kind": "붙여 넣은 기사"}
     events: queue.Queue = queue.Queue()
 
@@ -1424,7 +1424,7 @@ def daily_memo(memo_id: int, db=Depends(get_db)):
     _prepare_memos()
     row = db.get(NewsMemo, memo_id)
     if row is None:
-        raise HTTPException(404, "그런 메모가 없습니다")
+        raise HTTPException(404, "그런 분석이 없습니다")
     result = dict(row.result)
     result["graph"] = memo_graph(db, result.get("memo"), date.fromisoformat(result["as_of"]))
     result["left_for_you"] = None

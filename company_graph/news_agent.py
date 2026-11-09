@@ -120,7 +120,8 @@ PLAN_RULES = """
 - 첫 응답에서는 조회하기 전에 write_plan 으로 계획을 냅니다. 무엇을 확인하려는지(look_for)와 2~6단계(steps)를 적습니다. 단계마다 쓸 도구 하나를 고릅니다.
 - 조회 결과가 계획과 다르면(상대가 공시에 없음, 제품 이름이 다름 등) write_plan 을 다시 부르고 changed 에 무엇을 보고 바꾸는지 적습니다. 계획대로 되면 다시 부르지 않습니다.
 - 계획은 분석가가 읽습니다. 도구 이름이나 칸 이름(company_id, supply_contract, direction, as_of 같은 것)을 쓰지 않고 우리말로 씁니다. (예: "포스코퓨처엠의 최근 1년 공급계약에 삼성SDI가 있는지 본다")
-- 계획에도 위의 쓰지 않는 말을 쓰지 않습니다."""
+- 계획에도 위의 쓰지 않는 말을 쓰지 않습니다.
+- 화면에서는 이 결과를 '분석'이라고 부릅니다. 글 안에서 이 결과를 가리킬 때도 '분석'이라고 쓰고 '메모'라고 쓰지 않습니다. (예: "근거가 확인되지 않아 분석에서 뺐다")"""
 
 
 def tools(plan: bool = False) -> list[dict]:
@@ -371,7 +372,7 @@ def markdown(out: dict) -> str:
     n, memo = out["news"], out["memo"]
     lines = [f"## {n['title']}", f"{n['date']} · 조회 시점 {out['as_of']} (그날까지 나온 공시만)", ""]
     if memo is None:
-        return "\n".join(lines + ["메모를 만들지 못했습니다."])
+        return "\n".join(lines + ["분석을 만들지 못했습니다."])
     lines += [memo["summary"], ""]
     if memo["subjects"]:
         lines.append("**주인공** " + ", ".join(f"{s['name']}({s['stock_code']}) — {s['role']}" for s in memo["subjects"]))
