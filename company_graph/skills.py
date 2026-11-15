@@ -21,7 +21,7 @@ def load() -> dict[str, dict]:
     """{이름: {"description": 설명, "body": 규칙 본문}}. 이름 순서는 폴더 이름 순."""
     out = {}
     for path in sorted(DIR.glob("*/SKILL.md")):
-        text = path.read_text(encoding="utf-8")
+        text = path.read_text(encoding="utf-8").replace("\r\n", "\n")   # Windows 에서 줄바꿈이 바뀌어도 같게
         _, head, body = text.split("---\n", 2)
         meta = dict(line.split(": ", 1) for line in head.strip().splitlines())
         assert meta["name"] == path.parent.name, path
