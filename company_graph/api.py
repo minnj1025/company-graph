@@ -884,6 +884,8 @@ class _Found:
             for path in result["paths"]:
                 for item in path:
                     self.relation(item)
+        elif name == "read_skill":   # skills.TOOL
+            self.calls -= 1   # 규칙을 읽은 것이지 조회가 아니다
         elif name == "show_on_graph":   # agent_tools.SCREEN_TOOL
             self.calls -= 1   # 조회가 아니다
             also = [int(i) for i in arguments.get("also") or []][:40]

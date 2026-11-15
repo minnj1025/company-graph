@@ -85,6 +85,7 @@ export const TOOL_LABELS: Record<string, string> = {
   find_by_product: "제품 표에서 찾기",
   get_products: "제품과 매출 비중 읽기",
   get_coverage: "수집 범위 확인",
+  read_skill: "질문 유형별 규칙 읽기",
 };
 
 /** "제품 표에서 찾기: 분리막, LiBS" 처럼, Agent가 지금 무엇을 조회하는지 한 줄로 */

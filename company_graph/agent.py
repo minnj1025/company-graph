@@ -15,7 +15,7 @@ from datetime import date
 
 import anthropic
 
-from . import agent_tools, verify
+from . import agent_tools, skills, verify
 from .config import secret
 from .db import session
 
@@ -191,10 +191,33 @@ def _apply(text: str, pairs: list[tuple[str, str]]) -> str:
     return text
 
 
+def _why() -> bool:
+    return os.environ.get("ASK_WHY", "1") != "0"
+
+
+def _skill_text(name: str, body: str) -> str:
+    """skill 본문도 말투에 맞춘다. 원인·평가 질문의 규칙만 말투에 따라 바뀐다."""
+    return _apply(body, WHY_STYLE) if styled() and name == "why-questions" else body
+
+
+def _core(base: str) -> str:
+    """ASK_SKILLS=1: 질문 유형별 절을 빼고 그 자리에 skill 목록을 둔다. 남은 규칙은 글자까지 그대로다."""
+    first = None
+    for name in skills.names(why=False):
+        body = skills.load()[name]["body"]
+        at = base.find(body + "\n\n")
+        assert at >= 0, name
+        first = at if first is None else min(first, at)
+        base = base.replace(body + "\n\n", "", 1)
+    return base[:first] + skills.catalog(why=_why()) + "\n\n" + base[first:]
+
+
 def system() -> str:
     """Agent에게 줄 지시문."""
     base = _apply(SYSTEM, STYLE) if styled() else SYSTEM
-    if os.environ.get("ASK_WHY", "1") == "0":
+    if skills.enabled():
+        return _core(base)
+    if not _why():
         return base
     why = _apply(WHY, WHY_STYLE) if styled() else WHY
     assert "\n화면\n" in base
@@ -244,7 +267,11 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
         return found
     with session() as db:
         for _ in range(max_turns):
-            request = dict(model=model, max_tokens=16000, system=system(), tools=agent_tools.tools(), messages=messages,
+            tools = agent_tools.tools() + ([skills.tool(why=_why())] if skills.enabled() else [])
+            # 지시문 끝에 캐시 표시를 둔다. 도구 정의와 지시문(약 2만 토큰)을 다른 질문과도 함께 쓴다.
+            # 위쪽의 자동 캐시(cache_control)만으로는 한 질문 안에서만 다시 쓰여, 질문마다 이 부분을 캐시에 새로 썼다
+            request = dict(model=model, max_tokens=16000, system=[{"type": "text", "text": system(), "cache_control": {"type": "ephemeral"}}],
+                           tools=tools, messages=messages,
                            cache_control={"type": "ephemeral"}, output_config={"effort": effort})
             if on_event:
                 with client.messages.stream(**request) as stream:
@@ -276,7 +303,10 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
                     continue
                 if on_event:
                     on_event("tool", {"name": block.name, "input": dict(block.input), **({"closing": True} if closing else {})})
-                result = agent_tools.call(db, block.name, dict(block.input))
+                if block.name == skills.TOOL and skills.enabled():
+                    result = skills.read(dict(block.input), why=_why(), rewrite=_skill_text)
+                else:
+                    result = agent_tools.call(db, block.name, dict(block.input))
                 if on_result:
                     on_result(block.name, dict(block.input), result)
                 # 이름이 _ 로 시작하는 값은 화면용이라 모델에게 보내지 않는다
