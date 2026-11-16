@@ -1,0 +1,83 @@
+{
+ "question": "HLB 최근 2년 동안 전환사채 얼마나 찍었어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "HLB는 최근 2년(2024-10-16~2026-10-16) 동안 전환사채 결정을 4건 공시했고, 합계는 1,050억 원입니다. 모두 사모 방식이며, 아래는 결정 공시 기준입니다.\n\n| 결정일 | 회차 | 금액 | 전환가액(원) | 사채 주식 수 | 자금 용도 | 접수번호 |\n|---|---|---|---|---|---|---|\n| 2025-08-20 | 40 | 300억 원 | 41,575 | 721,587 | 채무상환자금 | 20250820000179 |\n| 2025-09-24 | 41 | 200억 원 | 38,822 | 515,171 | 운영자금 | 20250924000387 |\n| 2026-04-07 | 43 | 250억 원 | 51,237 | 487,928 | 운영자금 | 20260407003007 |\n| 2026-08-05 | 44 | 300억 원 | 33,361 | 899,253 | 운영자금 | 20260805000480 |\n\n- 전환될 경우 생길 수 있는 주식 수는 합계 2,623,939주입니다. 이는 아직 생긴 주식이 아닙니다.\n- 이 금액은 결정에 적힌 예정 금액입니다. 실제 납입·발행 여부, 실제 전환 여부, 철회 여부는 이 DB에 없습니다.",
+ "followups": [
+  "HLB의 최근 2년 유상증자와 자기주식 취득 결정도 보여줘",
+  "HLB 전환사채 결정 공시 타임라인 보여줘",
+  "HLB 최근 3개월 수익률은 어땠어?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "HLB"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "capital-dividends"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 465
+  },
+  {
+   "tool": "get_capital_events",
+   "input": {
+    "company_id": 4291,
+    "as_of": "2026-10-16",
+    "kinds": [
+     "cb"
+    ],
+    "since": "2024-10-16"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 2195
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     4291
+    ],
+    "views": [
+     {
+      "kind": "dilution",
+      "company_id": 4291,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 440
+  }
+ ],
+ "cited": [
+  "20250820000179",
+  "20250924000387",
+  "20260407003007",
+  "20260805000480"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1382,
+  "cache_read_input_tokens": 77146,
+  "cache_creation_input_tokens": 3028
+ },
+ "seconds": 8.1,
+ "number": "D13",
+ "gold": "",
+ "arm": "C"
+}

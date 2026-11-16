@@ -1,0 +1,83 @@
+{
+ "question": "국민연금이 네이버 지분 몇 % 갖고 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "국민연금공단은 네이버(NAVER, 035420) 지분을 **9.49%** 보유한 것으로 가장 최근에 보고되어 있습니다. 이 수치는 2026-10-02 접수된 5% 대량보유 보고이며, 보유 주식은 14,432,457주입니다 (접수번호 20261002000471). 보고 사유는 \"주식소각, 유상증자 및 단순추가취득/처분\"입니다.\n\n직전 보고와 사업보고서 값은 다음과 같습니다.\n\n- 2026-07-01 접수 5% 보고: 8.22%, 12,890,916주, 보고 사유 \"단순추가취득/처분\" (접수번호 20260701000252)\n- 사업보고서 기준(기준일 2025-12-31, 2026-03-13 접수): 9.25%, 14,502,670주. 이 표에서는 국민연금기금을 최대주주 특수관계인으로 적었습니다 (접수번호 20260313001021).\n\n2026-10-02 보고(9.49%)와 사업보고서(9.25%)는 기준일이 달라 차이가 납니다. 질문 시점(2026-10-16) 기준 가장 최근 값은 9.49%입니다.\n\n이 DB로 알 수 없는 것은 국민연금의 매매 단가와 거래일, 매수 또는 매도 의도입니다. 보고 접수일 기준으로만 적었습니다.",
+ "followups": [
+  "네이버 최근 1년 5% 대량보유 보고를 모두 보여줘",
+  "네이버 임원·주요주주 최근 90일 주식 증감은?",
+  "네이버 최대주주와 특수관계인 지분 구성은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "네이버"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "holders-insiders"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 630
+  },
+  {
+   "tool": "get_major_holders",
+   "input": {
+    "company_id": 1841,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1390
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1841,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 17,
+   "chars": 10415
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1841
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260313001021",
+  "20260701000252",
+  "20261002000471"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1357,
+  "cache_read_input_tokens": 82715,
+  "cache_creation_input_tokens": 8237
+ },
+ "seconds": 8.8,
+ "number": "H01",
+ "gold": "",
+ "arm": "C"
+}

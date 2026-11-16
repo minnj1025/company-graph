@@ -1,0 +1,108 @@
+{
+ "question": "콘택트렌즈를 직접 만들어 파는 상장사는 어디이고, 국내와 해외에서 각각 어떤 방식으로 파나요?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "콘택트렌즈를 직접 만들어 파는 상장사는 DB에서 인터로조(코스닥, 119610) 하나만 확인됩니다. 국내는 자체 브랜드로 안경원을 거쳐 소비자에게 팔고, 해외는 OEM/ODM 방식으로 판매합니다.\n\n**인터로조의 판매 방식** (2026년 반기보고서, 별도 기준, 반기 매출 59,399백만 원, 접수번호 20260814001914)\n\n| 구분 | 판매 방식 | 매출액(비중) |\n|---|---|---|\n| 국내 | 자체 브랜드 클라렌(Clalen) 판매가 주력. 본사 → 안경원 → 소비자, 또는 본사 → 대리점 → 안경원 → 소비자 | 12,661(21.3%) |\n| 해외 | OEM/ODM 판매가 주력. 본사 → Distributor → 안경원 → 소비자, 또는 본사 → 해외현지법인 → 온·오프라인매장 → 소비자 | 46,738(78.7%) |\n\n- 사업 개요는 콘택트렌즈의 제조 및 판매 전문기업이라고 적고 있습니다 (접수번호 20260814001914, 1. 사업의 개요).\n- 제품 표에서 Hydrogel 1-Day disposable이 59.72%, FRP가 22.02%, Silicone Hydrogel 1-Day disposable이 6.54%, FRP가 11.64%입니다. 이 제품 표는 자체 브랜드와 ODM을 함께 묶어 적고 있습니다 (2. 주요 제품 및 서비스).\n- 국내는 1-Day 제품이 Clalen Iris, Clalen 등 자체 브랜드 및 ODM 형태로 적혀 있고, 해외 판매는 본사에서 해외현지법인이나 Distributor를 거쳐 나가는 경로로 적혀 있습니다 (4. 매출 및 수주상황).\n\n**참고로 제외한 곳**\n- 마이크로엔엑스(코넥스, 448780): 보고서에 '매일착용소프트콘택트렌즈'가 나오지만, 이는 업계 의료기기 생산실적 통계 상위 품목에 있는 것이고, 회사 자신의 제품 표에는 치과용 모터 등만 있어 렌즈를 만드는 회사로 보지 않았습니다.\n- KBG(318000): 콘택트렌즈용 실리콘 하이드로겔 소재를 만드는 회사이고, 렌즈 완제품은 확인되지 않았습니다.\n\n이 DB는 제품 표와 보고서 글에서 찾은 결과이므로, 위에 없는 곳이 있을 가능성을 완전히 배제할 수는 없습니다.",
+ "followups": [
+  "인터로조의 해외 매출 비중이 최근 몇 년간 어떻게 변했는지 알려줘",
+  "인터로조의 최근 분기 실적은 어떤가",
+  "인터로조의 5% 이상 주주는 누구인가"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "topic-search"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1265
+  },
+  {
+   "tool": "search_business",
+   "input": {
+    "keywords": [
+     "콘택트렌즈",
+     "컬러렌즈",
+     "렌즈",
+     "소프트렌즈"
+    ],
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 192,
+   "chars": 28121
+  },
+  {
+   "tool": "find_by_product",
+   "input": {
+    "as_of": "2026-10-08",
+    "keywords": [
+     "콘택트렌즈",
+     "소프트콘택트렌즈"
+    ],
+    "listed_only": false
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1960
+  },
+  {
+   "tool": "get_business",
+   "input": {
+    "company_id": 1555,
+    "as_of": "2026-10-08",
+    "sections": [
+     1,
+     2,
+     4
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 2983
+  },
+  {
+   "tool": "get_business",
+   "input": {
+    "company_id": 2871,
+    "as_of": "2026-10-08",
+    "sections": [
+     1,
+     2
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 7948
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1555
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 197
+  }
+ ],
+ "cited": [
+  "20260814001914"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2956,
+  "cache_read_input_tokens": 133676,
+  "cache_creation_input_tokens": 36556
+ },
+ "seconds": 24.8,
+ "number": "P10",
+ "gold": "인터로조가 콘택트렌즈 제조·판매 전문기업이다. 국내에서는 자체 브랜드 클라렌(Clalen) 시리즈를, 해외에서는 OEM/ODM 판매를 주력으로 한다. 묶음에는 콘택트렌즈의 매출 비중이 적힌 제품 표가 없다.",
+ "arm": "C"
+}

@@ -1,0 +1,90 @@
+{
+ "question": "SK하이닉스 지분 5% 넘게 갖고 있던 캐피탈그룹, 아직도 5% 넘게 갖고 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "아니요, 지금은 5% 아래입니다. 조회 시점(2026-10-16) 기준 가장 최근 5% 대량보유 보고인 Capital Research and Management Company의 2026-06-09 보고에서 보유비율이 3.53%로, 5% 미만으로 내려갔다고 보고됐습니다 (접수번호 20260609000049).\n\n\"캐피탈그룹\"은 The Capital Group Companies, Inc.와 그 계열의 운용사인 Capital Research and Management Company를 가리키는 것으로 보입니다. 두 곳의 보고 흐름은 다음과 같습니다.\n\n- 2024-12-16: The Capital Group Companies, Inc. 5.09%로 신규 보고 (20241216000307)\n- 2025-02-11: 6.7%로 변동 보고 (20250211000533)\n- 2025-07-08: 7.23%로 변동 보고 (20250708000256)\n- 2025-10-14: The Capital Group Companies, Inc.가 대표보고자 변동에 따라 폐지보고 (20251014000028). 같은 날 Capital Research and Management Company가 6.84%로 신규 보고 (20251014000142)\n- 2026-02-09: Capital Research and Management Company 5.05%로 처분 보고 (20260209000019)\n- 2026-06-09: Capital Research and Management Company 3.53%로 5% 미만으로 내려감 (20260609000049)\n\n이 보고는 대표보고자와 특별관계자를 합친 비율입니다. 2026-06-09 이후 이 기업의 5% 이상 보고는 DB에 없습니다. 참고로 같은 기간 5% 이상 보고로 SK스퀘어(20.01%, 20260805000440)와 BlackRockFundAdvisors(5.0%, 20260220000091)가 있습니다.\n\n이 DB로 알 수 없는 것은 보고 이후의 실제 보유 변화, 거래 단가와 금액, 장내·장외 구분 같은 세부 내역입니다.",
+ "followups": [
+  "SK하이닉스 5% 이상 주주의 최근 보고 전체를 보여줘",
+  "SK하이닉스 임원들이 최근 90일간 주식을 얼마나 늘리고 줄였어?",
+  "SK하이닉스 최근 1개월 주가 수익률은 어땠어?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK하이닉스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "holders-insiders"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 630
+  },
+  {
+   "tool": "get_major_holders",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-16",
+    "since": "2024-10-01"
+   },
+   "error": null,
+   "total": null,
+   "chars": 3548
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 20,
+   "chars": 12663
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2033
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20241216000307",
+  "20250211000533",
+  "20250708000256",
+  "20251014000028",
+  "20251014000142",
+  "20260209000019",
+  "20260220000091",
+  "20260609000049",
+  "20260805000440"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2139,
+  "cache_read_input_tokens": 85463,
+  "cache_creation_input_tokens": 11383
+ },
+ "seconds": 11.7,
+ "number": "H03",
+ "gold": "",
+ "arm": "C"
+}

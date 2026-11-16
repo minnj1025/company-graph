@@ -1,0 +1,74 @@
+{
+ "question": "카카오게임즈가 올해 낸 전환사채 전환가액이 얼마야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "올해(2026년) 카카오게임즈가 낸 전환사채 결정은 1건이고, 전환가액은 **13,812원**입니다. 이 결정은 2026-03-24에 결의됐고, 2026-05-29에 정정 공시된 값입니다 (접수번호 20260529002244).\n\n- 종류: 무기명식 무이권부 무보증 사모 전환사채 (3회차)\n- 권면총액: 600억 원 (운영자금 용도)\n- 전환 가능 주식 수: 4,344,048주 (발행주식총수 대비 4.66%)\n- 전환 기간: 2027-06-19 ~ 2029-06-12, 만기 2029년 06월 19일\n- 표면이자율 0.0%, 만기수익률 0.0%\n\n이 공시는 결정 내용이며, 실제 납입·발행이나 전환 여부는 이 DB로 알 수 없습니다. 주식 수도 전환되면 생길 수 있는 수로, 아직 발행된 주식이 아닙니다. 같은 기간 자기주식 취득이나 유상증자 등 다른 자본 변동 결정은 조회되지 않았습니다.",
+ "followups": [
+  "카카오게임즈 2026년 자본 변동 결정을 모두 보여줘",
+  "카카오게임즈가 올해 낸 타법인 주식 취득 결정은?",
+  "카카오게임즈 최근 배당과 자기주식 취득 현황은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오게임즈"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "capital-dividends"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 465
+  },
+  {
+   "tool": "get_capital_events",
+   "input": {
+    "company_id": 3912,
+    "as_of": "2026-10-16",
+    "kinds": [
+     "cb"
+    ],
+    "since": "2026-01-01"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1000
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3912,
+    "as_of": "2026-10-16",
+    "doc_type": "event",
+    "filed_from": "2026-01-01"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1686
+  }
+ ],
+ "cited": [
+  "20260529002244"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1132,
+  "cache_read_input_tokens": 76478,
+  "cache_creation_input_tokens": 2981
+ },
+ "seconds": 6.8,
+ "number": "D02",
+ "gold": "",
+ "arm": "C"
+}

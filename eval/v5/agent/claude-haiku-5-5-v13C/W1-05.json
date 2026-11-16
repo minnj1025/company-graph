@@ -1,0 +1,102 @@
+{
+ "question": "펩트론 오늘 왜 하한가 갔어?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "확인되는 사실만 정리하면, 이 DB에서는 오늘(2026-10-08) 펩트론이 급락한 원인을 찾지 못했습니다. 원인이나 평가는 판단하지 않고 조회된 사실만 적습니다.\n\n**오늘 주가 움직임**\n- 2026-10-08 등락률은 전 거래일 종가 대비 **-29.94%**입니다. 시장 중앙값은 -0.78%입니다. 하한가 가격 자체는 이 DB에 없어서, 하한가였는지는 확인하지 못했습니다.\n- 같은 날 함께 움직인 관계 종목 묶음(종목군)은 없었고, 혼자 크게 움직인 날로 기록됐습니다.\n- 당일 기사(articles)는 조회되지 않았습니다. 그래서 급락의 원인으로 설명할 기사나 자동 요약이 없습니다.\n\n**공시 확인**\n- 2026-09-01부터 10-08까지 펩트론의 기타 공시(event)는 0건입니다.\n- 2026-07-01부터 10-08까지 유상증자, 전환사채, 자기주식 등 자본 변동 결정도 0건입니다.\n- 공급계약 해지나 정정 공시를 이 조회에서는 확인하지 못했습니다.\n\n**최근 수익률 (종가 기준)**\n\n| 기간 | 펩트론 | 코스닥 시장 중앙값 | 차이 |\n|---|---|---|---|\n| 1주 (10-01~10-08) | -35.79% | 0.0% | -35.79%p |\n| 1개월 (09-08~10-08) | -37.84% | 0.69% | -38.53%p |\n| 3개월 (07-09~10-08) | -42.56% | 7.14% | -49.7%p |\n\n- 같은 제품(펩타이드 원료)을 파는 상장사는 DB에서 HLB펩 1곳뿐이라, 동종 비교는 한 곳과의 비교입니다. HLB펩의 1주 수익률은 +13.85%입니다.\n- 지난 거래일 중 큰 하락은 2026-09-22의 -12.02%가 있었습니다.\n\n**이 DB로 알 수 없는 것**\n- 당일 뉴스, 증권사 의견, 수급(외국인·기관 매매), 장중 흐름은 이 DB에 없습니다.\n- 펩트론의 실적 전망, 사업부문별 실적, 업황이나 원자재 가격도 없습니다.",
+ "followups": [
+  "펩트론 최근 분기 실적과 부채비율은?",
+  "펩트론 최근 5% 이상 대량보유 보고 현황은?",
+  "펩트론 임원·주요주주의 최근 90일 주식 매매는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "펩트론"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "price-moves"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 707
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-10-08",
+    "company_id": 3823,
+    "direction": "down"
+   },
+   "error": null,
+   "total": null,
+   "chars": 986
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 3823,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1148
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3823,
+    "as_of": "2026-10-08",
+    "doc_type": "event",
+    "filed_from": "2026-09-01",
+    "filed_to": "2026-10-08"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1054
+  },
+  {
+   "tool": "get_capital_events",
+   "input": {
+    "company_id": 3823,
+    "as_of": "2026-10-08",
+    "since": "2026-07-01"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 463
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3823
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2345,
+  "cache_read_input_tokens": 100619,
+  "cache_creation_input_tokens": 5016
+ },
+ "seconds": 13.5,
+ "number": "W1-05",
+ "gold": "",
+ "arm": "C"
+}

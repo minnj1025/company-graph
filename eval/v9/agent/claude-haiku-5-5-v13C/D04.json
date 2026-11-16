@@ -1,0 +1,80 @@
+{
+ "question": "프리티 최근에 한 감자 비율이 얼마야? 몇 주가 1주로 되는 거야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "프리티의 가장 최근 감자는 2026년 10월 16일 공시된 **3주를 1주로 병합하는 무상감자(3:1)**입니다. 3주가 1주가 되고, 감자 비율은 **66.67%**입니다 (접수번호 20261016000287).\n\n- **결정일:** 2026-09-17\n- **감자 주식 수:** 11,831,480주 (감자 전 발행주식총수 17,746,333주)\n- **감자 후 주식 수:** 5,914,853주\n- **감자 기준일:** 2026년 11월 24일\n- **목적:** 결손금 보전을 위한 재무구조 개선\n- **방법:** 1주당 액면금액 2,500원인 기명식 보통주 3주를 같은 액면금액의 보통주 1주로 무상병합\n\n그 앞의 감자는 2026년 7월 10일 공시(접수번호 20260710000623)로, 5주를 3주로 병합하는 1.67:1 방식이었고 비율은 40.0%였습니다. 감자 후 주식 수는 17,746,333주, 기준일은 2026년 8월 12일이었습니다.\n\n이 자료는 결정 공시만 담고 있어서, 실제 감자가 예정대로 실행됐는지나 철회 여부는 확인할 수 없습니다.",
+ "followups": [
+  "프리티의 최근 유상증자와 전환사채 내역은?",
+  "프리티의 재무 상태(부채비율, 유동비율)는 어떤가?",
+  "프리티의 최근 배당과 자기주식 취득 내역은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "프리티"
+   },
+   "error": null,
+   "total": null,
+   "chars": 191
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "capital-dividends"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 465
+  },
+  {
+   "tool": "get_capital_events",
+   "input": {
+    "company_id": 4227,
+    "as_of": "2026-10-16",
+    "kinds": [
+     "capital_reduction"
+    ]
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1302
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     4227
+    ],
+    "views": [
+     {
+      "kind": "dilution",
+      "company_id": 4227,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 444
+  }
+ ],
+ "cited": [
+  "20260710000623",
+  "20261016000287"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1688,
+  "cache_read_input_tokens": 76721,
+  "cache_creation_input_tokens": 2658
+ },
+ "seconds": 8.9,
+ "number": "D04",
+ "gold": "",
+ "arm": "C"
+}

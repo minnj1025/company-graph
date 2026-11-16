@@ -84,10 +84,15 @@ def test_agent_reads_skill_in_the_loop(db, monkeypatch):  # noqa: F811
     assert out["tool_calls"][0]["tool"] == "read_skill" and seen == ["read_skill"]
 
 
-def test_default_is_unchanged(monkeypatch):
+def test_default_keeps_why_rules_and_opens_the_rest(monkeypatch):
+    # 기본은 ASK_SKILLS=2 (평가 13판 C). ASK_SKILLS=0 이면 그 전의 지시문 그대로
     monkeypatch.delenv("ASK_SKILLS", raising=False)
     monkeypatch.delenv("ANSWER_STYLE", raising=False)
     monkeypatch.delenv("ASK_WHY", raising=False)
+    default = agent.system()
+    monkeypatch.setenv("ASK_SKILLS", "2")
+    assert default == agent.system() and agent.WHY in default
+    monkeypatch.setenv("ASK_SKILLS", "0")
     assert agent.system() == agent.SYSTEM.replace("\n화면\n", "\n" + agent.WHY + "\n화면\n", 1)
 
 

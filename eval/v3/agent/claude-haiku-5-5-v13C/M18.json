@@ -1,0 +1,194 @@
+{
+ "question": "9월 3일에 선진, 팬오션, 팜스코가 같이 올랐던데, 같은 계열이라서 함께 오른 게 맞나요?",
+ "as_of": "2026-09-03",
+ "model": "claude-haiku-5-5",
+ "answer": "**확인되는 사실은 세 회사가 같은 하림 기업집단 계열이고, 9월 3일 함께 오른 종목군의 연결 고리에 '계열'이 들어 있다는 것입니다. 다만 함께 오른 원인은 이 DB로 확인되지 않습니다.** 당일 기사가 조회되지 않아 원인은 적지 않습니다.\n\n| 기업 | 9/3 등락률(전 거래일 종가 대비) | 계열 관계(공시) | 매출 비중이 큰 제품 |\n|---|---|---|---|\n| 선진 | 7.88% | 하림 기업집단, 팬오션·팜스코와 상호 계열 공시 | 배합사료 45.31%, 돈정육 등 21.08%, 비육돈 등 17.5% |\n| 팬오션 | 7.8% | 하림 기업집단, 선진·팜스코와 상호 계열 공시 | 해운업수익 69.69%, 곡물사업 30.83% |\n| 팜스코 | 5.63% | 하림 기업집단, 선진·팬오션과 상호 계열 공시 | 배합사료 71.73%, 돈육 등 29.14%, 비육돈 등 19.52% |\n\n- **같은 날 시장 중앙값**은 -0.56%였습니다. 이 세 곳과 함께 움직인 종목군의 연결 고리는 '계열', '돈육', '비육돈'이었고, 이 종목군은 6곳 중 3곳이 움직인 약한 묶음입니다.\n- **계열 근거**: 선진의 사업보고서(접수번호 20260320000571)는 팜스코와 팬오션을 계열회사로, 팬오션(20260319001097)과 팜스코(20260320000233)의 보고서도 서로를 계열회사로 적고 있습니다. 세 곳 모두 상위 지정 집단은 하림입니다.\n- **돈육·비육돈 연결**: 선진과 팜스코는 돈육과 비육돈을 매출 표에 적고 있습니다(선진 20260813001556, 팜스코 20260812000646). 팬오션의 매출 표(20260812000418)에는 돈육이나 비육돈이 없어, 팬오션과 묶인 것은 계열 관계뿐입니다.\n- **원인**: 조회 결과에 기사가 없어서 '계열이라서 같이 올랐다'거나 다른 이유라고 판단할 근거가 없습니다. 이 종목군 묶음은 공통점을 보여 줄 뿐 원인을 말해 주지 않습니다.\n\n이 DB로 알 수 없는 것: 9월 3일의 주가 원인(기사, 공시 외 뉴스), 돼지 가격 같은 업황과 원자재 가격, 수급과 거래량, 이후 주가 흐름입니다.",
+ "followups": [
+  "선진과 팬오션이 최근 1개월 동안 어떻게 움직였나?",
+  "팜스코의 최근 공시(계열, 지분) 목록을 보여 줘",
+  "하림 기업집단에서 상장된 회사는 어디어디인가?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "price-moves"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 707
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "선진"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "팬오션"
+   },
+   "error": null,
+   "total": null,
+   "chars": 191
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "팜스코"
+   },
+   "error": null,
+   "total": null,
+   "chars": 191
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-09-03",
+    "day": "2026-09-03",
+    "company_id": 2506
+   },
+   "error": null,
+   "total": null,
+   "chars": 1113
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-09-03",
+    "day": "2026-09-03",
+    "company_id": 3801
+   },
+   "error": null,
+   "total": null,
+   "chars": 2171
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-09-03",
+    "day": "2026-09-03",
+    "company_id": 2158
+   },
+   "error": null,
+   "total": null,
+   "chars": 1114
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2506,
+    "as_of": "2026-09-03",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 43,
+   "chars": 20153
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3801,
+    "as_of": "2026-09-03",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 73,
+   "chars": 23239
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2158,
+    "as_of": "2026-09-03",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 43,
+   "chars": 20195
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 2506,
+    "as_of": "2026-09-03"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 1265
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3801,
+    "as_of": "2026-09-03"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 1187
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 2158,
+    "as_of": "2026-09-03"
+   },
+   "error": null,
+   "total": 8,
+   "chars": 1422
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2506,
+     3801,
+     2158
+    ],
+    "also": [
+     1353,
+     1631
+    ],
+    "views": [
+     {
+      "kind": "group",
+      "company_id": 2506,
+      "as_of": "2026-09-03"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 570
+  }
+ ],
+ "cited": [
+  "20260319001097",
+  "20260320000233",
+  "20260320000571",
+  "20260812000418",
+  "20260812000646",
+  "20260813001556"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 3855,
+  "cache_read_input_tokens": 172376,
+  "cache_creation_input_tokens": 41346
+ },
+ "seconds": 23.5,
+ "number": "M18",
+ "gold": "세 종목이 2026-09-03(시장 중앙값 -0.56%)에 함께 오른 것은 맞다: 선진 +7.88%, 팬오션 +7.80%, 팜스코 +5.63%. 계열 관계와 제품(돈육·비육돈)으로 이어진 6곳 가운데 3곳이다. 그러나 이 묶음의 강도는 '보통'이다. 세 곳뿐인 묶음은 넷에 하나꼴로 우연히도 나오는 수준이고, 이 묶음을 다룬 기사도 없다. 그래서 '같은 계열이라서 올랐다'고는 말할 수 없고, 계열로 이어진 종목들이 같은 날 올랐다는 데까지만 말할 수 있다.",
+ "arm": "C"
+}

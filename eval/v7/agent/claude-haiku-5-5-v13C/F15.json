@@ -1,0 +1,98 @@
+{
+ "question": "네이버랑 카카오 최근 분기 실적 비교해줘",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "2026년 2분기(4~6월) 연결 기준으로 보면, 매출은 NAVER가 더 크고 영업이익률은 NAVER가 높습니다. 순이익의 전년 대비 증감은 두 회사가 반대 방향입니다. 이 답은 실적을 비교해 보여 주는 것이고, 원인이나 전망은 판단하지 않습니다.\n\n| 항목 (2026년 2분기) | NAVER | 카카오 |\n|---|---|---|\n| 매출 | 3조 3,888억 원 (전년 대비 16.25%) | 2조 985억 원 (전년 대비 9.44%) |\n| 영업이익 | 5,203억 원 (전년 대비 -0.24%) | 2,770억 원 (전년 대비 35.86%) |\n| 영업이익률 | 15.35% | 13.2% |\n| 순이익 | 7,043억 원 (전년 대비 41.6%) | 180억 원 (전년 대비 -89.54%) |\n\n- 2026년 1분기와 견주면 NAVER는 매출 3조 2,411억 원, 영업이익 5,418억 원, 순이익 2,910억 원이었고, 카카오는 매출 1조 9,421억 원, 영업이익 2,114억 원, 순이익 2,268억 원이었습니다. 카카오의 2026년 2분기 매출과 영업이익의 전년 대비 증감은 2025년 2분기 재작성값을 기준으로 한 것입니다.\n- 2026년 상반기 누적 영업이익률은 NAVER 16.02%, 카카오 12.09%입니다.\n- 2026년 6월 말 부채비율은 NAVER 43.92%, 카카오 83.59%입니다. 같은 시장(유가증권) 중앙값은 96.7%입니다. 유동비율은 NAVER 148.67%, 카카오 153.31%입니다.\n\n근거: NAVER 2026년 상반기 보고서 20260814002266, 카카오 2026년 2분기 보고서 20260819000055. 2분기 값은 각 회사 분기보고서의 석 달 값입니다.\n\n이 DB로 알 수 없는 것은 실적 전망, 사업부문별 실적, 현금흐름, EPS, 업황과 증권사 의견입니다. 순이익이 두 회사에서 어떤 항목의 영향을 받았는지도 이 DB로는 확인할 수 없습니다.",
+ "followups": [
+  "NAVER 최근 분기 실적 추이를 보여줘",
+  "카카오 2026년 2분기 매출을 제품별로 나눠줘",
+  "NAVER와 카카오의 최대주주와 지분 구조를 비교해줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "financials"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 641
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "네이버"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 1841,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5658
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 6221
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1841,
+     2254
+    ],
+    "views": [
+     {
+      "kind": "compare",
+      "company_id": 1841,
+      "other_company_id": 2254,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 520
+  }
+ ],
+ "cited": [
+  "20260814002266",
+  "20260819000055"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1863,
+  "cache_read_input_tokens": 56758,
+  "cache_creation_input_tokens": 8636
+ },
+ "seconds": 9.4,
+ "number": "F15",
+ "gold": "",
+ "arm": "C"
+}

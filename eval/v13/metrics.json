@@ -20,6 +20,16 @@
    "answer_chars": 913,
    "stopped": 0
   },
+  "v3-C": {
+   "n": 37,
+   "cost": 0.1377,
+   "cost_per_q": 0.00372,
+   "seconds": 17.4,
+   "lookups": 2.49,
+   "cited_not_in_results": 0,
+   "answer_chars": 1073,
+   "stopped": 0
+  },
   "v5-A": {
    "n": 24,
    "cost": 0.1013,
@@ -38,6 +48,16 @@
    "lookups": 5.12,
    "cited_not_in_results": 0,
    "answer_chars": 1081,
+   "stopped": 0
+  },
+  "v5-C": {
+   "n": 24,
+   "cost": 0.0886,
+   "cost_per_q": 0.00369,
+   "seconds": 15.4,
+   "lookups": 4.58,
+   "cited_not_in_results": 0,
+   "answer_chars": 1171,
    "stopped": 0
   },
   "v6-A": {
@@ -60,6 +80,16 @@
    "answer_chars": 1269,
    "stopped": 0
   },
+  "v6-C": {
+   "n": 20,
+   "cost": 0.0929,
+   "cost_per_q": 0.00464,
+   "seconds": 21.0,
+   "lookups": 3.3,
+   "cited_not_in_results": 0,
+   "answer_chars": 1427,
+   "stopped": 0
+  },
   "v7-A": {
    "n": 21,
    "cost": 0.0446,
@@ -78,6 +108,16 @@
    "lookups": 2.33,
    "cited_not_in_results": 0,
    "answer_chars": 497,
+   "stopped": 0
+  },
+  "v7-C": {
+   "n": 21,
+   "cost": 0.0445,
+   "cost_per_q": 0.00212,
+   "seconds": 8.1,
+   "lookups": 2.29,
+   "cited_not_in_results": 0,
+   "answer_chars": 633,
    "stopped": 0
   },
   "v8-A": {
@@ -100,6 +140,16 @@
    "answer_chars": 625,
    "stopped": 0
   },
+  "v8-C": {
+   "n": 20,
+   "cost": 0.0569,
+   "cost_per_q": 0.00284,
+   "seconds": 10.8,
+   "lookups": 2.65,
+   "cited_not_in_results": 0,
+   "answer_chars": 781,
+   "stopped": 0
+  },
   "v9-A": {
    "n": 20,
    "cost": 0.0367,
@@ -119,6 +169,16 @@
    "cited_not_in_results": 0,
    "answer_chars": 610,
    "stopped": 0
+  },
+  "v9-C": {
+   "n": 20,
+   "cost": 0.0388,
+   "cost_per_q": 0.00194,
+   "seconds": 8.8,
+   "lookups": 2.35,
+   "cited_not_in_results": 0,
+   "answer_chars": 658,
+   "stopped": 0
   }
  },
  "total": {
@@ -133,6 +193,13 @@
    "n": 142,
    "cost": 0.4409,
    "cost_per_q": 0.0031,
+   "seconds": 14.1,
+   "cited_not_in_results": 0
+  },
+  "C": {
+   "n": 142,
+   "cost": 0.4594,
+   "cost_per_q": 0.00324,
    "seconds": 14.1,
    "cited_not_in_results": 0
   }
@@ -156,9 +223,14 @@
    ]
   },
   "C": {
-   "hit": 0,
-   "total": 0,
-   "miss": []
+   "hit": 94,
+   "total": 98,
+   "miss": [
+    "v3 C01: 기대 company-overview, 읽음 없음",
+    "v3 C04: 기대 company-overview, 읽음 없음",
+    "v3 C06: 기대 company-overview, 읽음 없음",
+    "v8 H02: 기대 holders-insiders, 읽음 없음"
+   ]
   }
  }
 }

@@ -1,0 +1,104 @@
+{
+ "question": "쎄트렉아이 주가 요새 왜 이렇게 빠져?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "이 DB는 주가가 빠진 원인을 알려 주지 않습니다. 확인되는 사실은 아래와 같고, 원인에 가까운 내용은 10월 7일 기사 두 건의 제목뿐입니다.\n\n**확인되는 사실 (조회 시점 2026-10-08, 종가 기준)**\n- 수익률: 1주 -13.05%(코스닥 중앙값 0.0%), 1개월 -2.97%(코스닥 0.69%), 3개월 -13.71%(코스닥 7.14%). 3개월 기준으로 시장보다 20.85%p 낮습니다.\n- 같은 제품(위성)을 파는 상장사 중앙값은 1주 -7.71%, 1개월 +4.97%, 3개월 -0.85%입니다. 비교 대상은 AP위성, 나라스페이스테크놀로지, 루미르, 컨텍 4곳입니다.\n- 급락일: 10월 7일 -8.96%, 10월 8일 -8.78%. 두 날 모두 위성 관련 종목 4~5곳이 함께 내렸습니다(AP위성 -11.75%·-6.31%, 나라스페이스테크놀로지 -8.28%·-5.49%, 루미르 -7.57%·-7.02%).\n- 10월 7일 관련 기사 두 건의 제목은 \"누리호 발사 성공했는데…우주항공株는 일제히 급락 [이런국장 저런주식]\"(https://m.sedaily.com/article/20099082)과 \"누리호 성공 뒤 우주항공주 급락\"(https://www.specialtimes.co.kr/news/articleView.html?idxno=471627)입니다. 자동 요약에 따르면 \"누리호 발사 성공에도 재료가 사라졌다는 인식에 AP위성·쎄트렉아이 등 우주항공 관련주가 일제히 내렸다\"고 합니다. 이 요약은 기사와 어긋날 수 있습니다.\n- 10월 8일에는 이 DB에서 연결되는 당일 기사가 확인되지 않았습니다.\n- 2026년 7월 이후 이 회사의 기타 공시(event) 목록은 0건이었습니다. 이 공시로는 회사 고유의 재료를 확인할 수 없습니다.\n\n**이 DB로 알 수 없는 것**\n- 주가 하락의 원인과 업황, 우주항공 정책이나 발사 일정, 원자재 가격, 증권사 의견, 수급은 이 DB에 없습니다.\n- 향후 주가 전망도 답할 수 없습니다.",
+ "followups": [
+  "쎄트렉아이의 최근 3개월 실적 추이는 어떤가요?",
+  "쎄트렉아이의 사업 구성과 제품별 매출 비중은 어떻게 되나요?",
+  "쎄트렉아이의 최근 자본 변동 공시(유상증자, 자사주 등)가 있었나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "쎄트렉아이"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "price-moves"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 707
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 2483,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1171
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-10-08",
+    "company_id": 2483,
+    "direction": "down",
+    "lookback_days": 30
+   },
+   "error": null,
+   "total": null,
+   "chars": 2181
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2483,
+    "as_of": "2026-10-08",
+    "doc_type": "event",
+    "filed_from": "2026-07-01"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1056
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2483
+    ],
+    "also": [
+     2875,
+     3990,
+     3298,
+     1833
+    ],
+    "views": [
+     {
+      "kind": "returns",
+      "company_id": 2483,
+      "as_of": "2026-10-08"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 439
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2371,
+  "cache_read_input_tokens": 79520,
+  "cache_creation_input_tokens": 5532
+ },
+ "seconds": 12.3,
+ "number": "W1-04",
+ "gold": "",
+ "arm": "C"
+}

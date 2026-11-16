@@ -1,0 +1,70 @@
+{
+ "question": "LG에너지솔루션 부채비율 지금 몇 퍼센트야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "LG에너지솔루션의 부채비율은 157.14%입니다(연결 기준, 2026년 6월 30일 기말, 2026 상반기 보고서). 2026-10-16 시점에서 가장 나중에 공시된 재무 자료가 이 상반기 보고서입니다.\n\n- 부채비율 157.14% (부채총계 ÷ 자본총계), 접수번호 20260813000255\n- 직전 사업연도 말(2025년 12월 31일) 부채비율은 129.0%, 접수번호 20260312000217\n- 같은 유가증권시장 상장사 중앙값은 96.7%(827개사 기준)로, LG에너지솔루션이 더 높습니다.\n- 참고로 유동비율은 121.92%이고 시장 중앙값은 133.47%입니다.\n\n이 DB는 연결재무제표 기준입니다. 별도 기준 수치는 확인하지 않았습니다.\n\n이 DB로 알 수 없는 것은 실적 전망, 현금흐름, 차입 계획, 업황과 원자재 가격입니다.",
+ "followups": [
+  "LG에너지솔루션 2026년 분기별 매출과 영업이익 추이는?",
+  "LG에너지솔루션의 최근 자본 변동(유상증자, 사채 등) 결정이 있었나?",
+  "LG에너지솔루션과 같은 LG 계열사 부채비율을 비교하면?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LG에너지솔루션"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "financials"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 641
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 3915,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5918
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3915
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 202
+  }
+ ],
+ "cited": [
+  "20260312000217",
+  "20260813000255"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1066,
+  "cache_read_input_tokens": 79544,
+  "cache_creation_input_tokens": 4989
+ },
+ "seconds": 6.8,
+ "number": "F03",
+ "gold": "",
+ "arm": "C"
+}

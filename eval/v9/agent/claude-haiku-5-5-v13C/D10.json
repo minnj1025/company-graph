@@ -1,0 +1,67 @@
+{
+ "question": "KT&G 주당 배당금 최근 3년 치 알려줘",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "KT&G(사명: 케이티앤지, 종목코드 033780)의 최근 3개 사업연도 주당 현금배당금(보통주)은 다음과 같습니다. 세 해 모두 같은 사업보고서(접수번호 20260318001422)에 실려 있습니다.\n\n| 사업연도 | 주당 배당금(보통주) | 현금배당금총액 | 배당성향(연결) | 배당수익률 |\n|---|---|---|---|---|\n| 2023 | 5,200원 | 5,908억 원 | 65.4% | 6.0% |\n| 2024 | 5,400원 | 5,884억 원 | 50.5% | 5.5% |\n| 2025 | 6,000원 | 6,274억 원 | 57.6% | 4.1% |\n\n우선주 배당은 세 해 모두 없습니다. 2025년 주당 배당금은 2023년보다 800원, 2024년보다 600원 많습니다. 같은 기간 주당순이익(EPS)은 2023년 7,843원, 2024년 10,455원, 2025년 10,220원입니다.\n\n이 DB에는 분기·중간배당의 회차별 금액과 앞으로의 배당 계획이 없으므로, 2026년 배당은 알 수 없습니다.",
+ "followups": [
+  "케이티앤지의 최근 자기주식 취득 결정 내역은?",
+  "케이티앤지의 최근 3년 분기 실적 추이는?",
+  "케이티앤지의 최대주주와 지분 구조는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "KT&G"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "capital-dividends"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 465
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "케이티앤지"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "get_dividends",
+   "input": {
+    "company_id": 3191,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1390
+  }
+ ],
+ "cited": [
+  "20260318001422"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 866,
+  "cache_read_input_tokens": 75783,
+  "cache_creation_input_tokens": 1874
+ },
+ "seconds": 5.7,
+ "number": "D10",
+ "gold": "",
+ "arm": "C"
+}

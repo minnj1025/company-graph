@@ -1,0 +1,74 @@
+{
+ "question": "SK하이닉스 올해 유상증자 몇 주 했어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "SK하이닉스는 2026년 들어 유상증자 결정을 1건 공시했고, 신주 17,790,000주입니다(2026-07-10 접수, 제3자배정증자, 금액 40조 231억 원, 자금 용도는 시설자금).\n\n- 결정 전 발행주식총수는 712,702,365주이고, 신주는 그중 2.5%에 해당합니다.\n- 이것은 결정 공시이며, 실제 납입·발행이 끝났는지는 이 DB에서 확인할 수 없습니다.\n- 근거: 접수번호 20260710000008",
+ "followups": [
+  "SK하이닉스의 2026년 자기주식 취득 결정이 있었나?",
+  "SK하이닉스의 최근 배당은 어땠나?",
+  "SK하이닉스의 최근 3개월 주가 수익률은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK하이닉스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "capital-dividends"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 465
+  },
+  {
+   "tool": "get_capital_events",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-16",
+    "kinds": [
+     "rights_issue",
+     "rights_bonus_issue"
+    ],
+    "since": "2026-01-01"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 825
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2033
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260710000008"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 777,
+  "cache_read_input_tokens": 76412,
+  "cache_creation_input_tokens": 1843
+ },
+ "seconds": 5.7,
+ "number": "D01",
+ "gold": "",
+ "arm": "C"
+}

@@ -1,0 +1,70 @@
+{
+ "question": "최근 3개월 사이에 하나금융지주 지분을 늘린 5% 주주 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "최근 3개월(2026-07-16~2026-10-16) 사이에 지분을 늘린 5% 주주는 1곳, Capital Research and Management Company입니다.\n\n- **Capital Research and Management Company**: 2026-10-08 접수 보고에서 보유비율 6.88%, 주식 수 18,634,344주입니다. 직전 보고 대비 +1.33%p, +3,197,793주이며, 보고 사유는 \"단순투자 목적으로 발행회사의 주식 장내매수\"입니다. (접수번호 20261008000058)\n\n참고로 같은 기간에 지분을 줄이거나 5% 아래로 내려간 보고는 없었습니다. BlackRockFundAdvisors가 2026-02-26에 보고한 7.11%(+1.01%p)는 3개월보다 이전 보고라 제외했습니다. 국민연금공단은 2025-02-21 보고 9.45%가 마지막이고, 그 뒤 새 보고가 없습니다.\n\n공시 접수일 기준이며, 실제 거래일·단가·금액은 이 DB에 없습니다.",
+ "followups": [
+  "하나금융지주 임원들이 최근 90일 동안 주식을 사거나 팔았나?",
+  "하나금융지주 최대주주와 특수관계인 지분은 얼마인가?",
+  "하나금융지주 주가가 최근 3개월 동안 어떻게 움직였나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "하나금융지주"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "holders-insiders"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 630
+  },
+  {
+   "tool": "get_major_holders",
+   "input": {
+    "company_id": 4135,
+    "as_of": "2026-10-16",
+    "since": "2026-07-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1515
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     4135
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20261008000058"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1113,
+  "cache_read_input_tokens": 77078,
+  "cache_creation_input_tokens": 2492
+ },
+ "seconds": 6.9,
+ "number": "H05",
+ "gold": "",
+ "arm": "C"
+}

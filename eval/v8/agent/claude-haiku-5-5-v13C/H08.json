@@ -1,0 +1,94 @@
+{
+ "question": "신한지주 지분은 누가 많이 갖고 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "조회 시점(2026-10-16) 기준으로 DB에 있는 신한지주 주주 중 가장 많이 보유한 곳은 국민연금공단입니다. 최대주주와 특수관계인 합계는 9.03%입니다.\n\n| 주주 | 지분율 | 기준 | 근거 접수번호 |\n|---|---|---|---|\n| 국민연금공단 (최대주주, 본인 및 특별관계자) | 9.03% (43,846,070주) | 2025-12-31 사업보고서 | 20260318000826 |\n| BlackRockFundAdvisors | 7.14% (33,538,344주) | 2026-08-11 5% 보고 | 20260811000674 |\n| CapitalResearchandManagementCompany | 5.02% (23,568,346주) | 2026-09-02 5% 보고 | 20260902000035 |\n| KT | 2.24% (10,877,651주) | 2025-12-31 기준, 일반투자 | 20260323001553 |\n\n- 국민연금공단은 사업보고서의 최대주주 현황에 있는 값이고, 2025-03-25 5% 보고(8.6%)보다 뒤의 기준입니다.\n- BlackRock과 Capital Research의 비율은 각자 대표보고자와 특별관계자를 합친 값입니다. 두 보고 모두 단순투자 목적으로 장내 매수를 적었고, BlackRock은 2026-08-11 보고에서 전 보고 대비 1.01%p 늘었습니다.\n- 삼성화재해상보험(0.06%), 대교(0.04%) 등 나머지는 지분이 매우 적습니다.\n- 이 DB는 최대주주 쪽과 5% 보고를 낸 주주만 모읍니다. 5% 미만의 기관·개인 주주는 전부 나오지 않으며, 국민연금 외 최대주주 특수관계인 세부 내역은 없습니다.",
+ "followups": [
+  "신한지주 최근 1년 5% 대량보유 보고 내역",
+  "신한지주 임원·주요주주 최근 90일 주식 증감",
+  "신한지주 최근 자기주식 취득이나 배당 결정"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "신한지주"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "holders-insiders"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 630
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3361,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 9,
+   "chars": 6264
+  },
+  {
+   "tool": "get_major_holders",
+   "input": {
+    "company_id": 3361,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1624
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3361
+    ],
+    "also": [
+     3404
+    ],
+    "views": [
+     {
+      "kind": "holders",
+      "company_id": 3361,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 554
+  }
+ ],
+ "cited": [
+  "20260318000826",
+  "20260323001553",
+  "20260811000674",
+  "20260902000035"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2031,
+  "cache_read_input_tokens": 80799,
+  "cache_creation_input_tokens": 7019
+ },
+ "seconds": 12.7,
+ "number": "H08",
+ "gold": "",
+ "arm": "C"
+}
