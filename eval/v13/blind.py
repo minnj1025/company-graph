@@ -1,19 +1,24 @@
 """평가 13판 블라인드 채점 묶음: 3판·5판 문항마다 A·B 답을 섞어 '가'·'나'로 보인다. 어느 쪽이 어느 방식인지는 key.json 에만 둔다.
 
-사용: python -m eval.v13.blind   → eval/v13/blind/<묶음>.md, key.json
+사용: python -m eval.v13.blind [AC]   → eval/v13/blind/ (A·B) 또는 blind-AC/ (A·C) 의 <묶음>.md, key.json
 """
 import json
 import random
+import sys
 
 from eval.run_agent import ROOT
 from eval.v13.run import folder
 
-OUT = ROOT / "v13" / "blind"
 BATCH = 13
 
 
-def main():
-    rng = random.Random(13)
+def out_dir(arms: str):
+    return ROOT / "v13" / ("blind" if arms == "AB" else f"blind-{arms}")
+
+
+def main(arms: str = "AB"):
+    OUT = out_dir(arms)
+    rng = random.Random(13 if arms == "AB" else 14)
     OUT.mkdir(parents=True, exist_ok=True)
     key = {}
     for s in ("v3", "v5"):
@@ -26,8 +31,8 @@ def main():
             parts = []
             for item in golds[b:b + BATCH]:
                 n = item["id"]
-                answers = {arm: json.loads((folder(s, arm) / f"{n}.json").read_text(encoding="utf-8"))["answer"] for arm in ("A", "B")}
-                order = ["A", "B"]
+                answers = {arm: json.loads((folder(s, arm) / f"{n}.json").read_text(encoding="utf-8"))["answer"] for arm in arms}
+                order = list(arms)
                 rng.shuffle(order)
                 key[f"{s}/{n}"] = {"가": order[0], "나": order[1]}
                 gold = {k: v for k, v in item.items() if k not in ("id",)}
@@ -40,4 +45,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1] if len(sys.argv) > 1 else "AB")

@@ -25,9 +25,10 @@ def loaded(result: dict) -> set[str]:
 
 
 def main():
-    out, hits = {}, {"hit": 0, "total": 0, "miss": []}
+    out = {}
+    hits = {arm: {"hit": 0, "total": 0, "miss": []} for arm in ("B", "C")}
     for s in SETS:
-        for arm in ("A", "B"):
+        for arm in ("A", "B", "C"):
             rows = []
             for number, *_ in v2_questions(s):
                 path = folder(s, arm) / f"{number}.json"
@@ -45,17 +46,19 @@ def main():
                 "answer_chars": round(st.mean(len(r["answer"]) for _, r in rows)),
                 "stopped": sum(r["stop_reason"] != "end_turn" for _, r in rows),
             }
-            if arm == "B":
+            if arm in ("B", "C"):
                 for number, r in rows:
                     want = expected(s, number)
+                    if arm == "C" and want == "why-questions":
+                        want = None   # C는 원인·평가 규칙을 지시문에 둔다
                     if want:
-                        hits["total"] += 1
+                        hits[arm]["total"] += 1
                         if want in loaded(r):
-                            hits["hit"] += 1
+                            hits[arm]["hit"] += 1
                         else:
-                            hits["miss"].append(f"{s} {number}: 기대 {want}, 읽음 {sorted(loaded(r)) or '없음'}")
+                            hits[arm]["miss"].append(f"{s} {number}: 기대 {want}, 읽음 {sorted(loaded(r)) or '없음'}")
     total = {}
-    for arm in ("A", "B"):
+    for arm in ("A", "B", "C"):
         keys = [k for k in out if k.endswith(arm)]
         n = sum(out[k]["n"] for k in keys)
         if n:
@@ -68,9 +71,11 @@ def main():
     for k, v in out.items():
         print(k, v)
     print("합계", total)
-    print(f"기대한 규칙을 읽음 {hits['hit']}/{hits['total']}")
-    for m in hits["miss"]:
-        print("  ", m)
+    for arm, h in hits.items():
+        if h["total"]:
+            print(f"{arm} 기대한 규칙을 읽음 {h['hit']}/{h['total']}")
+            for m in h["miss"]:
+                print("  ", m)
 
 
 if __name__ == "__main__":

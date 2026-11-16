@@ -209,15 +209,22 @@ def _core(base: str) -> str:
         assert at >= 0, name
         first = at if first is None else min(first, at)
         base = base.replace(body + "\n\n", "", 1)
-    return base[:first] + skills.catalog(why=_why()) + "\n\n" + base[first:]
+    return base[:first] + skills.catalog(why=_skill_why()) + "\n\n" + base[first:]
+
+
+def _skill_why() -> bool:
+    """원인·평가 규칙을 skill 로 펼치는가. ASK_SKILLS=2 이면 지시문에 두므로 펼치지 않는다."""
+    return _why() and not skills.keep_why()
 
 
 def system() -> str:
     """Agent에게 줄 지시문."""
     base = _apply(SYSTEM, STYLE) if styled() else SYSTEM
     if skills.enabled():
-        return _core(base)
-    if not _why():
+        base = _core(base)
+        if not (skills.keep_why() and _why()):
+            return base
+    elif not _why():
         return base
     why = _apply(WHY, WHY_STYLE) if styled() else WHY
     assert "\n화면\n" in base
@@ -267,7 +274,7 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
         return found
     with session() as db:
         for _ in range(max_turns):
-            tools = agent_tools.tools() + ([skills.tool(why=_why())] if skills.enabled() else [])
+            tools = agent_tools.tools() + ([skills.tool(why=_skill_why())] if skills.enabled() else [])
             # 지시문 끝에 캐시 표시를 둔다. 도구 정의와 지시문(약 2만 토큰)을 다른 질문과도 함께 쓴다.
             # 위쪽의 자동 캐시(cache_control)만으로는 한 질문 안에서만 다시 쓰여, 질문마다 이 부분을 캐시에 새로 썼다
             request = dict(model=model, max_tokens=16000, system=[{"type": "text", "text": system(), "cache_control": {"type": "ephemeral"}}],
@@ -304,7 +311,7 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
                 if on_event:
                     on_event("tool", {"name": block.name, "input": dict(block.input), **({"closing": True} if closing else {})})
                 if block.name == skills.TOOL and skills.enabled():
-                    result = skills.read(dict(block.input), why=_why(), rewrite=_skill_text)
+                    result = skills.read(dict(block.input), why=_skill_why(), rewrite=_skill_text)
                 else:
                     result = agent_tools.call(db, block.name, dict(block.input))
                 if on_result:

@@ -138,20 +138,27 @@
   }
  },
  "skill_hit": {
-  "hit": 111,
-  "total": 122,
-  "miss": [
-   "v3 C04: 기대 company-overview, 읽음 없음",
-   "v3 C06: 기대 company-overview, 읽음 없음",
-   "v5 W1-05: 기대 why-questions, 읽음 ['price-moves']",
-   "v5 W2-03: 기대 why-questions, 읽음 ['company-overview']",
-   "v5 W4-01: 기대 why-questions, 읽음 ['topic-search']",
-   "v5 W4-02: 기대 why-questions, 읽음 ['holders-insiders']",
-   "v5 W5-01: 기대 why-questions, 읽음 없음",
-   "v5 W5-02: 기대 why-questions, 읽음 없음",
-   "v5 W5-03: 기대 why-questions, 읽음 없음",
-   "v5 W5-04: 기대 why-questions, 읽음 ['price-moves']",
-   "v8 H02: 기대 holders-insiders, 읽음 없음"
-  ]
+  "B": {
+   "hit": 111,
+   "total": 122,
+   "miss": [
+    "v3 C04: 기대 company-overview, 읽음 없음",
+    "v3 C06: 기대 company-overview, 읽음 없음",
+    "v5 W1-05: 기대 why-questions, 읽음 ['price-moves']",
+    "v5 W2-03: 기대 why-questions, 읽음 ['company-overview']",
+    "v5 W4-01: 기대 why-questions, 읽음 ['topic-search']",
+    "v5 W4-02: 기대 why-questions, 읽음 ['holders-insiders']",
+    "v5 W5-01: 기대 why-questions, 읽음 없음",
+    "v5 W5-02: 기대 why-questions, 읽음 없음",
+    "v5 W5-03: 기대 why-questions, 읽음 없음",
+    "v5 W5-04: 기대 why-questions, 읽음 ['price-moves']",
+    "v8 H02: 기대 holders-insiders, 읽음 없음"
+   ]
+  },
+  "C": {
+   "hit": 0,
+   "total": 0,
+   "miss": []
+  }
  }
 }

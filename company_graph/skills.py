@@ -2,7 +2,7 @@
 
 skill 하나는 skills/<이름>/SKILL.md 파일 하나다. 맨 위의 name, description 다음이 규칙 본문이다.
 본문은 agent.SYSTEM, agent.WHY 의 절과 글자까지 같다(tests/test_skills.py). 두 방식의 차이가 규칙의 위치뿐이게 하려는 것이다.
-환경 변수 ASK_SKILLS=1 일 때만 쓴다.
+환경 변수 ASK_SKILLS=1 일 때만 쓴다. ASK_SKILLS=2 는 원인·평가 규칙(why-questions)만 지시문에 늘 두고 나머지를 펼친다(평가 14판).
 """
 import os
 from functools import cache
@@ -13,7 +13,12 @@ TOOL = "read_skill"
 
 
 def enabled() -> bool:
-    return os.environ.get("ASK_SKILLS", "0") == "1"
+    return os.environ.get("ASK_SKILLS", "0") in ("1", "2")
+
+
+def keep_why() -> bool:
+    """원인·평가 규칙은 펼치지 않고 지시문에 둔다."""
+    return os.environ.get("ASK_SKILLS", "0") == "2"
 
 
 @cache

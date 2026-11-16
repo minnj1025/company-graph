@@ -89,3 +89,20 @@ def test_default_is_unchanged(monkeypatch):
     monkeypatch.delenv("ANSWER_STYLE", raising=False)
     monkeypatch.delenv("ASK_WHY", raising=False)
     assert agent.system() == agent.SYSTEM.replace("\n화면\n", "\n" + agent.WHY + "\n화면\n", 1)
+
+
+@pytest.mark.parametrize("style", ["1", "2"])
+def test_keep_why_rules_in_prompt(monkeypatch, style):
+    # ASK_SKILLS=2: 원인·평가 규칙은 지금 지시문과 같은 자리에 두고, 나머지 6묶음만 펼친다
+    monkeypatch.setenv("ANSWER_STYLE", style)
+    monkeypatch.setenv("ASK_SKILLS", "0")
+    whole = agent.system()
+    monkeypatch.setenv("ASK_SKILLS", "2")
+    core = agent.system()
+    why = agent._skill_text("why-questions", skills.load()["why-questions"]["body"])
+    assert why in core and "- why-questions:" not in core
+    bodies = [item["body"] for n, item in skills.load().items() if n != "why-questions"]
+    assert all(b not in core for b in bodies)
+    catalog = lines(skills.catalog(why=False))
+    assert sorted(lines(whole)) == sorted([x for x in lines(core) if x not in catalog] + [x for b in bodies for x in lines(b)])
+    assert "why-questions" not in skills.tool(why=agent._skill_why())["input_schema"]["properties"]["names"]["items"]["enum"]

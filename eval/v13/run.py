@@ -1,9 +1,10 @@
 """평가 13판: 같은 문항을 A(지금 지시문)와 B(ASK_SKILLS=1)로 번갈아 돌린다. Claude API를 부른다(유료, claude-haiku-5-5).
 
-실행: python -m eval.v13.run [--cap 1.5]
+실행: python -m eval.v13.run [--cap 1.5] [--arms AB]
+- C(ASK_SKILLS=2, 원인·평가 규칙은 지시문에 둠)는 PLAN-C.md: python -m eval.v13.run --arms C --cap 0.6
 - 문항마다 A 다음 B. 같은 날 같은 DB로 잰다
 - 결과는 eval/<판>/agent/claude-haiku-5-5-v13A, -v13B. 이미 있는 답은 건너뛴다
-- 누적 비용이 상한을 넘으면 멈춘다(이미 쓴 답의 비용까지 센다)
+- 누적 비용이 상한을 넘으면 멈춘다(이번에 돌리는 방식의 이미 쓴 답 비용까지 센다)
 """
 import argparse
 import json
@@ -19,7 +20,7 @@ from eval.run_agent import ROOT, v2_questions
 MODEL = "claude-haiku-5-5"
 PRICE = {"input_tokens": 0.10, "output_tokens": 0.50, "cache_read_input_tokens": 0.01, "cache_creation_input_tokens": 0.125}  # $/백만 토큰 (Haiku)
 SETS = ["v3", "v5", "v6", "v7", "v8", "v9"]
-ARMS = {"A": "0", "B": "1"}
+ARMS = {"A": "0", "B": "1", "C": "2"}
 
 
 def cost(usage: dict) -> float:
@@ -47,17 +48,19 @@ def folder(set_name: str, arm: str):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--cap", type=float, default=1.5)
+    parser.add_argument("--arms", default="AB")
     args = parser.parse_args()
+    arms = {a: ARMS[a] for a in args.arms}
     items = [(s, *row) for s in SETS for row in v2_questions(s)]
     spent = 0.0
     for s, number, *_ in items:
-        for arm in ARMS:
+        for arm in arms:
             path = folder(s, arm) / f"{number}.json"
             if path.exists():
                 spent += cost(json.loads(path.read_text(encoding="utf-8"))["usage"])
     print(f"문항 {len(items)}개, 이미 쓴 비용 ${spent:.4f}", flush=True)
     for s, number, question, gold, as_of in items:
-        for arm, flag in ARMS.items():
+        for arm, flag in arms.items():
             path = folder(s, arm) / f"{number}.json"
             if path.exists():
                 continue
