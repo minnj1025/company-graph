@@ -1,0 +1,93 @@
+{
+ "question": "SK하이닉스 지분 5% 넘게 갖고 있던 캐피탈그룹, 아직도 5% 넘게 갖고 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "아니요. 현재는 5% 아래입니다. 조회 시점(2026-10-16)까지 가장 최근 보고는 2026-06-09 CRMC의 3.53%이며, 그 보고에서 5% 미만으로 내려갔다고 나옵니다.\n\n이 질문의 캐피탈그룹은 The Capital Group Companies, Inc.와 그 산하 운용사 Capital Research and Management Company(CRMC)로 보입니다. 보고 주체가 2025년 10월에 바뀌었습니다.\n\n- 2025-07-08: The Capital Group Companies, Inc. 7.23% (접수번호 20250708000256)\n- 2025-10-14: The Capital Group Companies, Inc.가 대표보고자 변동으로 폐지보고 (20251014000028). 같은 날 CRMC가 6.84%로 신규 보고 (20251014000142)\n- 2026-02-09: CRMC 5.05%, 투자자금 회수 목적 처분 (20260209000019)\n- 2026-06-09: CRMC 3.53%, 5% 미만으로 내려감 (20260609000049)\n\n이 DB의 5% 보고는 2024년 10월부터 모았고, 그 뒤 CRMC의 보고는 없습니다. 다만 DB에 없는 보고가 있을 가능성까지는 확인할 수 없습니다.",
+ "followups": [
+  "SK하이닉스 5% 이상 주주는 지금 누구인가",
+  "SK하이닉스 임원들이 최근 90일간 주식을 얼마나 늘리거나 줄였나",
+  "SK스퀘어의 SK하이닉스 지분 변화 내역"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK하이닉스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "holders-insiders"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 630
+  },
+  {
+   "tool": "get_major_holders",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-16",
+    "since": "2024-10-01"
+   },
+   "error": null,
+   "total": null,
+   "chars": 3548
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 20,
+   "chars": 12663
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2033
+    ],
+    "views": [
+     {
+      "kind": "holders",
+      "company_id": 2033,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 515
+  }
+ ],
+ "cited": [
+  "20250708000256",
+  "20251014000028",
+  "20251014000142",
+  "20260209000019",
+  "20260609000049"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2080,
+  "cache_read_input_tokens": 82419,
+  "cache_creation_input_tokens": 11336
+ },
+ "seconds": 13.0,
+ "number": "H03",
+ "gold": "",
+ "arm": "B"
+}

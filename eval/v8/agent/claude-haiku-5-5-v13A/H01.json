@@ -1,0 +1,59 @@
+{
+ "question": "국민연금이 네이버 지분 몇 % 갖고 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "국민연금공단의 네이버(NAVER) 지분은 **9.49%**입니다. 2026-10-02 제출된 5% 보고(접수번호 20261002000471)에 따른 값입니다.\n\n- 보유 주식 수: 14,432,457주\n- 직전 보고 대비: +1,541,541주, +1.27%p\n- 보고 사유: \"주식소각, 유상증자 및 단순추가취득/처분\"\n\n국민연금의 직전 5% 보고는 2026-07-01(접수번호 20260701000252)로, 그때 보유비율은 8.22%였고 보고 사유는 \"단순추가취득/처분\"이었습니다.\n\n이 값은 5% 보고 기준이며, 조회 시점(2026-10-16)까지 제출된 가장 최근 보고입니다. 사업보고서의 최대주주 현황과는 다른 자료입니다.",
+ "followups": [
+  "네이버의 최근 3개월 주가 수익률은 어떤가요?",
+  "네이버의 최근 자사주 취득·소각 결정은 어떤 것이 있나요?",
+  "네이버의 5% 이상 주주 변화를 2024년 이후로 보면 어떤가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "네이버"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_major_holders",
+   "input": {
+    "company_id": 1841,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1390
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1841
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260701000252",
+  "20261002000471"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 865,
+  "cache_read_input_tokens": 85248,
+  "cache_creation_input_tokens": 1643
+ },
+ "seconds": 6.9,
+ "number": "H01",
+ "gold": "",
+ "arm": "A"
+}

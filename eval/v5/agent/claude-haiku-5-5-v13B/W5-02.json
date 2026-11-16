@@ -1,0 +1,35 @@
+{
+ "question": "알테오젠 목표가 얼마로 봐?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "이 DB에는 증권사의 목표주가가 없어서 알테오젠(196170, 코스닥)의 목표가는 알려 드릴 수 없습니다. 목표가는 증권사 리서치 보고서에 나오는 값이라 이 DB의 공시 자료에는 들어 있지 않습니다.\n\n대신 DB에서 확인할 수 있는 것은 다음과 같습니다.\n- 최근 실적과 재무 상태(분기별 매출·영업이익, 부채비율, 유동비율)\n- 최근 1주·1개월·3개월 수익률과 같은 제품을 파는 종목과의 비교\n- 공급계약, 지분 변동, 자본 변동(증자·사채·자기주식) 공시\n- 주요 제품과 매출 비중",
+ "followups": [
+  "알테오젠 최근 분기 실적과 재무 상태는 어떤가요?",
+  "알테오젠 최근 3개월 수익률을 같은 제품을 파는 종목과 비교하면 어떤가요?",
+  "알테오젠이 최근 맺은 공급계약은 무엇이 있나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "알테오젠"
+   },
+   "error": null,
+   "total": null,
+   "chars": 191
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 6,
+  "output_tokens": 729,
+  "cache_read_input_tokens": 35440,
+  "cache_creation_input_tokens": 524
+ },
+ "seconds": 4.9,
+ "number": "W5-02",
+ "gold": "",
+ "arm": "B"
+}

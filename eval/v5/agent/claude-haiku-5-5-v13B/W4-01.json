@@ -1,0 +1,102 @@
+{
+ "question": "넷마블이랑 카카오게임즈 중에 어디가 모바일 게임 매출 비중이 더 커?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "넷마블이 더 큽니다. 2026년 반기보고서 기준 모바일 게임 매출 비중은 넷마블 81.43%, 카카오게임즈 68.2%입니다.\n\n- 넷마블: 모바일 81.43%, PC/콘솔 13.69%, 기타 4.88% (접수번호 20260814002548)\n- 카카오게임즈: 모바일게임 68.2%, PC게임 31.8% (접수번호 20260813001508). 카카오게임즈 표의 모바일 줄은 \"오딘, 아키에이지 워 외\"로 적혀 있습니다.\n\n두 회사 모두 같은 반기보고서 기준입니다.",
+ "followups": [
+  "넷마블의 모바일 게임 주요 제품과 매출 구성은?",
+  "카카오게임즈의 최근 사업 개요와 주요 제품은?",
+  "넷마블과 카카오게임즈의 분기 실적을 비교하면?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "넷마블"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오게임즈"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "topic-search"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1265
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 4011,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 990
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3912,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 901
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     4011,
+     3912
+    ],
+    "views": [
+     {
+      "company_id": 4011,
+      "kind": "revenue",
+      "as_of": "2026-10-08"
+     },
+     {
+      "company_id": 3912,
+      "kind": "revenue",
+      "as_of": "2026-10-08"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 577
+  }
+ ],
+ "cited": [
+  "20260813001508",
+  "20260814002548"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1041,
+  "cache_read_input_tokens": 76066,
+  "cache_creation_input_tokens": 4117
+ },
+ "seconds": 7.5,
+ "number": "W4-01",
+ "gold": "",
+ "arm": "B"
+}

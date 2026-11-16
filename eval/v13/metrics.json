@@ -1,0 +1,157 @@
+{
+ "by_set": {
+  "v3-A": {
+   "n": 37,
+   "cost": 0.1383,
+   "cost_per_q": 0.00374,
+   "seconds": 19.4,
+   "lookups": 2.46,
+   "cited_not_in_results": 0,
+   "answer_chars": 1089,
+   "stopped": 0
+  },
+  "v3-B": {
+   "n": 37,
+   "cost": 0.1282,
+   "cost_per_q": 0.00347,
+   "seconds": 16.4,
+   "lookups": 2.35,
+   "cited_not_in_results": 0,
+   "answer_chars": 913,
+   "stopped": 0
+  },
+  "v5-A": {
+   "n": 24,
+   "cost": 0.1013,
+   "cost_per_q": 0.00422,
+   "seconds": 18.9,
+   "lookups": 5.38,
+   "cited_not_in_results": 0,
+   "answer_chars": 1334,
+   "stopped": 0
+  },
+  "v5-B": {
+   "n": 24,
+   "cost": 0.0908,
+   "cost_per_q": 0.00378,
+   "seconds": 16.6,
+   "lookups": 5.12,
+   "cited_not_in_results": 0,
+   "answer_chars": 1081,
+   "stopped": 0
+  },
+  "v6-A": {
+   "n": 20,
+   "cost": 0.0893,
+   "cost_per_q": 0.00446,
+   "seconds": 20.4,
+   "lookups": 3.25,
+   "cited_not_in_results": 1,
+   "answer_chars": 1427,
+   "stopped": 0
+  },
+  "v6-B": {
+   "n": 20,
+   "cost": 0.0843,
+   "cost_per_q": 0.00421,
+   "seconds": 21.2,
+   "lookups": 3.1,
+   "cited_not_in_results": 0,
+   "answer_chars": 1269,
+   "stopped": 0
+  },
+  "v7-A": {
+   "n": 21,
+   "cost": 0.0446,
+   "cost_per_q": 0.00212,
+   "seconds": 9.0,
+   "lookups": 2.38,
+   "cited_not_in_results": 0,
+   "answer_chars": 635,
+   "stopped": 0
+  },
+  "v7-B": {
+   "n": 21,
+   "cost": 0.0439,
+   "cost_per_q": 0.00209,
+   "seconds": 8.4,
+   "lookups": 2.33,
+   "cited_not_in_results": 0,
+   "answer_chars": 497,
+   "stopped": 0
+  },
+  "v8-A": {
+   "n": 20,
+   "cost": 0.0525,
+   "cost_per_q": 0.00262,
+   "seconds": 10.5,
+   "lookups": 2.5,
+   "cited_not_in_results": 0,
+   "answer_chars": 711,
+   "stopped": 0
+  },
+  "v8-B": {
+   "n": 20,
+   "cost": 0.0551,
+   "cost_per_q": 0.00275,
+   "seconds": 10.9,
+   "lookups": 2.85,
+   "cited_not_in_results": 0,
+   "answer_chars": 625,
+   "stopped": 0
+  },
+  "v9-A": {
+   "n": 20,
+   "cost": 0.0367,
+   "cost_per_q": 0.00184,
+   "seconds": 8.4,
+   "lookups": 2.25,
+   "cited_not_in_results": 0,
+   "answer_chars": 613,
+   "stopped": 0
+  },
+  "v9-B": {
+   "n": 20,
+   "cost": 0.0386,
+   "cost_per_q": 0.00193,
+   "seconds": 8.9,
+   "lookups": 2.35,
+   "cited_not_in_results": 0,
+   "answer_chars": 610,
+   "stopped": 0
+  }
+ },
+ "total": {
+  "A": {
+   "n": 142,
+   "cost": 0.4627,
+   "cost_per_q": 0.00326,
+   "seconds": 15.1,
+   "cited_not_in_results": 1
+  },
+  "B": {
+   "n": 142,
+   "cost": 0.4409,
+   "cost_per_q": 0.0031,
+   "seconds": 14.1,
+   "cited_not_in_results": 0
+  }
+ },
+ "skill_hit": {
+  "hit": 111,
+  "total": 122,
+  "miss": [
+   "v3 C04: 기대 company-overview, 읽음 없음",
+   "v3 C06: 기대 company-overview, 읽음 없음",
+   "v5 W1-05: 기대 why-questions, 읽음 ['price-moves']",
+   "v5 W2-03: 기대 why-questions, 읽음 ['company-overview']",
+   "v5 W4-01: 기대 why-questions, 읽음 ['topic-search']",
+   "v5 W4-02: 기대 why-questions, 읽음 ['holders-insiders']",
+   "v5 W5-01: 기대 why-questions, 읽음 없음",
+   "v5 W5-02: 기대 why-questions, 읽음 없음",
+   "v5 W5-03: 기대 why-questions, 읽음 없음",
+   "v5 W5-04: 기대 why-questions, 읽음 ['price-moves']",
+   "v8 H02: 기대 holders-insiders, 읽음 없음"
+  ]
+ }
+}

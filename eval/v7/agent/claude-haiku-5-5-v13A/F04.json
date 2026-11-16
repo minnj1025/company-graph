@@ -1,0 +1,58 @@
+{
+ "question": "현대차 올해 상반기 매출 알려줘",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "현대자동차(연결 기준)의 2026년 상반기 누적 매출은 95조 1,542억 원이고, 전년 같은 기간 대비 2.65% 증가했습니다. (근거: 2026 상반기 보고서, 접수번호 20260814003521)\n\n참고로 2026년 2분기 단독 매출은 49조 2,153억 원(전년 同期 대비 1.92%)입니다.",
+ "followups": [
+  "현대자동차 2026년 상반기 영업이익과 순이익은 얼마야?",
+  "현대자동차 2026년 2분기 실적 추이를 분기별로 보여줘",
+  "현대자동차의 제품별 매출 비중은 어떻게 돼?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5704
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     54
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260814003521"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 571,
+  "cache_read_input_tokens": 87431,
+  "cache_creation_input_tokens": 3866
+ },
+ "seconds": 5.6,
+ "number": "F04",
+ "gold": "",
+ "arm": "A"
+}

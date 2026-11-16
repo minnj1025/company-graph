@@ -1,0 +1,100 @@
+{
+ "question": "농심이랑 오리온 중에 지주회사가 들고 있는 지분율이 어디가 더 높아?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "오리온이 더 높습니다. 지주회사가 든 지분은 오리온홀딩스가 오리온의 37.37%, 농심홀딩스가 농심의 32.72%입니다. 두 값 모두 2025-12-31 기준입니다.\n\n- 오리온: 오리온홀딩스 37.37% (주식 14,775,000주, 사업보고서 타법인출자 현황 20260318000838, 최대주주 현황 20260318001320)\n- 농심: 농심홀딩스 32.72% (주식 1,990,000주, 타법인출자 현황 20260318001210, 최대주주 현황 20260311003892)\n\n두 지주회사 지분 차이는 4.65%p입니다. 오리온홀딩스는 최대주주 본인으로 적혀 있고, 농심홀딩스도 농심의 최대주주로 적혀 있습니다. 이 DB는 최대주주와 특수관계인의 지분만 담고 있어서, 5% 이상 주주 전체나 2026년 이후의 지분 변화는 여기서 확인되지 않습니다.",
+ "followups": [
+  "오리온홀딩스의 계열 지분 구조는 어떻게 되어 있나?",
+  "농심홀딩스가 농심 외에 지분을 가진 회사는 어디인가?",
+  "오리온 최근 5% 대량보유 보고 현황은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "holders-insiders"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 630
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "농심"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "오리온"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3379,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 5165
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2989,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 12,
+   "chars": 8401
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3379,
+     2989
+    ],
+    "also": [
+     3537,
+     2824
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 291
+  }
+ ],
+ "cited": [
+  "20260311003892",
+  "20260318000838",
+  "20260318001210",
+  "20260318001320"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1586,
+  "cache_read_input_tokens": 81526,
+  "cache_creation_input_tokens": 10185
+ },
+ "seconds": 10.6,
+ "number": "W4-02",
+ "gold": "",
+ "arm": "B"
+}

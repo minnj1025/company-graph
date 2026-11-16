@@ -1,0 +1,67 @@
+{
+ "question": "최태원 회장이 최근에 SK하이닉스 주식 샀어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "최태원 회장은 최근 90일(2026-07-19~2026-10-16) 안에 SK하이닉스 주식을 늘린 것으로 보고됐습니다. 2026-07-31 접수된 소유상황보고에 증감 +3,620주, 보고 뒤 소유 주식 수 3,620주로 나옵니다 (접수번호 20260731000082). 회장은 비등기임원입니다.\n\n이 보고는 접수일 기준이며, 실제 거래일은 이 DB에 없습니다. 거래 단가와 금액, 장내·장외 구분, 매수 사유도 확인되지 않습니다. 보고 뒤 비율은 표에서 0.0%로 나와 여기서는 적지 않았습니다.\n\n같은 기간 다른 내부자 보고는 다음과 같습니다.\n- 전체 보고 10건(10명) 중 늘린 보고 9건 3,924주, 줄인 보고 1건 595주로, 순증감은 +3,329주입니다.\n- 김성래 담당(비등기임원)이 595주를 줄였습니다 (20260821000615).\n- 나머지는 독립이사 등 소폭 증가 또는 지분 소량 증가 보고입니다.",
+ "followups": [
+  "SK하이닉스 최태원 회장의 지분 구조는 어떻게 되나?",
+  "SK하이닉스 최근 1년 내부자 매매 흐름은 어땠나?",
+  "SK하이닉스 최근 자기주식 취득이나 유상증자 결정이 있었나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK하이닉스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_insider_trades",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 2693
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2033
+    ],
+    "views": [
+     {
+      "kind": "insiders",
+      "company_id": 2033,
+      "as_of": "2026-10-16"
+     }
+    ],
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 528
+  }
+ ],
+ "cited": [
+  "20260731000082",
+  "20260821000615"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1251,
+  "cache_read_input_tokens": 85827,
+  "cache_creation_input_tokens": 2589
+ },
+ "seconds": 8.2,
+ "number": "H11",
+ "gold": "",
+ "arm": "A"
+}

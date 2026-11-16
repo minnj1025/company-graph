@@ -1,0 +1,72 @@
+{
+ "question": "셀트리온 올해 무상증자 했다던데 몇 주야? 1주당 몇 주 줘?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "셀트리온은 2026년 들어 무상증자를 한 번 결정했습니다. 신주는 10,920,342주이고, 1주당 0.05주를 배정하는 조건입니다.\n\n- **결정일:** 2026-05-21 (접수번호 20260521000101)\n- **신주 수:** 10,920,342주 (결정 전 발행주식총수 221,633,364주의 4.93%)\n- **1주당 배정:** 0.05주\n- **신주 상장일:** 2026년 06월 30일\n\n이 자료는 결정 공시만 담고 있습니다. 실제로 신주가 발행됐는지, 결정이 철회되지 않았는지는 확인할 수 없습니다.",
+ "followups": [
+  "셀트리온의 2026년 유상증자나 전환사채 결정이 있었나?",
+  "셀트리온의 최근 배당과 자기주식 취득 결정은 어땠나?",
+  "셀트리온의 최대주주와 특수관계인 지분은 어떻게 되나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "셀트리온"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_capital_events",
+   "input": {
+    "company_id": 3047,
+    "as_of": "2026-10-16",
+    "kinds": [
+     "bonus_issue",
+     "rights_bonus_issue"
+    ],
+    "since": "2026-01-01"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 821
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3047
+    ],
+    "views": [
+     {
+      "company_id": 3047,
+      "kind": "dilution",
+      "as_of": "2026-10-16"
+     }
+    ],
+    "company_id": 3047,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 432
+  }
+ ],
+ "cited": [
+  "20260521000101"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1029,
+  "cache_read_input_tokens": 85027,
+  "cache_creation_input_tokens": 1707
+ },
+ "seconds": 7.2,
+ "number": "D05",
+ "gold": "",
+ "arm": "A"
+}

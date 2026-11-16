@@ -1,0 +1,125 @@
+{
+ "question": "포스코홀딩스 주가는 왜 이렇게 못 오르는 거야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "POSCO홀딩스의 주가가 왜 오르지 않는지는 이 DB로 원인을 확정할 수 없습니다. 아래는 확인되는 사실만 정리한 것이며, 원인을 판단하거나 전망하지 않습니다.\n\n**주가 흐름 (2026-10-08 기준, 종가 기준 수익률)**\n- 최근 1주: 0.0% (유가증권 시장 중앙값 -0.76%, 같은 제품 종목 중앙값 -2.48%)\n- 최근 1개월: -6.7% (시장 중앙값 -2.27%, 같은 제품 종목 중앙값 -2.48%). 시장보다 4.43%p 낮습니다.\n- 최근 3개월: 3.2% (시장 중앙값 2.99%, 같은 제품 종목 중앙값 8.46%)\n- 최근 30일 안에 시장과 크게 다르게 움직인 날은 조회되지 않았습니다. 당일 기사도 확인되지 않았습니다.\n\n**실적 (연결 기준)**\n- 2026년 2분기: 매출 19조 2,587억 원(전년 동기 대비 +9.7%), 영업이익 8,190억 원(+34.89%), 순이익 7,613억 원(+807.99%), 영업이익률 4.25%\n- 2026년 상반기 누적: 매출 37조 1,348억 원(+6.12%), 영업이익 1조 5,258억 원(+29.79%), 순이익 1조 3,047억 원(+204.78%)\n- 2025년 연간: 영업이익 1조 8,271억 원(-15.94%), 순이익 5,044억 원(-46.77%)\n- 2026년 6월 말 부채비율 70.99%(같은 시장 중앙값 96.7%), 유동비율 198.29%(중앙값 133.47%)\n\n**사업 구성 (2026 반기보고서, rcept_no 20260814000957)**\n- 열연 강판 21.0%, 냉연 강판 32.8%, 스테인리스 강판 12.5%, 기타제품 등 33.7%. 모두 철강부문입니다.\n\n**공시 (이 DB 기준)**\n- 조회 시점까지 이 회사가 공시한 단일판매·공급계약은 없습니다.\n\n**이 DB로 알 수 없는 것**\n- 업황, 철강 원자재 가격, 증권사 의견과 목표주가, 실적 전망, 수급과 외국인·기관 매매는 이 DB에 없습니다.\n- 사업부문별 실적도 없어서 철강 외 사업이 주가에 어떤 영향을 줬는지는 확인할 수 없습니다.",
+ "followups": [
+  "POSCO홀딩스 최근 1개월 수익률을 같은 철강 종목(현대제철, 동국산업 등)과 비교해 줘",
+  "POSCO홀딩스의 최근 30일 안에 함께 움직인 종목이 있었는지 알려 줘",
+  "POSCO홀딩스 최근 분기 실적 추이를 보여 줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "포스코홀딩스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 197
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "why-questions",
+     "price-moves"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1776
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 2264,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1256
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 2264,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 1072
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 2264,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5638
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2264,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1221
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "company_id": 2264,
+    "as_of": "2026-10-08",
+    "lookback_days": 30
+   },
+   "error": null,
+   "total": null,
+   "chars": 697
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2264
+    ],
+    "views": [
+     {
+      "kind": "returns",
+      "company_id": 2264,
+      "as_of": "2026-10-08"
+     },
+     {
+      "kind": "financials",
+      "company_id": 2264,
+      "as_of": "2026-10-08"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 642
+  }
+ ],
+ "cited": [
+  "20260814000957"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2339,
+  "cache_read_input_tokens": 81608,
+  "cache_creation_input_tokens": 9876
+ },
+ "seconds": 15.0,
+ "number": "W1-01",
+ "gold": "",
+ "arm": "B"
+}

@@ -1,0 +1,80 @@
+{
+ "question": "카카오 임원들 최근 3개월 동안 주식 팔았어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "네, 최근 3개월(2026-07-18~2026-10-16) 동안 카카오 임원 2명이 주식을 줄였다고 보고했습니다. 늘린 보고는 없고, 줄인 주식은 합계 15,300주입니다.\n\n| 보고자 | 직위 | 감소 주식수 | 보고 후 보유 주식수 | 접수번호 |\n|---|---|---|---|---|\n| 양현서 | 상생사업 성과리더 (비등기임원) | -7,800 | 6,340 | 20260918000338 |\n| 황유지 | 메이커스 성과리더 (비등기임원) | -7,500 | 4,251 | 20260918000328 |\n\n- 두 건 모두 보고 접수일이 2026-09-18입니다. 실제 거래일은 이 자료에 없습니다.\n- 거래 단가와 금액, 장내·장외 구분, 매도 사유(증여·상속 등)는 이 DB에 없어서 알 수 없습니다.\n- 이 기간의 보고는 이 두 건뿐입니다. 3개월 전 이전이나 이후에 있었던 매매는 포함하지 않았습니다.",
+ "followups": [
+  "카카오 임원 주식 매매를 최근 1년으로 넓히면 어떤가요?",
+  "카카오의 5% 이상 주주 변화는 어떤가요?",
+  "카카오의 최근 자본 변동(증자·자사주) 공시가 있었나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "holders-insiders"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 630
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_insider_trades",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-16",
+    "since": "2026-07-18",
+    "until": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 982
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2254
+    ],
+    "views": [
+     {
+      "kind": "insiders",
+      "company_id": 2254,
+      "as_of": "2026-10-16",
+      "since": "2026-07-18"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 522
+  }
+ ],
+ "cited": [
+  "20260918000328",
+  "20260918000338"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1126,
+  "cache_read_input_tokens": 73453,
+  "cache_creation_input_tokens": 2415
+ },
+ "seconds": 7.3,
+ "number": "H10",
+ "gold": "",
+ "arm": "B"
+}

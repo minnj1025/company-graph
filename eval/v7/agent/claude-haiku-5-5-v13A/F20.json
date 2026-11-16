@@ -1,0 +1,70 @@
+{
+ "question": "지주회사 LG 작년 영업이익, 연결이랑 별도 각각 얼마야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "LG의 2025년 연간 영업이익은 연결 9,122억 원, 별도 5,971억 원입니다.\n\n| 구분 | 2025년 영업이익 | 전년 대비 | 근거 접수번호 |\n|---|---|---|---|\n| 연결(CFS) | 9,122억 원 | -5.65% | 20260318001025 |\n| 별도(OFS) | 5,971억 원 | -8.8% | 20260318001025 |\n\n연결 매출은 7조 2,526억 원이고, 별도 매출은 8,850억 원입니다. 별도 영업이익률은 67.47%로 연결(12.58%)보다 훨씬 높습니다. 지주회사라 별도 재무제표에는 자회사 배당 등 지주사 자체 수익이 주로 잡히고, 연결에는 자회사들의 영업 성과가 모두 합쳐져 있기 때문으로 보입니다. 다만 이 DB에는 수익 구성에 대한 세부 내역이 없어 이는 추정입니다.\n\n이 DB로 알 수 없는 것은 2026년 실적 전망, 사업부문별 실적, 현금흐름, 주당순이익 같은 항목입니다.",
+ "followups": [
+  "LG의 2026 상반기 연결 영업이익은 얼마야?",
+  "LG 최대주주와 주요 계열회사는 어디야?",
+  "LG 최근 1년 주요 공급계약이나 지분 취득·처분 공시가 있어?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LG"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 1604,
+    "as_of": "2026-10-16",
+    "basis": "CFS"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5593
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 1604,
+    "as_of": "2026-10-16",
+    "basis": "OFS"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5511
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1604
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  }
+ ],
+ "cited": [
+  "20260318001025"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1069,
+  "cache_read_input_tokens": 90643,
+  "cache_creation_input_tokens": 7080
+ },
+ "seconds": 7.3,
+ "number": "F20",
+ "gold": "",
+ "arm": "A"
+}

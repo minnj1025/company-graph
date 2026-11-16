@@ -1,0 +1,67 @@
+{
+ "question": "최근 3개월 사이에 하나금융지주 지분을 늘린 5% 주주 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "조회 시점(2026-10-16) 기준 최근 3개월(2026-07-16 이후) 안에 하나금융지주 지분을 늘린 5% 보고자는 **1곳, CapitalResearchandManagementCompany**입니다.\n\n- **CapitalResearchandManagementCompany**: 2026-10-08 접수된 보고에서 보유비율 6.88%, 전 보고 대비 +1.33%p, 주식 수 18,634,344주(+3,197,793주)입니다. 보고 사유는 \"단순투자 목적으로 발행회사의 주식 장내매수\"입니다. (접수번호 20261008000058)\n\n3개월 이전에 늘어난 보고도 있으나 기간 밖이라 뺐습니다. BlackRockFundAdvisors는 2026-02-26에 7.11%(+1.01%p)로 보고했습니다. (접수번호 20260226006888) 기간 안에 줄인 5% 보고자는 없었습니다.\n\n이 DB는 5% 보고의 접수일과 보고 사유만 있고, 실제 거래일이나 거래 단가, 장내·장외 구분은 알 수 없습니다. 보고 비율은 대표보고자와 특별관계자를 합친 값입니다.",
+ "followups": [
+  "하나금융지주 최근 90일 임원·주요주주 주식 증감은 어떤가?",
+  "하나금융지주 최대주주와 특수관계인 지분은 얼마인가?",
+  "BlackRockFundAdvisors가 하나금융지주에 대해 낸 5% 보고 내역은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "하나금융지주"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_major_holders",
+   "input": {
+    "company_id": 4135,
+    "as_of": "2026-10-16",
+    "since": "2026-07-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1515
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     4135
+    ],
+    "views": [
+     {
+      "kind": "holders",
+      "company_id": 4135,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 558
+  }
+ ],
+ "cited": [
+  "20260226006888",
+  "20261008000058"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1311,
+  "cache_read_input_tokens": 85332,
+  "cache_creation_input_tokens": 2128
+ },
+ "seconds": 9.0,
+ "number": "H05",
+ "gold": "",
+ "arm": "A"
+}

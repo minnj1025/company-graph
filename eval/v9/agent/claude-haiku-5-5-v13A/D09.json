@@ -1,0 +1,58 @@
+{
+ "question": "현대차 작년에 배당으로 총 얼마 나갔어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "현대자동차의 2025 사업연도(작년) 현금배당금 총액은 **2조 6,183억 원**입니다.\n\n- 주당 현금배당금: 보통주 10,000원, 우선주 10,100원\n- 현금배당성향: 27.7% (연결 기준)\n- 참고로 2024 사업연도는 3조 1,478억 원, 2023 사업연도는 2조 9,987억 원이었습니다.\n\n근거: 사업보고서 접수번호 20260318001394 (2025 사업보고서의 당기·전기·전전기 값을 함께 담고 있습니다).\n\n이 DB로 알 수 없는 것: 분기·중간배당의 회차별 금액과 앞으로의 배당 계획은 없습니다.",
+ "followups": [
+  "현대자동차 2025년 자기주식 취득 결정 금액은 얼마였나?",
+  "현대자동차 최근 1년 주요 증자·사채 결정은 무엇이 있었나?",
+  "현대자동차 최근 분기 실적 추이는 어떤가?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_dividends",
+   "input": {
+    "company_id": 54,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1273
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     54
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260318001394"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 917,
+  "cache_read_input_tokens": 85032,
+  "cache_creation_input_tokens": 1682
+ },
+ "seconds": 6.9,
+ "number": "D09",
+ "gold": "",
+ "arm": "A"
+}

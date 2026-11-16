@@ -1,0 +1,84 @@
+{
+ "question": "카카오 전환사채 지금까지 주식으로 몇 주나 전환됐어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "이 DB로는 카카오 전환사채가 실제로 주식으로 몇 주나 전환됐는지 알 수 없습니다. DB는 사채 발행 결정 공시만 모으고, 실제 전환 주식 수는 없습니다.\n\n확인된 것은 2025년 5월 27일에 낸 제14회 전환사채 결정 공시(접수번호 20250527000422)입니다.\n- 전환사채 종류: 무기명식 무보증 사모 전환사채, 발행 결정일 2025-05-22\n- 전환될 수 있는 주식 수: 1,337,246주 (이는 전환되면 생길 수 있는 주식 수이며, 실제로 생긴 주식이 아닙니다)\n- 금액: 502억 원, 전환가액 37,527원\n- 전환청구 기간: 2026-05-30 ~ 2028-05-23, 만기 2028년 05월 30일\n- 자금 용도: 타법인 증권 취득자금\n\n2024년 이후 카카오의 전환사채 결정은 이 1건뿐이고, 정정이나 철회 공시도 확인되지 않았습니다. 다만 실제 전환 청구와 주식 발행 결과는 이 DB에 없으므로, 지금까지 전환된 주식 수는 DART의 해당 사채 관련 공시나 주주총회·사업보고서의 주식 변동 내역에서 확인해야 합니다.",
+ "followups": [
+  "카카오 전환사채 전환가액과 발행 조건은 어떻게 되나?",
+  "카카오 최근 자기주식 취득 결정 내역은?",
+  "카카오 최근 유상증자나 감자 결정이 있었나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "capital-dividends"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 465
+  },
+  {
+   "tool": "get_capital_events",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-16",
+    "kinds": [
+     "cb"
+    ]
+   },
+   "error": null,
+   "total": 1,
+   "chars": 960
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-16",
+    "doc_type": "event"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1635
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2254
+    ],
+    "views": []
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [
+  "20250527000422"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1506,
+  "cache_read_input_tokens": 93899,
+  "cache_creation_input_tokens": 3461
+ },
+ "seconds": 9.9,
+ "number": "D18",
+ "gold": "",
+ "arm": "B"
+}

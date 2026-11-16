@@ -1,0 +1,80 @@
+{
+ "question": "SK하이닉스 지분 5% 넘게 갖고 있던 캐피탈그룹, 아직도 5% 넘게 갖고 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "아니요, 최신 대량보유 보고 기준으로 5% 아래입니다. 캐피탈그룹 계열(The Capital Group Companies, Inc. 및 Capital Research and Management Company) 은 2026년 6월 9일 보고(접수번호 20260609000049)에서 보유비율 3.53%로 \"5% 미만으로 내려감\" 상태가 되었습니다.\n\n**시간 순서 (5% 대량보유 보고 기준)**\n\n| 보고일 | 보고자 | 보유비율 | 보고 사유 | 접수번호 |\n|---|---|---|---|---|\n| 2024-12-16 | The Capital Group Companies, Inc. | 5.09% | 신규보고(5% 이상 진입) | 20241216000307 |\n| 2025-07-08 | The Capital Group Companies, Inc. | 7.23% | 특별관계자 변동 | 20250708000256 |\n| 2025-10-14 | Capital Research and Management Company | 6.84% | 대표보고자 변경에 따른 신규 보고 | 20251014000142 |\n| 2026-02-09 | Capital Research and Management Company | 5.05% | 투자자금 회수 목적 처분 | 20260209000019 |\n| 2026-06-09 | Capital Research and Management Company | 3.53% | 투자자금 회수 목적 장내·장외 처분 (5% 미만으로 내려감) | 20260609000049 |\n\n- 2025년 10월 14일에는 The Capital Group Companies, Inc. 가 대표보고자 변동으로 폐지보고를 냈고(20251014000028), 같은 날 Capital Research and Management Company 가 신규 보고를 했습니다.\n- 2026년 2월 9일 보고에서는 5.05%로 아직 5% 이상이었고, 6월 9일 보고에서 5% 아래로 내려갔습니다.\n- 이후 이 주주의 5% 보고는 조회 시점(2026-10-16)까지 없습니다.\n\n이 DB는 사업보고서의 최대주주 현황과 5% 대량보유 보고만 가지고 있어서, 보고 이후 6월 9일 이후의 보유 변화는 확인할 수 없습니다. 보고 사유에 적힌 것은 \"투자자금 회수 목적\"이고, 실제 거래 단가나 거래일은 DB에 없습니다.\n\n참고로 SK하이닉스의 5% 이상 보고자 중 현재 가장 큰 쪽은 SK스퀘어로, 2026년 8월 5일 보고 기준 보유비율이 20.01%(접수번호 20260805000440)입니다.",
+ "followups": [
+  "SK하이닉스의 최근 5% 대량보유 보고자 전체를 보여줘",
+  "SK하이닉스 임원·주요주주의 최근 90일 주식 증감은?",
+  "SK하이닉스 최대주주 SK스퀘어의 지분 구조는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK하이닉스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_major_holders",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-16",
+    "since": "2024-10-01"
+   },
+   "error": null,
+   "total": null,
+   "chars": 3548
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2033,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 20,
+   "chars": 12663
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2033
+    ],
+    "also": [
+     3617
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20241216000307",
+  "20250708000256",
+  "20251014000028",
+  "20251014000142",
+  "20260209000019",
+  "20260609000049",
+  "20260805000440"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2150,
+  "cache_read_input_tokens": 93731,
+  "cache_creation_input_tokens": 10580
+ },
+ "seconds": 12.4,
+ "number": "H03",
+ "gold": "",
+ "arm": "A"
+}

@@ -1,0 +1,58 @@
+{
+ "question": "네이버 작년 영업이익률은?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "네이버(NAVER)의 2025년 연간 영업이익률은 18.35%입니다 (연결 기준).\n\n- 매출액: 12조 350억 원\n- 영업이익: 2조 2,081억 원\n- 근거: 2025 사업연도 사업보고서 (접수번호 20260313001021)\n\n참고로 같은 보고서 기준 2024년 연간 영업이익률은 18.43%였습니다.",
+ "followups": [
+  "네이버의 2026 상반기 영업이익률은 얼마인가?",
+  "네이버의 분기별 영업이익률 추이는 어떻게 되나?",
+  "네이버와 카카오의 2025년 영업이익률을 비교하면?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "네이버"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 1841,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5658
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1841
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260313001021"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 530,
+  "cache_read_input_tokens": 87380,
+  "cache_creation_input_tokens": 3787
+ },
+ "seconds": 5.0,
+ "number": "F05",
+ "gold": "",
+ "arm": "A"
+}

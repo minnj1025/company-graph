@@ -1,0 +1,96 @@
+{
+ "question": "신한지주 지분은 누가 많이 갖고 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "신한지주 지분은 국민연금공단(특별관계자 포함)이 가장 많고, 사업보고서 기준 9.03%입니다. 5% 대량보유 보고 기준으로는 BlackRockFundAdvisors가 7.14%, CapitalResearchandManagementCompany가 5.02%로 뒤를 잇습니다.\n\n| 주주 | 지분율 | 주식 수 | 기준 | 근거 접수번호 |\n|---|---|---|---|---|\n| 국민연금공단 (최대주주 측 본인·특별관계자) | 9.03% | 43,846,070주 | 2025-12-31 (사업보고서, 2026-03-18 공시) | 20260318000826 |\n| BlackRockFundAdvisors | 7.14% | 33,538,344주 | 2026-08-11 접수 5% 보고 | 20260811000674 |\n| CapitalResearchandManagementCompany | 5.02% | 23,568,346주 | 2026-09-02 접수 5% 보고 | 20260902000035 |\n| KT (사업보고서에 지분 기재) | 2.24% | 10,877,651주 | 2025-12-31 기준, 일반투자 | 20260323001553 |\n\n- 국민연금공단은 사업보고서에서 최대주주 측으로 올라 있고, 기초 지분은 8.57%(43,164,599주)였습니다. 2025년 3월 25일에는 5% 보고에서 8.6%로 보고하고 보유목적을 일반투자에서 단순투자로 바꿨다고 적었습니다(접수번호 20250325000404).\n- BlackRock 보고의 사유는 장내 주식 매수, 장외 증권예탁증권 매수, 특별관계자 변동입니다. Capital Research 보고 사유는 장내 매수와 장외 예탁증권 매수입니다.\n- 이 DB는 5% 이상 주주 전체를 모으지 않습니다. 위 목록에 없는 주주는 조회할 수 없고, 사업보고서에 적힌 지분은 2025-12-31 기준입니다. 5% 보고는 보고 접수일 기준의 최신 값입니다.",
+ "followups": [
+  "신한지주 국민연금공단 지분은 언제부터 어떻게 변했나?",
+  "신한지주 임원들이 최근 90일 동안 주식을 늘렸나 줄였나?",
+  "신한지주 주주 구성을 시각화해서 보여줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "신한지주"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "holders-insiders"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 630
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3361,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 9,
+   "chars": 6264
+  },
+  {
+   "tool": "get_major_holders",
+   "input": {
+    "company_id": 3361,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1624
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3361
+    ],
+    "also": [
+     3404,
+     1856
+    ],
+    "views": [
+     {
+      "kind": "holders",
+      "company_id": 3361,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 554
+  }
+ ],
+ "cited": [
+  "20250325000404",
+  "20260318000826",
+  "20260323001553",
+  "20260811000674",
+  "20260902000035"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2177,
+  "cache_read_input_tokens": 77553,
+  "cache_creation_input_tokens": 7128
+ },
+ "seconds": 12.5,
+ "number": "H08",
+ "gold": "",
+ "arm": "B"
+}

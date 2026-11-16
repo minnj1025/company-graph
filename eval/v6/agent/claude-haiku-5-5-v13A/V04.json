@@ -1,0 +1,84 @@
+{
+ "question": "LG그룹에는 어떤 회사들이 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "LG그룹으로 이 DB에 묶여 있는 상장사는 12곳입니다. 공정위 2026년 5월 지정 대규모기업집단 기준입니다. 계열 지도 카드에는 계열회사가 51곳이고 그중 상장이 12곳이라고 나오지만, 비상장 39곳은 이름으로 조회되지 않아 여기서는 다루지 못합니다.\n\n| 기업 | 종목코드 | 시장 |\n|---|---|---|\n| LG | 003550 | 유가증권 |\n| LG전자 | 066570 | 유가증권 |\n| LG디스플레이 | 034220 | 유가증권 |\n| LG이노텍 | 011070 | 유가증권 |\n| LG에너지솔루션 | 373220 | 유가증권 |\n| LG화학 | 051910 | 유가증권 |\n| LG생활건강 | 051900 | 유가증권 |\n| LG유플러스 | 032640 | 유가증권 |\n| LG씨엔에스 | 064400 | 유가증권 |\n| LG헬로비전 | 037560 | 유가증권 |\n| HS애드 | 035000 | 유가증권 |\n| 로보스타 | 090360 | 코스닥 |\n\n이 목록은 사업보고서의 계열 표가 아니라 기업의 그룹 소속 값으로 모은 것이라, 계열회사 51곳의 전체 명단과는 다를 수 있습니다. 각 회사가 무엇을 파는지는 제품 표로 따로 볼 수 있습니다. 공시 근거는 이 목록에 접수번호로 붙어 있지 않습니다.",
+ "followups": [
+  "LG전자의 주요 제품과 매출 비중은 어떻게 되나?",
+  "LG 지주회사의 계열회사 목록과 지분 구조는?",
+  "LG에너지솔루션의 최근 공급계약 공시는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "list_companies",
+   "input": {
+    "group": "LG",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 12,
+   "chars": 1522
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LG"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "list_companies",
+   "input": {
+    "group": "LG",
+    "listed_only": false
+   },
+   "error": null,
+   "total": 12,
+   "chars": 1522
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1604,
+     2427,
+     3205,
+     2757,
+     3991,
+     3915,
+     2207,
+     2626,
+     2972,
+     2891,
+     3409,
+     2233
+    ],
+    "views": [
+     {
+      "kind": "group",
+      "company_id": 1604,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1443
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1574,
+  "cache_read_input_tokens": 87002,
+  "cache_creation_input_tokens": 3297
+ },
+ "seconds": 10.5,
+ "number": "V04",
+ "gold": "",
+ "arm": "A"
+}

@@ -1,0 +1,72 @@
+{
+ "question": "에코프로비엠 9월 한 달 동안 임원이나 주요주주가 주식 늘린 보고 몇 건이야? 다 합치면 몇 주야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "9월 한 달(2026-09-01~09-30) 동안 에코프로비엠 임원·주요주주가 주식을 늘린 보고는 **19건, 합계 3,652,730주**입니다. 줄인 보고는 없습니다.\n\n모든 보고는 2026-09-18에 접수됐습니다. 날짜는 실제 거래일이 아니라 보고 접수일입니다.\n\n- **에코프로(10% 이상 주주)**: 1건, 3,638,442주 증가. 보고 후 43,581,609주, 42.95%. (접수번호 20260918000467)\n- **임원 18명**: 합계 14,288주 증가. 최문호 사장이 11,238주로 가장 많고(접수번호 20260918000348), 하주용 부사장이 1,468주로 그다음입니다. 나머지는 1주 단위부터 수백 주 수준입니다.\n\n거래 단가와 금액, 장내·장외 구분, 증여·상속 같은 사유는 이 DB에 없어 확인할 수 없습니다.",
+ "followups": [
+  "에코프로비엠 최근 90일 임원·주요주주 매매는 어떤가?",
+  "에코프로비엠의 5% 이상 주주 현황은?",
+  "에코프로비엠 최근 자기주식 취득이나 증자 결정이 있었나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에코프로비엠"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "holders-insiders"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 630
+  },
+  {
+   "tool": "get_insider_trades",
+   "input": {
+    "company_id": 3793,
+    "as_of": "2026-10-16",
+    "since": "2026-09-01",
+    "until": "2026-09-30"
+   },
+   "error": null,
+   "total": null,
+   "chars": 4235
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3793
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 201
+  }
+ ],
+ "cited": [
+  "20260918000348",
+  "20260918000467"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1273,
+  "cache_read_input_tokens": 75218,
+  "cache_creation_input_tokens": 3969
+ },
+ "seconds": 7.7,
+ "number": "H14",
+ "gold": "",
+ "arm": "B"
+}

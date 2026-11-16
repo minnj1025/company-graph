@@ -1,0 +1,113 @@
+{
+ "question": "카카오가 두나무 지분 판 건 왜 그런 거야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "조회된 공시에 적힌 이유는 \"미래 투자 재원 확보\" 하나입니다. 이 DB로는 그 이유가 타당한지 판단할 수 없고, 공시에 적히지 않은 배경은 확인되지 않습니다.\n\n**확인되는 사실 (접수번호 20260515800058)**\n- 주체: 카카오의 종속회사인 주식회사 카카오인베스트먼트가 처분했고, 카카오가 이 결정을 공시했습니다.\n- 상대: 두나무 주식회사. 두나무는 이 DB에 상장사로 없어서 회사 정보는 공시에 적힌 이름과 업종(정보서비스업)까지만 확인됩니다.\n- 결정일: 2026-05-14, 공시일: 2026-05-15, 처분 예정일: 2026-06-15.\n- 처분 금액: 1003251568000원.\n- 처분 주식: 2,284,000주. 처분 뒤 소유 주식은 1,406,050주이고 지분율은 4.03%입니다.\n- 목적: 미래 투자 재원 확보.\n- 정정이나 철회 공시는 없습니다. 2026-05-01 이후 카카오의 공시는 이 한 건뿐입니다.\n\n**이 DB로 알 수 없는 것**\n- 처분 전 지분율, 처분 가격을 정한 근거, 처분 대상 선택 이유\n- 두나무의 실적, 업황, 주가와 시장 반응\n- 같은 시기 카카오의 다른 투자 계획이나 재무 계획\n- 처분 예정일(2026-06-15) 이후 실제로 거래가 끝났는지 여부 (DB에는 실행 결과가 없습니다)",
+ "followups": [
+  "카카오 최근 1개월, 3개월 주가 수익률은 어땠나?",
+  "카카오 2026년 분기별 실적 추이 알려줘",
+  "카카오 자회사 카카오인베스트먼트의 다른 지분 처분 공시가 있었나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "why-questions"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1081
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "두나무"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "stake_disposal",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1815
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 68,
+   "chars": 27733
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "doc_type": "event",
+    "filed_from": "2026-05-01",
+    "filed_to": "2026-10-08"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1635
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2254
+    ],
+    "views": [
+     {
+      "company_id": 2254,
+      "kind": "timeline",
+      "as_of": "2026-10-08",
+      "since": "2026-05-01"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 391
+  }
+ ],
+ "cited": [
+  "20260515800058"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2764,
+  "cache_read_input_tokens": 127467,
+  "cache_creation_input_tokens": 20392
+ },
+ "seconds": 17.6,
+ "number": "W3-02",
+ "gold": "",
+ "arm": "B"
+}

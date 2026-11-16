@@ -1,0 +1,144 @@
+{
+ "question": "HD현대중공업이랑 한화오션 중에 어디가 더 나아?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "우열은 판단하지 않고, 두 회사의 공시에서 확인되는 사실을 나란히 정리합니다. 2026년 상반기 실적은 HD현대중공업이 매출과 영업이익 모두 더 크고, 한화오션은 유동비율이 더 높습니다. 부채비율은 둘 다 시장 중앙값(96.7%)보다 높습니다.\n\n| 항목 (연결, 기준 2026.06) | HD현대중공업 | 한화오션 | 근거 |\n|---|---|---|---|\n| 2026 상반기 매출 | 12조 2,485억 원 | 8조 6,531억 원 | HD 20260814002879 / 한화 20260812000829 |\n| 2026 상반기 영업이익 | 1조 9,453억 원 | 1조 1,772억 원 | 같음 |\n| 2026 상반기 영업이익률 | 15.88% | 13.6% | 같음 |\n| 2026 2분기 영업이익률 | 16.42% | 13.52% | 같음 |\n| 2026 2분기 매출 전년 동기 대비 | +52.69% | +65.24% | 같음 |\n| 부채비율 (2026.06 말) | 178.6% | 167.61% | 같음 |\n| 유동비율 (2026.06 말) | 103.91% | 121.27% | 같음 |\n| 주력 제품 (매출 비중) | 선박 77.87%, 선박 엔진 14.95%, 해양플랜트 6.82% | LNG 운반선 65.9%, 해양플랜트·특수선(Fixed Platform) 33.5% | HD 20260814002879 / 한화 20260812000829 |\n| 최근 1개월 수익률 | -13.61% (같은 제품 종목 중앙값 -13.24%) | -16.38% (같은 제품 종목 중앙값 -7.64%) | 2026-10-08 기준, 시세 조회 |\n| 최근 3개월 수익률 | -24.26% (같은 제품 종목 중앙값 -6.51%) | -8.4% (같은 제품 종목 중앙값 -11.27%) | 같음 |\n\n- 시장 중앙값은 부채비율 96.7%, 유동비율 133.47%, 영업이익률 5.1%입니다.\n- 두 회사 모두 2026년 상반기에 전년 같은 기간 대비 매출과 영업이익이 늘었습니다. HD현대중공업의 상반기 영업이익 증감률은 114.91%, 한화오션은 86.76%입니다.\n- 수익률은 지난 사실이며, 원인은 이 DB로 알 수 없습니다.\n\n이 DB로 알 수 없는 것은 실적 전망, 사업부문별 실적, 현금흐름, 업황과 수주 전망, 증권사 의견, 주가 수급입니다.",
+ "followups": [
+  "HD현대중공업의 최근 공급계약 공시를 보여 줘",
+  "한화오션의 최근 공급계약 공시를 보여 줘",
+  "두 회사의 분기별 실적 추이를 비교해 줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "why-questions",
+     "financials"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1710
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "HD현대중공업"
+   },
+   "error": null,
+   "total": null,
+   "chars": 197
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한화오션"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 3436,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5661
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 2814,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5641
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3436,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 1087
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 2814,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 1012
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 3436,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1231
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 2814,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1199
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3436,
+     2814
+    ],
+    "views": [
+     {
+      "kind": "compare",
+      "company_id": 3436,
+      "other_company_id": 2814,
+      "as_of": "2026-10-08"
+     },
+     {
+      "kind": "returns",
+      "company_id": 3436,
+      "as_of": "2026-10-08"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 726
+  }
+ ],
+ "cited": [
+  "20260812000829",
+  "20260814002879"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2904,
+  "cache_read_input_tokens": 85081,
+  "cache_creation_input_tokens": 12905
+ },
+ "seconds": 14.3,
+ "number": "W4-03",
+ "gold": "",
+ "arm": "B"
+}

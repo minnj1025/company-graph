@@ -1,0 +1,139 @@
+{
+ "question": "한샘 주가는 왜 이렇게 못 오르는 거야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "한샘 주가가 최근에 못 오른 것으로 나타나지는 않습니다. 이 DB의 수익률은 최근 석 달 동안 오름세였습니다. 못 오르는 원인은 이 DB로 판단할 수 없어서, 확인되는 사실만 정리합니다.\n\n**주가 (2026-10-08 종가 기준, 같은 시장 중앙값 대비)**\n- 1주: +5.26% (시장 중앙값 -0.76%)\n- 1개월: +5.53% (시장 중앙값 -2.27%)\n- 3개월: +16.62% (시장 중앙값 +2.99%)\n- 같은 제품(빌트인 가구, 인테리어 자재)을 파는 노루페인트, 현대리바트, 현대지에프홀딩스의 중앙값은 1주 +2.47%, 1개월 +1.66%, 3개월 -0.16%입니다.\n- 최근 30일 동안 종목군으로 묶이는 큰 등락일은 없었습니다. 다만 이는 묶이지 않은 움직임까지 모두 뜻하지는 않습니다.\n\n**실적 (연결 기준)**\n- 2026년 2분기: 매출 4,172억 원(전년 동기 대비 -9.19%), 영업이익 113억 원(+400.23%), 순이익 47.7억 원(-85.17%) (접수번호 20260813001668)\n- 2026년 상반기 누적: 매출 8,166억 원(-9.55%), 영업이익 214억 원(+145.63%), 순이익 73.9억 원(-82.29%) (접수번호 20260813001668)\n- 2025년 연간 매출은 1조 7,445억 원(-8.59%)이었습니다 (접수번호 20260319001167).\n- 2026년 6월 말 부채비율은 141.57%로, 같은 시장 중앙값 96.7%보다 높습니다. 유동비율은 144.43%로 중앙값 133.47%보다 높습니다 (접수번호 20260813001668).\n\n**사업 구성 (2026년 반기보고서, 접수번호 20260813001668)**\n- 리하우스/홈퍼니싱 아이템(리모델링, 홈퍼니싱): 56.3%\n- B2B/기타(건설사 특판 및 자재판매 등, 빌트인 가구, 인테리어 자재): 43.7%\n\n**공시 관계**\n- 공급계약 공시와 타법인 주식 처분 결정 공시는 이 DB에서 찾지 못했습니다. 다만 DB가 모으는 범위 안에서 그렇다는 뜻입니다.\n\n이 DB로 알 수 없는 것은 다음과 같습니다. 실적 전망, 사업부문별 실적, 업황과 원자재 가격, 증권사 의견, 수급이 여기에 해당합니다. 그래서 주가가 오르거나 내리는 이유를 이 자료만으로 말할 수는 없습니다.",
+ "followups": [
+  "한샘의 최근 1개월과 3개월 수익률을 같은 제품 종목과 비교하면?",
+  "한샘의 2026년 2분기 실적을 전년 같은 분기와 비교하면?",
+  "한샘의 최대주주와 지분 구조는 어떻게 되나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한샘"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "why-questions",
+     "price-moves"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1776
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1174
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1005
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5529
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1214
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08",
+    "lookback_days": 30
+   },
+   "error": null,
+   "total": null,
+   "chars": 690
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1853,
+    "as_of": "2026-10-08",
+    "rel_type": "stake_disposal",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1238
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1853
+    ],
+    "views": [
+     {
+      "kind": "returns",
+      "company_id": 1853,
+      "as_of": "2026-10-08"
+     },
+     {
+      "kind": "financials",
+      "company_id": 1853,
+      "as_of": "2026-10-08"
+     }
+    ],
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 621
+  }
+ ],
+ "cited": [
+  "20260319001167",
+  "20260813001668"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2862,
+  "cache_read_input_tokens": 82400,
+  "cache_creation_input_tokens": 10886
+ },
+ "seconds": 15.9,
+ "number": "W1-06",
+ "gold": "",
+ "arm": "B"
+}
