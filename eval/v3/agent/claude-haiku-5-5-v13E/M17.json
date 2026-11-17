@@ -1,0 +1,53 @@
+{
+ "question": "올해 1월 15일에 급등한 종목군이 뭐였는지 알려 주세요.",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "2026년 1월 15일의 급등 종목군은 이 DB로 확인할 수 없습니다. 조회 결과에 그 날짜의 거래일 데이터가 없었고, 주가 데이터는 2026년 2월부터 있다고 나왔습니다.\n\n이 DB에 있는 범위 안에서는 2026년 2월 이후의 특정 거래일이나 최근 1주·1개월·3개월 수익률을 볼 수 있습니다. 1월 15일 전후의 공시 흐름은 기업별로 조회할 수 있습니다.",
+ "followups": [
+  "2026년 2월 이후 가장 크게 오른 날의 종목군은 무엇이었나요?",
+  "특정 기업이 최근 석 달 동안 시장과 같은 제품 종목보다 얼마나 올랐나요?",
+  "2026년 1월 공시된 공급계약을 낸 기업은 어디인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "price-moves"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 707
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-10-08",
+    "day": "2026-01-15",
+    "direction": "up"
+   },
+   "error": null,
+   "total": null,
+   "chars": 69
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 6,
+  "output_tokens": 690,
+  "cache_read_input_tokens": 37069,
+  "cache_creation_input_tokens": 1115
+ },
+ "seconds": 4.1,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "M17",
+ "gold": "자료가 없다. 주가 움직임을 계산해 둔 가장 이른 거래일은 2026-02-03 이어서, 2026-01-15 의 종목군은 답할 수 없다고 해야 한다.",
+ "arm": "E"
+}

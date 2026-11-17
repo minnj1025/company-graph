@@ -280,8 +280,9 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
         checked["retried"] = bool(found)
         return found
 
-    # 답에 쓰지 않기로 한 표현('관련주', '수혜', 매매 권유 등)이 있으면 한 번만 다시 쓰게 한다 (ASK_WORDING=1 일 때만, wording.py)
-    wording_on = os.environ.get("ASK_WORDING", "0") == "1"
+    # 답에 쓰지 않기로 한 표현('관련주', '수혜', 매매 권유 등)이 있으면 한 번만 다시 쓰게 한다 (wording.py).
+    # 평가 13판 E(PLAN-E.md)를 통과해 기본으로 켠다. ASK_WORDING=0 이면 끈다
+    wording_on = os.environ.get("ASK_WORDING", "1") != "0"
     worded = {"flagged": [], "retried": False, "left": []}
 
     def review(written: str) -> str | None:

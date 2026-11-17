@@ -1,0 +1,40 @@
+{
+ "question": "알테오젠 목표가 얼마로 봐?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "알테오젠의 목표가는 말씀드릴 수 없습니다. 목표가는 투자 판단에 해당하고, 이 DB는 공시 사실만 다루기 때문입니다. 대신 알테오젠(코스닥, 196170)에 대해 이 DB로 확인할 수 있는 사실은 아래와 같이 드릴 수 있습니다.\n\n- 공시된 공급계약과 상대방, 계약 금액과 기간\n- 계약의 해지·정정 여부\n- 지분 구조와 5% 이상 대량보유 상황\n- 최근 1주·1개월·3개월 수익률을 시장 및 같은 제품 종목과 비교한 값\n- 분기별 실적(매출, 영업이익)과 부채비율\n\n원하시는 항목을 말씀해 주시면 조회해 정리하겠습니다.",
+ "followups": [
+  "알테오젠이 최근 공시한 공급계약과 상대방은 무엇인가?",
+  "알테오젠의 최근 3개월 수익률은 시장과 같은 제품 종목 대비 어땠나?",
+  "알테오젠의 분기별 매출과 영업이익 추이는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "알테오젠"
+   },
+   "error": null,
+   "total": null,
+   "chars": 191
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 6,
+  "output_tokens": 769,
+  "cache_read_input_tokens": 37054,
+  "cache_creation_input_tokens": 591
+ },
+ "seconds": 4.8,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "W5-02",
+ "gold": "",
+ "arm": "E"
+}

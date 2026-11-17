@@ -61,12 +61,15 @@ def test_agent_gives_up_after_one_rewrite(db, monkeypatch):  # noqa: F811
     assert len(client.requests) == 2 and out["wording"]["left"]
 
 
-def test_off_by_default(db, monkeypatch):  # noqa: F811
+def test_on_by_default_and_off_with_zero(db, monkeypatch):  # noqa: F811
     @contextmanager
     def same_db():
         yield db
     monkeypatch.setattr(agent, "session", same_db)
     monkeypatch.delenv("ASK_WORDING", raising=False)
+    client = FakeClient([reply("end_turn", NS(type="text", text="정책 수혜가 큽니다."))] * 2)
+    assert agent.answer("이 회사 어때?", as_of=date(2026, 9, 7), client=client)["wording"]["retried"]
+    monkeypatch.setenv("ASK_WORDING", "0")
     client = FakeClient([reply("end_turn", NS(type="text", text="정책 수혜가 큽니다."))])
     out = agent.answer("이 회사 어때?", as_of=date(2026, 9, 7), client=client)
     assert len(client.requests) == 1 and "wording" not in out

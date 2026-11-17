@@ -1,0 +1,94 @@
+{
+ "question": "농심이랑 오리온 중에 지주회사가 들고 있는 지분율이 어디가 더 높아?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "오리온이 더 높습니다. 지주회사가 가진 지분율은 오리온홀딩스의 오리온 37.37%가 농심홀딩스의 농심 32.72%보다 높습니다. 두 값 모두 2025년 12월 31일 기준 사업보고서 값입니다.\n\n- **오리온**: 오리온홀딩스(지주회사) 37.37%, 주식 14,775,000주 (접수번호 20260318000838, 20260318001320)\n- **농심**: 농심홀딩스(지주회사) 32.72%, 주식 1,990,000주 (접수번호 20260311003892, 20260318001210)\n\n두 지주회사의 지분 격차는 4.65%p입니다. 이 값은 사업보고서의 타법인 출자현황과 최대주주 현황 기준이며, 그 뒤 바뀐 지분은 반영되지 않았습니다.\n\n이 DB로 알 수 없는 것: 2026년 중 지분 변동이나 5% 이상 주주 전체는 get_major_holders 등 별도 조회가 필요하고, 지주회사의 자체 지분 구조와 실적은 이 질문의 범위 밖입니다.",
+ "followups": [
+  "오리온홀딩스가 보유한 다른 자회사 지분은 무엇인가?",
+  "농심홀딩스의 지분 구조는 어떻게 되나?",
+  "오리온의 5% 이상 대량보유 보고 내역은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "농심"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "오리온"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3379,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 6,
+   "chars": 5165
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2989,
+    "as_of": "2026-10-08",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 12,
+   "chars": 8401
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3379,
+     2989
+    ],
+    "also": [
+     3537,
+     2824
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 291
+  }
+ ],
+ "cited": [
+  "20260311003892",
+  "20260318000838",
+  "20260318001210",
+  "20260318001320"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1476,
+  "cache_read_input_tokens": 83494,
+  "cache_creation_input_tokens": 9463
+ },
+ "seconds": 9.4,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "W4-02",
+ "gold": "",
+ "arm": "E"
+}

@@ -1,0 +1,158 @@
+{
+ "question": "엘앤에프가 삼성SDI랑 맺은 LFP 양극재 공급 계약, 실적에 얼마나 도움이 돼?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "이 DB로는 계약이 엘앤에프의 실적에 얼마나 기여하는지 알 수 없습니다. 아래는 확인되는 사실만 정리한 것입니다.\n\n**계약 사실** (엘앤에프 공시, 접수번호 20260324800257)\n- 계약명: 리튬인산철(LFP) 양극재 중장기 공급 및 구매합의서. 공시 종류는 기타 판매·공급계약입니다.\n- 상대: 공시 본문에 \"삼성에스디아이(\"삼성SDI\")\"로 적혀 있습니다.\n- 계약일 2026-03-23, 계약기간 2026-03-30 ~ 2029-12-31, 지역은 \"미국 등\"입니다.\n- 계약금액 1,606,718,520,000원, 공시된 최근 매출액 대비 84.23%입니다.\n- 정정이나 해지 공시는 없고, 지금도 유효한 것으로 조회됩니다(get_filings 기준).\n- 삼성SDI 쪽 공시 목록에는 이 계약이 없습니다. 계약은 엘앤에프가 낸 공시로만 확인됩니다.\n\n**같은 제품군의 다른 계약** (참고)\n- 2026-09-17 공시(접수번호 20260917800658): 에스케이온 등을 상대로 한 LFP 양극재 중장기 공급 및 구매합의서, 161,733,060,000원, 매출액 대비 7.51%, 계약기간 2026-09-17 ~ 2028-12-31입니다.\n- 엘앤에프는 2024~2026년에 하이니켈 양극재 계약도 여러 건 공시했습니다. 대부분 상대가 밝혀지지 않았거나 원장에 없는 상대입니다.\n\n**실적 (연결 기준, 정기보고서)**\n- 2026 1분기: 매출 7,396억 원(전년 같은 분기 대비 102.76%), 영업이익 1,173억 원(흑자 전환), 영업이익률 15.85%.\n- 2026 2분기: 매출 8,850억 원(70.18%), 영업이익 208억 원(흑자 전환), 영업이익률 2.35%, 순이익 529억 원(흑자 전환).\n- 2026 상반기 누적: 매출 1조 6,247억 원(83.61%), 영업이익 1,381억 원(흑자 전환), 순이익 -124억 원(적자 지속).\n- 2026년 6월 말 부채비율 372.75%, 유동비율 74.71%입니다. 같은 시장(유가증권) 상장사 중앙값은 부채비율 96.7%, 유동비율 133.47%입니다.\n- 제품별 매출 표는 반기보고서에 \"양극활물질외 100%\" 한 줄뿐이라, LFP 매출이 따로 나오지 않습니다.\n\n(출처: 반기보고서 20260814000995, 2026 1분기 보고서 20260515000918)\n\n**이 DB로 알 수 없는 것**\n- 계약이 연간 매출이나 영업이익에 얼마나 반영되는지, LFP 제품의 매출 규모와 수익성, 실적 전망입니다. 계약금액은 2026~2029년 계약기간 전체의 금액이고, 기간별 인식액은 공시에 없습니다.\n- 2분기에 영업이익률이 1분기보다 낮아진 원인, 업황과 원자재 가격, 증권사 의견, 수급도 이 DB에 없습니다.",
+ "followups": [
+  "엘앤에프의 2026년 9월 LFP 양극재 계약(에스케이온 상대)은 어떤 내용인가?",
+  "엘앤에프의 분기별 매출과 영업이익 추이를 보여줘",
+  "삼성SDI가 공시한 공급계약에는 어떤 것이 있나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "엘앤에프"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "삼성SDI"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "financials"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 641
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "counterparty_id": 3217
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1216
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5566
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 754
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 37,
+   "chars": 23600
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3217,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "counterparty_id": 3336
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1217
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 3336,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_contract"
+   },
+   "error": null,
+   "total": 5,
+   "chars": 3730
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3336,
+     3217
+    ],
+    "views": [
+     {
+      "kind": "contracts",
+      "company_id": 3336,
+      "as_of": "2026-10-08"
+     },
+     {
+      "kind": "financials",
+      "company_id": 3336,
+      "as_of": "2026-10-08"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 631
+  }
+ ],
+ "cited": [
+  "20260324800257",
+  "20260515000918",
+  "20260814000995",
+  "20260917800658"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 3944,
+  "cache_read_input_tokens": 122505,
+  "cache_creation_input_tokens": 24005
+ },
+ "seconds": 22.7,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "W3-01",
+ "gold": "",
+ "arm": "E"
+}

@@ -1,0 +1,92 @@
+{
+ "question": "카카오가 두나무 지분 판 건 왜 그런 거야?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "DB에는 공시된 목적(\"미래 투자 재원 확보\")까지만 나와 있습니다. 그 이상의 배경은 이 DB로 확인할 수 없어서 적지 않습니다.\n\n**공시된 내용** (접수번호 20260515800058, 2026-05-15 공시)\n- 처분 주체: 카카오의 종속회사 주식회사 카카오인베스트먼트 (공시는 카카오가 냈습니다)\n- 상대: 두나무 주식회사\n- 처분 주식 수: 2,284,000주\n- 거래 금액: 1,003,251,568,000원\n- 결정일(계약일 기준): 2026-05-14\n- 예정일: 2026-06-15\n- 처분 후 소유 주식 수: 1,406,050주, 지분율 4.03%\n- 목적: 미래 투자 재원 확보\n\n**확인된 사실**\n- 이 처분 결정에 대한 정정·철회 공시는 조회 시점(2026-10-08)까지 없습니다.\n- 카카오의 처분 결정은 이 한 건뿐입니다(2024년 이후 기준).\n- 두나무는 이 DB에 기업으로 등록돼 있지 않아 두나무의 공시나 지분 구조는 조회되지 않습니다.\n\n**이 DB로 알 수 없는 것**\n- 처분 목적을 \"미래 투자 재원 확보\"로 밝힌 것 말고 다른 배경, 예를 들어 시장 상황이나 가격 판단, 다른 거래와의 연관은 공시에 없어서 알 수 없습니다.\n- 거래가 실제로 예정일에 끝났는지는 이 DB에 결과가 없습니다. 결정 공시만 확인됩니다.\n- 처분 단가, 평가 이익, 실적 반영 효과는 이 DB에 없습니다.",
+ "followups": [
+  "카카오인베스트먼트의 다른 지분 처분 결정이 있었나?",
+  "카카오의 자기주식 취득·처분 공시 내역은?",
+  "카카오의 최근 공시 타임라인 전체를 보여줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "카카오"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "두나무"
+   },
+   "error": null,
+   "total": null,
+   "chars": 64
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "rel_type": "stake_disposal",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1815
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2254,
+    "as_of": "2026-10-08",
+    "doc_type": "event"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1635
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2254
+    ],
+    "views": [
+     {
+      "kind": "timeline",
+      "company_id": 2254,
+      "as_of": "2026-10-08"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 391
+  }
+ ],
+ "cited": [
+  "20260515800058"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1791,
+  "cache_read_input_tokens": 77690,
+  "cache_creation_input_tokens": 3931
+ },
+ "seconds": 10.5,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "W3-02",
+ "gold": "",
+ "arm": "E"
+}

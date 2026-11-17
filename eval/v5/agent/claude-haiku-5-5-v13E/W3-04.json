@@ -1,0 +1,117 @@
+{
+ "question": "효성중공업이 2월에 공시한 미국 765kV 변압기 계약은 실적에 얼마나 보탬이 돼?",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "효성중공업이 낸 계약이 실적에 얼마나 보탰는지는 이 DB로 알 수 없습니다. 아래는 확인되는 사실만 정리한 것입니다.\n\n**계약 내용**\n- 공시: 2026-02-10 접수, 단일판매·공급계약체결 (접수번호 20260210800044)\n- 계약명: 765kV Transformer and Reactor Purchase\n- 상대: HICO America Sales & Tech, Inc. (계열회사, 미국). 원장에 없는 상대라 이름만 확인됩니다.\n- 계약금액: 787063743500원\n- 계약일 2026-02-09, 계약기간 2026-02-09 ~ 2031-01-31\n- 매출액 대비 16.08% (공시가 쓴 최근 매출액 4894979612220원 기준)\n- 2026-10-08 기준 정정·해지 공시는 없고, 이 계약은 유효한 것으로 보입니다.\n\n**같은 기간 실적 (연결 기준)**\n- 2026 1분기: 매출 1조 3,582억 원 (전년 같은 분기 대비 26.21%), 영업이익 1,523억 원 (48.77%)\n- 2026 2분기: 매출 1조 6,870억 원 (10.6%), 영업이익 2,643억 원 (60.89%), 영업이익률 15.67%\n- 2026 상반기 누적: 매출 3조 452억 원 (17.06%), 영업이익 4,166억 원 (56.24%), 순이익 2,631억 원 (37.75%) (접수번호 20260813001554)\n- 2026-06-30 기준 부채비율 213.51%, 유동비율 94.41%입니다. 같은 시장(유가증권) 중앙값은 부채비율 96.7%, 유동비율 133.47%입니다.\n\n**같은 상대와의 후속 계약 (2026-09-15 공시)**\n- 765kV Transformer Purchase Agreement: 220071597768원, 기간 2026-09-14 ~ 2029-02-28, 매출액 대비 3.69% (접수번호 20260915800147)\n- 345kV Transformer Purchase Agreement: 166522014173원, 기간 2026-09-14 ~ 2028-08-31, 매출액 대비 2.79% (접수번호 20260915800149)\n\n**이 DB로 알 수 없는 것**\n- 계약이 기간 중 매출과 이익으로 언제, 얼마나 잡히는지(수주잔고 전환 일정, 인식 방식)는 없습니다.\n- 사업부문별 실적, 실적 전망, 원자재·업황, 증권사 의견은 이 DB에 없습니다.",
+ "followups": [
+  "효성중공업의 2026년 상반기 사업부문별 매출 구성은 어떤가?",
+  "효성중공업의 최근 공급계약 목록과 금액을 보여줘",
+  "HICO America Sales & Tech와 효성중공업의 지분 관계는 어떻게 되나?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "효성중공업"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "financials"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 641
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2243,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "disclosed_from": "2026-02-01",
+    "disclosed_to": "2026-02-28"
+   },
+   "error": null,
+   "total": 3,
+   "chars": 3463
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 2243,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5623
+  },
+  {
+   "tool": "get_filings",
+   "input": {
+    "company_id": 2243,
+    "as_of": "2026-10-08",
+    "doc_type": "supply_contract",
+    "filed_from": "2026-02-01",
+    "filed_to": "2026-10-08"
+   },
+   "error": null,
+   "total": 13,
+   "chars": 10443
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2243
+    ],
+    "views": [
+     {
+      "kind": "financials",
+      "company_id": 2243,
+      "as_of": "2026-10-08"
+     },
+     {
+      "kind": "contracts",
+      "company_id": 2243,
+      "as_of": "2026-10-08",
+      "since": "2026-02-01"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 552
+  }
+ ],
+ "cited": [
+  "20260210800044",
+  "20260813001554",
+  "20260915800147",
+  "20260915800149"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 3699,
+  "cache_read_input_tokens": 81908,
+  "cache_creation_input_tokens": 14744
+ },
+ "seconds": 19.4,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "W3-04",
+ "gold": "",
+ "arm": "E"
+}

@@ -1,0 +1,132 @@
+{
+ "question": "셀트리온은 왜 주가가 계속 제자리야? 실적은 좋다던데",
+ "as_of": "2026-10-08",
+ "model": "claude-haiku-5-5",
+ "answer": "첫 줄에 말씀드리면, 이 DB로는 주가가 제자리인 원인을 판단할 수 없습니다. 아래는 확인되는 사실만 정리한 것입니다.\n\n**1. 실적: 2026년 들어 크게 늘었습니다 (연결 기준, 반기보고서 접수번호 20260814003751)**\n- 2026년 2분기 매출 1조 3,937억 원(전년 동기 대비 44.96%), 영업이익 4,518억 원(86.33%), 순이익 3,713억 원(486.6%), 영업이익률 32.42%입니다.\n- 2026년 상반기 누적은 매출 2조 5,387억 원(40.77%), 영업이익 7,737억 원(97.42%), 순이익 7,212억 원(320.18%)입니다.\n\n**2. 재무 상태 (2026년 6월 30일 기준, 같은 접수번호)**\n- 부채비율 31.33%로, 같은 시장 상장사 중앙값 96.7%보다 낮습니다.\n- 유동비율 136.42%로, 시장 중앙값 133.47%보다 높습니다.\n\n**3. 주가 수익률 (종가 기준, 2026년 10월 8일까지)**\n\n| 기간 | 셀트리온 | 유가증권 시장 중앙값 | 같은 제품(바이오시밀러) 4곳 중앙값 |\n|---|---|---|---|\n| 1주 | -2.18% | -0.76% | -5.79% |\n| 1개월 | -1.91% | -2.27% | -5.66% |\n| 3개월 | +3.76% | +2.99% | -2.81% |\n\n- 최근 60일 동안 시장 흐름과 관계없이 크게 움직여 묶음으로 잡힌 급등·급락일은 없었습니다.\n\n**4. 공시된 공급계약**\n- 2026년 3월 17일 공시된 의약품 위탁생산계약(접수번호 20260317800019)이 있습니다. 계약 금액은 294,921,000,000원, 계약기간은 2026년 3월 16일부터 2029년 12월 31일까지이고, 최근 매출액 대비 8.29%입니다.\n- 상대방은 \"글로벌 제약사\"로만 적혀 있고, 원장에 있는 회사가 아닙니다.\n\n**이 DB로 알 수 없는 것**\n- 주가수익비율(PER), 주가순자산비율(PBR), 주당순이익(EPS) 같은 밸류에이션 지표와 현금흐름은 이 DB에 없습니다.\n- 실적 전망, 증권사 의견, 수급(외국인·기관 매매), 바이오시밀러 업황과 가격 흐름도 없습니다.",
+ "followups": [
+  "셀트리온의 최근 3개월 주가 흐름을 같은 제품 종목과 견주면 어떻게 나와?",
+  "셀트리온 분기별 영업이익률 추이를 보여 줘",
+  "셀트리온의 최근 공시된 공급계약을 모두 알려 줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "셀트리온"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "financials",
+     "price-moves"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1336
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 3047,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1181
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 3047,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5647
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3047,
+    "as_of": "2026-10-08"
+   },
+   "error": null,
+   "total": 8,
+   "chars": 1320
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-10-08",
+    "company_id": 3047,
+    "lookback_days": 60
+   },
+   "error": null,
+   "total": null,
+   "chars": 694
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3047,
+    "as_of": "2026-10-08",
+    "rel_type": "supply_contract",
+    "direction": "out",
+    "disclosed_from": "2026-01-01"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 1743
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3047
+    ],
+    "views": [
+     {
+      "kind": "financials",
+      "company_id": 3047,
+      "as_of": "2026-10-08"
+     },
+     {
+      "kind": "returns",
+      "company_id": 3047,
+      "as_of": "2026-10-08"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 634
+  }
+ ],
+ "cited": [
+  "20260317800019",
+  "20260814003751"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 3654,
+  "cache_read_input_tokens": 109945,
+  "cache_creation_input_tokens": 10132
+ },
+ "seconds": 18.6,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "W1-03",
+ "gold": "",
+ "arm": "E"
+}
