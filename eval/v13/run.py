@@ -2,12 +2,14 @@
 
 실행: python -m eval.v13.run [--cap 1.5] [--arms AB]
 - C(ASK_SKILLS=2, 원인·평가 규칙은 지시문에 둠)는 PLAN-C.md: python -m eval.v13.run --arms C --cap 0.6
+- E(C + ASK_WORDING=1, 금지 표현 검사)는 PLAN-E.md: python -m eval.v13.run --arms E --only "v3:M*,v5:*" --cap 0.25
 - D(C + ASK_SLIM_TOOLS=1, 제품군 목록을 topic-search 규칙 쪽으로)는 PLAN-D.md: python -m eval.v13.run --arms D --only v3:I01,... --cap 0.15
 - 문항마다 A 다음 B. 같은 날 같은 DB로 잰다
 - 결과는 eval/<판>/agent/claude-haiku-5-5-v13A, -v13B. 이미 있는 답은 건너뛴다
 - 누적 비용이 상한을 넘으면 멈춘다(이번에 돌리는 방식의 이미 쓴 답 비용까지 센다)
 """
 import argparse
+import fnmatch
 import json
 import os
 import time
@@ -22,7 +24,7 @@ MODEL = "claude-haiku-5-5"
 PRICE = {"input_tokens": 0.10, "output_tokens": 0.50, "cache_read_input_tokens": 0.01, "cache_creation_input_tokens": 0.125}  # $/백만 토큰 (Haiku)
 SETS = ["v3", "v5", "v6", "v7", "v8", "v9"]
 ARMS = {"A": {"ASK_SKILLS": "0"}, "B": {"ASK_SKILLS": "1"}, "C": {"ASK_SKILLS": "2"},
-        "D": {"ASK_SKILLS": "2", "ASK_SLIM_TOOLS": "1"}}
+        "D": {"ASK_SKILLS": "2", "ASK_SLIM_TOOLS": "1"}, "E": {"ASK_SKILLS": "2", "ASK_WORDING": "1"}}
 
 
 def cost(usage: dict) -> float:
@@ -51,14 +53,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--cap", type=float, default=1.5)
     parser.add_argument("--arms", default="AB")
-    parser.add_argument("--only", default="", help="판:문항 을 쉼표로 (예: v3:P01,v3:P02). 비우면 모든 문항")
+    parser.add_argument("--only", default="", help="판:문항 을 쉼표로 (예: v3:P01,v3:P02, v3:M*). 비우면 모든 문항")
     args = parser.parse_args()
     arms = {a: ARMS[a] for a in args.arms}
     items = [(s, *row) for s in SETS for row in v2_questions(s)]
     if args.only:
-        wanted = set(args.only.split(","))
-        items = [item for item in items if f"{item[0]}:{item[1]}" in wanted]
-        assert len(items) == len(wanted), "없는 문항이 있다"
+        wanted = args.only.split(",")
+        items = [item for item in items if any(fnmatch.fnmatchcase(f"{item[0]}:{item[1]}", w) for w in wanted)]
+        assert all(any(fnmatch.fnmatchcase(f"{i[0]}:{i[1]}", w) for i in items) for w in wanted), "없는 문항이 있다"
     spent = 0.0
     for s, number, *_ in items:
         for arm in arms:

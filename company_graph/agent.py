@@ -15,7 +15,7 @@ from datetime import date
 
 import anthropic
 
-from . import agent_tools, skills, verify
+from . import agent_tools, skills, verify, wording
 from .config import secret
 from .db import session
 
@@ -279,6 +279,26 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
         checked["flagged"] = found
         checked["retried"] = bool(found)
         return found
+
+    # 답에 쓰지 않기로 한 표현('관련주', '수혜', 매매 권유 등)이 있으면 한 번만 다시 쓰게 한다 (ASK_WORDING=1 일 때만, wording.py)
+    wording_on = os.environ.get("ASK_WORDING", "0") == "1"
+    worded = {"flagged": [], "retried": False, "left": []}
+
+    def review(written: str) -> str | None:
+        """다시 쓰게 할 때 보낼 말. 숫자 검사가 먼저다."""
+        wrong = doubt(written)
+        if wrong:
+            return verify.feedback(wrong)
+        if not wording_on:
+            return None
+        found = wording.flagged(written, question)
+        if worded["retried"]:
+            worded["left"] = found
+            return None
+        worded["flagged"], worded["retried"] = found, bool(found)
+        if found:
+            worded["draft"] = split_followups(written)[0]   # 다시 쓰기 전의 답(평가에서 전후를 견준다)
+        return wording.feedback(found) if found else None
     with session() as db:
         for _ in range(max_turns):
             tools = agent_tools.tools(slim=_slim_tools()) + ([skills.tool(why=_skill_why())] if skills.enabled() else [])
@@ -300,10 +320,10 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
             messages.append({"role": "assistant", "content": response.content})
             if stop != "tool_use":
                 text = "\n".join(block.text for block in response.content if block.type == "text")
-                wrong = doubt(text)
-                if not wrong:
+                again = review(text)
+                if not again:
                     break
-                messages.append({"role": "user", "content": verify.feedback(wrong)})
+                messages.append({"role": "user", "content": again})
                 if on_event:
                     on_event("turn", None)   # 흘려보낸 답을 지우고 다시 쓴다
                 continue
@@ -332,11 +352,11 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
                 results.append({"type": "tool_result", "tool_use_id": block.id, "content": body,
                                 "is_error": "error" in result})
             if closing:
-                wrong = doubt(wrote)
-                if not wrong:
+                again = review(wrote)
+                if not again:
                     text, stop = wrote, "end_turn"
                     break
-                results.append({"type": "text", "text": verify.feedback(wrong)})
+                results.append({"type": "text", "text": again})
             messages.append({"role": "user", "content": results})
             if on_event:
                 on_event("turn", None)
@@ -344,7 +364,8 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
     cited = set(re.findall(r"\b\d{14}\b", text))
     return {"question": question, "as_of": when.isoformat(), "model": model, "answer": text, "followups": followups, "stop_reason": stop,
             "tool_calls": calls, "cited": sorted(cited), "cited_not_in_results": sorted(cited - seen),
-            "usage": usage, "seconds": round(time.time() - started, 1), **({"verify": checked} if checking else {})}
+            "usage": usage, "seconds": round(time.time() - started, 1), **({"verify": checked} if checking else {}),
+            **({"wording": worded} if wording_on else {})}
 
 
 def main():
