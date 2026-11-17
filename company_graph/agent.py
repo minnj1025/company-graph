@@ -195,8 +195,15 @@ def _why() -> bool:
     return os.environ.get("ASK_WHY", "1") != "0"
 
 
+def _slim_tools() -> bool:
+    """ASK_SLIM_TOOLS=1: find_by_product 설명의 제품군 목록을 topic-search 규칙 쪽으로 옮긴다(read_skill 이 있을 때만)."""
+    return os.environ.get("ASK_SLIM_TOOLS", "0") == "1" and skills.enabled()
+
+
 def _skill_text(name: str, body: str) -> str:
     """skill 본문도 말투에 맞춘다. 원인·평가 질문의 규칙만 말투에 따라 바뀐다."""
+    if name == "topic-search" and _slim_tools():
+        return _apply(body, [("도구 설명의 목록에서", "아래 목록에서")]) + "\n" + agent_tools.FAMILY_TEXT
     return _apply(body, WHY_STYLE) if styled() and name == "why-questions" else body
 
 
@@ -274,7 +281,7 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
         return found
     with session() as db:
         for _ in range(max_turns):
-            tools = agent_tools.tools() + ([skills.tool(why=_skill_why())] if skills.enabled() else [])
+            tools = agent_tools.tools(slim=_slim_tools()) + ([skills.tool(why=_skill_why())] if skills.enabled() else [])
             # 지시문 끝에 캐시 표시를 둔다. 도구 정의와 지시문(약 2만 토큰)을 다른 질문과도 함께 쓴다.
             # 위쪽의 자동 캐시(cache_control)만으로는 한 질문 안에서만 다시 쓰여, 질문마다 이 부분을 캐시에 새로 썼다
             request = dict(model=model, max_tokens=16000, system=[{"type": "text", "text": system(), "cache_control": {"type": "ephemeral"}}],

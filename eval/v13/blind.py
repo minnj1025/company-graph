@@ -1,6 +1,7 @@
 """평가 13판 블라인드 채점 묶음: 3판·5판 문항마다 A·B 답을 섞어 '가'·'나'로 보인다. 어느 쪽이 어느 방식인지는 key.json 에만 둔다.
 
-사용: python -m eval.v13.blind [AC]   → eval/v13/blind/ (A·B) 또는 blind-AC/ (A·C) 의 <묶음>.md, key.json
+사용: python -m eval.v13.blind [AC|CD]   → eval/v13/blind/ (A·B) 또는 blind-AC/, blind-CD/ 의 <묶음>.md, key.json
+두 방식의 답이 모두 있는 문항만 넣는다(D는 제품 문항 14개만 돌린다. PLAN-D.md)
 """
 import json
 import random
@@ -18,14 +19,15 @@ def out_dir(arms: str):
 
 def main(arms: str = "AB"):
     OUT = out_dir(arms)
-    rng = random.Random(13 if arms == "AB" else 14)
+    rng = random.Random({"AB": 13, "AC": 14}.get(arms, 15))
     OUT.mkdir(parents=True, exist_ok=True)
     key = {}
     for s in ("v3", "v5"):
         golds = []
         for path in sorted((ROOT / s / "gold").glob("*.json")):
             item = json.loads(path.read_text(encoding="utf-8"))
-            if not item.get("skip") and item.get("type") != "followup":
+            done = all((folder(s, arm) / f"{item['id']}.json").exists() for arm in arms)
+            if not item.get("skip") and item.get("type") != "followup" and done:
                 golds.append(item)
         for b in range(0, len(golds), BATCH):
             parts = []

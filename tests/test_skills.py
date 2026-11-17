@@ -111,3 +111,27 @@ def test_keep_why_rules_in_prompt(monkeypatch, style):
     catalog = lines(skills.catalog(why=False))
     assert sorted(lines(whole)) == sorted([x for x in lines(core) if x not in catalog] + [x for b in bodies for x in lines(b)])
     assert "why-questions" not in skills.tool(why=agent._skill_why())["input_schema"]["properties"]["names"]["items"]["enum"]
+
+
+def test_slim_tools_move_family_list_to_topic_search(monkeypatch):
+    # ASK_SLIM_TOOLS=1: find_by_product 설명의 제품군 목록을 topic-search 규칙의 끝으로 옮긴다. 다른 도구와 MCP 쪽 TOOLS 는 그대로
+    from company_graph import agent_tools
+    whole = {t["name"]: t for t in agent_tools.tools()}
+    monkeypatch.setenv("ASK_SLIM_TOOLS", "1")
+    assert agent._slim_tools()
+    slim = {t["name"]: t for t in agent_tools.tools(slim=agent._slim_tools())}
+    assert agent_tools.FAMILY_TEXT in whole["find_by_product"]["description"]
+    assert agent_tools.FAMILY_TEXT not in slim["find_by_product"]["description"]
+    assert "topic-search" in slim["find_by_product"]["description"]
+    assert all(slim[n] == whole[n] for n in whole if n != "find_by_product")
+    rules = skills.read({"names": ["topic-search"]}, rewrite=agent._skill_text)["skills"][0]["rules"]
+    assert rules.endswith(agent_tools.FAMILY_TEXT) and "아래 목록에서" in rules
+    assert agent_tools.FAMILY_TEXT in agent_tools.TOOLS[[t["name"] for t in agent_tools.TOOLS].index("find_by_product")]["description"]
+    monkeypatch.setenv("ASK_SKILLS", "0")
+    assert not agent._slim_tools()   # read_skill 이 없으면 목록을 옮기지 않는다
+
+
+def test_unknown_family_error_lists_families(db):  # noqa: F811
+    from company_graph import agent_tools
+    out = agent_tools.call(db, "find_by_product", {"as_of": "2026-10-08", "families": ["없는 제품군"]})
+    assert agent_tools.FAMILY_TEXT in out["error"]

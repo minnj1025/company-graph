@@ -46,6 +46,11 @@ FIELDS = ("as_of_date: 계약일·결의일·해지일·보고서 기준일. per
 # 제품군 목록을 도구 설명에 싣는다. Agent가 질문의 뜻에 맞는 제품군을 여기서 골라 넘긴다
 _FAMILY_LIST = "; ".join(f"[{field}] " + ", ".join(family for f, family, _ in FAMILIES if f == field)
                          for field in dict.fromkeys(f for f, _, _ in FAMILIES) if field != "기타")
+FAMILY_TEXT = f"제품군 목록 — {_FAMILY_LIST}"
+# ASK_SLIM_TOOLS=1: 채팅 Agent에게 줄 때 find_by_product 설명에서 제품군 목록(약 1,800 토큰)을 빼고
+# read_skill 의 topic-search 결과로 옮긴다(agent._skill_text). MCP 와 뉴스 분석은 TOOLS 를 그대로 쓴다
+SLIM = {"find_by_product": (("(1) families: 아래 제품군 목록에서", "(1) families: 제품군 목록(read_skill 로 topic-search 를 읽으면 함께 온다)에서"),
+                            (" " + FAMILY_TEXT, ""))}
 _AS_OF = {"type": "string", "description": "조회 시점 (YYYY-MM-DD). 이 날짜까지 공시된 것만 본다. 질문에 시점이 없으면 오늘 날짜"}
 _COMPANY = {"type": "integer", "description": "find_company 가 돌려준 company_id"}
 COMPOSITE_TOOLS = ("compare_reports", "holder_changes")   # 자주 나오는 비교 절차를 묶은 도구. 환경 변수 ASK_COMPOSITE=1 일 때만 준다
@@ -181,7 +186,7 @@ TOOLS = [
                     "줄마다 name 과 segment 는 보고서 표에 적힌 그대로이고, products 는 그 줄에 붙인 표준 이름과 제품군이다(사람이 전부 확인한 것은 아니며 "
                     "unsure 가 true 면 짐작이 섞였다). 답에는 표에 적힌 이름과 비중을 옮긴다. "
                     "표를 읽지 못한 회사와 제품 표가 없는 회사(금융업 등)는 여기에 나오지 않으므로, 빠짐없이 찾아야 하면 search_business 도 함께 쓴다. "
-                    f"제품군 목록 — {_FAMILY_LIST}",
+                    + FAMILY_TEXT,
      "input_schema": {"type": "object", "properties": {
          "families": {"type": "array", "items": {"type": "string"}, "maxItems": 8, "description": "제품군 이름들. 목록에 있는 것을 글자 그대로"},
          "keywords": {"type": "array", "items": {"type": "string"}, "maxItems": 8,
@@ -787,7 +792,7 @@ def find_by_product(db, as_of, families=None, keywords=None, ksic=None, min_shar
     wanted = list(dict.fromkeys(str(f).strip() for f in (families or []) if str(f).strip()))
     unknown = [f for f in wanted if f not in FAMILY_FIELD]
     if unknown:
-        raise ToolError(f"제품군 {unknown} 은 목록에 없습니다. 도구 설명의 제품군 목록에 있는 이름을 글자 그대로 쓰세요")
+        raise ToolError(f"제품군 {unknown} 은 목록에 없습니다. 아래 목록에 있는 이름을 글자 그대로 쓰세요. {FAMILY_TEXT}")
     words = list(dict.fromkeys(str(w).strip() for w in (keywords or []) if str(w).strip()))[:8]
     prefixes = [str(c).strip() for c in (ksic or []) if str(c).strip()]
     if any(not ksic_table.valid(c) or not c.isdigit() for c in prefixes):
@@ -1245,10 +1250,18 @@ def show_on_graph(db, highlight, also=None, views=None, as_of=None, company_id=N
     return out
 
 
-def tools() -> list[dict]:
-    """Agent에게 줄 도구 목록."""
+def _slim(tool: dict) -> dict:
+    description = tool["description"]
+    for old, new in SLIM.get(tool["name"], ()):
+        assert old in description, (tool["name"], old)
+        description = description.replace(old, new)
+    return {**tool, "description": description}
+
+
+def tools(slim: bool = False) -> list[dict]:
+    """Agent에게 줄 도구 목록. slim=True 면 SLIM 대로 설명을 줄인다."""
     import os
-    return [t for t in TOOLS if (t["name"] != SCREEN_TOOL or os.environ.get("ASK_SCREEN_TOOL", "1") != "0")
+    return [_slim(t) if slim else t for t in TOOLS if (t["name"] != SCREEN_TOOL or os.environ.get("ASK_SCREEN_TOOL", "1") != "0")
             and (t["name"] not in COMPOSITE_TOOLS or os.environ.get("ASK_COMPOSITE", "0") == "1")]
 
 
