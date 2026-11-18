@@ -1,4 +1,4 @@
-import type { AskResult, AskStatus, Company, CompanyDetail, GraphData, HotDay, Insights, Meta, RelType, Suggestion, Taxonomy, View } from "./types";
+import type { AskResult, AskStatus, Company, CompanyDetail, GraphData, HotDay, Insights, Meta, RelType, Suggestion, Taxonomy, UserPage, View } from "./types";
 
 /** 운영자 열쇠. 주소 끝에 #owner=열쇠 를 붙여 한 번 열면 이 브라우저에 적어 두고, 질문할 때 같이 보낸다 (횟수 한도를 받지 않는다) */
 function ownerKey(): string | null {
@@ -45,6 +45,62 @@ export const fetchTaxonomy = () => get<Taxonomy>("/taxonomy");
 export const fetchCompany = (id: number, asOf: string) => get<CompanyDetail>(`/company/${id}`, { as_of: asOf });
 export const fetchInsights = (asOf: string) => get<Insights>("/insights", { as_of: asOf });
 export const fetchAskStatus = () => get<AskStatus>("/ask/status");
+
+/** 분석 페이지. basis=today 면 카드만 오늘 기준으로 채운다 */
+export async function fetchPage(slug: string, basis: "made" | "today"): Promise<UserPage> {
+  const response = await fetch(`/api/pages/${encodeURIComponent(slug)}?basis=${basis}`);
+  const body = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(typeof body?.detail === "string" ? body.detail : "페이지를 열 수 없습니다");
+  return body as UserPage;
+}
+
+/** 답 하나를 페이지로 남긴다. 답에 붙어 온 page(설계도와 서명)를 그대로 보낸다 */
+export async function savePage(page: NonNullable<AskResult["page"]>): Promise<{ slug: string; edit_key: string; title: string }> {
+  const response = await fetch("/api/pages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...ownerHeaders() },
+    body: JSON.stringify(page),
+  });
+  const body = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(typeof body?.detail === "string" ? body.detail : "페이지를 만들지 못했습니다");
+  return body;
+}
+
+export async function deletePage(slug: string, editKey: string | null): Promise<void> {
+  const response = await fetch(`/api/pages/${encodeURIComponent(slug)}`, {
+    method: "DELETE",
+    headers: { ...(editKey ? { "X-Edit-Key": editKey } : {}), ...ownerHeaders() },
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(typeof body?.detail === "string" ? body.detail : "지우지 못했습니다");
+  }
+}
+
+/** 이 브라우저에서 만든 페이지. 지우기 열쇠는 여기에만 있다 (서버에는 해시만) */
+export interface MyPage {
+  slug: string;
+  title: string;
+  key: string;
+  created: string;
+  sig: string;
+}
+const PAGES_KEY = "my-pages.v1";
+export function myPages(): MyPage[] {
+  try {
+    return JSON.parse(localStorage.getItem(PAGES_KEY) ?? "[]") as MyPage[];
+  } catch {
+    return [];
+  }
+}
+export function rememberPages(pages: MyPage[]) {
+  try {
+    localStorage.setItem(PAGES_KEY, JSON.stringify(pages.slice(-100)));
+  } catch {
+    /* 적어 두지 못하면 이번 화면에서만 안다 */
+  }
+}
+export const pageUrl = (slug: string) => `${window.location.origin}/?page=${slug}`;
 
 /** 답이 만들어지는 동안 서버가 보내는 것: 지금 부르는 도구, 답의 글 조각, 도구 결과를 받고 새로 쓰기 시작 */
 export type AskEvent = { kind: "tool"; name: string; input: Record<string, unknown> } | { kind: "text"; text: string } | { kind: "turn" } | { kind: "view"; view: View };

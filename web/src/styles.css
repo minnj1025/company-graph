@@ -6843,3 +6843,187 @@ details.more .notes {
 .memo-others p {
   margin: 2px 0 0;
 }
+
+/* ---------- 분석 페이지 (?page=주소, PageView.tsx) ---------- */
+.a-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+
+.page-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.page-saved a {
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--accent);
+}
+
+.page-error {
+  color: var(--warn);
+}
+
+.page-view {
+  height: 100%;
+  overflow-y: auto;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.page-top {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.page-top .brand {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.page-main {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  flex: 1 0 auto;
+}
+
+.page-main h1 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.page-meta,
+.page-note {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.page-meta > span {
+  white-space: nowrap;
+}
+
+.page-band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 14px 0 18px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  font-size: 13px;
+}
+
+.page-band.today {
+  border-color: var(--accent);
+}
+
+.page-band button,
+.page-actions button,
+.page-actions a {
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--accent);
+  font-size: 12.5px;
+}
+
+.page-band details {
+  flex-basis: 100%;
+  font-size: 12.5px;
+}
+
+.page-band details summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.page-band details a,
+.page-band details > span {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-band em,
+.page-mine em {
+  font-style: normal;
+  color: var(--muted);
+  margin-right: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.page-question {
+  margin: 0 0 12px;
+  color: var(--text-2);
+  font-size: 13.5px;
+}
+
+.page-question b {
+  margin-right: 8px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.page-views {
+  margin: 12px 0;
+}
+
+.page-main .answer {
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.page-actions .danger {
+  color: var(--warn);
+}
+
+.page-mine {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 28px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+}
+
+.page-mine b {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.page-mine a {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

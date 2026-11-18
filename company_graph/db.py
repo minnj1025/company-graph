@@ -320,6 +320,19 @@ class NewsMemo(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
 
 
+class UserPage(Base):
+    """방문자가 남긴 분석 페이지 (pages.py). 배포용 DB에서만 쌓이고 export_db 는 이 표를 건드리지 않는다.
+    카드의 숫자는 두지 않는다. 카드의 종류와 대상만 두고, 열 때마다 DB에서 채운다."""
+    __tablename__ = "user_page"
+    slug: Mapped[str] = mapped_column(String(12), primary_key=True)    # 주소에 쓰는 무작위 글자. 아는 사람만 연다
+    edit_hash: Mapped[str] = mapped_column(String(64))                  # 지우기 열쇠의 sha256. 열쇠는 만든 사람의 브라우저에만 있다
+    visitor: Mapped[str] = mapped_column(String(16), index=True)        # ask_log 와 같은 방문자 값
+    title: Mapped[str] = mapped_column(String(200))
+    as_of: Mapped[date] = mapped_column(Date)                           # 만든 날의 조회 시점. 기본으로 이날 기준으로 카드를 채운다
+    spec: Mapped[dict] = mapped_column(JSON)                            # 설계도: 물은 것, 블록(글·카드), 이어진 기업
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, index=True)
+
+
 @lru_cache(maxsize=1)
 def get_engine():
     """프로세스에 엔진은 하나. 요청마다 새로 만들면 연결이 쌓인다."""

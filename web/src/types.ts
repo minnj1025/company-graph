@@ -242,6 +242,30 @@ export interface AskResult {
   views?: View[];
   /** 운영자에게는 한도가 없어서 null */
   left_for_you: number | null;
+  /** 이 답을 페이지로 남길 때 서버에 그대로 돌려보내는 설계도와 서명. 남길 수 없는 답(거절, 근거 확인 실패)에는 없다 */
+  page?: { draft: unknown; sig: string };
+}
+
+/** 분석 페이지의 블록 하나: 답의 글, 또는 열 때 DB로 채운 카드 */
+export type PageBlock = { type: "text"; text: string } | { type: "view"; view: View } | { type: "view"; kind: string; error: string };
+
+/** 분석 페이지 (company_graph/pages.py) */
+export interface UserPage {
+  slug: string;
+  title: string;
+  question: string;
+  /** 만든 날의 조회 시점 */
+  as_of: string;
+  basis: "made" | "today";
+  /** 카드를 채운 시점 */
+  shown_as_of: string;
+  created_at: string;
+  blocks: PageBlock[];
+  companies: { id: number; name: string }[];
+  highlight: number[];
+  sources: AskResult["sources"];
+  /** 만든 뒤 페이지의 기업들이 낸 공시 */
+  newer: { total: number; items: { filed: string; rcept_no: string; company: string | null; report: string }[] };
 }
 
 export interface AskStatus {

@@ -18,7 +18,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
-from . import agent_tools, ksic, memo_followups, memo_prices, query
+from . import agent_tools, ksic, memo_followups, memo_prices, pages, query
 from .display_names import group_key, group_label
 from .db import AskLog, Base, BusinessSection, Company, Document, HotDay, NewsMemo, Product, ProductCode, Relation, SiteText, get_engine, session
 from .product_families import FAMILY_FIELD
@@ -1139,14 +1139,19 @@ def _answered(db, question: str, visitor: str, ask_id: int, result: dict, found:
                 "report": documents[no].report_nm.strip(), "filed": documents[no].rcept_dt.isoformat()}
                if no in documents else {"rcept_no": no, "url": query.DART_VIEWER + no, "company": None, "report": None, "filed": None}
                for no in cited]
+    graph = found.graph(db, result["answer"])
+    mentioned = [{"id": n["id"], "name": n["name"]} for n in graph["nodes"] if not n.get("kind") and n.get("mentioned")]
+    highlight = (found.shown or {}).get("highlight") or sorted(found.focus)
+    page = pages.draft(question, result, found.views, mentioned, highlight, found.calls)
     return {"question": question, "answer": result["answer"], "followups": result.get("followups", []),
             "as_of": result["as_of"], "model": result["model"],
             "seconds": result["seconds"], "tokens": entry.tokens,
             "tools": [{"name": c["tool"], "input": c["input"], "total": c["total"], "error": c["error"]} for c in result["tool_calls"]],
             "unverified_citations": result["cited_not_in_results"],
             "sources": sources,
-            "graph": found.graph(db, result["answer"]),
+            "graph": graph,
             "views": found.views,
+            **({"page": page} if page else {}),
             "left_for_you": None if visitor == OWNER else max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}
 
 
@@ -1435,3 +1440,50 @@ def daily_memo(memo_id: int, db=Depends(get_db)):
                         .order_by(NewsMemo.news_date.desc(), NewsMemo.memo_id.desc()).limit(10)).all() if row.company_id else []
     return {"news": {"title": row.title, "day": row.news_date.isoformat()}, "events": row.events, "result": result,
             "picked": row.picked, "link": row.link, "source": row.source, "others": _memo_items(db, others)}
+
+
+class SavePage(BaseModel):
+    draft: dict
+    sig: str = Field(max_length=128)
+
+
+def _page_error(error: "pages.PageError") -> HTTPException:
+    return HTTPException(error.status, str(error))
+
+
+@app.post("/api/pages")
+def save_page(body: SavePage, request: Request, db=Depends(get_db)):
+    """답 하나를 페이지로 남긴다. 답을 낼 때 서버가 붙인 설계도와 서명(page)을 그대로 돌려받는다. Claude는 부르지 않는다."""
+    pages.ensure_table(_engine)
+    owner = _is_owner(request)
+    try:
+        return pages.create(db, body.draft, body.sig, OWNER if owner else _visitor(request), owner=owner)
+    except pages.PageError as error:
+        raise _page_error(error) from error
+    except (KeyError, TypeError, ValueError) as error:
+        raise HTTPException(400, "페이지 설계도의 모양이 맞지 않습니다") from error
+
+
+@app.get("/api/pages/{slug}")
+def read_page(slug: str, basis: str = "made", db=Depends(get_db)):
+    """페이지 하나. 카드는 이때 DB에서 채운다. basis=today 면 카드만 오늘 기준이다."""
+    from fastapi.responses import JSONResponse
+
+    pages.ensure_table(_engine)
+    try:
+        page = pages.read(db, slug, basis)
+    except pages.PageError as error:
+        raise _page_error(error) from error
+    # 방문자가 만든 글이라 검색엔진이 모으지 않게 한다
+    return JSONResponse(json.loads(json.dumps(page, ensure_ascii=False, default=str)), headers={"X-Robots-Tag": "noindex"})
+
+
+@app.delete("/api/pages/{slug}")
+def delete_page(slug: str, request: Request, db=Depends(get_db)):
+    """만든 사람(지우기 열쇠 X-Edit-Key)이나 운영자만 지운다."""
+    pages.ensure_table(_engine)
+    try:
+        pages.delete(db, slug, request.headers.get("x-edit-key"), owner=_is_owner(request))
+    except pages.PageError as error:
+        raise _page_error(error) from error
+    return {"deleted": slug}

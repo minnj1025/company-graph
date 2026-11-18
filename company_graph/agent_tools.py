@@ -1236,11 +1236,12 @@ def show_on_graph(db, highlight, also=None, views=None, as_of=None, company_id=N
     built, cards = [], []
     for spec in (views or [])[:2]:
         spec = {"as_of": as_of, "company_id": company_id, **{k: v for k, v in dict(spec).items() if v is not None}}
-        card = call(db, "show_view", {k: v for k, v in spec.items() if k in ("kind", "company_id", "as_of", "other_company_id", "since") and v is not None})
+        arguments = {k: v for k, v in spec.items() if k in ("kind", "company_id", "as_of", "other_company_id", "since") and v is not None}
+        card = call(db, "show_view", arguments)
         if "error" in card:
             cards.append({"kind": spec.get("kind"), "error": card["error"]})
         else:
-            built.append(card["_view"])
+            built.append({**card["_view"], "spec": arguments})   # 페이지로 남길 때 이 카드를 다시 만드는 데 쓴다 (pages.py)
             cards.append({k: card[k] for k in ("shown", "summary", "notes") if card.get(k)})
     if cards:
         out["views"] = cards
