@@ -17,8 +17,10 @@ def lines(text):
 def test_skill_bodies_are_copied_word_for_word():
     # 규칙 본문은 원래 지시문의 절과 글자까지 같다. 두 방식의 차이는 규칙의 위치뿐이다
     found = skills.load()
-    assert len(found) == 7
+    assert len(found) == 8
     for name, item in found.items():
+        if name in skills.OPTIONAL:   # make-page 는 지시문에 원래 있던 절이 아니라 새 규칙이다(ASK_PAGES=1 일 때만)
+            continue
         source = agent.WHY if name == "why-questions" else agent.SYSTEM
         assert item["body"] in source, name
         assert item["description"]
@@ -31,7 +33,7 @@ def test_core_prompt_keeps_every_other_line(monkeypatch, style):
     whole = agent.system()
     monkeypatch.setenv("ASK_SKILLS", "1")
     core = agent.system()
-    bodies = [agent._skill_text(n, item["body"]) for n, item in skills.load().items()]
+    bodies = [agent._skill_text(n, skills.load()[n]["body"]) for n in skills.names()]   # 켜지 않은 규칙(make-page)은 빼고
     for body in bodies:
         assert body not in core
     # 원래 지시문의 줄 = 줄인 지시문의 줄(목록 빼고) + skill 본문의 줄
@@ -106,7 +108,7 @@ def test_keep_why_rules_in_prompt(monkeypatch, style):
     core = agent.system()
     why = agent._skill_text("why-questions", skills.load()["why-questions"]["body"])
     assert why in core and "- why-questions:" not in core
-    bodies = [item["body"] for n, item in skills.load().items() if n != "why-questions"]
+    bodies = [skills.load()[n]["body"] for n in skills.names(why=False)]
     assert all(b not in core for b in bodies)
     catalog = lines(skills.catalog(why=False))
     assert sorted(lines(whole)) == sorted([x for x in lines(core) if x not in catalog] + [x for b in bodies for x in lines(b)])

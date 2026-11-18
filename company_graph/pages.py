@@ -108,9 +108,15 @@ def ensure_table(engine):
 
 
 def create(db, body: dict, sig: str, visitor: str, owner: bool = False) -> dict:
+    """화면이 돌려보낸 설계도(답을 페이지로 남기기). 서버가 붙인 서명이 맞아야 한다"""
     expected = sign(body) if isinstance(body, dict) else None
     if not expected or not isinstance(sig, str) or not hmac.compare_digest(expected, sig):
         raise PageError("이 답은 페이지로 남길 수 없습니다 (서버가 만든 답이 아니거나 바뀌었습니다)", 403)
+    return store(db, body, visitor, owner)
+
+
+def store(db, body: dict, visitor: str, owner: bool = False, title: str | None = None) -> dict:
+    """설계도를 저장한다. 서버 안에서 만든 설계도(Agent의 save_page)는 서명 없이 바로 여기로 온다"""
     body = _check(body)
     if not owner:
         today = datetime.combine(date.today(), datetime.min.time())
@@ -123,7 +129,8 @@ def create(db, body: dict, sig: str, visitor: str, owner: bool = False) -> dict:
     slug = secrets.token_urlsafe(8)[:10]
     while db.get(UserPage, slug) is not None:
         slug = secrets.token_urlsafe(8)[:10]
-    title = body["question"][:TITLE_MAX] + ("…" if len(body["question"]) > TITLE_MAX else "")
+    title = (title or body["question"])
+    title = title[:TITLE_MAX] + ("…" if len(title) > TITLE_MAX else "")
     db.add(UserPage(slug=slug, edit_hash=hashlib.sha256(key.encode()).hexdigest(), visitor=visitor, title=title,
                     as_of=date.fromisoformat(body["as_of"]), spec=body, created_at=datetime.now()))
     db.commit()
@@ -200,3 +207,101 @@ def delete(db, slug: str, key: str | None, owner: bool = False) -> None:
         raise PageError("지우기 열쇠가 맞지 않습니다", 403)
     db.delete(page)
     db.commit()
+
+
+# ---------- Agent가 직접 짜는 페이지 (save_page, ASK_PAGES=1 일 때만) ----------
+
+TOOL = "save_page"
+SKILL = "make-page"
+AGENT_TEXT_MAX = 600
+
+
+def enabled() -> bool:
+    """평가 전이라 기본은 끈다. 켜면 save_page 도구와 make-page 규칙이 함께 생긴다"""
+    return os.environ.get("ASK_PAGES", "0") == "1"
+
+
+def tool() -> dict:
+    return {
+        "name": TOOL,
+        "description": "사용자가 페이지로 만들어 달라고 할 때, 조회를 마친 뒤 페이지의 설계도를 저장합니다. 규칙은 read_skill 로 make-page 를 읽습니다. "
+                       "블록은 위에서부터 차례로 그려집니다. view 블록은 카드의 종류와 대상만 주면 숫자는 서버가 DB에서 채웁니다. "
+                       "text 블록은 600자 안의 짧은 글이며, 적은 접수번호와 숫자는 이번 조회 결과에 있어야 합니다.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "title": {"type": "string", "description": "페이지 제목, 40자 안팎"},
+                "blocks": {"type": "array", "minItems": 2, "maxItems": BLOCKS_MAX, "items": {
+                    "type": "object",
+                    "properties": {
+                        "type": {"type": "string", "enum": ["text", "view"]},
+                        "text": {"type": "string", "description": "type=text 일 때의 글"},
+                        "kind": {"type": "string", "enum": list(KINDS), "description": "type=view 일 때 카드 종류 (show_on_graph 의 views 와 같음)"},
+                        "company_id": {"type": "integer"},
+                        "other_company_id": {"type": "integer", "description": "path, compare 일 때 상대 기업"},
+                        "since": {"type": "string", "description": "기간이 있는 카드의 시작일 YYYY-MM-DD"},
+                    },
+                    "required": ["type"],
+                }},
+            },
+            "required": ["title", "blocks"],
+        },
+    }
+
+
+def propose(db, arguments: dict, when: date, seen: set[str], bodies: list[str], question: str, warned: dict) -> dict:
+    """Agent가 낸 설계도를 검사한다. 고칠 것이 있으면 error 로 돌려줘 다시 부르게 하고, 맞으면 _page 에 설계도를 담는다.
+    저장은 답이 끝난 뒤 서버(api._answered)가 한다. 평가처럼 서버를 거치지 않으면 저장하지 않는다.
+    warned: 숫자 검사에 한 번 걸렸는지 (한 번만 고치게 하고, 두 번째에는 받는다. 답의 숫자 검사와 같은 방식)"""
+    from . import agent_tools, verify, wording
+
+    title = " ".join(str(arguments.get("title") or "").split())
+    raw = arguments.get("blocks")
+    problems = []
+    if not title:
+        problems.append("title 이 비었습니다")
+    if not isinstance(raw, list) or not raw:
+        return {"error": "blocks 에 블록을 하나 이상 주세요"}
+    blocks, cards = [], []
+    for i, block in enumerate(raw[:BLOCKS_MAX], 1):
+        kind = block.get("type") if isinstance(block, dict) else None
+        if kind == "text":
+            text = str(block.get("text") or "").strip()
+            if not text:
+                problems.append(f"{i}번 글 블록이 비었습니다")
+            elif len(text) > AGENT_TEXT_MAX:
+                problems.append(f"{i}번 글 블록이 {len(text)}자입니다. {AGENT_TEXT_MAX}자 안으로 줄이고 숫자는 카드에 맡기세요")
+            blocks.append({"type": "text", "text": text})
+        elif kind == "view":
+            arguments_ = {k: block[k] for k in ("kind", "company_id", "other_company_id", "since") if block.get(k) is not None}
+            card = agent_tools.call(db, "show_view", {**arguments_, "as_of": when.isoformat()})
+            if "error" in card:
+                problems.append(f"{i}번 카드({block.get('kind')}): {card['error']}")
+            else:
+                cards.append({"block": i, "shown": card["shown"], "summary": card.get("summary")})
+            blocks.append({"type": "view", **arguments_, "as_of": when.isoformat()})
+        else:
+            problems.append(f"{i}번 블록의 type 은 text 나 view 입니다")
+    if len(raw) > BLOCKS_MAX:
+        problems.append(f"블록은 {BLOCKS_MAX}개까지입니다")
+    if not cards and not problems:
+        problems.append("카드(view)를 하나 이상 넣으세요. 숫자는 카드가 담습니다")
+    if sum(b["type"] == "view" for b in blocks) > VIEWS_MAX:
+        problems.append(f"카드는 {VIEWS_MAX}장까지입니다")
+    text = "\n\n".join(b["text"] for b in blocks if b["type"] == "text")
+    unknown = sorted(set(RECEIPT.findall(text)) - seen)
+    if unknown:
+        problems.append(f"이번 조회 결과에 없는 접수번호: {', '.join(unknown)}")
+    flagged = wording.flagged(text, question)
+    if flagged:
+        problems.append("쓰지 않기로 한 표현: " + "; ".join(flagged[:5]))
+    numbers = verify.unsupported(text, bodies, when, question) if text else []
+    if numbers and not warned.get("numbers"):
+        warned["numbers"] = True
+        problems.append("조회 결과에서 확인되지 않는 값: " + ", ".join(numbers[:8]) + ". 결과에 있는 값으로 고치거나 빼고 카드에 맡기세요")
+    if problems:
+        return {"error": "페이지를 저장하지 않았습니다. 고쳐서 다시 부르세요: " + " / ".join(problems)}
+    return {"saved": True, "title": title, "cards": cards,
+            "note": "페이지 설계도를 받았습니다. 답이 끝나면 화면이 페이지 주소를 붙입니다. 답에는 페이지에 무엇을 담았는지 두세 문장으로만 적고, 주소는 적지 않습니다",
+            "_page": {"title": title, "question": " ".join(question.split())[:300], "as_of": when.isoformat(), "blocks": blocks,
+                      **({"unverified": numbers} if numbers else {})}}

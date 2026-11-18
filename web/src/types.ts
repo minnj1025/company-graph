@@ -244,6 +244,8 @@ export interface AskResult {
   left_for_you: number | null;
   /** 이 답을 페이지로 남길 때 서버에 그대로 돌려보내는 설계도와 서명. 남길 수 없는 답(거절, 근거 확인 실패)에는 없다 */
   page?: { draft: unknown; sig: string };
+  /** Agent가 save_page 로 만든 페이지. 지우기 열쇠는 이때 한 번만 온다 */
+  made_page?: { slug: string; edit_key: string; title: string } | { error: string };
 }
 
 /** 분석 페이지의 블록 하나: 답의 글, 또는 열 때 DB로 채운 카드 */

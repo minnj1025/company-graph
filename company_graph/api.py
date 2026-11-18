@@ -1143,6 +1143,16 @@ def _answered(db, question: str, visitor: str, ask_id: int, result: dict, found:
     mentioned = [{"id": n["id"], "name": n["name"]} for n in graph["nodes"] if not n.get("kind") and n.get("mentioned")]
     highlight = (found.shown or {}).get("highlight") or sorted(found.focus)
     page = pages.draft(question, result, found.views, mentioned, highlight, found.calls)
+    made = None
+    if result.get("page_spec"):   # Agent가 save_page 로 짠 페이지. 서버 안에서 만든 설계도라 서명 없이 저장한다
+        spec = result["page_spec"]
+        body = {"question": spec["question"], "as_of": spec["as_of"], "blocks": spec["blocks"], "companies": mentioned, "highlight": highlight, "source": "agent"}
+        try:
+            pages.ensure_table(_engine)
+            made = pages.store(db, body, visitor, owner=visitor == OWNER, title=spec["title"])
+        except pages.PageError as error:
+            made = {"error": str(error)}
+        page = None   # 페이지를 따로 만들었으니 답을 다시 남기는 단추는 두지 않는다
     return {"question": question, "answer": result["answer"], "followups": result.get("followups", []),
             "as_of": result["as_of"], "model": result["model"],
             "seconds": result["seconds"], "tokens": entry.tokens,
@@ -1152,6 +1162,7 @@ def _answered(db, question: str, visitor: str, ask_id: int, result: dict, found:
             "graph": graph,
             "views": found.views,
             **({"page": page} if page else {}),
+            **({"made_page": made} if made else {}),
             "left_for_you": None if visitor == OWNER else max(0, ASK_VISITOR_LIMIT - _asked_today(db, visitor))}
 
 

@@ -36,8 +36,12 @@ def load() -> dict[str, dict]:
     return out
 
 
+# 켜야만 생기는 규칙. make-page 는 save_page 도구와 함께 생긴다(pages.py, ASK_PAGES=1). 끄면 지시문과 도구 목록이 그 전과 글자까지 같다
+OPTIONAL = {"make-page": "ASK_PAGES"}
+
+
 def names(*, why: bool = True) -> list[str]:
-    return [n for n in load() if why or n != "why-questions"]
+    return [n for n in load() if (why or n != "why-questions") and (n not in OPTIONAL or os.environ.get(OPTIONAL[n], "0") == "1")]
 
 
 def catalog(*, why: bool = True) -> str:

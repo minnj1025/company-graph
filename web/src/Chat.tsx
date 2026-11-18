@@ -51,12 +51,13 @@ export const TOOL_LABELS: Record<string, string> = {
   get_products: "제품과 매출 비중 읽기",
   get_coverage: "수집 범위 확인",
   read_skill: "질문 유형별 규칙 읽기",
+  save_page: "페이지 만들기",
 };
 
 /** "제품 표에서 찾기: 분리막, LiBS" 처럼, Agent가 지금 무엇을 조회하는지 한 줄로 */
 function describe(event: Extract<AskEvent, { kind: "tool" }>): string {
-  const { keywords, name } = event.input as { keywords?: unknown; name?: unknown };
-  const what = Array.isArray(keywords) ? keywords.join(", ") : typeof name === "string" ? name : "";
+  const { keywords, name, title } = event.input as { keywords?: unknown; name?: unknown; title?: unknown };
+  const what = Array.isArray(keywords) ? keywords.join(", ") : typeof name === "string" ? name : event.name === "save_page" && typeof title === "string" ? title : "";
   return `${TOOL_LABELS[event.name] ?? event.name}${what ? `: ${what}` : ""}`;
 }
 
@@ -319,16 +320,28 @@ function Answer({ result, onCompany }: { result: AskResult; onCompany: (id: numb
 /** 답 하나를 주소가 있는 페이지로 남기는 단추. Agent를 다시 부르지 않는다 (서버가 답에 붙인 설계도를 그대로 보낸다) */
 function SaveAsPage({ result }: { result: AskResult }) {
   const page = result.page;
-  const [saved, setSaved] = useState<MyPage | undefined>(() => (page ? myPages().find((mine) => mine.sig === page.sig) : undefined));
+  const made = result.made_page;
+  const [saved, setSaved] = useState<MyPage | undefined>(() => {
+    if (made && "slug" in made) {
+      // Agent가 만든 페이지: 지우기 열쇠를 이 브라우저에 한 번만 적어 둔다
+      const known = myPages().find((mine) => mine.slug === made.slug);
+      if (known) return known;
+      const mine = { slug: made.slug, title: made.title, key: made.edit_key, created: new Date().toISOString(), sig: `agent:${made.slug}` };
+      rememberPages([...myPages(), mine]);
+      return mine;
+    }
+    return page ? myPages().find((mine) => mine.sig === page.sig) : undefined;
+  });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  if (!page) return null;
+  if (made && "error" in made) return <span className="page-error">페이지를 만들지 못했습니다: {made.error}</span>;
+  if (!page && !saved) return null;
   if (saved) {
     return (
       <span className="page-saved">
         <a href={pageUrl(saved.slug)} target="_blank" rel="noreferrer" title="남긴 페이지를 새 탭에서 엽니다">
-          페이지 열기
+          {made ? "Agent가 만든 페이지 열기" : "페이지 열기"}
         </a>
         <button
           onClick={() => {
@@ -350,9 +363,9 @@ function SaveAsPage({ result }: { result: AskResult }) {
         onClick={() => {
           setBusy(true);
           setError(null);
-          savePage(page)
-            .then((made) => {
-              const mine = { slug: made.slug, title: made.title, key: made.edit_key, created: new Date().toISOString(), sig: page.sig };
+          savePage(page!)
+            .then((created) => {
+              const mine = { slug: created.slug, title: created.title, key: created.edit_key, created: new Date().toISOString(), sig: page!.sig };
               rememberPages([...myPages(), mine]);
               setSaved(mine);
             })

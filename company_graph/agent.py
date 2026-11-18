@@ -15,7 +15,7 @@ from datetime import date
 
 import anthropic
 
-from . import agent_tools, skills, verify, wording
+from . import agent_tools, pages, skills, verify, wording
 from .config import secret
 from .db import session
 
@@ -211,6 +211,8 @@ def _core(base: str) -> str:
     """ASK_SKILLS=1: 질문 유형별 절을 빼고 그 자리에 skill 목록을 둔다. 남은 규칙은 글자까지 그대로다."""
     first = None
     for name in skills.names(why=False):
+        if name in skills.OPTIONAL:   # 새로 더한 규칙(make-page)은 지시문에서 뺄 절이 없다. 목록에만 넣는다
+            continue
         body = skills.load()[name]["body"]
         at = base.find(body + "\n\n")
         assert at >= 0, name
@@ -300,9 +302,13 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
         if found:
             worded["draft"] = split_followups(written)[0]   # 다시 쓰기 전의 답(평가에서 전후를 견준다)
         return wording.feedback(found) if found else None
+    # Agent가 직접 짜는 페이지 (pages.py). 평가 전이라 ASK_PAGES=1 일 때만 도구를 준다
+    pages_on = pages.enabled() and skills.enabled()
+    page, warned = None, {}
     with session() as db:
         for _ in range(max_turns):
-            tools = agent_tools.tools(slim=_slim_tools()) + ([skills.tool(why=_skill_why())] if skills.enabled() else [])
+            tools = (agent_tools.tools(slim=_slim_tools()) + ([skills.tool(why=_skill_why())] if skills.enabled() else [])
+                     + ([pages.tool()] if pages_on else []))
             # 지시문 끝에 캐시 표시를 둔다. 도구 정의와 지시문(약 2만 토큰)을 다른 질문과도 함께 쓴다.
             # 위쪽의 자동 캐시(cache_control)만으로는 한 질문 안에서만 다시 쓰여, 질문마다 이 부분을 캐시에 새로 썼다
             request = dict(model=model, max_tokens=16000, system=[{"type": "text", "text": system(), "cache_control": {"type": "ephemeral"}}],
@@ -340,6 +346,10 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
                     on_event("tool", {"name": block.name, "input": dict(block.input), **({"closing": True} if closing else {})})
                 if block.name == skills.TOOL and skills.enabled():
                     result = skills.read(dict(block.input), why=_skill_why(), rewrite=_skill_text)
+                elif block.name == pages.TOOL and pages_on:
+                    result = pages.propose(db, dict(block.input), when, seen, bodies, question, warned)
+                    if "_page" in result:
+                        page = result["_page"]
                 else:
                     result = agent_tools.call(db, block.name, dict(block.input))
                 if on_result:
@@ -366,7 +376,7 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
     return {"question": question, "as_of": when.isoformat(), "model": model, "answer": text, "followups": followups, "stop_reason": stop,
             "tool_calls": calls, "cited": sorted(cited), "cited_not_in_results": sorted(cited - seen),
             "usage": usage, "seconds": round(time.time() - started, 1), **({"verify": checked} if checking else {}),
-            **({"wording": worded} if wording_on else {})}
+            **({"wording": worded} if wording_on else {}), **({"page_spec": page} if page else {})}
 
 
 def main():
