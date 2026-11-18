@@ -1,0 +1,78 @@
+{
+ "question": "효성중공업 주가 요즘 얼마나 빠졌어? 시장보다 더 빠진 거야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "효성중공업은 최근 1주, 1개월, 3개월 모두 시장보다 크게 더 빠졌습니다. 이 DB는 주가의 원인을 알려 주지 않으므로, 아래는 확인되는 수익률 사실만 정리한 것입니다.\n\n- **1주(2026-10-08~10-16)**: -22.77%. 유가증권 시장 중앙값은 -2.74%로, 시장보다 20.03%p 더 빠졌습니다. 같은 제품을 파는 종목들의 중앙값은 -10.89%입니다.\n- **1개월(2026-09-16~10-16)**: -31.36%. 시장 중앙값은 -3.73%로, 27.63%p 더 빠졌습니다. 같은 제품 종목 중앙값은 -9.13%입니다.\n- **3개월(2026-07-16~10-16)**: -30.94%. 시장 중앙값은 -0.97%로, 29.98%p 더 빠졌습니다. 같은 제품 종목 중앙값은 +1.80%입니다.\n\n이 값은 종가 기준이며 2026-10-16 장 마감 시점의 지난 수익률입니다. 비교 대상인 같은 제품 종목은 감속기, 발전기, 변압기, 수배전반, 아파트 건설, 전동기 중 하나를 매출의 10% 이상으로 파는 상장사 22곳입니다. 이 DB에서 주가가 빠진 이유는 확인되지 않았습니다. 당일 기사나 원인 공시도 이 조회에서는 찾지 못했습니다.\n\n출처: 한국거래소(KRX) 일별 시세를 가공한 값 (get_price_history)",
+ "followups": [
+  "효성중공업이 최근 1개월에 급등하거나 급락한 날은 언제였나?",
+  "효성중공업과 같은 제품을 파는 HD현대일렉트릭의 최근 수익률은?",
+  "효성중공업의 최근 공시(공급계약, 자본 변동)를 보여 줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "효성중공업"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "price-moves"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 707
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 2243,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1290
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2243
+    ],
+    "views": [
+     {
+      "kind": "returns",
+      "company_id": 2243,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 445
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1478,
+  "cache_read_input_tokens": 79855,
+  "cache_creation_input_tokens": 2758
+ },
+ "seconds": 17.1,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V14",
+ "group": "v6"
+}

@@ -1,0 +1,50 @@
+{
+ "question": "현대차는 코스피 상장이야, 코스닥 상장이야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "현대자동차(종목코드 005380)는 코스피(유가증권시장) 상장사입니다. 코스닥이 아닙니다.",
+ "followups": [
+  "현대자동차의 최근 사업 구성과 매출 비중은?",
+  "현대자동차의 최근 분기 실적은 어떤가?",
+  "현대자동차의 최대주주와 주요 지분 구조는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "현대차"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     54
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 422,
+  "cache_read_input_tokens": 57938,
+  "cache_creation_input_tokens": 660
+ },
+ "seconds": 4.9,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V18",
+ "group": "v6"
+}

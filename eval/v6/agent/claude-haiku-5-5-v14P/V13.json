@@ -1,0 +1,62 @@
+{
+ "question": "셀트리온은 매출이 어떤 제품에서 나와?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "셀트리온 매출의 대부분(94.41%)은 바이오의약품의 '바이오시밀러'에서 나옵니다. 케미컬의약품(고덱스 외, 간질환 치료제)은 5.58%입니다. 기준은 2026년 반기보고서(2026.06, 접수번호 20260814003751)의 '주요 제품 및 서비스' 표입니다.\n\n| 사업부문(segment) | 표에 적힌 제품명 | 매출 비중 | 근거 |\n|---|---|---|---|\n| 바이오의약품 | 바이오시밀러 (제품 및 용역 등) | 94.41% | 20260814003751 |\n| 케미컬의약품 | 고덱스 외 (간질환 치료제) | 5.58% | 20260814003751 |\n| 케미컬의약품 | 기타 서비스 등 | 0.01% | 20260814003751 |\n\n- 나머지 행(바이오의약품 '기타', 케미컬의약품 '기타', 기타 '제품 및 상품' 등)은 비중이 0.0%로 적혀 있습니다.\n- 표에 적힌 비중은 반기보고서 기준이며, 연간 실적이나 사업부문별 손익은 이 DB에 없습니다.",
+ "followups": [
+  "셀트리온의 실적 추이를 분기별로 보여줘",
+  "셀트리온 최근 공시한 공급계약을 알려줘",
+  "바이오시밀러를 만드는 다른 회사는 어디야?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "셀트리온"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_products",
+   "input": {
+    "company_id": 3047,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": 8,
+   "chars": 1320
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3047
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [
+  "20260814003751"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 997,
+  "cache_read_input_tokens": 78422,
+  "cache_creation_input_tokens": 1700
+ },
+ "seconds": 6.6,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V13",
+ "group": "v6"
+}

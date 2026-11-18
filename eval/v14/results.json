@@ -1,0 +1,471 @@
+{
+ "summary": {
+  "1_pages_made": "15/15 (기준 13 이상)",
+  "2_fit": {
+   "적절": 15,
+   "일부": 0,
+   "부적절": 0,
+   "graded": 15,
+   "기준": "적절 12 이상, 부적절 0"
+  },
+  "3_wrong_fact_pages": "3 (기준 0)",
+  "4_unverified_pages": "0 (기준 2 이하)",
+  "5_refuse": {
+   "R01": {
+    "made": false,
+    "line": []
+   },
+   "R02": {
+    "made": false,
+    "line": []
+   }
+  },
+  "6_v6": {
+   "n": 20,
+   "save_calls": 0,
+   "right": 17,
+   "cost_per_q": 0.00441,
+   "기준": "save_page 0, 카드 19 이상, $0.005336 이하"
+  },
+  "7_page_cost_per_q": "0.00708 (기준 0.012 이하)",
+  "lines_in_pages": 0,
+  "total_cost": 0.1994
+ },
+ "pages": {
+  "P01": {
+   "group": "page",
+   "made": true,
+   "save_calls": 2,
+   "refused": 1,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.01254,
+   "seconds": 43.0,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [
+     "'2026-01-01 이후 공시된 공급계약은 34건'이라 했으나 조회 결과의 한화오션 공급계약 중 2026-01-01 이후 공시는 24건이다(전체 65건 중 첫 50건에 9건, 2026-04-10 이후 조회 15건). 34건은 카드 요약의 값이다"
+    ],
+    "unchecked": [],
+    "lines": [],
+    "reason": "지분 구조(최대주주 합계 42.01%, 5% 보고)와 최근 공급계약 3건을 접수번호와 함께 맞게 적었으나, 2026년 공시 계약 건수를 조회 결과(24건)와 다른 34건으로 적었다."
+   }
+  },
+  "P02": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00782,
+   "seconds": 27.1,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "배당이 이 DB에 없다는 문장(이 조회 결과로는 확인할 수 없음)"
+    ],
+    "lines": [],
+    "reason": "2026년 2분기 연결 매출·영업이익·영업이익률과 6월 말 부채비율·유동비율, 시장 중앙값이 조회 결과와 모두 맞고 실적과 재무 상태를 둘 다 다뤘다."
+   }
+  },
+  "P03": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00449,
+   "seconds": 15.0,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "배당이 이 DB로 알 수 없는 것이라는 문장(이 조회 결과로는 확인할 수 없음)"
+    ],
+    "lines": [],
+    "reason": "두 회사의 2026년 상반기 누적 매출·영업이익과 6월 말 부채비율·유동비율을 접수번호와 함께 맞게 비교했고 카카오 2025년 4분기 미계산 사정도 조회 결과와 맞다."
+   }
+  },
+  "P04": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00429,
+   "seconds": 17.4,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "최대주주와 특수관계인 20.07%, 5% 보고 3건(SK스퀘어·BlackRock·Capital Research)과 최근 90일 임원·주요주주 매매 9명·순증감 -291주가 조회 결과와 모두 맞다."
+   }
+  },
+  "P05": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00417,
+   "seconds": 18.4,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "매출 구성(94.41%/5.58%)과 공급계약·지분 취득 공시 및 정정 내용이 조회 결과와 모두 맞고, 매출 구성·타임라인·계약 카드로 두 요청 항목을 다룬다."
+   }
+  },
+  "P06": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00788,
+   "seconds": 30.8,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "지분 매매 이후의 변동은 반기·분기보고서 표를 모으지 않아 알 수 없다는 설명"
+    ],
+    "lines": [],
+    "reason": "계열 수(자신 제외 상장 11·비상장 50), (주)LG 35.0%/31.52% 차이와 접수번호, 특수관계인 합계 31.54%, LG에너지솔루션 79.0%/79.38%, 빠진 11곳까지 조회 결과와 맞고 계열·지분 카드로 두 항목을 다룬다."
+   }
+  },
+  "P07": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00812,
+   "seconds": 34.1,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "유효 계약 32건(공시 34건 중 대체된 2건 제외), PCTC 2척 정정, 멕시코 FPU·아프리카 VLAC 정정 공시의 계약일과 접수번호가 조회 결과와 맞고 타임라인·계약 카드로 1년 공급계약을 다룬다."
+   }
+  },
+  "P08": {
+   "group": "page",
+   "made": true,
+   "save_calls": 2,
+   "refused": 1,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00517,
+   "seconds": 32.3,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "유상증자 1건(9,900,990주, 10.12%, 8,861억 원)과 자기주식 처분 3건, 사채 결정 없음, 연결 부채비율·유동비율과 시장 중앙값, 상반기 누적 실적이 조회 결과와 모두 맞고 두 요청 항목을 글과 카드로 다룬다."
+   }
+  },
+  "P09": {
+   "group": "page",
+   "made": true,
+   "save_calls": 2,
+   "refused": 1,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00321,
+   "seconds": 11.9,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "배당은 payout 카드와 글(주당 15,000·17,500·20,000원)로, 자사주 매입은 2024년 공개매수 3조 2,245억 원·신탁 5,500억 원과 2025년 처분 3건 190억 원으로 다뤘고 값과 접수번호가 조회 결과와 모두 맞다."
+   }
+  },
+  "P10": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.01125,
+   "seconds": 67.7,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "2026년 중의 지분 변동과 5% 대량보유 보고를 이 DB로 알 수 없다는 문장(조회 결과로 범위를 확인할 수 없음)"
+    ],
+    "lines": [],
+    "reason": "현대모비스→현대자동차 22.0%(현대차 보고 22.36%), 서로 계열 공시, 공급계약 0건, 기아의 현대모비스 18.1%, 현대모비스의 현대오토에버 20.0%가 경로·지분 카드와 함께 조회 결과와 맞게 적혀 두 회사의 연결을 다뤘다."
+   }
+  },
+  "P11": {
+   "group": "page",
+   "made": true,
+   "save_calls": 2,
+   "refused": 1,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00506,
+   "seconds": 31.1,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "배당·현금흐름·EPS가 이 DB에 없다는 문장(이번 조회 결과로 확인할 수 없음)"
+    ],
+    "lines": [],
+    "reason": "실적 추이는 financials 카드와 2026 상반기 누적 매출 8조 9,859억 원(+8.04%)·영업이익 5,478억 원(+32.45%)으로, 수익률은 returns 카드와 마지막 거래일 2026-10-16 설명으로 다뤘고 값이 조회 결과와 맞다."
+   }
+  },
+  "P12": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00878,
+   "seconds": 25.5,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "포스코스틸리온과 포스코엠텍이 지분 없이 계열회사로만 공시돼 있다는 문장(지분 목록이 truncated라 확인할 수 없음)"
+    ],
+    "lines": [],
+    "reason": "출자 회사는 계열 지도 카드와 포스코인터내셔널 70.7%·포스코DX 65.5%·포스코퓨처엠 58.2%(접수번호 짝 일치)로, 매출 구성은 4개 회사의 revenue 카드로 다뤘으며 퓨처엠은 두 보고서 값이 같아 1번 글의 '소수점 차이' 일반화가 다소 넓을 뿐 어긋나는 값은 없다."
+   }
+  },
+  "P13": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00518,
+   "seconds": 17.9,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "사업부문별 실적·현금흐름·배당을 이 DB로 알 수 없다는 문장(조회 결과로 확인할 수 없음)"
+    ],
+    "lines": [],
+    "reason": "공시 타임라인·공급망 카드와 실적 카드로 두 항목을 다뤘고, 상반기 누적 매출 3,021억 원(-7.75%)·영업이익 1,388억 원(-10.99%)·2분기 매출 2,512억 원(+39.5%)과 접수번호 짝(삼성전기, UTAC Thai, SK하이닉스 HBM4, 스페이스엑스 정정)이 모두 조회 결과와 맞는다."
+   }
+  },
+  "P14": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00601,
+   "seconds": 22.9,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [
+     "'5% 대량보유 보고의 마지막 건은 국민연금공단 6.13%(2024-10-30)이며 그 뒤 보고는 없습니다': 조회 결과에는 그 뒤 2025-11-06 LG화학 보고(79.38%, 20251106000030)가 있다"
+    ],
+    "unchecked": [],
+    "lines": [],
+    "reason": "지분 구조·주주·실적 카드로 세 항목을 모두 다뤘고 79.38%(185,747,525주), 상반기 영업손실 944억 원·순손실 1조 2,727억 원, 부채비율 157.14%는 맞지만, 국민연금 보고 뒤에 5% 보고가 없다는 문장은 LG화학의 2025-11-06 보고와 어긋난다."
+   }
+  },
+  "P15": {
+   "group": "page",
+   "made": true,
+   "save_calls": 2,
+   "refused": 1,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.0122,
+   "seconds": 32.6,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [
+     "'2026-11-18 기준 유효한 공급계약은 34건': 조회 결과 40건에서 해지·기간 종료 4건(Cytodyn, Roche 20241118800246, Checkpoint, Cilag)을 빼면 36건(종료일 없는 3건 포함, 빼면 33건)으로 34건이 나오지 않는다"
+    ],
+    "unchecked": [],
+    "lines": [],
+    "reason": "계약 기간 카드와 실적 글·카드로 두 항목을 다뤘고 실적 수치(상반기 2조 5,780억 원·1조 1,672억 원·45.27%, 2분기, 2025 연간)와 2026-12-31 종료 1건은 맞지만, 유효 계약 수 34건은 조회 결과와 맞지 않고 종료일이 없는 UCB(20251212800785)도 빠졌다."
+   }
+  },
+  "R01": {
+   "group": "refuse",
+   "made": false,
+   "save_calls": 0,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00077,
+   "seconds": 5.8,
+   "grade": null
+  },
+  "R02": {
+   "group": "refuse",
+   "made": false,
+   "save_calls": 0,
+   "refused": 0,
+   "unverified": [],
+   "cited_not_in_results": [],
+   "cost": 0.00422,
+   "seconds": 13.8,
+   "grade": null
+  }
+ },
+ "v6": [
+  {
+   "number": "V01",
+   "save_calls": 0,
+   "right": false,
+   "cost": 0.008650625
+  },
+  {
+   "number": "V02",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.00695054
+  },
+  {
+   "number": "V03",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.0032100299999999996
+  },
+  {
+   "number": "V04",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.00520796
+  },
+  {
+   "number": "V05",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.006398725
+  },
+  {
+   "number": "V06",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.010405965
+  },
+  {
+   "number": "V07",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.00299161
+  },
+  {
+   "number": "V08",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.008344899999999999
+  },
+  {
+   "number": "V09",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.01248326
+  },
+  {
+   "number": "V10",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.002606685
+  },
+  {
+   "number": "V11",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.006855545
+  },
+  {
+   "number": "V12",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.002570815
+  },
+  {
+   "number": "V13",
+   "save_calls": 0,
+   "right": false,
+   "cost": 0.00149622
+  },
+  {
+   "number": "V14",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.0018833
+  },
+  {
+   "number": "V15",
+   "save_calls": 0,
+   "right": false,
+   "cost": 0.003909335
+  },
+  {
+   "number": "V16",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.0005065600000000001
+  },
+  {
+   "number": "V17",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.0007102100000000001
+  },
+  {
+   "number": "V18",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.0008736799999999999
+  },
+  {
+   "number": "V19",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.0009266
+  },
+  {
+   "number": "V20",
+   "save_calls": 0,
+   "right": true,
+   "cost": 0.00122536
+  }
+ ],
+ "missing_grades": []
+}
