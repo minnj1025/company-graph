@@ -342,7 +342,15 @@ export async function searchNews(q: string): Promise<NewsHit[]> {
   return body.items as NewsHit[];
 }
 
-export async function memoStream(news: { title: string; text?: string; day?: string; source?: string }, onEvent: (event: MemoEvent) => void): Promise<MemoResult> {
+/** 붙여 넣은 기사 주소에서 읽은 제목, 언론사, 기사 날짜(못 찾으면 null), 넘겨주기를 따라간 마지막 주소. 무료이고 본문은 남기지 않는다 */
+export async function readNewsLink(url: string): Promise<{ title: string; source: string | null; day: string | null; link: string }> {
+  const response = await fetch(`/api/news-link?${new URLSearchParams({ url })}`);
+  const body = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(typeof body?.detail === "string" ? body.detail : "그 주소를 읽지 못했습니다. 제목을 직접 넣어 주세요");
+  return body;
+}
+
+export async function memoStream(news: { title: string; text?: string; day?: string; source?: string; via?: string }, onEvent: (event: MemoEvent) => void): Promise<MemoResult> {
   const response = await fetch("/api/memo/stream", {
     method: "POST",
     headers: { "Content-Type": "application/json", ...ownerHeaders() },

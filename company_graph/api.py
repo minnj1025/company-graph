@@ -13,6 +13,8 @@ import zlib
 from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 
+from typing import Literal
+
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -38,7 +40,8 @@ _CACHED = {"/api/hot": "public, s-maxage=600, stale-while-revalidate=86400",
            "/api/memo-scoreboard": "public, s-maxage=3600, stale-while-revalidate=86400",   # 공시는 매일 아침 들어온다   # 매일 아침 새 메모가 쌓인다
            "/api/memo-prices": "public, s-maxage=3600, stale-while-revalidate=86400",   # 시세가 날마다 하루씩 늘어난다
            "/api/memo-followups": "public, s-maxage=3600, stale-while-revalidate=86400",   # 공시는 매일 아침 들어온다
-           "/api/news-search": "public, s-maxage=600, stale-while-revalidate=600"}   # 같은 검색어는 10분 동안 CDN 이 답한다
+           "/api/news-search": "public, s-maxage=600, stale-while-revalidate=600",
+           "/api/news-link": "public, s-maxage=3600, stale-while-revalidate=3600"}   # 기사의 제목·날짜는 잘 바뀌지 않는다   # 같은 검색어는 10분 동안 CDN 이 답한다
 _CACHE_DEFAULT = "public, s-maxage=86400, stale-while-revalidate=604800"
 
 
@@ -1288,22 +1291,40 @@ def news_search(request: Request, q: str = Query(min_length=2, max_length=60)):
     제목, 언론사, 날짜, 원문 링크만 돌려준다. 주가·시황 기사는 뺀다."""
     from . import news_search as search
 
-    who, now = _visitor(request), time.time()
-    recent = [t for t in _searches[who] if now - t < SEARCH_WINDOW]
-    if len(recent) >= SEARCH_LIMIT:
-        raise HTTPException(429, "검색을 너무 자주 했습니다. 몇 분 뒤에 다시 찾아 주세요")
-    _searches[who] = recent + [now]
+    _count_search(request)
     items = search.search(q)
     if items is None:
         raise HTTPException(503, "뉴스 검색이 잠시 안 됩니다. 제목을 직접 넣어 주세요")
     return {"q": " ".join(q.split()), "days": search.DAYS, "items": items}
 
 
+def _count_search(request: Request):
+    who, now = _visitor(request), time.time()
+    recent = [t for t in _searches[who] if now - t < SEARCH_WINDOW]
+    if len(recent) >= SEARCH_LIMIT:
+        raise HTTPException(429, "너무 자주 찾았습니다. 몇 분 뒤에 다시 해 주세요")
+    _searches[who] = recent + [now]
+
+
+@app.get("/api/news-link")
+def news_link(request: Request, url: str = Query(min_length=10, max_length=1000)):
+    """붙여 넣은 기사 주소에서 제목, 언론사, 기사 날짜만 읽는다 (무료, 질문 횟수에서 빼지 않는다. 본문은 남기지 않는다).
+    서버 안쪽 주소를 열게 하는 공격을 막는 검사는 news_link.py 에 있다. 날짜를 못 찾으면 day 는 null 이다."""
+    from . import news_link as link
+
+    _count_search(request)   # 뉴스 찾기와 같은 한도를 함께 쓴다
+    try:
+        return link.look(url)
+    except link.LinkError as e:
+        raise HTTPException(422, str(e))
+
+
 class MemoAsk(BaseModel):
     title: str = Field(min_length=5, max_length=200)
     text: str | None = Field(default=None, max_length=4000)   # 기사 앞부분 (선택). 모델에게 자료로만 넘긴다
     day: date | None = None                                    # 뉴스가 나온 날. 비우면 오늘. 조회는 그 전날까지의 공시로 한다
-    source: str | None = Field(default=None, max_length=60)   # 검색에서 고른 기사면 언론사
+    source: str | None = Field(default=None, max_length=60)   # 검색이나 링크로 고른 기사면 언론사
+    via: Literal["search", "link"] | None = None              # 뉴스 찾기에서 골랐는지, 링크를 넣었는지
 
 
 def _memo_answered(db, out: dict, found: _Found, ask_id: int, visitor: str) -> dict:
@@ -1353,7 +1374,7 @@ def memo_stream(body: MemoAsk, request: Request, db=Depends(get_db)):
     _, visitor, ask_id = _admit(Ask(question=f"[뉴스 분석] {title}"[:300]), request, db)
     source = " ".join((body.source or "").split()) or None
     news = {"title": title, "date": day.isoformat(), "text": (body.text or "").strip() or None,
-            "source": source, "kind": "검색해 고른 기사" if source else "붙여 넣은 기사"}
+            "source": source, "kind": {"search": "검색해 고른 기사", "link": "링크로 넣은 기사"}.get(body.via, "붙여 넣은 기사")}
     events: queue.Queue = queue.Queue()
 
     def work():

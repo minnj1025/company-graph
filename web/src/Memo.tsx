@@ -4,6 +4,7 @@ import {
   fetchDailyMemos,
   fetchMemoScoreboard,
   memoStream,
+  readNewsLink,
   searchNews,
   type DailyMemoItem,
   type DailyPicked,
@@ -34,6 +35,7 @@ interface News {
   /** 검색에서 고른 기사면 언론사와 원문 링크 */
   source?: string;
   link?: string;
+  via?: "search" | "link";
 }
 
 export interface MemoRun {
@@ -70,6 +72,7 @@ interface Example {
 const REL: Record<string, string> = { equity: "지분", supply_contract: "공급계약", affiliate: "계열", stake_acquisition: "지분 취득", stake_disposal: "지분 처분" };
 const KEY = "memos";
 const KEEP = 12;
+const LINKED = "넣은 링크";   // 링크를 읽은 결과를 검색 결과와 같은 목록에 보일 때의 이름
 const SHOW_HITS = 6;   // 뉴스 검색 결과는 처음에 이만큼만 보인다 (아래 매일 분석이 너무 밀리지 않게)
 const newId = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 const today = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);   // 한국 날짜
@@ -209,7 +212,7 @@ export function useMemoAgent(screen: MemoScreen) {
       setRuns((all) => [...all, { id, news, steps: [] }]);
       setCurrent(id);
       try {
-        const result = await memoStream({ title: news.title, text: news.text, day: news.day, source: news.source }, listener(id, news.title));
+        const result = await memoStream({ title: news.title, text: news.text, day: news.day, source: news.source, via: news.via }, listener(id, news.title));
         finish(id, news.title, result);
         setLeft(result.left_for_you);
       } catch (error) {
@@ -776,22 +779,47 @@ export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed,
   const submit = () => {
     if (title.trim().length < 5) return;
     openRun();
-    void agent.start({ title: title.trim(), text: text.trim() || undefined, day });
+    // 링크에서 읽은 제목을 그대로 두었으면 언론사와 원문 링크를 함께 넘긴다
+    const from = fromLink && fromLink.title === title.trim() ? fromLink : null;
+    void agent.start({ title: title.trim(), text: text.trim() || undefined, day, source: from?.source ?? undefined, link: from?.link, via: from ? "link" : undefined });
   };
-  // 회사나 주제로 최근 기사를 찾아 고르게 한다. 찾기는 Claude를 부르지 않는다. 막히면 제목을 직접 넣는 칸을 연다
+  // 회사나 주제로 최근 기사를 찾아 고르게 한다. 기사 주소를 넣으면 그 기사의 제목·언론사·날짜만 읽는다.
+  // 둘 다 Claude를 부르지 않는다. 막히면 제목을 직접 넣는 칸을 연다
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<{ q: string; items: NewsHit[] } | null>(null);
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [manual, setManual] = useState(false);
   const [allHits, setAllHits] = useState(false);
+  const [fromLink, setFromLink] = useState<{ title: string; source: string | null; link: string } | null>(null);
+  const [linkNote, setLinkNote] = useState<string | null>(null);
+  const isLink = /^https?:\/\//i.test(q.trim());
   const find = async () => {
     const asked = q.trim();
     if (asked.length < 2 || searching) return;
-    setSearching(true);
     setSearchError(null);
+    setLinkNote(null);
+    if (!isLink && asked.length > 60) {
+      setSearchError("검색어는 60자까지 적어 주세요. 기사 주소는 http:// 나 https:// 로 시작해야 합니다");
+      return;
+    }
+    setSearching(true);
     try {
-      setHits({ q: asked, items: await searchNews(asked) });
+      if (isLink) {
+        const found = await readNewsLink(asked);
+        if (found.day) {
+          setHits({ q: LINKED, items: [{ title: found.title, source: found.source, day: found.day, link: found.link }] });
+        } else {
+          // 날짜를 못 찾으면 제목을 직접 넣는 칸에 채워 두고 날짜를 고르게 한다 (날짜가 조회 시점을 정한다)
+          setHits(null);
+          setTitle(found.title);
+          setFromLink({ title: found.title, source: found.source, link: found.link });
+          setManual(true);
+          setLinkNote(`${found.source ?? "그 페이지"}에서 기사 날짜를 찾지 못했습니다. 아래 '제목을 직접 넣기'에서 뉴스 날짜를 확인한 뒤 분석하기를 눌러 주세요.`);
+        }
+      } else {
+        setHits({ q: asked, items: await searchNews(asked) });
+      }
       setAllHits(false);
     } catch (error) {
       setHits(null);
@@ -803,7 +831,7 @@ export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed,
   };
   const analyze = (hit: NewsHit) => {
     openRun();
-    void agent.start({ title: hit.title.slice(0, 200), day: hit.day, source: hit.source ?? undefined, link: hit.link });
+    void agent.start({ title: hit.title.slice(0, 200), day: hit.day, source: hit.source ?? undefined, link: hit.link, via: hits?.q === LINKED ? "link" : "search" });
   };
   const past = agent.runs.filter((r) => r.result && !r.replay && r.id !== run?.id).reverse();
   if (view === "run" && run) {
@@ -836,11 +864,11 @@ export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed,
               : run.replay
                 ? "미리 돌려 둔 예시"
                 : run.news.link
-                  ? `검색해 고른 뉴스${run.news.source ? ` · ${run.news.source}` : ""}`
+                  ? `${run.news.via === "link" ? "링크로 넣은 뉴스" : "검색해 고른 뉴스"}${run.news.source ? ` · ${run.news.source}` : ""}`
                   : "직접 넣은 뉴스"}
           </span>
           <h3>{run.news.title}</h3>
-          {run.news.link?.startsWith("https://") && (
+          {run.news.link && /^https?:\/\//.test(run.news.link) && (
             <a className="memo-origin" href={run.news.link} target="_blank" rel="noopener noreferrer">
               원문 보기 ↗
             </a>
@@ -894,14 +922,17 @@ export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed,
         }}
       >
         <div className="memo-search-row">
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="회사나 주제 (예: 한화오션, 변압기 수출)" maxLength={60} aria-label="찾을 회사나 주제" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="회사나 주제, 또는 기사 링크" maxLength={1000} aria-label="찾을 회사나 주제, 또는 기사 링크" />
           <button type="submit" disabled={searching || q.trim().length < 2}>
-            {searching ? "찾는 중…" : "뉴스 찾기"}
+            {searching ? (isLink ? "읽는 중…" : "찾는 중…") : isLink ? "링크 읽기" : "뉴스 찾기"}
           </button>
         </div>
-        <p className="muted small">최근 7일 기사 제목을 찾아 드립니다. 찾기는 무료이고 횟수에서 빼지 않습니다. 주가·시황 기사는 뺍니다.</p>
+        <p className="muted small">
+          회사나 주제(예: 한화오션, 변압기 수출)를 적으면 최근 7일 기사 제목을 찾고, 주가·시황 기사는 뺍니다. 기사 링크를 넣으면 그 기사의 제목과 날짜만 읽습니다. 둘 다 무료이고 횟수에서 빼지 않습니다.
+        </p>
       </form>
       {searchError && <p className="memo-search-error small">{searchError}</p>}
+      {linkNote && <p className="memo-search-error small">{linkNote}</p>}
       {hits &&
         (hits.items.length === 0 ? (
           <p className="muted small">'{hits.q}'로 최근 7일 안에 찾은 기사가 없습니다. 다른 말로 찾거나 제목을 직접 넣어 주세요.</p>
