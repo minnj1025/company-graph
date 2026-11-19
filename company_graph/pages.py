@@ -215,6 +215,31 @@ TOOL = "save_page"
 SKILL = "make-page"
 AGENT_TEXT_MAX = 600
 
+# 세어서 하는 말. 평가 14판에서 틀린 문장 셋이 모두 이것이었다("공급계약은 34건", "그 뒤 보고는 없습니다").
+# 숫자 검사는 그 숫자가 조회 결과 어딘가에 있는지만 보므로, 무엇을 센 수인지는 가리지 못한다. 세는 일은 카드(서버)가 한다
+_COUNT = re.compile(r"(?<![\d.])\d[\d,]*\s*(?:건|곳|쌍|차례|명|개(?!월))|(?<![가-힣])(?:한|두|세|네|다섯|여섯|일곱|여덟|아홉|열)\s*(?:건|곳|쌍|차례)")
+_NONE_AFTER = re.compile(r"(?:그\s*뒤|그\s*후|그\s*이후|이후로?|더\s*이상|더는|아직|이\s*밖에|그\s*밖에|외에는?)[^.\n]{0,40}?(?:없습니다|없다|없음|없었|않았|않습니다)")
+_ONLY = re.compile(r"유일한|유일하게|단\s*한\s*(?:건|번|곳)|뿐입니다")
+_ABOUT_DB = re.compile(r"DB|알 수 없|모으지 않|담지 않|수집하지 않")
+
+
+def count_claims(text: str) -> list[str]:
+    """글에서 개수, '그 뒤 없다', '유일하다' 처럼 세어서 하는 문장. 이 DB가 무엇을 모으지 않는지 밝히는 문장은 뺀다"""
+    out = []
+    for sentence in re.split(r"(?<=[.!?。])\s+|\n+", text):
+        sentence = sentence.strip()
+        if not sentence or _ABOUT_DB.search(sentence):
+            continue
+        if _COUNT.search(RECEIPT.sub("", sentence)) or _NONE_AFTER.search(sentence) or _ONLY.search(sentence):
+            out.append(sentence)
+    return out
+
+
+def _without(text: str, claims: list[str]) -> str:
+    for sentence in claims:
+        text = text.replace(sentence, "")
+    return re.sub(r"[ \t]{2,}", " ", re.sub(r"\n{3,}", "\n\n", text)).strip()
+
 
 def enabled() -> bool:
     """평가 전이라 기본은 끈다. 켜면 save_page 도구와 make-page 규칙이 함께 생긴다"""
@@ -299,9 +324,21 @@ def propose(db, arguments: dict, when: date, seen: set[str], bodies: list[str], 
     if numbers and not warned.get("numbers"):
         warned["numbers"] = True
         problems.append("조회 결과에서 확인되지 않는 값: " + ", ".join(numbers[:8]) + ". 결과에 있는 값으로 고치거나 빼고 카드에 맡기세요")
+    # 세어서 하는 말은 한 번 돌려보내고, 두 번째에도 남으면 그 문장만 지우고 받는다(페이지에 남지 않는다)
+    claims = count_claims(text) if text else []
+    if claims and not warned.get("counts"):
+        warned["counts"] = True
+        problems.append("개수나 '그 뒤 없다', '유일하다' 같은 세어서 하는 말은 글에 쓰지 않습니다(세는 일은 카드가 합니다). 이 문장을 빼거나 세지 않는 말로 고치세요: "
+                        + " | ".join(c[:80] for c in claims[:5]))
     if problems:
         return {"error": "페이지를 저장하지 않았습니다. 고쳐서 다시 부르세요: " + " / ".join(problems)}
+    removed = []
+    if claims:
+        removed = claims
+        blocks = [b if b["type"] != "text" else {**b, "text": _without(b["text"], claims)} for b in blocks]
+        blocks = [b for b in blocks if b["type"] != "text" or b["text"]]
     return {"saved": True, "title": title, "cards": cards,
+            **({"removed": removed} if removed else {}),
             "note": "페이지 설계도를 받았습니다. 답이 끝나면 화면이 페이지 주소를 붙입니다. 답에는 페이지에 무엇을 담았는지 두세 문장으로만 적고, 주소는 적지 않습니다",
             "_page": {"title": title, "question": " ".join(question.split())[:300], "as_of": when.isoformat(), "blocks": blocks,
-                      **({"unverified": numbers} if numbers else {})}}
+                      **({"unverified": numbers} if numbers else {}), **({"removed_counts": removed} if removed else {})}}

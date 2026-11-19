@@ -164,6 +164,26 @@ def test_unchecked_number_is_sent_back_once(db):  # noqa: F811
     assert again["saved"] and again["_page"]["unverified"] == ["27.35%"]
 
 
+def test_count_claims_catch_counting_sentences_only():
+    # 평가 14판에서 틀린 세 문장
+    assert pages.count_claims("2026-01-01 이후 공시된 공급계약은 34건이고, 해지 공시는 없습니다.")
+    assert pages.count_claims("마지막 건은 국민연금공단 6.13%(접수번호 20241030000275)이며 그 뒤 보고는 없습니다.")
+    assert pages.count_claims("유효한 공급계약은 서른 건이 아니라 세 건입니다.")
+    for fine in ("모비스 지분은 18.1%입니다(접수번호 20260309000001).", "계약기간은 24개월이고 금액은 3,642억 원입니다.",
+                 "이 DB로 알 수 없는 것: 실적 전망은 담지 않습니다.", "2026년 3분기 영업이익은 1조 2,000억 원입니다."):
+        assert not pages.count_claims(fine), fine
+
+
+def test_count_claims_are_sent_back_once_then_removed(db):  # noqa: F811
+    warned = {}
+    blocks = [{"type": "view", "kind": "ownership", "company_id": KIA},
+              {"type": "text", "text": "기아의 출자 회사를 모았습니다(접수번호 20260309000001). 출자 회사는 3곳뿐입니다."}]
+    assert "3곳뿐" in propose(db, blocks, warned=warned)["error"]
+    again = propose(db, blocks, warned=warned)
+    assert again["saved"] and again["removed"] == ["출자 회사는 3곳뿐입니다."]
+    assert again["_page"]["blocks"][1]["text"] == "기아의 출자 회사를 모았습니다(접수번호 20260309000001)."
+
+
 def test_agent_makes_a_page_in_the_loop(db, monkeypatch):  # noqa: F811
     @contextmanager
     def same_db():
