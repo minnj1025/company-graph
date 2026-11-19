@@ -5814,6 +5814,138 @@ details.more .notes {
   cursor: default;
 }
 
+/* 뉴스 찾기: 회사나 주제를 적으면 최근 기사 제목이 나오고, 하나를 골라 분석한다 */
+.memo-search-row {
+  display: flex;
+  gap: 8px;
+}
+
+.memo-search-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.memo-search-row button {
+  flex: none;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--accent);
+  color: var(--on-accent, #0b0f16);
+  font-weight: 600;
+}
+
+.memo-search-row button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.memo-search p {
+  margin: 0;
+}
+
+.memo-search-error {
+  margin: 0;
+  color: var(--warn, var(--text));
+}
+
+.memo-hits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+}
+
+.memo-hits li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 9px 2px;
+  border-bottom: 1px solid var(--border);
+}
+
+.memo-hit-title {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.memo-hit-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.memo-hit-meta a,
+.memo-origin {
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.memo-hit-meta a:hover,
+.memo-origin:hover {
+  color: var(--accent);
+}
+
+.memo-hit-meta button {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.memo-hit-meta button:hover:not(:disabled) {
+  background: rgb(var(--ink) / 0.06);
+}
+
+.memo-hit-meta button:disabled {
+  opacity: 0.45;
+  border-color: var(--border);
+  color: var(--muted);
+  cursor: default;
+}
+
+.memo-hits .memo-hits-more button {
+  align-self: flex-start;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.memo-hits .memo-hits-more button:hover {
+  color: var(--accent);
+}
+
+.memo-manual > summary {
+  color: var(--muted);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.memo-manual > .memo-form {
+  margin-top: 8px;
+}
+
+.memo-origin {
+  display: inline-block;
+  margin: -4px 0 8px;
+}
+
 .memo-examples,
 .memo-past {
   display: flex;

@@ -37,7 +37,8 @@ _CACHED = {"/api/hot": "public, s-maxage=600, stale-while-revalidate=86400",
            "/api/memos": "public, s-maxage=600, stale-while-revalidate=86400",
            "/api/memo-scoreboard": "public, s-maxage=3600, stale-while-revalidate=86400",   # 공시는 매일 아침 들어온다   # 매일 아침 새 메모가 쌓인다
            "/api/memo-prices": "public, s-maxage=3600, stale-while-revalidate=86400",   # 시세가 날마다 하루씩 늘어난다
-           "/api/memo-followups": "public, s-maxage=3600, stale-while-revalidate=86400"}   # 공시는 매일 아침 들어온다
+           "/api/memo-followups": "public, s-maxage=3600, stale-while-revalidate=86400",   # 공시는 매일 아침 들어온다
+           "/api/news-search": "public, s-maxage=600, stale-while-revalidate=600"}   # 같은 검색어는 10분 동안 CDN 이 답한다
 _CACHE_DEFAULT = "public, s-maxage=86400, stale-while-revalidate=604800"
 
 
@@ -1277,10 +1278,32 @@ def report_stream(body: ReportAsk, request: Request, db=Depends(get_db)):
 
 # ---------- 뉴스 메모 Agent (유료 API를 부른다. 질문 한 번으로 센다) ----------
 
+_searches: dict[str, list[float]] = defaultdict(list)
+SEARCH_LIMIT, SEARCH_WINDOW = 30, 600   # 방문자 한 명이 10분에 30번까지 (Google 에 너무 자주 묻지 않게)
+
+
+@app.get("/api/news-search")
+def news_search(request: Request, q: str = Query(min_length=2, max_length=60)):
+    """회사나 주제로 최근 7일 기사 제목을 찾는다 (Google 뉴스 RSS, 무료. Claude를 부르지 않아 질문 횟수에서 빼지 않는다).
+    제목, 언론사, 날짜, 원문 링크만 돌려준다. 주가·시황 기사는 뺀다."""
+    from . import news_search as search
+
+    who, now = _visitor(request), time.time()
+    recent = [t for t in _searches[who] if now - t < SEARCH_WINDOW]
+    if len(recent) >= SEARCH_LIMIT:
+        raise HTTPException(429, "검색을 너무 자주 했습니다. 몇 분 뒤에 다시 찾아 주세요")
+    _searches[who] = recent + [now]
+    items = search.search(q)
+    if items is None:
+        raise HTTPException(503, "뉴스 검색이 잠시 안 됩니다. 제목을 직접 넣어 주세요")
+    return {"q": " ".join(q.split()), "days": search.DAYS, "items": items}
+
+
 class MemoAsk(BaseModel):
     title: str = Field(min_length=5, max_length=200)
     text: str | None = Field(default=None, max_length=4000)   # 기사 앞부분 (선택). 모델에게 자료로만 넘긴다
     day: date | None = None                                    # 뉴스가 나온 날. 비우면 오늘. 조회는 그 전날까지의 공시로 한다
+    source: str | None = Field(default=None, max_length=60)   # 검색에서 고른 기사면 언론사
 
 
 def _memo_answered(db, out: dict, found: _Found, ask_id: int, visitor: str) -> dict:
@@ -1320,13 +1343,17 @@ def memo_stream(body: MemoAsk, request: Request, db=Depends(get_db)):
     사건: say(Agent가 조회 사이에 쓴 말), tool(부르는 도구와 입력), result(그 결과의 건수와 찾은 기업),
     check(메모를 검사해 고치게 한 까닭), memo(검사를 마친 메모를 받음), done(전체), error(사유)."""
     from . import news_agent
+    from .news_search import kst_today
 
-    day = body.day or date.today()
-    if not date(2025, 1, 2) <= day <= date.today():
+    today = kst_today()   # 화면은 한국 날짜를 보낸다. 서버(UTC)의 날짜로 막으면 한국 아침 9시 전의 오늘 뉴스가 막힌다
+    day = body.day or today
+    if not date(2025, 1, 2) <= day <= today:
         raise HTTPException(422, "뉴스 날짜는 2025-01-02부터 오늘까지로 적어 주세요")
     title = " ".join(body.title.split())
     _, visitor, ask_id = _admit(Ask(question=f"[뉴스 분석] {title}"[:300]), request, db)
-    news = {"title": title, "date": day.isoformat(), "text": (body.text or "").strip() or None, "kind": "붙여 넣은 기사"}
+    source = " ".join((body.source or "").split()) or None
+    news = {"title": title, "date": day.isoformat(), "text": (body.text or "").strip() or None,
+            "source": source, "kind": "검색해 고른 기사" if source else "붙여 넣은 기사"}
     events: queue.Queue = queue.Queue()
 
     def work():

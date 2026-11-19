@@ -326,7 +326,23 @@ export type MemoEvent =
   | { kind: "plan"; look_for: string; steps: { do: string; tool: string }[]; changed: string | null; after_calls: number };
 
 /** 뉴스 한 건으로 메모를 만든다. 조회할 때마다 onEvent 가 불리고, 다 끝나면 메모 전체를 돌려준다 */
-export async function memoStream(news: { title: string; text?: string; day?: string }, onEvent: (event: MemoEvent) => void): Promise<MemoResult> {
+/** 뉴스 검색에서 찾은 기사 한 건. 제목, 언론사, 한국 날짜, 원문 링크(Google 뉴스를 거쳐 언론사로 간다)만 온다 */
+export interface NewsHit {
+  title: string;
+  source: string | null;
+  day: string;
+  link: string;
+}
+
+/** 회사나 주제로 최근 7일 기사 제목을 찾는다. 무료이고 질문 횟수에서 빼지 않는다. 막히면 서버가 준 까닭으로 던진다 */
+export async function searchNews(q: string): Promise<NewsHit[]> {
+  const response = await fetch(`/api/news-search?${new URLSearchParams({ q })}`);
+  const body = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(typeof body?.detail === "string" ? body.detail : "뉴스 검색이 잠시 안 됩니다. 제목을 직접 넣어 주세요");
+  return body.items as NewsHit[];
+}
+
+export async function memoStream(news: { title: string; text?: string; day?: string; source?: string }, onEvent: (event: MemoEvent) => void): Promise<MemoResult> {
   const response = await fetch("/api/memo/stream", {
     method: "POST",
     headers: { "Content-Type": "application/json", ...ownerHeaders() },

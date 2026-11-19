@@ -27,14 +27,14 @@ from email.utils import parsedate_to_datetime
 from sqlalchemy import func, select
 
 from . import news_agent
+from .news_search import MARKET_TALK   # 분류기가 어차피 낮게 매기는 주가·시황 기사는 묻기 전에 뺀다 (뉴스 검색과 같은 규칙)
+from .news_search import clean_title as _clean
 from .config import secret
 from .db import Base, Company, NewsMemo, PriceDaily, get_engine, session
 
 MODEL = news_agent.MODEL
 SIZE, LIMIT, CAP, MIN_IMP = 200, 10, 0.2, 0.7
 PER_FIRM = 10   # 한 회사에서 분류할 제목 수의 상한 (큰 회사는 하루 100건 가까이 나온다. 30건이면 분류에만 하루 $0.12 가 들었다)
-# 분류기가 어차피 낮게 매기는 주가·시황 기사(평가 12판 지시문의 '단순 주가·시황 변동, 증권사 목표가')는 묻기 전에 뺀다
-MARKET_TALK = re.compile(r"특징주|주가|목표가|목표주가|급등|급락|신고가|상한가|하한가|시가총액|시총|순매수|순매도|외국인|코스피|코스닥|증시|\[포토\]|\[인사\]|부고")
 EVENT_NUMBER = re.compile(r"\d[\d,.]{2,}")
 EARLIER_DAYS = 7   # 같은 사건 기사가 다음 날에도 이어진다(11-06·11-07 의 HD한국조선해양 6301억). 이 기간에 메모한 사건은 다시 하지 않는다
 KST = timezone(timedelta(hours=9))
@@ -47,10 +47,6 @@ def universe(db, day: date) -> list[Company]:
     firms = [c for c in db.scalars(select(Company).where(Company.stock_code.in_(list(caps))))
              if "스팩" not in c.label and c.stock_code.endswith("0")]   # 우선주 코드는 0 으로 끝나지 않는다
     return sorted(firms, key=lambda c: -(caps.get(c.stock_code) or 0))[:SIZE]
-
-
-def _clean(title: str) -> str:
-    return re.sub(r"\s+-\s+[^-]{1,40}$", "", title or "").strip()   # 끝의 " - 언론사"
 
 
 def headlines(name: str, day: date) -> list[dict] | None:

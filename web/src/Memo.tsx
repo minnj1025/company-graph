@@ -4,11 +4,13 @@ import {
   fetchDailyMemos,
   fetchMemoScoreboard,
   memoStream,
+  searchNews,
   type DailyMemoItem,
   type DailyPicked,
   type MemoEvent,
   type MemoResult,
   type MemoScoreboard,
+  type NewsHit,
 } from "./api";
 import { TOOL_LABELS } from "./Chat";
 import { Followups, won } from "./MemoFollowups";
@@ -29,6 +31,9 @@ interface News {
   title: string;
   text?: string;
   day?: string;
+  /** 검색에서 고른 기사면 언론사와 원문 링크 */
+  source?: string;
+  link?: string;
 }
 
 export interface MemoRun {
@@ -65,6 +70,7 @@ interface Example {
 const REL: Record<string, string> = { equity: "지분", supply_contract: "공급계약", affiliate: "계열", stake_acquisition: "지분 취득", stake_disposal: "지분 처분" };
 const KEY = "memos";
 const KEEP = 12;
+const SHOW_HITS = 6;   // 뉴스 검색 결과는 처음에 이만큼만 보인다 (아래 매일 분석이 너무 밀리지 않게)
 const newId = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 const today = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);   // 한국 날짜
 
@@ -203,7 +209,7 @@ export function useMemoAgent(screen: MemoScreen) {
       setRuns((all) => [...all, { id, news, steps: [] }]);
       setCurrent(id);
       try {
-        const result = await memoStream(news, listener(id, news.title));
+        const result = await memoStream({ title: news.title, text: news.text, day: news.day, source: news.source }, listener(id, news.title));
         finish(id, news.title, result);
         setLeft(result.left_for_you);
       } catch (error) {
@@ -772,6 +778,33 @@ export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed,
     openRun();
     void agent.start({ title: title.trim(), text: text.trim() || undefined, day });
   };
+  // 회사나 주제로 최근 기사를 찾아 고르게 한다. 찾기는 Claude를 부르지 않는다. 막히면 제목을 직접 넣는 칸을 연다
+  const [q, setQ] = useState("");
+  const [hits, setHits] = useState<{ q: string; items: NewsHit[] } | null>(null);
+  const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [manual, setManual] = useState(false);
+  const [allHits, setAllHits] = useState(false);
+  const find = async () => {
+    const asked = q.trim();
+    if (asked.length < 2 || searching) return;
+    setSearching(true);
+    setSearchError(null);
+    try {
+      setHits({ q: asked, items: await searchNews(asked) });
+      setAllHits(false);
+    } catch (error) {
+      setHits(null);
+      setSearchError((error as Error).message);
+      setManual(true);
+    } finally {
+      setSearching(false);
+    }
+  };
+  const analyze = (hit: NewsHit) => {
+    openRun();
+    void agent.start({ title: hit.title.slice(0, 200), day: hit.day, source: hit.source ?? undefined, link: hit.link });
+  };
   const past = agent.runs.filter((r) => r.result && !r.replay && r.id !== run?.id).reverse();
   if (view === "run" && run) {
     const tools = run.steps.filter((step) => step.kind === "tool").length;
@@ -798,9 +831,20 @@ export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed,
         <header className="memo-head">
           <span className="memo-kicker">
             {newsDay && `${newsDay} 뉴스 · `}
-            {run.picked ? `Agent가 고름 · 중요도 ${run.picked.imp.toFixed(2)} · ${run.picked.kind}` : run.replay ? "미리 돌려 둔 예시" : "직접 넣은 뉴스"}
+            {run.picked
+              ? `Agent가 고름 · 중요도 ${run.picked.imp.toFixed(2)} · ${run.picked.kind}`
+              : run.replay
+                ? "미리 돌려 둔 예시"
+                : run.news.link
+                  ? `검색해 고른 뉴스${run.news.source ? ` · ${run.news.source}` : ""}`
+                  : "직접 넣은 뉴스"}
           </span>
           <h3>{run.news.title}</h3>
+          {run.news.link?.startsWith("https://") && (
+            <a className="memo-origin" href={run.news.link} target="_blank" rel="noopener noreferrer">
+              원문 보기 ↗
+            </a>
+          )}
           {run.result && (
             <span className="memo-meta">
               조회 {tools}번 · {Math.round(run.result.seconds)}초 · 근거 검사 {fixed ? "뒤 고쳐 씀" : "통과"}
@@ -843,29 +887,74 @@ export function MemoPane({ agent, nameOf, onCompany, closed, linked, onLinkUsed,
         </button>
       )}
       <form
-        className="memo-form"
+        className="memo-form memo-search"
         onSubmit={(event) => {
           event.preventDefault();
-          submit();
+          void find();
         }}
       >
-        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="뉴스 제목 (예: ○○, 2조 원 규모 LNG선 수주)" maxLength={200} />
-        <details>
-          <summary>기사 앞부분 붙여 넣기 (선택)</summary>
-          <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} maxLength={4000}
-                    placeholder="붙여 넣으면 Agent가 자료로만 읽습니다. 분석에 기사 문장을 옮기지 않습니다." />
-        </details>
-        <div className="memo-form-row">
-          <label>
-            뉴스 날짜 <input type="date" value={day} max={today()} min="2025-01-02" onChange={(e) => setDay(e.target.value)} />
-          </label>
-          <button type="submit" disabled={agent.busy || closed || title.trim().length < 5}>
-            {agent.busy ? "조사하는 중…" : "분석하기"}
+        <div className="memo-search-row">
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="회사나 주제 (예: 한화오션, 변압기 수출)" maxLength={60} aria-label="찾을 회사나 주제" />
+          <button type="submit" disabled={searching || q.trim().length < 2}>
+            {searching ? "찾는 중…" : "뉴스 찾기"}
           </button>
         </div>
-        {closed && <p className="muted small">오늘 받을 수 있는 횟수를 다 썼습니다. 아래 예시는 비용 없이 볼 수 있습니다.</p>}
-        {agent.left !== null && !closed && <p className="muted small">오늘 남은 횟수 {agent.left}번 (채팅과 함께 셉니다)</p>}
+        <p className="muted small">최근 7일 기사 제목을 찾아 드립니다. 찾기는 무료이고 횟수에서 빼지 않습니다. 주가·시황 기사는 뺍니다.</p>
       </form>
+      {searchError && <p className="memo-search-error small">{searchError}</p>}
+      {hits &&
+        (hits.items.length === 0 ? (
+          <p className="muted small">'{hits.q}'로 최근 7일 안에 찾은 기사가 없습니다. 다른 말로 찾거나 제목을 직접 넣어 주세요.</p>
+        ) : (
+          <ul className="memo-hits" aria-label={`'${hits.q}' 검색 결과`}>
+            {(allHits ? hits.items : hits.items.slice(0, SHOW_HITS)).map((hit) => (
+              <li key={hit.link}>
+                <span className="memo-hit-title">{hit.title}</span>
+                <span className="memo-hit-meta">
+                  {hit.source ?? "언론사 모름"} · {hit.day.slice(5)}
+                  <a href={hit.link} target="_blank" rel="noopener noreferrer" title="언론사 사이트에서 원문을 엽니다">
+                    원문 ↗
+                  </a>
+                  <button disabled={agent.busy || closed || hit.title.length < 5} onClick={() => analyze(hit)}>
+                    {agent.busy ? "조사하는 중…" : "이 뉴스 분석"}
+                  </button>
+                </span>
+              </li>
+            ))}
+            {!allHits && hits.items.length > SHOW_HITS && (
+              <li className="memo-hits-more">
+                <button onClick={() => setAllHits(true)}>{hits.items.length - SHOW_HITS}건 더 보기</button>
+              </li>
+            )}
+          </ul>
+        ))}
+      {closed && <p className="muted small">오늘 받을 수 있는 횟수를 다 썼습니다. 아래 예시는 비용 없이 볼 수 있습니다.</p>}
+      {agent.left !== null && !closed && <p className="muted small">오늘 남은 분석 횟수 {agent.left}번 (채팅과 함께 셉니다)</p>}
+      <details className="memo-manual" open={manual} onToggle={(e) => setManual((e.target as HTMLDetailsElement).open)}>
+        <summary>제목을 직접 넣기</summary>
+        <form
+          className="memo-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            submit();
+          }}
+        >
+          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="뉴스 제목 (예: ○○, 2조 원 규모 LNG선 수주)" maxLength={200} />
+          <details>
+            <summary>기사 앞부분 붙여 넣기 (선택)</summary>
+            <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} maxLength={4000}
+                      placeholder="붙여 넣으면 Agent가 자료로만 읽습니다. 분석에 기사 문장을 옮기지 않습니다." />
+          </details>
+          <div className="memo-form-row">
+            <label>
+              뉴스 날짜 <input type="date" value={day} max={today()} min="2025-01-02" onChange={(e) => setDay(e.target.value)} />
+            </label>
+            <button type="submit" disabled={agent.busy || closed || title.trim().length < 5}>
+              {agent.busy ? "조사하는 중…" : "분석하기"}
+            </button>
+          </div>
+        </form>
+      </details>
       <Daily agent={agent} onOpen={openRun} />
       {examples.length > 0 && (
         <div className="memo-examples">
