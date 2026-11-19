@@ -136,12 +136,7 @@ def _filings(start: date, end: date) -> list[dict]:
     return out
 
 
-def corrections(filings: list[dict]) -> set[str]:
-    """정정 공시의 접수번호 ([기재정정], [첨부정정] 등)."""
-    return {f["rcept_no"] for f in filings if "정정" in f["report_nm"]}
-
-
-def latest_only(rows: list[dict], corrected: set[str] = frozenset()) -> list[dict]:
+def latest_only(rows: list[dict]) -> list[dict]:
     """같은 사채의 원래 공시와 정정 공시가 함께 오면 나중 것만 남긴다. 사채는 회차(bd_tm)가 같으면 같은 사채다.
     다른 종류(증자, 감자, 자기주식)는 API 가 이미 정정된 것 하나만 준다(같은 날 다른 증자 결정이 둘 나오기도 해서 날짜로 묶지 않는다)."""
     rows = sorted(rows, key=lambda r: r["rcept_no"])
@@ -170,14 +165,14 @@ def wanted(filings: list[dict]) -> dict[str, set[str]]:
     return out
 
 
-def store_events(db, company_id: int, corp_code: str, names: set[str], fresh: bool, corrected: set[str] = frozenset()) -> int:
+def store_events(db, company_id: int, corp_code: str, names: set[str], fresh: bool) -> int:
     from . import dart
     count = 0
     for name in sorted(names):
         kind, api = KINDS[name]
         call = lambda: dart._json(f"{api}.json", corp_code=corp_code, bgn_de=f"{SINCE:%Y%m%d}", end_de=f"{date.today():%Y%m%d}").get("list", [])
         items = call() if fresh else cached_json(f"dart_{api}", f"{corp_code}_{date.today():%Y%m%d}", call)
-        rows = latest_only(list({i["rcept_no"]: event_row(company_id, kind, i) for i in items if i.get("rcept_no")}.values()), corrected)
+        rows = latest_only(list({i["rcept_no"]: event_row(company_id, kind, i) for i in items if i.get("rcept_no")}.values()))
         db.execute(delete(CapitalEvent).where(CapitalEvent.company_id == company_id, CapitalEvent.kind == kind))
         if rows:
             db.execute(CapitalEvent.__table__.insert(), rows)
@@ -242,14 +237,14 @@ def listed(db) -> dict[str, int]:
 def load() -> None:
     from . import dart
     filings = _filings(SINCE, date.today())
-    targets, corrected = wanted(filings), corrections(filings)
+    targets = wanted(filings)
     print(f"주요사항보고 {len(filings)}건, 결정을 낸 상장사 {len(targets)}곳 (DART 호출 오늘 {dart.calls_today()}건)", flush=True)
     with session() as db:
         ids = listed(db)
         events = 0
         for n, (corp_code, names) in enumerate(sorted(targets.items()), 1):
             if corp_code in ids:
-                events += store_events(db, ids[corp_code], corp_code, names, fresh=False, corrected=corrected)
+                events += store_events(db, ids[corp_code], corp_code, names, fresh=False)
             if n % 100 == 0:
                 db.commit()
                 print(f"  결정 {n}/{len(targets)}곳, {events}건 (DART 호출 오늘 {dart.calls_today()}건)", flush=True)
@@ -274,10 +269,9 @@ def load_dividends() -> None:
 def update(days: int = 3) -> None:
     recent = _filings(date.today() - timedelta(days=days), date.today())
     targets = wanted(recent)
-    corrected = corrections(_filings(SINCE, date.today())) if targets else set()
     with session() as db:
         ids = listed(db)
-        count = sum(store_events(db, ids[c], c, names, fresh=True, corrected=corrected) for c, names in targets.items() if c in ids)
+        count = sum(store_events(db, ids[c], c, names, fresh=True) for c, names in targets.items() if c in ids)
         db.commit()
     print(f"최근 {days}일 결정을 낸 상장사 {len(targets)}곳, 결정 {count}건을 다시 넣음")
 

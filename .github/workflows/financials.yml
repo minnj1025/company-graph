@@ -30,8 +30,9 @@ jobs:
           path: data/cache/dart_document
           key: dart-document-${{ github.run_id }}
           restore-keys: dart-document-
-      - run: python -m company_graph.financials update
-        timeout-minutes: 25
+      # 뉴스 분석이 쓰는 공급계약을 먼저, 오래 걸리는 정기보고서 재무를 마지막에 둔다
+      - run: python -m company_graph.extract_supply update 3
+        timeout-minutes: 20
         continue-on-error: true
       - run: python -m company_graph.holdings update 3
         timeout-minutes: 10
@@ -39,6 +40,6 @@ jobs:
       - run: python -m company_graph.capital update 3
         timeout-minutes: 20
         continue-on-error: true
-      - run: python -m company_graph.extract_supply update 3
-        timeout-minutes: 20
+      - run: python -m company_graph.financials update
+        timeout-minutes: 25
         continue-on-error: true
