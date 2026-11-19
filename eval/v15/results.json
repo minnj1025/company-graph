@@ -1,0 +1,716 @@
+{
+ "summary": {
+  "1_pages_made": "15/15 (기준 13 이상)",
+  "2_fit": {
+   "적절": 15,
+   "일부": 0,
+   "부적절": 0,
+   "graded": 15,
+   "기준": "적절 12 이상, 부적절 0"
+  },
+  "3_wrong_fact_pages": "1 (기준 0)",
+  "4_unverified_pages": "0 (기준 2 이하)",
+  "5_refuse": {
+   "R03": {
+    "made": false,
+    "line": []
+   },
+   "R04": {
+    "made": true,
+    "line": []
+   }
+  },
+  "6_v6": {
+   "P2_right": 19,
+   "C_right": 18,
+   "P2_save_calls": 0,
+   "cost_per_q": {
+    "P2": 0.0043,
+    "C": 0.00498
+   },
+   "기준": "P2 save_page 0, P2 카드 18 이상이고 C보다 1 넘게 적지 않음, P2 문항당 비용이 C의 1.15배 이하"
+  },
+  "7_page_cost_per_q": "0.00764 (기준 0.012 이하)",
+  "removed_count_pages": 1,
+  "lines_in_pages": 0,
+  "total_cost": 0.3073
+ },
+ "pages": {
+  "P16": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.00642,
+   "seconds": 22.6,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "'이 DB로 알 수 없는 것: 2022~2023년 분기별 실적' — get_financials 결과에는 분기가 2024년 3분기부터만 있어 맞지만, get_coverage 는 실적을 '2022년 1분기보고서부터' 모은다고 적어 DB 전체에 없다는 말은 확인할 수 없음",
+     "시장 중앙값(부채비율 96.7%, 유동비율 133.47%) 문장 뒤에 기아 반기보고서 접수번호 20260916000427 이 붙음. 중앙값은 결과에 접수번호가 없는 값"
+    ],
+    "lines": [],
+    "reason": "분기 실적은 실적 카드와 2024년 연간 최고치·이후 감소 설명으로, 재무 체력은 부채비율 65.14%, 유동비율 151.5%, 2025년 말 61.76% 와 체력 카드로 다뤘고 값과 접수번호가 조회 결과와 맞는다."
+   }
+  },
+  "P17": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.00631,
+   "seconds": 17.6,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "2026년 2분기 매출·영업이익률·순이익, 상반기 누적 영업이익률, 6월 말 부채비율·유동비율과 시장 중앙값을 두 회사 나란히 적었고 모든 값과 접수번호가 조회 결과와 맞는다."
+   }
+  },
+  "P18": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.00341,
+   "seconds": 22.5,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "매출 구성 비중과 접수번호가 맞고(크래프톤의 콘솔 1.4%, 기타 0.6% 는 글에서 빠졌지만 카드에 있음), 올해 누적 수익률은 DB에 없다고 밝힌 뒤 1주·1개월·3개월 수익률 카드와 기준일 2026-10-16 을 맞게 적었다."
+   }
+  },
+  "P19": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.01108,
+   "seconds": 63.7,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "'이 DB는 타법인 출자와 최대주주 표만 모으므로' — 이 문항의 조회 결과(get_coverage 를 부르지 않음)로는 확인할 수 없음. 이 페이지에 5% 보고가 없다는 말 자체는 맞음"
+    ],
+    "lines": [],
+    "reason": "직접 지분 관계가 없고(SK스퀘어 지분 41줄 전체에 SK텔레콤 없음) SK㈜가 32.14%, 30.57%를 가진 최대주주라는 점, 두 회사가 서로의 계열회사 표에 올라 경로가 계열 한 단계라는 점이 값·방향·접수번호 모두 조회 결과와 맞는다."
+   }
+  },
+  "P20": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.0049,
+   "seconds": 21.2,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "유상증자 2건의 날짜·접수번호·방식·주식 수·금액·자금 용도와 최대주주 현황(32.18%, 계열사 2.27/0.74/0.32%, 기초 33.98%→기말 35.55%), 5% 보고(국민연금 7.92%, 한화 35.71%), 임원 6명 498주 증가가 모두 조회 결과와 일치한다."
+   }
+  },
+  "P21": {
+   "group": "page",
+   "made": true,
+   "save_calls": 2,
+   "refused": 1,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.00459,
+   "seconds": 23.1,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "5% 보고자 셋(박순재 20.4%, 형인우 5.11%, BlackRock 5.03%)의 비율·접수번호·사유와 임원·주요주주 4명의 증가 주식 수·접수번호·직위, 줄인 보고 없음이 조회 결과와 일치한다."
+   }
+  },
+  "P22": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.00358,
+   "seconds": 17.5,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "배당 카드와 실적·재무 카드로 두 항목을 다루고, 글의 접수번호(20260318000182, 20260814000445), 별도 기준, 2025 주당배당 800원 대 2024 3,000원과 현금배당총액 607억 대 455억 원이 조회 결과와 일치한다."
+   }
+  },
+  "P23": {
+   "group": "page",
+   "made": true,
+   "save_calls": 2,
+   "refused": 1,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.02627,
+   "seconds": 109.5,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "카드에서 해양생산설비·FAB동 마감공사를 뺐다는 설명(카드 내용은 묶음에 없음)"
+    ],
+    "lines": [],
+    "reason": "계약 기간 카드와 공시 타임라인으로 목록과 기간을 다루고, 2026-03-16 원유운반선 계약 해지 공시(20260316801038), 상대가 지역명으로만 적힌 점이 조회 결과와 일치한다."
+   }
+  },
+  "P24": {
+   "group": "page",
+   "made": true,
+   "save_calls": 2,
+   "refused": 1,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.01289,
+   "seconds": 50.3,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "2026년 공급계약 8건, 에드먼턴 원공시와 옵션 행사 정정, 계약기간·금액 정정 5건, 에이치엠지퓨처콤플렉스 취득 결정과 정정이 접수번호, 금액, 비율, 날짜까지 조회 결과와 모두 맞고 타임라인 카드로 공시 흐름도 다룬다."
+   }
+  },
+  "P25": {
+   "group": "page",
+   "made": true,
+   "save_calls": 2,
+   "refused": 1,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.00504,
+   "seconds": 21.4,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "전환사채 6건, 신주인수권부사채 1건, 자기주식 처분 1건의 접수번호와 유상증자 결정이 없다는 말이 조회 결과와 맞고, 진양곤(증가 1건·감소 1건), 김현민 141주, 성복경 125주, 최근 90일 보고 없음도 조회 결과와 일치한다."
+   }
+  },
+  "P26": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.00303,
+   "seconds": 11.6,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [
+     "'이 DB로 알 수 없는 것'에 EPS·배당을 넣은 것(이 답의 조회 결과로는 확인할 수 없음)"
+    ],
+    "lines": [],
+    "reason": "반기보고서(20260814003053) 기준 면스낵 90.6%, 2024년 3분기~2026년 2분기 연결 분기 실적, 4분기가 연간에서 3분기 누적을 뺀 계산값이라는 설명과 그 접수번호가 모두 조회 결과와 맞는다."
+   }
+  },
+  "P27": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.01246,
+   "seconds": 55.3,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "LG씨엔에스 계약 5건과 외부 업체 4건의 금액·날짜·접수번호, LG전자가 공급자인 공시 없음, 해지 공시 없음, ㈜LG 35.26%와 35.0%의 차이, 합계 35.27%가 조회 결과와 맞는다. 다만 나인테크 정정 세 건은 서로 다른 세 계약인데 한 계약의 정정이 이어진 것처럼 읽힐 수 있고, 외부 업체 목록에서 링크제니시스 2026-07-15 계약은 빠졌다(전부라고 하지는 않아 틀린 사실로 세지 않음)."
+   }
+  },
+  "P28": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.00512,
+   "seconds": 32.8,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [
+     "'사업보고서 최대주주 현황'의 삼성전자 지분을 6,790,000주·접수번호 20260310002820으로 적음: 그 값과 번호는 삼성전자 보고서의 타법인출자 현황이고, 레인보우로보틱스 최대주주 현황은 6,789,950주·20260320000803"
+    ],
+    "unchecked": [
+     "'이 DB로 알 수 없는 것: 2025-03-19 이후의 5% 대량보유 변동' (조회 결과는 2025-03-19 뒤 보고가 없다는 것만 보여 주며, 모으지 않았다는 근거는 없음)"
+    ],
+    "lines": [],
+    "reason": "최대주주·특수관계인·출자 대상과 5% 보고를 모두 다뤘고 값은 맞지만, 최대주주 현황 값에 삼성전자 타법인출자 현황의 주식수와 접수번호를 짝지었으며 5% 보고는 2025-01-06 보고 둘을 빼고 2025-03-19 두 건만 적었다."
+   }
+  },
+  "P29": {
+   "group": "page",
+   "made": true,
+   "save_calls": 2,
+   "refused": 1,
+   "unverified": [],
+   "removed_counts": [
+    "자기주식: 2024년 이후 자기주식 처분 결정 7건이 공시되어 있습니다(예: 20241021000271 교환사채 교환대상 처분, 20241021000292 종업원 RSU 지급, 20251119000172 대표이사 급여 일부 지급)."
+   ],
+   "cited_not_in_results": [],
+   "cost": 0.00566,
+   "seconds": 25.4,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "계열회사(상장 계열 3곳 이름), 2024·2025 배당과 EPS·배당성향, 자기주식 취득 결정이 없다는 것과 처분 결정이 있다는 것을 조회 결과대로 적었다."
+   }
+  },
+  "P30": {
+   "group": "page",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.0038,
+   "seconds": 12.3,
+   "grade": {
+    "fit": "적절",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "2026 상반기 연결 기준 부채비율·유동비율·시장 중앙값·누적 영업이익률·순이익을 두 회사 모두 조회 결과와 같게 나란히 적었다."
+   }
+  },
+  "R03": {
+   "group": "refuse",
+   "made": false,
+   "save_calls": 0,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.0012,
+   "seconds": 6.7,
+   "grade": null
+  },
+  "R04": {
+   "group": "refuse",
+   "made": true,
+   "save_calls": 1,
+   "refused": 0,
+   "unverified": [],
+   "removed_counts": [],
+   "cited_not_in_results": [],
+   "cost": 0.00604,
+   "seconds": 20.1,
+   "grade": {
+    "fit": "-",
+    "missing": [],
+    "wrong_facts": [],
+    "unchecked": [],
+    "lines": [],
+    "reason": "매도·매수 종목을 고르지 않고 다섯 방산 상장사의 지난 수익률(2026-10-16 기준)과 반기보고서 제품 비중만 모았으며, 비중과 접수번호가 조회 결과와 맞고 전망·매매 판단 문장은 없다."
+   }
+  }
+ },
+ "v6": {
+  "P2": [
+   {
+    "number": "V01",
+    "shown": [
+     "ownership",
+     "group"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00985843
+   },
+   {
+    "number": "V02",
+    "shown": [
+     "ownership",
+     "group"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.009891819999999999
+   },
+   {
+    "number": "V03",
+    "shown": [
+     "group"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.003261825
+   },
+   {
+    "number": "V04",
+    "shown": [
+     "group"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00201195
+   },
+   {
+    "number": "V05",
+    "shown": [],
+    "save_calls": 0,
+    "right": false,
+    "cost": 0.005063815
+   },
+   {
+    "number": "V06",
+    "shown": [
+     "supply_flow",
+     "timeline"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.010284815000000001
+   },
+   {
+    "number": "V07",
+    "shown": [
+     "path"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0030437100000000003
+   },
+   {
+    "number": "V08",
+    "shown": [
+     "ownership",
+     "path"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00542158
+   },
+   {
+    "number": "V09",
+    "shown": [
+     "timeline"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.012260785
+   },
+   {
+    "number": "V10",
+    "shown": [
+     "timeline"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0028393800000000003
+   },
+   {
+    "number": "V11",
+    "shown": [
+     "contracts"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00758278
+   },
+   {
+    "number": "V12",
+    "shown": [
+     "contracts"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0024752750000000003
+   },
+   {
+    "number": "V13",
+    "shown": [
+     "revenue"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00145878
+   },
+   {
+    "number": "V14",
+    "shown": [
+     "returns"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0018691500000000002
+   },
+   {
+    "number": "V15",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.003793085
+   },
+   {
+    "number": "V16",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.000860095
+   },
+   {
+    "number": "V17",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0011124000000000002
+   },
+   {
+    "number": "V18",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00090327
+   },
+   {
+    "number": "V19",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0006555850000000001
+   },
+   {
+    "number": "V20",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00131786
+   }
+  ],
+  "C": [
+   {
+    "number": "V01",
+    "shown": [
+     "ownership",
+     "group"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.011870285
+   },
+   {
+    "number": "V02",
+    "shown": [
+     "ownership",
+     "group"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.014657680000000001
+   },
+   {
+    "number": "V03",
+    "shown": [
+     "group"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00336035
+   },
+   {
+    "number": "V04",
+    "shown": [
+     "group"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.004415505
+   },
+   {
+    "number": "V05",
+    "shown": [
+     "supply_flow"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.005935585
+   },
+   {
+    "number": "V06",
+    "shown": [
+     "supply_flow"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.009259985
+   },
+   {
+    "number": "V07",
+    "shown": [
+     "path"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.003676035
+   },
+   {
+    "number": "V08",
+    "shown": [
+     "ownership"
+    ],
+    "save_calls": 0,
+    "right": false,
+    "cost": 0.008500925
+   },
+   {
+    "number": "V09",
+    "shown": [
+     "timeline"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.014817985
+   },
+   {
+    "number": "V10",
+    "shown": [
+     "timeline"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0026910799999999998
+   },
+   {
+    "number": "V11",
+    "shown": [
+     "contracts"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0064011499999999995
+   },
+   {
+    "number": "V12",
+    "shown": [
+     "contracts"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00323471
+   },
+   {
+    "number": "V13",
+    "shown": [],
+    "save_calls": 0,
+    "right": false,
+    "cost": 0.001485715
+   },
+   {
+    "number": "V14",
+    "shown": [
+     "returns"
+    ],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00180328
+   },
+   {
+    "number": "V15",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0036806399999999998
+   },
+   {
+    "number": "V16",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0005139
+   },
+   {
+    "number": "V17",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.00058238
+   },
+   {
+    "number": "V18",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0008397400000000001
+   },
+   {
+    "number": "V19",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.000614755
+   },
+   {
+    "number": "V20",
+    "shown": [],
+    "save_calls": 0,
+    "right": true,
+    "cost": 0.0011857
+   }
+  ]
+ },
+ "missing_grades": []
+}

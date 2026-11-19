@@ -1,0 +1,51 @@
+{
+ "question": "에코프로비엠 종목코드가 뭐야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "에코프로비엠의 종목코드는 **247540**이고, 시장은 코스닥입니다. (조회 시점 2026-10-16 기준, find_company 결과)",
+ "followups": [
+  "에코프로비엠의 주요 제품과 매출 비중은?",
+  "에코프로비엠의 최대주주와 지분 구조는?",
+  "에코프로비엠의 최근 분기 실적은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "에코프로비엠"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3793
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 201
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 403,
+  "cache_read_input_tokens": 57867,
+  "cache_creation_input_tokens": 633
+ },
+ "seconds": 3.7,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V16",
+ "group": "v6",
+ "arm": "P2"
+}

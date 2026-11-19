@@ -1,0 +1,79 @@
+{
+ "question": "LG그룹에는 어떤 회사들이 있어?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "LG그룹으로 지정된 회사는 DB에 12곳이 있고, 모두 상장사입니다(2026년 5월 공정위 지정 기준). 지주회사인 LG를 포함해 전자, 화학, 통신, 디스플레이, 배터리 등이 섞여 있습니다.\n\n| 회사 | 종목코드 | 시장 |\n|---|---|---|\n| LG | 003550 | 유가증권 |\n| LG전자 | 066570 | 유가증권 |\n| LG화학 | 051910 | 유가증권 |\n| LG에너지솔루션 | 373220 | 유가증권 |\n| LG디스플레이 | 034220 | 유가증권 |\n| LG이노텍 | 011070 | 유가증권 |\n| LG생활건강 | 051900 | 유가증권 |\n| LG유플러스 | 032640 | 유가증권 |\n| LG씨엔에스 | 064400 | 유가증권 |\n| LG헬로비전 | 037560 | 유가증권 |\n| HS애드 | 035000 | 유가증권 |\n| 로보스타 | 090360 | 코스닥 |\n\n- 계열 지도 카드에는 LG의 사업보고서 계열회사 표 기준으로 계열회사 51곳, 그중 상장 12곳이 나와 있습니다. 위 12곳은 이 DB의 group 값이 LG인 회사이고, 나머지 계열회사 39곳은 이 답에서 이름을 확인하지 못했습니다.\n- 주요 제품이나 매출 비중, 지분 관계는 이 답에서 조회하지 않았습니다.\n\n이 DB로 알 수 없는 것: 실적 전망, 사업부문별 실적, 업황, 증권사 의견은 포함되어 있지 않습니다.",
+ "followups": [
+  "LG의 계열회사 51곳 목록을 보여줘",
+  "LG전자의 최대주주와 지분 구조는?",
+  "LG에너지솔루션의 공급계약 상대는 어디야?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "LG"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "list_companies",
+   "input": {
+    "group": "LG",
+    "listed_only": false
+   },
+   "error": null,
+   "total": 12,
+   "chars": 1522
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1604,
+     2427,
+     3205,
+     2757,
+     3991,
+     3915,
+     2207,
+     2626,
+     2972,
+     2891,
+     3409,
+     2233
+    ],
+    "views": [
+     {
+      "kind": "group",
+      "company_id": 1604,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1443
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1831,
+  "cache_read_input_tokens": 78370,
+  "cache_creation_input_tokens": 2494
+ },
+ "seconds": 11.3,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V04",
+ "group": "v6",
+ "arm": "P2"
+}

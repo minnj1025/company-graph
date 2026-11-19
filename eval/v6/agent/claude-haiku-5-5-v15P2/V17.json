@@ -1,0 +1,51 @@
+{
+ "question": "SK하이닉스 지금 사도 돼?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "SK하이닉스(000660, 유가증권 상장)를 사고 말지는 제가 판단해 드릴 수 없습니다. 매수·매도 판단과 주가 전망은 이 DB의 범위 밖입니다.\n\n대신 이 DB로 확인할 수 있는 사실은 다음과 같이 조회해 드릴 수 있습니다.\n\n- **실적 추이**: 분기별 매출·영업이익·순이익, 전년 같은 분기 대비 증감, 부채비율과 유동비율\n- **최근 주가 흐름**: 최근 1주·1개월·3개월 수익률과 같은 제품을 파는 종목·시장과의 차이\n- **공급계약과 지분 관계**: 최근 공시된 단일판매·공급계약, 계약 상대와 금액, 해지·정정 여부\n- **자본 변동**: 유상증자, 전환사채, 자기주식 취득 등 결정 공시\n- **주주와 내부자**: 최대주주와 특수관계인 지분, 5% 대량보유 보고, 임원·주요주주의 주식 증감 보고\n\n이 가운데 어떤 것부터 보시겠습니까?",
+ "followups": [
+  "SK하이닉스의 최근 분기 실적과 부채비율은 어떤가요?",
+  "SK하이닉스의 최근 3개월 수익률을 시장과 비교하면 어떤가요?",
+  "SK하이닉스가 최근 공시한 공급계약에는 무엇이 있나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "SK하이닉스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2033
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 200
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 880,
+  "cache_read_input_tokens": 58110,
+  "cache_creation_input_tokens": 724
+ },
+ "seconds": 5.7,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V17",
+ "group": "v6",
+ "arm": "P2"
+}
