@@ -1,7 +1,8 @@
 """매일 DART 갱신(공급계약, 지분공시, 증자·사채·자기주식 결정, 정기보고서 재무)을 이 PC에서 돌려 서비스 DB에 넣는다.
 
 GitHub 서버(미국)에서 부르면 DART가 한참 늦게 답하거나 접속을 받지 않는 날이 있어(2026-11: 단계마다 시간 제한에 걸려 잘림),
-한국에 있는 PC의 예약 작업으로 돌린다. 하는 일은 .github/workflows/financials.yml 과 같다(그 작업은 손으로 돌릴 때만 쓴다).
+한국에 있는 PC의 예약 작업으로 돌린다. 하는 일은 .github/workflows/financials.yml 과 같고(그 작업은 손으로 돌릴 때만 쓴다),
+이 PC의 원문 캐시에서 회사의 옛 이름을 읽어 별칭으로 넣는 단계(former_names)가 더 있다.
 
 실행: python -m company_graph.daily_dart   (한 단계만: python -m company_graph.daily_dart --step 모듈 [인자...])
 - 대상 DB는 .env 의 TARGET_DB_URL(서비스 DB)이다. 주소는 어디에도 출력하지 않는다
@@ -20,6 +21,8 @@ STEPS = [   # (모듈, 인자, 제한 분). 뉴스 분석이 쓰는 공급계약
     ("extract_supply", ["update", "3"], 20),
     ("holdings", ["update", "3"], 10),
     ("capital", ["update", "3"], 20),
+    # 앞 단계가 받은 공시 원문에서 옛 이름을 읽어 별칭으로 넣는다. 이 PC의 원문 캐시를 읽으므로 GitHub 작업에는 없다
+    ("former_names", [], 10),
     ("financials", ["update"], 25),
 ]
 
