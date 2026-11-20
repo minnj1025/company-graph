@@ -180,6 +180,20 @@ def test_count_claims_catch_counting_sentences_only():
     assert pages.count_claims("보고 접수된 6명의 비등기임원이 모두 늘렸습니다(거래 단가는 DB에 없음).")
     assert pages.count_claims("유일한 공급계약입니다(해지 여부는 이 DB에 없음).")
     assert pages.count_claims("공급계약은 3건이며, 계약 상대의 재무 상태는 이 DB로 알 수 없습니다.")
+    # 평가 16판 P40: 어느 기간에 없다는 말도 '그 뒤 없다'와 같다
+    assert pages.count_claims("2026-08-20부터 11-20까지는 새 공급계약 공시가 없다.")
+    assert pages.count_claims("전환사채(CB) 발행 결정은 이 기간에 없습니다.")
+    assert not pages.count_claims("2026년 6월 말까지의 값이며 실적 전망은 이 DB에 없습니다.")
+
+
+def test_counts_the_card_made_are_not_count_claims():
+    # 평가 16판 P36: 재무 체력 카드의 설명에 있는 비교 기준을 옮긴 문장
+    card = "중앙값은 유가증권 상장사 827곳의 가장 최근 보고서 기준입니다."
+    sentence = "부채비율과 유동비율은 같은 시장(유가증권) 상장사 827곳의 중앙값과 나란히 놓은 값입니다."
+    assert pages.count_claims(sentence) and not pages.count_claims(sentence, card)
+    # 수는 같아도 앞말이 다르면 카드가 센 것이 아니다. 문장에 다른 개수가 더 있어도 잡는다
+    assert pages.count_claims("공급계약 상대는 827곳입니다.", card)
+    assert pages.count_claims("상장사 827곳 가운데 공급계약을 낸 회사는 12곳입니다.", card)
 
 
 def test_count_claims_are_sent_back_once_then_removed(db):  # noqa: F811

@@ -218,15 +218,26 @@ AGENT_TEXT_MAX = 600
 # 세어서 하는 말. 평가 14판에서 틀린 문장 셋이 모두 이것이었다("공급계약은 34건", "그 뒤 보고는 없습니다").
 # 숫자 검사는 그 숫자가 조회 결과 어딘가에 있는지만 보므로, 무엇을 센 수인지는 가리지 못한다. 세는 일은 카드(서버)가 한다
 _COUNT = re.compile(r"(?<![\d.])\d[\d,]*\s*(?:건|곳|쌍|차례|명|개(?!월))|(?<![가-힣])(?:한|두|세|네|다섯|여섯|일곱|여덟|아홉|열)\s*(?:건|곳|쌍|차례)")
-_NONE_AFTER = re.compile(r"(?:그\s*뒤|그\s*후|그\s*이후|이후로?|더\s*이상|더는|아직|이\s*밖에|그\s*밖에|외에는?)[^.\n]{0,40}?(?:없습니다|없다|없음|없었|않았|않습니다)")
+# '그 뒤 없다'와 같은 말: 어느 때부터·어느 기간에 없다(평가 16판 P40 "2026-08-20부터 11-20까지는 새 공급계약 공시가 없다")
+_NONE_AFTER = re.compile(r"(?:그\s*뒤|그\s*후|그\s*이후|이후로?|더\s*이상|더는|아직|이\s*밖에|그\s*밖에|외에는?"
+                         r"|까지(?:는|도)|동안(?:에)?(?:는)?|사이(?:에)?(?:는)?|기간(?:에)?(?:는)?|(?<![가-힣])새로운?\s|(?<![가-힣])새\s|신규)"
+                         r"[^.\n]{0,40}?(?:없습니다|없다|없음|없었|않았|않습니다)")
 _ONLY = re.compile(r"유일한|유일하게|단\s*한\s*(?:건|번|곳)|뿐입니다")
 _ABOUT_DB = re.compile(r"DB|알 수 없|모으지 않|담지 않|수집하지 않")
+_WORD_BEFORE = re.compile(r"([가-힣A-Za-z]+)\s*$")
 
 
-def count_claims(text: str) -> list[str]:
+def _squeeze(text: str) -> str:
+    return re.sub(r"\s+", "", text)
+
+
+def count_claims(text: str, cards: str = "") -> list[str]:
     """글에서 개수, '그 뒤 없다', '유일하다' 처럼 세어서 하는 문장.
     이 DB가 무엇을 모으지 않는지 밝히는 말('그 밖의 것은 이 DB에 없습니다')은 '없다'로 세지 않는다. 개수는 그런 문장에서도 본다.
-    평가 15판 P20: 'DB' 가 든 문장을 통째로 건너뛰어 '합계 2건입니다(… 이 DB에 없음)' 가 남았다"""
+    평가 15판 P20: 'DB' 가 든 문장을 통째로 건너뛰어 '합계 2건입니다(… 이 DB에 없음)' 가 남았다.
+    cards: 같은 페이지 카드가 낸 글(제목·요약·설명). 카드가 센 수를 앞말까지 같게 옮긴 것('상장사 827곳')은 세지 않는다.
+    평가 16판 P36: 재무 체력 카드의 비교 기준 '유가증권 상장사 827곳의 중앙값'을 밝힌 문장이 지워졌다"""
+    cards = _squeeze(cards)
     out = []
     for sentence in re.split(r"(?<=[.!?。])\s+|\n+", text):
         sentence = sentence.strip()
@@ -234,10 +245,17 @@ def count_claims(text: str) -> list[str]:
             continue
         # DB를 밝히는 괄호는 떼고 본다. 괄호 밖에도 DB를 밝히는 말이 있으면 '없다·유일하다' 검사만 건너뛴다
         bare = re.sub(r"\([^()]*\)", lambda m: "" if _ABOUT_DB.search(m.group()) else m.group(), sentence)
-        counted = _COUNT.search(RECEIPT.sub("", bare))
+        plain = RECEIPT.sub("", bare)
+        counted = any(not _card_count(plain, m, cards) for m in _COUNT.finditer(plain))
         if counted or (not _ABOUT_DB.search(bare) and (_NONE_AFTER.search(bare) or _ONLY.search(bare))):
             out.append(sentence)
     return out
+
+
+def _card_count(sentence: str, match: re.Match, cards: str) -> bool:
+    """이 개수가 카드에 앞말까지 같게 있는가(카드가 센 수를 옮긴 것)"""
+    before = _WORD_BEFORE.search(sentence[:match.start()])
+    return bool(cards and before and _squeeze(before.group(1) + match.group()) in cards)
 
 
 def _without(text: str, claims: list[str]) -> str:
@@ -292,7 +310,7 @@ def propose(db, arguments: dict, when: date, seen: set[str], bodies: list[str], 
         problems.append("title 이 비었습니다")
     if not isinstance(raw, list) or not raw:
         return {"error": "blocks 에 블록을 하나 이상 주세요"}
-    blocks, cards = [], []
+    blocks, cards, said = [], [], []   # said: 카드가 낸 글(세는 문장 검사에서 카드가 센 수를 가린다)
     for i, block in enumerate(raw[:BLOCKS_MAX], 1):
         kind = block.get("type") if isinstance(block, dict) else None
         if kind == "text":
@@ -309,6 +327,7 @@ def propose(db, arguments: dict, when: date, seen: set[str], bodies: list[str], 
                 problems.append(f"{i}번 카드({block.get('kind')}): {card['error']}")
             else:
                 cards.append({"block": i, "shown": card["shown"], "summary": card.get("summary")})
+                said.extend([str(card.get("shown") or ""), str(card.get("summary") or ""), *map(str, card.get("notes") or [])])
             blocks.append({"type": "view", **arguments_, "as_of": when.isoformat()})
         else:
             problems.append(f"{i}번 블록의 type 은 text 나 view 입니다")
@@ -330,7 +349,7 @@ def propose(db, arguments: dict, when: date, seen: set[str], bodies: list[str], 
         warned["numbers"] = True
         problems.append("조회 결과에서 확인되지 않는 값: " + ", ".join(numbers[:8]) + ". 결과에 있는 값으로 고치거나 빼고 카드에 맡기세요")
     # 세어서 하는 말은 한 번 돌려보내고, 두 번째에도 남으면 그 문장만 지우고 받는다(페이지에 남지 않는다)
-    claims = count_claims(text) if text else []
+    claims = count_claims(text, "\n".join(said)) if text else []
     if claims and not warned.get("counts"):
         warned["counts"] = True
         problems.append("개수나 '그 뒤 없다', '유일하다' 같은 세어서 하는 말은 글에 쓰지 않습니다(세는 일은 카드가 합니다). 이 문장을 빼거나 세지 않는 말로 고치세요: "
