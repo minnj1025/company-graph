@@ -29,6 +29,7 @@ def test_skill_bodies_are_copied_word_for_word():
 @pytest.mark.parametrize("style", ["1", "2"])
 def test_core_prompt_keeps_every_other_line(monkeypatch, style):
     monkeypatch.setenv("ANSWER_STYLE", style)
+    monkeypatch.setenv("ASK_PAGES", "0")   # 페이지 규칙은 skill 나누기와 따로 본다(test_pages)
     monkeypatch.setenv("ASK_SKILLS", "0")
     whole = agent.system()
     monkeypatch.setenv("ASK_SKILLS", "1")
@@ -102,6 +103,7 @@ def test_default_keeps_why_rules_and_opens_the_rest(monkeypatch):
 def test_keep_why_rules_in_prompt(monkeypatch, style):
     # ASK_SKILLS=2: 원인·평가 규칙은 지금 지시문과 같은 자리에 두고, 나머지 6묶음만 펼친다
     monkeypatch.setenv("ANSWER_STYLE", style)
+    monkeypatch.setenv("ASK_PAGES", "0")   # 페이지 규칙은 skill 나누기와 따로 본다(test_pages)
     monkeypatch.setenv("ASK_SKILLS", "0")
     whole = agent.system()
     monkeypatch.setenv("ASK_SKILLS", "2")

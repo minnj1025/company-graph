@@ -302,7 +302,7 @@ def answer(question: str, *, model: str = MODEL, as_of: date | None = None, effo
         if found:
             worded["draft"] = split_followups(written)[0]   # 다시 쓰기 전의 답(평가에서 전후를 견준다)
         return wording.feedback(found) if found else None
-    # Agent가 직접 짜는 페이지 (pages.py). 평가 전이라 ASK_PAGES=1 일 때만 도구를 준다
+    # Agent가 직접 짜는 페이지 (pages.py). 기본으로 켜고, ASK_PAGES=0 이면 도구를 주지 않는다
     pages_on = pages.enabled() and skills.enabled()
     page, warned = None, {}
     with session() as db:

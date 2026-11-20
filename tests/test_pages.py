@@ -126,12 +126,13 @@ def propose(db, blocks, title="기아 지분 한눈에", warned=None):  # noqa: 
     return pages.propose(db, {"title": title, "blocks": blocks}, WHEN, SEEN, BODY, "기아 지분 구조를 페이지로 만들어 줘", {} if warned is None else warned)
 
 
-def test_page_tool_and_rules_appear_only_when_turned_on(monkeypatch):
-    monkeypatch.delenv("ASK_PAGES", raising=False)
+def test_page_tool_and_rules_are_on_by_default_and_can_be_turned_off(monkeypatch):
     monkeypatch.delenv("ASK_SKILLS", raising=False)
+    monkeypatch.setenv("ASK_PAGES", "0")
     before = agent.system()
     assert "make-page" not in before and "make-page" not in skills.names()
-    monkeypatch.setenv("ASK_PAGES", "1")
+    monkeypatch.delenv("ASK_PAGES", raising=False)   # 평가 16판에서 기준을 채워 기본으로 켰다
+    assert pages.enabled()
     assert "make-page" in agent.system() and "make-page" in skills.tool()["input_schema"]["properties"]["names"]["items"]["enum"]
     monkeypatch.setenv("ASK_PAGES", "0")
     assert agent.system() == before

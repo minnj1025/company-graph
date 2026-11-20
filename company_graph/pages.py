@@ -209,7 +209,7 @@ def delete(db, slug: str, key: str | None, owner: bool = False) -> None:
     db.commit()
 
 
-# ---------- Agent가 직접 짜는 페이지 (save_page, ASK_PAGES=1 일 때만) ----------
+# ---------- Agent가 직접 짜는 페이지 (save_page, 기본으로 켬. ASK_PAGES=0 이면 끔) ----------
 
 TOOL = "save_page"
 SKILL = "make-page"
@@ -247,8 +247,8 @@ def _without(text: str, claims: list[str]) -> str:
 
 
 def enabled() -> bool:
-    """평가 전이라 기본은 끈다. 켜면 save_page 도구와 make-page 규칙이 함께 생긴다"""
-    return os.environ.get("ASK_PAGES", "0") == "1"
+    """기본으로 켠다(평가 16판에서 기준 8개를 채움). save_page 도구와 make-page 규칙이 함께 생기고, ASK_PAGES=0 이면 둘 다 없다"""
+    return os.environ.get("ASK_PAGES", "1") == "1"
 
 
 def tool() -> dict:
