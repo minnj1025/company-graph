@@ -224,13 +224,18 @@ _ABOUT_DB = re.compile(r"DB|알 수 없|모으지 않|담지 않|수집하지 �
 
 
 def count_claims(text: str) -> list[str]:
-    """글에서 개수, '그 뒤 없다', '유일하다' 처럼 세어서 하는 문장. 이 DB가 무엇을 모으지 않는지 밝히는 문장은 뺀다"""
+    """글에서 개수, '그 뒤 없다', '유일하다' 처럼 세어서 하는 문장.
+    이 DB가 무엇을 모으지 않는지 밝히는 말('그 밖의 것은 이 DB에 없습니다')은 '없다'로 세지 않는다. 개수는 그런 문장에서도 본다.
+    평가 15판 P20: 'DB' 가 든 문장을 통째로 건너뛰어 '합계 2건입니다(… 이 DB에 없음)' 가 남았다"""
     out = []
     for sentence in re.split(r"(?<=[.!?。])\s+|\n+", text):
         sentence = sentence.strip()
-        if not sentence or _ABOUT_DB.search(sentence):
+        if not sentence:
             continue
-        if _COUNT.search(RECEIPT.sub("", sentence)) or _NONE_AFTER.search(sentence) or _ONLY.search(sentence):
+        # DB를 밝히는 괄호는 떼고 본다. 괄호 밖에도 DB를 밝히는 말이 있으면 '없다·유일하다' 검사만 건너뛴다
+        bare = re.sub(r"\([^()]*\)", lambda m: "" if _ABOUT_DB.search(m.group()) else m.group(), sentence)
+        counted = _COUNT.search(RECEIPT.sub("", bare))
+        if counted or (not _ABOUT_DB.search(bare) and (_NONE_AFTER.search(bare) or _ONLY.search(bare))):
             out.append(sentence)
     return out
 

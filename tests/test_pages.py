@@ -170,8 +170,15 @@ def test_count_claims_catch_counting_sentences_only():
     assert pages.count_claims("마지막 건은 국민연금공단 6.13%(접수번호 20241030000275)이며 그 뒤 보고는 없습니다.")
     assert pages.count_claims("유효한 공급계약은 서른 건이 아니라 세 건입니다.")
     for fine in ("모비스 지분은 18.1%입니다(접수번호 20260309000001).", "계약기간은 24개월이고 금액은 3,642억 원입니다.",
-                 "이 DB로 알 수 없는 것: 실적 전망은 담지 않습니다.", "2026년 3분기 영업이익은 1조 2,000억 원입니다."):
+                 "이 DB로 알 수 없는 것: 실적 전망은 담지 않습니다.", "2026년 3분기 영업이익은 1조 2,000억 원입니다.",
+                 "그 밖의 계약은 이 DB에 없습니다.", "이 DB는 건별로 공시한 계약만 모은다.",
+                 "결정 공시이며 실제 처분 여부는 이 DB에 없습니다(그 뒤 결과 공시는 모으지 않음)."):
         assert not pages.count_claims(fine), fine
+    # 평가 15판 P20: DB를 밝히는 괄호가 붙었다고 개수 문장을 건너뛰지 않는다
+    assert pages.count_claims("유상증자 결정은 합계 2건입니다(결정 공시 기준, 실제 납입 여부는 이 DB에 없음).")
+    assert pages.count_claims("보고 접수된 6명의 비등기임원이 모두 늘렸습니다(거래 단가는 DB에 없음).")
+    assert pages.count_claims("유일한 공급계약입니다(해지 여부는 이 DB에 없음).")
+    assert pages.count_claims("공급계약은 3건이며, 계약 상대의 재무 상태는 이 DB로 알 수 없습니다.")
 
 
 def test_count_claims_are_sent_back_once_then_removed(db):  # noqa: F811
