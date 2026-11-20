@@ -25,7 +25,7 @@ from .names import clean_reported, normalize
 
 YEARS = (2023, 2024, 2025)
 LISTED = ("Y", "K", "N")
-VERSION = "equity-7"  # 7: 이름만으로 이은 상장사 출자 대상에 과반 지분이 나오는데 그 회사의 최대주주 현황에 이 주주가 없으면 이름만 같은 다른 회사로 보고 잇지 않음. 6: 최대주주 현황의 우선주·종류주 줄(share_class)과 자기주식 줄(treasury), 기간 중에 다 처분한 출자(exited)를 표시해 남김. 5: 타법인출자 현황의 기초 주식수·지분율도 남김. 4: 최대주주 현황에서 0.00%로 찍힌 주주와 기간 중 빠진 주주, 기초 값, 합계 줄을 남기고 종류주 줄을 뺌. 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
+VERSION = "equity-8"  # 8: 출자현황의 주식 수가 단위를 잘못 붙인 값이면(주식 수 ÷ 지분율이 100억 주 넘음) 같은 짝의 다른 줄과 맞을 때만 고치고 아니면 비움(checked_shares). 7: 이름만으로 이은 상장사 출자 대상에 과반 지분이 나오는데 그 회사의 최대주주 현황에 이 주주가 없으면 이름만 같은 다른 회사로 보고 잇지 않음. 6: 최대주주 현황의 우선주·종류주 줄(share_class)과 자기주식 줄(treasury), 기간 중에 다 처분한 출자(exited)를 표시해 남김. 5: 타법인출자 현황의 기초 주식수·지분율도 남김. 4: 최대주주 현황에서 0.00%로 찍힌 주주와 기간 중 빠진 주주, 기초 값, 합계 줄을 남기고 종류주 줄을 뺌. 법인 표시가 붙은 영문 약어는 붙임. 3: 원장에 없는 주주(개인 등)도 이름으로 넣음. 2: 자기 계열회사 표를 먼저 보고 연결, 적힌 그대로의 지분율 보존, 줄을 지우지 않음
 
 
 TOTAL_NAMES = ("합계", "계", "소계")
@@ -59,6 +59,73 @@ def impossible_stake(db, holder: Company, target_id: int, pct: Decimal, year: in
     # 주주 이름은 회사마다 다르게 적는다(CJ / 씨제이(주)). 이 주주의 모든 별칭으로 맞춰 본다
     names = {normalize(clean_reported(holder.name))} | set(db.scalars(select(CompanyAlias.alias).where(CompanyAlias.company_id == holder.company_id)))
     return not (names & listed)
+
+
+MAX_ISSUED = Decimal(10) ** 10   # 100억 주. 발행주식이 가장 많은 삼성전자가 약 59억 주다
+
+
+def known_shares(db, holder_id: int | None, target_id: int | None) -> set[Decimal]:
+    """같은 주주·회사 짝을 적은 다른 줄(두 표, 다른 해)의 주식 수."""
+    if not holder_id or not target_id:
+        return set()
+    found = db.scalars(select(Relation.attrs).where(Relation.rel_type == "equity", Relation.subject_company_id == holder_id,
+                                                    Relation.object_company_id == target_id, Relation.retired_at.is_(None)))
+    return {value for attrs in found for key in ("shares", "shares_begin") if (value := to_decimal((attrs or {}).get(key)))}
+
+
+def unit_slip(text: str | None, pct: Decimal | None, known: set[Decimal]) -> tuple[str | None, bool]:
+    """보고서가 주식 수를 단위를 잘못 붙여 적은 줄. 주식 수 ÷ 지분율로 나오는 발행주식 수가 100억 주를 넘으면 그렇게 본다.
+    1,000,000 이나 1,000 으로 나눈 값이 같은 짝의 다른 줄(그 회사의 최대주주 현황, 다른 해의 표)과 맞을 때만 그 값으로 고치고,
+    맞는 것이 없으면 주식 수를 비운다. 돌려주는 두 번째 값은 보고서 값을 그대로 쓰지 않았는지다.
+    2026-11 상상인의 2025년 사업보고서 출자현황: 상상인증권 60,506,763,000,000주(57%), 최대주주 현황과 2024년 표는 60,506,763주"""
+    shares = to_decimal(text)
+    if not shares or not pct or pct <= 0 or shares * 100 / pct <= MAX_ISSUED:
+        return text, False
+    for unit in (10 ** 6, 10 ** 3):
+        if shares % unit == 0 and shares / unit in known and shares / unit * 100 / pct <= MAX_ISSUED:
+            return f"{int(shares / unit):,}", True
+    return None, True
+
+
+def checked_shares(db, holder_id, target_id, attrs: dict) -> dict:
+    """출자현황 줄의 기말·기초 주식 수를 unit_slip 으로 본다. 고치거나 비운 칸은 보고서 값을 *_reported 에 남긴다.
+    출자 대상이 원장의 상장사일 때만 본다. 조합·펀드는 이 칸에 출자 금액을 적어 발행주식 기준이 맞지 않는다"""
+    out = {k: v for k, v in attrs.items() if k not in ("shares_reported", "shares_begin_reported")}
+    target = db.get(Company, target_id) if target_id else None
+    if not target or target.corp_cls not in LISTED:
+        for key in ("shares", "shares_begin"):   # 전에 고친 줄이 있으면 보고서 값으로 되돌린다
+            if f"{key}_reported" in attrs:
+                out[key] = attrs[f"{key}_reported"]
+        return out
+    known = None
+    for key, pct_key in (("shares", "raw_pct"), ("shares_begin", "pct_begin")):
+        reported = attrs.get(f"{key}_reported", attrs.get(key))
+        if reported is None:
+            continue
+        known = known_shares(db, holder_id, target_id) if known is None else known
+        value, changed = unit_slip(reported, to_decimal(attrs.get(pct_key)), known)
+        out[key] = value
+        if changed:
+            out[f"{key}_reported"] = reported
+        if value is None:
+            out.pop(key)
+    return out
+
+
+def fix_unit_slips(db) -> int:
+    """이미 넣은 출자현황 줄에 checked_shares 를 다시 적용한다. 줄을 새로 만들지 않고 attrs 만 고친다."""
+    changed = 0
+    for rel in db.scalars(select(Relation).where(Relation.rel_type == "equity", Relation.retired_at.is_(None),
+                                                 Relation.attrs["source"].as_string() == "other_corp_investments")):
+        attrs = rel.attrs or {}
+        new = checked_shares(db, rel.subject_company_id, rel.object_company_id, attrs)
+        if new != attrs:
+            print(f"  {rel.rcept_no} {rel.subject_company_id}→{rel.object_company_id or rel.object_name_raw}: "
+                  f"{attrs.get('shares')} → {new.get('shares')}", flush=True)
+            rel.attrs = new
+            changed += 1
+    db.commit()
+    return changed
 
 
 def to_decimal(text: str | None) -> Decimal | None:
@@ -204,12 +271,13 @@ def load_investments(db, company: Company, year: int, index, affiliates, names: 
             subject_company_id=company.company_id, object_company_id=object_id, object_name_raw=name,
             rel_type="equity", value_num=pct, value_unit="pct", as_of_date=as_of(row, year),
             disclosed_date=doc.rcept_dt, rcept_no=rcept_no, extract_method="api", trust_tier=1,
-            attrs={"source": "other_corp_investments", "link_reason": reason,
-                   "raw_pct": (row.get("trmend_blce_qota_rt") or "").strip(), "purpose": row.get("invstmnt_purps"),
-                   "first_acquired": row.get("frst_acqs_de"), "shares": row.get("trmend_blce_qy"),
-                   "book_value": row.get("trmend_blce_acntbk_amount"),
-                   "shares_begin": row.get("bsis_blce_qy"), "pct_begin": (row.get("bsis_blce_qota_rt") or "").strip(),
-                   **({"exited": True} if exited else {})}))
+            attrs=checked_shares(db, company.company_id, object_id, {
+                "source": "other_corp_investments", "link_reason": reason,
+                "raw_pct": (row.get("trmend_blce_qota_rt") or "").strip(), "purpose": row.get("invstmnt_purps"),
+                "first_acquired": row.get("frst_acqs_de"), "shares": row.get("trmend_blce_qy"),
+                "book_value": row.get("trmend_blce_acntbk_amount"),
+                "shares_begin": row.get("bsis_blce_qy"), "pct_begin": (row.get("bsis_blce_qota_rt") or "").strip(),
+                **({"exited": True} if exited else {})})))
     # 같은 보고서에서 extract_invest_detail 이 넣은 줄(표준 표 밖의 출자)은 건드리지 않는다
     counts = loader.sync(db, [Relation.rcept_no == rcept_no, Relation.rel_type == "equity",
                               Relation.subject_company_id == company.company_id,
@@ -311,4 +379,8 @@ def main(everyone: bool):
 
 
 if __name__ == "__main__":
-    main(everyone="--all" in sys.argv[1:])
+    if "--fix-units" in sys.argv[1:]:   # DART를 부르지 않고 이미 넣은 출자현황 줄의 주식 수만 다시 본다
+        with session(init_db()) as db:
+            print(f"주식 수를 고치거나 비운 줄 {fix_unit_slips(db)}개")
+    else:
+        main(everyone="--all" in sys.argv[1:])
