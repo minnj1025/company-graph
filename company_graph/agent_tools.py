@@ -41,7 +41,8 @@ FIELDS = ("as_of_date: 계약일·결의일·해지일·보고서 기준일. per
           "exited=true 는 기초에는 주식이 있었으나 기말에 0주가 된 주주(출자 목록에서는 기간 중에 다 처분한 출자), note 는 표의 비고. "
           "share_class 가 있으면 보통주가 아닌 줄(우선주·종류주·의결권 없는 주식)이고 그 값이 표에 적힌 주식 종류다. 보통주 기준을 물으면 share_class 가 없는 줄만 쓴다. "
           "treasury=true 는 회사가 가진 자기주식 줄이다(주주가 아니다). 지분율 0.0 은 반올림한 값이고 shares 가 있으면 주주다. "
-          "reports: 같은 지분을 두 회사가 저마다 보고서에 적었을 때 표별 값. differs=true 면 두 보고서의 지분율이 서로 다르다")
+          "reports: 같은 지분을 두 회사가 저마다 보고서에 적었을 때 표별 값(table, 지분율 value, 주식 수 shares, 그 표의 rcept_no). "
+          "differs=true 면 두 보고서의 지분율이나 주식 수가 서로 다르다. 이때 줄의 detail 에는 shares 가 없으니 표의 값은 reports 에서 그 표의 rcept_no 와 함께 쓴다")
 
 # 제품군 목록을 도구 설명에 싣는다. Agent가 질문의 뜻에 맞는 제품군을 여기서 골라 넘긴다
 _FAMILY_LIST = "; ".join(f"[{field}] " + ", ".join(family for f, family, _ in FAMILIES if f == field)

@@ -34,13 +34,13 @@ def governance(company_id: int, holders: dict, investments: dict, major: dict) -
     def receipt(r: dict, table_name: str):
         """두 회사 보고서에 모두 있는 지분이면 그 표의 접수번호만 붙인다 (다른 회사 보고서의 비율에 이 회사 접수번호를 달지 않게)."""
         for report in r.get("reports") or []:
-            if report.get("table") == table_name:
-                return [report["rcept_no"]], report.get("value")
-        return r.get("rcept_no"), r.get("value")
+            if report.get("table") == table_name:   # 주식 수도 그 표의 것 (평가 15판 P28: 다른 회사 표의 주식 수가 붙었다)
+                return [report["rcept_no"]], report.get("value"), report.get("shares")
+        return r.get("rcept_no"), r.get("value"), (r.get("detail") or {}).get("shares")
     for r in holders.get("relations", []):
         mine = r.get("disclosed_by") != "주체가 공시"
-        rcept, pct = receipt(r, "최대주주 현황" if mine else "타법인출자 현황")
-        row = {"name": _name(r.get("subject")), "pct": pct, "shares": (r.get("detail") or {}).get("shares"),
+        rcept, pct, shares = receipt(r, "최대주주 현황" if mine else "타법인출자 현황")
+        row = {"name": _name(r.get("subject")), "pct": pct, "shares": shares,
                "date": r.get("as_of_date"), "rcept_no": rcept}
         share_class = (r.get("detail") or {}).get("share_class")
         if not mine and (r.get("detail") or {}).get("exited"):

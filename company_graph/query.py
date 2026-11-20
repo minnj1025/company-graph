@@ -98,6 +98,11 @@ def _latest_reports(db, as_of: date, filer_ids) -> dict[int, str]:
     return {company_id: rcept_no for company_id, (_, rcept_no) in latest.items()}
 
 
+def _digits(text) -> str:
+    """표에 적힌 주식 수('6,790,000', '6790000주')를 견줄 수 있게 숫자만 남긴다."""
+    return "".join(ch for ch in str(text or "") if ch.isdigit())
+
+
 def _side(rel: Relation) -> str:
     """이 줄을 밝힌 쪽. 주체가 낸 공시면 subject, 상대가 낸 공시면 object."""
     return "object" if _filer(rel) == rel.object_company_id and rel.object_company_id != rel.subject_company_id else "subject"
@@ -129,7 +134,12 @@ def _reduce(rows: list[Relation], latest_report: dict[int, str], as_of: date, ex
             # 같은 지분을 두 회사가 저마다 적었다. 값이 서로 다를 수 있어 양쪽 것을 다 남긴다
             edge["reports"] = [{"side": _side(r), "source": (r.attrs or {}).get("source"), "value": r.value_num,
                                 "shares": (r.attrs or {}).get("shares"), "rcept_no": r.rcept_no} for r in same_date]
-            edge["differs"] = len({r.value_num for r in same_date}) > 1
+            shares = {_digits((r.attrs or {}).get("shares")) for r in same_date}
+            edge["differs"] = len({r.value_num for r in same_date}) > 1 or len(shares) > 1
+            if len(shares) > 1:
+                # 두 표의 주식 수가 다르면 줄에는 어느 쪽 값도 두지 않는다. 출자한 쪽 값을 줄에 두었더니
+                # Agent가 그것을 받은 쪽 최대주주 현황의 값으로 적었다(평가 15판 P28). 표마다의 값은 reports 에 있다
+                edge["attrs"] = {k: v for k, v in edge["attrs"].items() if k != "shares"}
         edges.append(edge)
 
     edges += [_edge(r, [r.rcept_no], "subject", as_of) for r in current if r.rel_type != "equity"]

@@ -180,6 +180,23 @@ def test_equity_keeps_both_reports_when_they_disagree(db):
     assert other["differs"] and {r["value"] for r in other["reports"]} == {Decimal("18.10"), Decimal("18.64")}
 
 
+def test_equity_drops_merged_shares_when_tables_disagree(db):
+    # 평가 15판 P28: 지분율은 같고 주식 수만 달랐는데, 줄에 출자한 쪽 주식 수가 남아 받은 쪽 표의 값으로 읽혔다
+    kia = lambda: next(e for e in only(query.relations(db, date(2026, 9, 1), company_ids=[MOBIS]), "equity") if e["subject_id"] == KIA)
+    rows = {r.attrs["source"]: r for r in db.scalars(select(Relation).where(
+        Relation.rel_type == "equity", Relation.subject_company_id == KIA, Relation.object_company_id == MOBIS))}
+    for source, shares in (("other_corp_investments", "6,790,000"), ("largest_shareholders", "6789950")):
+        rows[source].attrs = {**rows[source].attrs, "shares": shares}
+    db.commit()
+    edge = kia()
+    assert edge["differs"] and "shares" not in edge["attrs"]
+    assert {r["source"]: r["shares"] for r in edge["reports"]} == {"other_corp_investments": "6,790,000", "largest_shareholders": "6789950"}
+    rows["largest_shareholders"].attrs = {**rows["largest_shareholders"].attrs, "shares": "6,790,000주"}
+    db.commit()
+    edge = kia()
+    assert not edge["differs"] and edge["attrs"]["shares"] == "6,790,000"
+
+
 def test_holders_who_left_show_only_when_asked(db):
     db.add(Relation(subject_name_raw="홍길동", object_company_id=MOBIS, object_name_raw="-", rel_type="equity", value_num=Decimal(0),
                     value_unit="pct", as_of_date=date(2025, 12, 31), disclosed_date=date(2026, 3, 9), rcept_no="20260309000001",
