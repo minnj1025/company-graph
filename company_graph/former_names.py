@@ -8,11 +8,11 @@ DART의 회사 목록(corpCode, 기업개황)과 공시 목록은 지금 이름�
 
 2026-11 평가 16판 P40: 'LIG넥스원'으로 찾지 못했다(원장 이름 LIG디펜스앤에어로스페이스, 별칭에 옛 이름이 없었다).
 
-실행: python -m company_graph.former_names [days]   (days 를 주면 그 날수 안에 받은 원문만 본다. 매일 작업이 쓴다)
+실행: python -m company_graph.former_names [--dry]   (--dry 면 넣지 않고 넣을 것만 보인다)
 """
+import json
 import re
 import sys
-import time
 
 from sqlalchemy import select
 
@@ -21,25 +21,38 @@ from .db import Company, CompanyAlias, Document, init_db, session
 from .names import clean_reported, normalize
 
 DOCUMENTS = CACHE_DIR / "dart_document"
+SEEN = CACHE_DIR / "former_names_seen.json"   # 원문 파일마다 읽은 (고유번호, 이름)
 _HEAD = re.compile(rb'<COMPANY-NAME AREGCIK="(\d{8})">([^<]+)')
 _TITLE = re.compile(rb"<title>([^<]+?)/")
 
 
-def read(days: float | None = None) -> tuple[dict[str, set[str]], dict[str, str]]:
-    """(고유번호 → 원문에 적힌 이름들, 거래소 공시 접수번호 → 제목의 이름)"""
-    by_code: dict[str, set[str]] = {}
-    by_receipt: dict[str, str] = {}
-    since = time.time() - days * 86400 if days else 0
+def read() -> tuple[dict[str, set[str]], dict[str, str]]:
+    """(고유번호 → 원문에 적힌 이름들, 거래소 공시 접수번호 → 제목의 이름)
+    원문을 여는 데 오래 걸려(2만 6천 개에 10분 넘게) 파일마다 읽은 것을 SEEN 에 남기고, 다음에는 새로 받은 원문만 연다"""
+    try:
+        seen = json.loads(SEEN.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        seen = {}
     for path in DOCUMENTS.glob("*.xml"):
-        if since and path.stat().st_mtime < since:
+        if path.stem in seen:
             continue
         with open(path, "rb") as f:
             head = f.read(6000)
         found = _HEAD.search(head)
         if found:
-            by_code.setdefault(found.group(1).decode(), set()).add(found.group(2).decode("utf-8", "replace").strip())
+            seen[path.stem] = [found.group(1).decode(), found.group(2).decode("utf-8", "replace").strip()]
         elif (found := _TITLE.search(head)) and path.stem[8:9] == "8":
-            by_receipt[path.stem] = found.group(1).decode("utf-8", "replace").strip()
+            seen[path.stem] = [None, found.group(1).decode("utf-8", "replace").strip()]
+        else:
+            seen[path.stem] = None
+    SEEN.write_text(json.dumps(seen, ensure_ascii=False), encoding="utf-8")
+    by_code: dict[str, set[str]] = {}
+    by_receipt: dict[str, str] = {}
+    for stem, item in seen.items():
+        if item and item[0]:
+            by_code.setdefault(item[0], set()).add(item[1])
+        elif item:
+            by_receipt[stem] = item[1]
     return by_code, by_receipt
 
 
@@ -61,23 +74,27 @@ def add(db, by_code: dict[str, set[str]], by_receipt: dict[str, str], dry: bool 
     for company_id, found in names.items():
         for name in found:
             claimed.setdefault(normalize(clean_reported(name)), set()).add(company_id)
-    added = []
+    labels = {i: shown or name for i, shown, name in db.execute(
+        select(Company.company_id, Company.display_name, Company.name).where(Company.company_id.in_(list(names))))}
+    added, rows = [], []
     for company_id, found in names.items():
         for name in sorted(found):
             key = normalize(clean_reported(name))
             holders = aliases.get(key, set())
             # 다른 회사의 별칭이거나(옛 이름을 다른 회사가 이어 씀: 동아쏘시오홀딩스의 옛 이름 동아제약) 여러 회사가 쓴 이름은 넣지 않는다
-            if len(key) < 2 or company_id in holders or holders or len(claimed[key]) > 1:
+            if len(key) < 2 or holders or len(claimed[key]) > 1:
                 continue
-            db.add(CompanyAlias(alias=key, company_id=company_id, source="auto"))
+            rows.append(CompanyAlias(alias=key, company_id=company_id, source="auto"))
             aliases.setdefault(key, set()).add(company_id)
-            added.append((db.get(Company, company_id).label, name))
-    db.rollback() if dry else db.commit()
+            added.append((labels.get(company_id, str(company_id)), name))
+    if not dry:
+        db.add_all(rows)
+        db.commit()
     return added
 
 
-def main(days: float | None = None, dry: bool = False):
-    by_code, by_receipt = read(days)
+def main(dry: bool = False):
+    by_code, by_receipt = read()
     with session(init_db()) as db:
         added = add(db, by_code, by_receipt, dry)
     for label, name in added if dry else added[:50]:
@@ -86,5 +103,4 @@ def main(days: float | None = None, dry: bool = False):
 
 
 if __name__ == "__main__":
-    numbers = [a for a in sys.argv[1:] if not a.startswith("--")]
-    main(float(numbers[0]) if numbers else None, dry="--dry" in sys.argv)
+    main(dry="--dry" in sys.argv)
