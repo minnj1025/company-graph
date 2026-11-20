@@ -1,0 +1,67 @@
+{
+ "question": "신세계I&C 최대주주 지분이 몇 주야? 이마트가 가진 걸로 알고 있는데.",
+ "as_of": "2026-11-20",
+ "model": "claude-haiku-5-5",
+ "answer": "네, 이마트가 신세계I&C의 최대주주이고, 2025년 말 기준 지분은 43.86%입니다. 주식 수는 공시마다 조금 다르게 적혀 있습니다.\n\n- 신세계I&C 최대주주 현황 표: 6,131,700주, 43.86% (접수번호 20260316001238)\n- 이마트 타법인출자 현황 표: 6,132,000주, 43.86% (접수번호 20260318001024)\n\n두 보고서의 지분율은 같지만 주식 수가 300주 차이 납니다. 이마트 쪽 기록에는 자기주식 소각에 따른 지분율 상승이 비고로 적혀 있습니다. 기초(2024년 말) 지분율은 40.16%, 주식 수는 6,131,700주였습니다. 이 DB에서 최대주주와 특수관계인의 합계도 43.86%(6,131,700주)로 확인됩니다. 기준일은 2025년 12월 31일이며, 2026년 11월 20일 이전에 나온 가장 최근 사업보고서 값입니다.\n\n이 DB로 알 수 없는 것: 2026년 중의 지분 변동, 5% 대량보유 보고의 최신 값은 별도로 확인해야 합니다.",
+ "followups": [
+  "신세계I&C 최근 5% 대량보유 보고 내역",
+  "신세계I&C 최근 1년 자본 변동 결정 공시",
+  "이마트의 타법인 지분 취득·처분 결정 내역"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "신세계I&C"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2277,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 1,
+   "chars": 2617
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2269,
+     2277
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 296
+  }
+ ],
+ "cited": [
+  "20260316001238",
+  "20260318001024"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1055,
+  "cache_read_input_tokens": 76512,
+  "cache_creation_input_tokens": 2705
+ },
+ "seconds": 7.2,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "S02",
+ "group": "stake",
+ "arm": "C"
+}

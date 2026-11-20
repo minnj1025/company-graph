@@ -1,0 +1,273 @@
+{
+ "question": "유한양행이 다른 회사 지분을 어디에 얼마나 갖고 있는지, 올해 타법인 주식 취득이나 처분 결정이 있었는지 페이지로 만들어 줄래?",
+ "as_of": "2026-11-20",
+ "model": "claude-haiku-5-5",
+ "answer": "유한양행이 보유한 타법인 지분과 2026년 취득·처분 결정을 담은 페이지를 만들었습니다. 지분은 2025-12-31 기준 사업보고서(접수번호 20260312001236)와 최대주주 공시를 따랐고, 2026년 들어 11월 20일까지 타법인 주식 취득·처분 결정은 확인되지 않았습니다(정정·철회 포함 조회 결과 없음).\n\n페이지에는 계열 지도, 지분 구조도, 상장사 지분 목록(이뮨온시아 65.9%, 프로젠 우선주 22.39%·보통주 9.15%, 테라젠이텍스 6.7% 등)을 넣었습니다. 조회 결과가 잘려 나온 탓에 비상장 보유 목록은 빠진 항목이 있을 수 있습니다.",
+ "followups": [
+  "유한양행이 이뮨온시아 지분을 보유하게 된 공시를 보여줘",
+  "유한양행의 최대주주와 특수관계인 지분은 어떻게 되어 있어?",
+  "유한양행의 최근 1개월 주가 수익률을 시장과 비교해줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "make-page"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1065
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "유한양행"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1559,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 60,
+   "chars": 26956
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1559,
+    "as_of": "2026-11-20",
+    "rel_type": "stake_acquisition",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1362
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1559,
+    "as_of": "2026-11-20",
+    "rel_type": "stake_disposal",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1362
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1559,
+    "as_of": "2026-11-20",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 18,
+   "chars": 9559
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1559,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 10,
+   "chars": 7262
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1559,
+    "as_of": "2026-11-20",
+    "rel_type": "stake_acquisition",
+    "direction": "out",
+    "include_superseded": true,
+    "disclosed_from": "2026-01-01",
+    "disclosed_to": "2026-11-20"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1362
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1559,
+    "as_of": "2026-11-20",
+    "rel_type": "stake_disposal",
+    "direction": "out",
+    "include_superseded": true,
+    "disclosed_from": "2026-01-01",
+    "disclosed_to": "2026-11-20"
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1362
+  },
+  {
+   "tool": "save_page",
+   "input": {
+    "title": "유한양행 타법인 지분 보유와 2026년 취득·처분 결정",
+    "blocks": [
+     {
+      "type": "text",
+      "text": "유한양행이 공시한 타법인 지분은 2025-12-31 기준 사업보고서(접수번호 20260312001236)와 최대주주·출자 공시 기준입니다. 2026년 1월 1일부터 11월 20일까지 타법인 주식 취득·처분 결정 공시는 정정·철회 포함 확인되지 않았습니다."
+     },
+     {
+      "type": "view",
+      "kind": "group",
+      "company_id": 1559
+     },
+     {
+      "type": "text",
+      "text": "상장사 지분(2025-12-31 기준): 이뮨온시아 65.9%(접수 20260312001236, 최대주주 공시는 65.93%, 20260318000757), 프로젠 우선주 22.39%·보통주 9.15%(접수 20260323000522), 테라젠이텍스 6.7%, 전진바이오팜 5.5%, 내츄럴엔도텍 5.0%, 에임드바이오 1.3%, 지아이이노베이션 1.3%. 셀비온과 엔솔바이오사이언스는 기말에 0주가 되었습니다."
+     },
+     {
+      "type": "view",
+      "kind": "ownership",
+      "company_id": 1559
+     },
+     {
+      "type": "text",
+      "text": "이 DB로 알 수 없는 것: 비상장 출자의 장부가액과 투자 손익, 분기·반기 보고서 이후의 지분 변동, 5% 대량보유 보고 이외의 보유 현황. 비상장 목록은 조회 결과가 잘려 일부가 빠졌을 수 있습니다."
+     }
+    ]
+   },
+   "error": "페이지를 저장하지 않았습니다. 고쳐서 다시 부르세요: 조회 결과에서 확인되지 않는 값: 2026-01-01. 결과에 있는 값으로 고치거나 빼고 카드에 맡기세요",
+   "total": null,
+   "chars": 101
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1559,
+     3116,
+     3438,
+     2596,
+     1267,
+     3132,
+     3528,
+     4275,
+     2328,
+     1650
+    ],
+    "views": [
+     {
+      "kind": "group",
+      "company_id": 1559,
+      "as_of": "2026-11-20"
+     },
+     {
+      "kind": "ownership",
+      "company_id": 1559,
+      "as_of": "2026-11-20"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1434
+  },
+  {
+   "tool": "save_page",
+   "input": {
+    "title": "유한양행 타법인 지분 보유와 2026년 취득·처분 결정",
+    "blocks": [
+     {
+      "type": "text",
+      "text": "2025-12-31 기준 사업보고서(접수번호 20260312001236)와 최대주주 공시를 바탕으로 한 지분 보유 목록입니다. 2026년 들어 11월 20일까지 타법인 주식 취득·처분 결정 공시는 정정·철회를 포함해 확인되지 않았습니다."
+     },
+     {
+      "type": "view",
+      "kind": "group",
+      "company_id": 1559
+     },
+     {
+      "type": "text",
+      "text": "상장사 지분(2025-12-31 기준): 이뮨온시아 65.9%(접수번호 20260312001236, 최대주주 공시는 65.93%, 20260318000757), 프로젠 우선주 22.39%·보통주 9.15%(접수번호 20260323000522), 테라젠이텍스 6.7%, 전진바이오팜 5.5%, 내츄럴엔도텍 5.0%, 에임드바이오 1.3%, 지아이이노베이션 1.3%. 셀비온과 엔솔바이오사이언스는 기말 보유가 0으로 보고됐습니다."
+     },
+     {
+      "type": "view",
+      "kind": "ownership",
+      "company_id": 1559
+     },
+     {
+      "type": "text",
+      "text": "이 DB로 알 수 없는 것: 비상장 출자의 장부가액과 투자 손익, 반기·분기 이후의 지분 변동, 5% 대량보유 보고 이외의 주주 현황. 비상장 목록은 조회 결과가 잘려 일부가 빠졌을 수 있습니다."
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 322
+  }
+ ],
+ "cited": [
+  "20260312001236"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 14,
+  "output_tokens": 7105,
+  "cache_read_input_tokens": 207984,
+  "cache_creation_input_tokens": 38441
+ },
+ "seconds": 49.4,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "page_spec": {
+  "title": "유한양행 타법인 지분 보유와 2026년 취득·처분 결정",
+  "question": "유한양행이 다른 회사 지분을 어디에 얼마나 갖고 있는지, 올해 타법인 주식 취득이나 처분 결정이 있었는지 페이지로 만들어 줄래?",
+  "as_of": "2026-11-20",
+  "blocks": [
+   {
+    "type": "text",
+    "text": "2025-12-31 기준 사업보고서(접수번호 20260312001236)와 최대주주 공시를 바탕으로 한 지분 보유 목록입니다. 2026년 들어 11월 20일까지 타법인 주식 취득·처분 결정 공시는 정정·철회를 포함해 확인되지 않았습니다."
+   },
+   {
+    "type": "view",
+    "kind": "group",
+    "company_id": 1559,
+    "as_of": "2026-11-20"
+   },
+   {
+    "type": "text",
+    "text": "상장사 지분(2025-12-31 기준): 이뮨온시아 65.9%(접수번호 20260312001236, 최대주주 공시는 65.93%, 20260318000757), 프로젠 우선주 22.39%·보통주 9.15%(접수번호 20260323000522), 테라젠이텍스 6.7%, 전진바이오팜 5.5%, 내츄럴엔도텍 5.0%, 에임드바이오 1.3%, 지아이이노베이션 1.3%. 셀비온과 엔솔바이오사이언스는 기말 보유가 0으로 보고됐습니다."
+   },
+   {
+    "type": "view",
+    "kind": "ownership",
+    "company_id": 1559,
+    "as_of": "2026-11-20"
+   },
+   {
+    "type": "text",
+    "text": "이 DB로 알 수 없는 것: 비상장 출자의 장부가액과 투자 손익, 반기·분기 이후의 지분 변동, 5% 대량보유 보고 이외의 주주 현황. 비상장 목록은 조회 결과가 잘려 일부가 빠졌을 수 있습니다."
+   }
+  ]
+ },
+ "number": "P32",
+ "group": "page",
+ "arm": "P2"
+}

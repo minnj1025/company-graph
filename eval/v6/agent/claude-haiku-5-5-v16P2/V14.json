@@ -1,0 +1,92 @@
+{
+ "question": "효성중공업 주가 요즘 얼마나 빠졌어? 시장보다 더 빠진 거야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "효성중공업(298040)은 2026-10-16 종가 기준 1주 -22.77%, 1개월 -31.36%, 3개월 -30.94%로, 같은 기간 시장보다 크게 더 빠졌습니다. 이 DB는 가격 수익률과 공시 사실만 보여 주며, 하락의 원인은 판단하지 않습니다.\n\n- **1주**: 효성중공업 -22.77%, 시장 중앙값 -2.74%, 같은 제품 종목 중앙값 -10.89% (시장 대비 -20.03%p)\n- **1개월**: 효성중공업 -31.36%, 시장 중앙값 -3.73%, 같은 제품 종목 중앙값 -9.13% (시장 대비 -27.63%p)\n- **3개월**: 효성중공업 -30.94%, 시장 중앙값 -0.97%, 같은 제품 종목 중앙값 +1.8% (시장 대비 -29.98%p)\n\n비교 대상인 같은 제품 종목은 감속기, 발전기, 변압기, 수배전반, 아파트 건설, 전동기를 매출의 10% 이상으로 파는 상장사 22곳의 중앙값입니다. 수익률은 종가 기준 지난 값입니다.\n\n최근 30일 동안 효성중공업이 시장보다 크게 내린 날 중에 함께 묶인 종목군은 잡히지 않았습니다. 그래서 어떤 종목과 함께 움직였는지는 이 DB로 확인되지 않습니다. 당일 기사도 확인되지 않아 원인은 적지 않습니다.\n\n이 DB로 알 수 없는 것: 실적 전망, 업황과 원자재 가격, 증권사 의견, 수급, 앞으로의 주가입니다.",
+ "followups": [
+  "효성중공업 최근 분기 실적과 부채비율은 어떤가요?",
+  "효성중공업이 최근에 낸 공급계약 공시를 보여 주세요.",
+  "효성중공업의 최대주주와 계열 구조는 어떻게 되나요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "효성중공업"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "price-moves"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 707
+  },
+  {
+   "tool": "get_price_history",
+   "input": {
+    "company_id": 2243,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1290
+  },
+  {
+   "tool": "get_price_moves",
+   "input": {
+    "as_of": "2026-10-16",
+    "company_id": 2243,
+    "direction": "down",
+    "lookback_days": 30
+   },
+   "error": null,
+   "total": null,
+   "chars": 693
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2243
+    ],
+    "also": [],
+    "views": [
+     {
+      "kind": "returns",
+      "company_id": 2243,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 445
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 1851,
+  "cache_read_input_tokens": 101944,
+  "cache_creation_input_tokens": 3423
+ },
+ "seconds": 14.5,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V14",
+ "group": "v6",
+ "arm": "P2"
+}

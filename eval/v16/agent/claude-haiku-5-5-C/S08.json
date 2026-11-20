@@ -1,0 +1,74 @@
+{
+ "question": "원익IPS 최대주주인 원익홀딩스 지분이 몇 주야?",
+ "as_of": "2026-11-20",
+ "model": "claude-haiku-5-5",
+ "answer": "원익홀딩스가 원익IPS 주식 16,148,572주(지분율 32.9%)를 가진 것으로 원익IPS 사업보고서 최대주주 현황에 나와 있습니다. 기준일은 2025-12-31입니다 (접수번호 20260316001453).\n\n- 원익IPS 최대주주 현황: 16,148,572주, 32.9% (접수번호 20260316001453, 기준일 2025-12-31)\n- 원익홀딩스의 타법인출자 현황: 16,149,000주, 32.9% (접수번호 20260923000536)\n\n두 보고서의 주식 수가 428주 차이 납니다. 지분율은 둘 다 32.9%입니다. 이 DB에서는 어느 쪽이 최신인지 판단할 수 없어 두 값을 그대로 적었습니다.\n\n원익홀딩스는 원익IPS 최대주주이며 경영참여 목적으로 보유하고 있습니다. 원익IPS 최대주주와 특수관계인 전체 합계는 16,189,983주, 32.98%(기말 기준)로, 이 중 원익홀딩스 외 임원 등의 지분이 포함돼 있습니다.\n\n이 DB로 알 수 없는 것: 2026년 기준 원익홀딩스의 실제 보유 주식 수(사업보고서 이후 변동 여부)는 5% 대량보유 보고와 내부자 거래 자료에 따로 나오며, 이 답은 사업보고서 기준 값입니다.",
+ "followups": [
+  "원익홀딩스의 최대주주와 지분 구조는?",
+  "원익IPS의 최근 5% 대량보유 보고 내역은?",
+  "원익IPS 최근 자기주식 취득·처분 결정은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "원익IPS"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1858,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 9,
+   "chars": 6988
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1858,
+     2398
+    ],
+    "views": [
+     {
+      "kind": "ownership",
+      "company_id": 1858,
+      "as_of": "2026-11-20"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 533
+  }
+ ],
+ "cited": [
+  "20260316001453",
+  "20260923000536"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1260,
+  "cache_read_input_tokens": 78994,
+  "cache_creation_input_tokens": 5375
+ },
+ "seconds": 9.8,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "S08",
+ "group": "stake",
+ "arm": "C"
+}

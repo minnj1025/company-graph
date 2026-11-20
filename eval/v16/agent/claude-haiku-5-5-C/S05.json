@@ -1,0 +1,96 @@
+{
+ "question": "대상홀딩스는 대상 지분을 얼마나 들고 있나요?",
+ "as_of": "2026-11-20",
+ "model": "claude-haiku-5-5",
+ "answer": "대상홀딩스는 대상(001680)의 보통주를 38.03% 들고 있습니다. 다만 두 회사의 사업보고서에 적힌 수치가 서로 달라 확인이 필요합니다.\n\n- **대상홀딩스 보고서(타법인 출자현황)**: 38.03%, 13,697,456주 (기준일 2025-12-31, 접수번호 20260327001423)\n- **대상 보고서(최대주주 현황)**: 39.28%, 13,608,456주 (기준일 2025-12-31, 접수번호 20260327000936)\n\n대상 보고서의 최대주주 표에는 대상홀딩스가 우선주도 6.50%(89,000주) 가지고 있다고 적혀 있습니다(접수번호 20260327000936). 이 우선주는 위 두 수치에 포함되지 않습니다.\n\n두 보고서의 수치가 다른 이유는 이 DB에 나와 있지 않습니다. 대상홀딩스 쪽 값은 우선주를 포함한 발행주식총수 기준일 수 있다는 점만 확인됩니다.\n\n이 DB로 알 수 없는 것: 2026년 중 지분 변동이나 5% 대량보유 보고 내역은 여기서 확인되지 않았습니다. 대상홀딩스가 대상 지분을 어떤 목적으로 보유하는지도 공시 목적란(\"경영권 참여\")에 적힌 것 외에는 알 수 없습니다.",
+ "followups": [
+  "대상 최대주주의 특수관계인 지분은 어떻게 되나요?",
+  "대상 5% 이상 대량보유 보고 현황을 알려 주세요",
+  "대상홀딩스의 계열회사는 어디인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "대상홀딩스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 193
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "대상"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1381,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 22,
+   "chars": 13142
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1381,
+    "counterparty_id": 2456,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 2976
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1381,
+     2456
+    ],
+    "views": [
+     {
+      "kind": "ownership",
+      "company_id": 2456,
+      "as_of": "2026-11-20"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 529
+  }
+ ],
+ "cited": [
+  "20260327000936",
+  "20260327001423"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1534,
+  "cache_read_input_tokens": 84589,
+  "cache_creation_input_tokens": 10777
+ },
+ "seconds": 11.6,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "S05",
+ "group": "stake",
+ "arm": "C"
+}

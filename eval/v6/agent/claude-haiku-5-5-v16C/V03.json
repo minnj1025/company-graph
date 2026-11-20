@@ -1,0 +1,90 @@
+{
+ "question": "HD현대 계열사 중에 상장된 데는 어디어디고 시총은 얼마나 돼?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "HD현대 계열 상장사는 HD현대를 포함해 9곳이고, 시가총액 금액은 이 DB에서 확인할 수 없어 적지 못합니다.\n\n| 기업 | 종목코드 | 시장 |\n|---|---|---|\n| HD현대 (기준 회사) | 267250 | 유가증권 |\n| HD한국조선해양 | 009540 | 유가증권 |\n| HD현대중공업 | 329180 | 유가증권 |\n| HD현대일렉트릭 | 267260 | 유가증권 |\n| HD현대에너지솔루션 | 322000 | 유가증권 |\n| HD현대마린솔루션 | 443060 | 유가증권 |\n| HD현대마린엔진 | 071970 | 유가증권 |\n| HD건설기계 | 267270 | 유가증권 |\n\n- 근거: 2025년 말 기준 사업보고서의 계열회사 현황 표(접수번호 20260320000872)와 기업 목록 조회입니다. HD현대 자신을 빼면 상장 계열사는 8곳입니다.\n- 시가총액: 계열 지도 카드에서 상장사 칸의 크기가 시가총액을 뜻하는 것으로 표시됐지만, 카드에 적힌 금액은 제가 읽을 수 없어 숫자로 옮기지 못했습니다. 화면의 지도 카드에서 확인하실 수 있습니다.\n- 주의: 같은 계열표에 에이치디현대인프라코어(042670)가 있는데, 시장 구분이 '비상장 등'이고 집단 소속 칸이 비어 있어 상장 계열사에서 뺐습니다. 공시의 상장 구분 표기와 달라 확인이 필요합니다.\n\n이 DB로 알 수 없는 것: 주가와 시가총액 금액, 각 사의 실적 전망과 사업부문별 실적은 이 DB에 없습니다.",
+ "followups": [
+  "HD현대일렉트릭의 최근 실적과 부채비율은 어떤가요?",
+  "HD한국조선해양의 최근 1개월 수익률은 어떤가요?",
+  "HD현대중공업의 공급계약 상대와 금액은 무엇인가요?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "HD현대"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "list_companies",
+   "input": {
+    "group": "HD현대",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 8,
+   "chars": 1069
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3434,
+    "as_of": "2026-10-16",
+    "rel_type": "affiliate",
+    "direction": "out",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 8,
+   "chars": 5205
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3434,
+     3540,
+     3609,
+     2924,
+     2894,
+     1930,
+     2150,
+     3436
+    ],
+    "views": [
+     {
+      "kind": "group",
+      "company_id": 3434,
+      "as_of": "2026-10-16"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 1095
+  }
+ ],
+ "cited": [
+  "20260320000872"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 12,
+  "output_tokens": 2256,
+  "cache_read_input_tokens": 98394,
+  "cache_creation_input_tokens": 5614
+ },
+ "seconds": 14.1,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V03",
+ "group": "v6",
+ "arm": "C"
+}

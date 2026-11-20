@@ -1,0 +1,85 @@
+{
+ "question": "한화갤러리아 사업보고서 최대주주 현황 기준으로 한화가 가진 주식 수랑 지분율 알려 줘.",
+ "as_of": "2026-11-20",
+ "model": "claude-haiku-5-5",
+ "answer": "사업보고서의 최대주주 현황 표 기준으로 한화(㈜한화)가 가진 보통주는 **70,397,507주, 36.31%**입니다. 기준일은 2025-12-31이고, 보고서는 2026-03-18에 접수됐습니다(접수번호 20260318001221).\n\n- **보통주**: 70,397,507주, 36.31% (최대주주 현황 표, 20260318001221)\n- **우선주**: 723,758주, 24.92% (같은 보고서, 20260318001221)\n\n한화는 같은 지분을 자기 보고서의 타법인 출자 현황에도 적었는데, 그 표는 71,121,265주, 36.15%입니다(접수번호 20260331003871). 두 보고서의 값이 달라서, 최대주주 현황 기준으로 물으신 대로 위의 값을 답으로 적었습니다.\n\n최대주주와 특수관계인을 합친 보통주는 106,043,560주, 54.70%입니다. 여기에는 김동선 씨(16.85%), 한화솔루션(1.39%), 북일학원(0.15%) 등이 포함됩니다. 이 DB는 사업보고서 기준이라 그 뒤의 지분 변동이나 5% 이상 대량보유 보고는 여기에 반영되지 않았습니다.",
+ "followups": [
+  "한화갤러리아 5% 이상 주주는 누가 있나?",
+  "한화갤러리아 최근 1년 내 자본 변동(유상증자, 자기주식 등)이 있었나?",
+  "한화갤러리아와 한화의 계열 관계를 보여줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한화갤러리아"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3773,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 7,
+   "chars": 6099
+  },
+  {
+   "tool": "read_skill",
+   "input": {
+    "names": [
+     "holders-insiders"
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 630
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3773,
+     3972
+    ],
+    "views": [
+     {
+      "kind": "ownership",
+      "company_id": 3773,
+      "as_of": "2026-11-20"
+     }
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 532
+  }
+ ],
+ "cited": [
+  "20260318001221",
+  "20260331003871"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1747,
+  "cache_read_input_tokens": 79076,
+  "cache_creation_input_tokens": 5839
+ },
+ "seconds": 12.4,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "S03",
+ "group": "stake",
+ "arm": "C"
+}

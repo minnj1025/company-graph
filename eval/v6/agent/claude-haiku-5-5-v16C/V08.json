@@ -1,0 +1,145 @@
+{
+ "question": "삼성전자와 삼성바이오로직스는 어떤 관계야?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "삼성전자는 삼성바이오로직스의 주요 주주(특수관계인)이고, 두 회사는 같은 삼성 기업집단의 계열사입니다. 공시된 공급계약은 확인되지 않았습니다. 아래는 공시에서 확인되는 사실입니다.\n\n- **지분 (삼성전자 → 삼성바이오로직스)**: 삼성전자가 31.2%를 보유합니다(기준일 2025-12-31, 타법인출자 현황, 접수번호 20260310002820). 같은 지분을 삼성바이오로직스 최대주주 현황은 31.22%(14,449,944주)로 적었습니다(접수번호 20260515001658). 두 보고서의 값이 약간 다릅니다. 삼성전자는 이 표에서 최대주주가 아닌 특수관계인으로 분류됩니다.\n- **최대주주**: 삼성물산이 43.1%로 최대주주입니다(타법인출자 현황, 접수번호 20260312000856). 삼성바이오로직스 보고서에는 43.06%로 적혀 있습니다(접수번호 20260515001658). 최대주주와 특수관계인 합계는 74.32%입니다(기말, 같은 접수번호).\n- **계열**: 삼성전자는 2025-12-31 기준 삼성바이오로직스를 계열회사로 공시했습니다(접수번호 20260310002820). 삼성바이오로직스 쪽 계열 목록에도 삼성전자가 있습니다.\n- **공급계약**: 2024-01 이후 단일판매·공급계약 공시에서 두 회사 사이의 계약은 찾지 못했습니다.\n\n이 DB는 사업보고서 기준의 지분과 계열, 그리고 건별 공시한 공급계약만 모읍니다. 그래서 위 목록에 없다고 해서 두 회사 사이에 다른 거래가 없다는 뜻은 아닙니다. 또 지분율은 두 회사의 보고서 값이 서로 달라 한 값으로 확정하지 않았습니다.\n\n이 DB로 알 수 없는 것: 두 회사의 실적 전망, 사업부문별 실적, 주가 움직임의 원인, 증권사 의견, 수급은 이 DB에 없습니다.",
+ "followups": [
+  "삼성바이오로직스의 실적과 부채비율은 어떤가?",
+  "삼성바이오로직스 임원들의 최근 90일 주식 매매는?",
+  "삼성물산과 삼성바이오로직스의 지분 관계를 자세히 보여 줘"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "삼성전자"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "삼성바이오로직스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 196
+  },
+  {
+   "tool": "find_paths",
+   "input": {
+    "from_company_id": 3506,
+    "to_company_id": 2187,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": 2,
+   "chars": 1551
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2187,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 12,
+   "chars": 8768
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3506,
+    "as_of": "2026-10-16",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 132,
+   "chars": 25931
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3506,
+    "as_of": "2026-10-16",
+    "rel_type": "supply_contract",
+    "direction": "both",
+    "counterparty_id": 2187
+   },
+   "error": null,
+   "total": 0,
+   "chars": 1338
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2187,
+    "as_of": "2026-10-16",
+    "rel_type": "affiliate",
+    "direction": "both"
+   },
+   "error": null,
+   "total": 83,
+   "chars": 22803
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3506,
+     2187,
+     3384
+    ],
+    "also": [
+     3217,
+     2389,
+     1442
+    ],
+    "views": [
+     {
+      "kind": "ownership",
+      "company_id": 2187,
+      "as_of": "2026-10-16"
+     },
+     {
+      "kind": "path",
+      "company_id": 3506,
+      "other_company_id": 2187,
+      "as_of": "2026-10-16"
+     }
+    ],
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 735
+  }
+ ],
+ "cited": [
+  "20260310002820",
+  "20260312000856",
+  "20260515001658"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 2718,
+  "cache_read_input_tokens": 108692,
+  "cache_creation_input_tokens": 35463
+ },
+ "seconds": 51.5,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V08",
+ "group": "v6",
+ "arm": "C"
+}

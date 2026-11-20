@@ -1,0 +1,89 @@
+{
+ "question": "오리온홀딩스가 오리온 주식 몇 주 갖고 있어?",
+ "as_of": "2026-11-20",
+ "model": "claude-haiku-5-5",
+ "answer": "오리온홀딩스가 보유한 오리온 주식은 14,775,000주이고 지분율은 37.37%입니다. 기준일은 2025년 12월 31일이며, 2026년 3월 18일에 제출된 사업보고서에 실린 값입니다.\n\n두 회사의 보고서 수치가 조금 다릅니다.\n- 오리온홀딩스의 타법인출자 현황: 14,775,000주, 37.37% (접수번호 20260318000838)\n- 오리온의 최대주주 현황: 14,775,139주, 37.37% (접수번호 20260318001320). 이 표의 기초 주식수도 14,775,139주입니다.\n\n차이는 139주이고 지분율은 같습니다. 오리온 쪽 표는 오리온홀딩스를 최대주주 본인으로 적고 있습니다. 지분은 회사분할에 의한 취득으로 기록돼 있습니다.\n\n이 DB는 사업보고서 기준 값만 가지므로, 그 뒤의 지분 변동은 이 답에 반영되지 않았습니다. 2026년 11월 20일 기준의 최신 보유 수량을 보려면 오리온의 5% 대량보유 보고나 임원·주요주주 소유상황 보고를 따로 확인해야 합니다.",
+ "followups": [
+  "오리온홀딩스의 다른 계열사 지분은 어떻게 되나?",
+  "오리온의 최대주주와 특수관계인 지분 합계는 얼마인가?",
+  "오리온 최근 90일 임원·주요주주 주식 증감은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "오리온홀딩스"
+   },
+   "error": null,
+   "total": null,
+   "chars": 195
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "오리온"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2989,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "in",
+    "counterparty_id": 2824
+   },
+   "error": null,
+   "total": 1,
+   "chars": 2596
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 2824,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 12,
+   "chars": 8411
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2824,
+     2989
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 296
+  }
+ ],
+ "cited": [
+  "20260318000838",
+  "20260318001320"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1379,
+  "cache_read_input_tokens": 63552,
+  "cache_creation_input_tokens": 26429
+ },
+ "seconds": 9.4,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "S01",
+ "group": "stake",
+ "arm": "C"
+}

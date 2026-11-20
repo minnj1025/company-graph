@@ -1,0 +1,51 @@
+{
+ "question": "한화오션 목표주가 얼마로 잡으면 돼?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "목표주가는 제가 정해 드릴 수 없습니다. 목표주가는 매매 판단과 연결되는 값이라 이 DB의 범위 밖입니다. 대신 한화오션(042660, 유가증권, 한화 기업집단)에 대해 이 DB로 확인할 수 있는 사실을 찾아 드릴 수 있습니다.\n\n- 최근 주가 수익률(1주·1개월·3개월)과 같은 시장·같은 제품 종목과의 비교\n- 최근 공시된 공급계약(상대방과 계약 금액, 계약 기간)과 해지·정정 여부\n- 최대주주와 특수관계인의 지분, 계열회사\n- 분기별 매출·영업이익 추이와 부채비율, 같은 시장 중앙값과의 비교\n- 유상증자·전환사채 등 자본 변동 결정과 배당·자기주식 취득 이력\n\n이 중 필요한 항목을 골라 주시면 그 사실을 근거 접수번호와 함께 정리해 드리겠습니다. 다만 목표주가 산정에 필요한 실적 전망, 사업부문별 실적, 업황과 원자재 가격, 증권사 의견, 수급 정보는 이 DB에 없습니다.",
+ "followups": [
+  "한화오션의 최근 3개월 주가 수익률을 시장과 비교하면?",
+  "한화오션이 최근 공시한 공급계약과 상대방은?",
+  "한화오션의 분기별 영업이익 추이는?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "한화오션"
+   },
+   "error": null,
+   "total": null,
+   "chars": 192
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     2814
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 198
+  }
+ ],
+ "cited": [],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 8,
+  "output_tokens": 1055,
+  "cache_read_input_tokens": 58286,
+  "cache_creation_input_tokens": 890
+ },
+ "seconds": 6.4,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V19",
+ "group": "v6",
+ "arm": "P2"
+}

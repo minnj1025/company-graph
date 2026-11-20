@@ -1,0 +1,88 @@
+{
+ "question": "파트론이 엘컴텍 주식 몇 주 가지고 있어? 지분율도.",
+ "as_of": "2026-11-20",
+ "model": "claude-haiku-5-5",
+ "answer": "2025년 말 기준으로 파트론은 엘컴텍 보통주 약 4,734만~4,745만 주를 가지고 있고, 지분율은 56.05%~56.19%입니다. 두 공시의 값이 달라서 출처별로 나눠 적습니다.\n\n| 출처 | 보유 주식 수 | 지분율 | 접수번호 |\n|---|---|---|---|\n| 파트론의 타법인 출자현황 | 47,448,441주 | 56.19% | 20260702000296 |\n| 엘컴텍의 최대주주 현황 (최대주주 ㈜파트론) | 47,340,955주 | 56.05% | 20260310003045 |\n\n- 기준일은 2025-12-31이며, 조회 시점(2026-11-20)에 나온 가장 최근 사업보고서 값입니다. 2026년 중간에 바뀐 지분은 이 DB에 반영되지 않았습니다.\n- 파트론은 이 지분을 경영참가 목적으로 보유하고 있으며, 엘컴텍의 최대주주입니다.\n- 엘컴텍 최대주주와 특수관계인 합계는 기말 57.86%(48,869,432주)입니다. 여기에는 김종구 1.74%, 김원근 0.07% 등 파트론 외 개인이 포함됩니다.\n\n이 DB로 알 수 없는 것: 2026년 중 파트론의 엘컴텍 지분 변동 내역(반기·분기보고서에는 출자 표가 없습니다), 주가와 시가 기준 평가액.",
+ "followups": [
+  "엘컴텍의 5% 대량보유 보고 내역은?",
+  "엘컴텍 최대주주 ㈜파트론의 특수관계인 지분은 어떻게 구성되어 있나?",
+  "파트론이 지분을 가진 다른 상장사는 어디인가?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "파트론"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "엘컴텍"
+   },
+   "error": null,
+   "total": null,
+   "chars": 190
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3914,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "in"
+   },
+   "error": null,
+   "total": 4,
+   "chars": 4207
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 1780,
+    "as_of": "2026-11-20",
+    "rel_type": "equity",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 23,
+   "chars": 13315
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     1780,
+     3914
+    ]
+   },
+   "error": null,
+   "total": null,
+   "chars": 289
+  }
+ ],
+ "cited": [
+  "20260310003045",
+  "20260702000296"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 1551,
+  "cache_read_input_tokens": 85283,
+  "cache_creation_input_tokens": 11184
+ },
+ "seconds": 10.1,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "S10",
+ "group": "stake",
+ "arm": "C"
+}

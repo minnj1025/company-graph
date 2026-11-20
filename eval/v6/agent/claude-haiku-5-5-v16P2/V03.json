@@ -1,0 +1,101 @@
+{
+ "question": "HD현대 계열사 중에 상장된 데는 어디어디고 시총은 얼마나 돼?",
+ "as_of": "2026-10-16",
+ "model": "claude-haiku-5-5",
+ "answer": "**HD현대의 상장 계열사는 8곳(HD현대 제외)이지만, 이 DB에서는 시가총액 금액을 확인할 수 없습니다.** 계열 지도 카드에서 상장사 칸의 크기가 시가총액을 따른다고 나오지만, 숫자는 조회 결과에 없어 적지 않았습니다.\n\n| 기업 | 종목코드 | 시장 | 집단 지정 여부 |\n|---|---|---|---|\n| HD한국조선해양 | 009540 | 유가증권 | HD현대 집단 |\n| HD현대일렉트릭 | 267260 | 유가증권 | HD현대 집단 |\n| HD현대중공업 | 329180 | 유가증권 | HD현대 집단 |\n| HD건설기계 | 267270 | 유가증권 | HD현대 집단 |\n| HD현대마린솔루션 | 443060 | 유가증권 | HD현대 집단 |\n| HD현대마린엔진 | 071970 | 유가증권 | HD현대 집단 |\n| HD현대에너지솔루션 | 322000 | 유가증권 | HD현대 집단 |\n| 에이치디현대인프라코어 | 042670 | 계열표상 상장 (기업 정보는 \"비상장 등\") | 집단 미지정 |\n\n- 근거: HD현대(company_id 3434)의 사업보고서 계열회사 표, 접수번호 20260320000872 (기준일 2025-12-31). 같은 표에 상장 8곳(HD현대 제외)과 비상장 21곳이 있습니다.\n- 에이치디현대인프라코어는 계열 표에서 상장으로 적혀 있지만, 기업 정보의 시장 칸은 \"비상장 등\"이고 공정위 지정 집단 이름도 없습니다. 상장 여부를 확인하려면 원자료를 따로 봐야 합니다.\n- 시가총액 금액은 이 DB의 텍스트 조회 결과에 없습니다. 계열 지도 카드에서 크기 비교는 볼 수 있습니다.\n\n이 DB로 알 수 없는 것: 주가와 발행주식 수를 바탕으로 한 시가총액 금액, 주가 전망, 사업부문별 실적.",
+ "followups": [
+  "HD현대일렉트릭의 최근 3개월 수익률은 시장과 비교해 어땠나?",
+  "HD현대중공업의 최근 분기 실적과 부채비율은?",
+  "HD현대 계열사 중 최근 공급계약을 낸 곳은?"
+ ],
+ "stop_reason": "end_turn",
+ "tool_calls": [
+  {
+   "tool": "find_company",
+   "input": {
+    "name": "HD현대"
+   },
+   "error": null,
+   "total": null,
+   "chars": 194
+  },
+  {
+   "tool": "list_companies",
+   "input": {
+    "group": "HD현대",
+    "listed_only": true
+   },
+   "error": null,
+   "total": 8,
+   "chars": 1069
+  },
+  {
+   "tool": "get_relations",
+   "input": {
+    "company_id": 3434,
+    "as_of": "2026-10-16",
+    "rel_type": "affiliate",
+    "direction": "out"
+   },
+   "error": null,
+   "total": 29,
+   "chars": 14636
+  },
+  {
+   "tool": "get_financials",
+   "input": {
+    "company_id": 3434,
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 5704
+  },
+  {
+   "tool": "show_on_graph",
+   "input": {
+    "highlight": [
+     3434,
+     3540,
+     3609,
+     2924,
+     2894,
+     1930,
+     2150,
+     3436,
+     3842
+    ],
+    "views": [
+     {
+      "kind": "group",
+      "company_id": 3434,
+      "as_of": "2026-10-16"
+     }
+    ],
+    "as_of": "2026-10-16"
+   },
+   "error": null,
+   "total": null,
+   "chars": 1198
+  }
+ ],
+ "cited": [
+  "20260320000872"
+ ],
+ "cited_not_in_results": [],
+ "usage": {
+  "input_tokens": 10,
+  "output_tokens": 3096,
+  "cache_read_input_tokens": 90522,
+  "cache_creation_input_tokens": 14340
+ },
+ "seconds": 20.7,
+ "wording": {
+  "flagged": [],
+  "retried": false,
+  "left": []
+ },
+ "number": "V03",
+ "group": "v6",
+ "arm": "P2"
+}
